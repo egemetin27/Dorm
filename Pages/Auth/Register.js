@@ -12,13 +12,13 @@ import {
 	Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
 import commonStyles from "../../visualComponents/styles";
 import { Gradient, colors } from "../../visualComponents/colors";
 import { url } from "../../connection";
+import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { width, height } = Dimensions.get("window");
 
@@ -54,15 +54,16 @@ export default function Register({ navigation }) {
 			fName != "" &&
 			lName != "" &&
 			parsedDate != "" &&
-			university != ""
+			university != "" &&
+			getAge(parsedDate) >= 18
 		) {
 			const profile = {
 				mail: email,
 				name: fName,
 				surName: lName,
 				city: city,
-				bDay: date,
-				// bDay: parsedDate,
+				// bDay: date,
+				bDay: parsedDate,
 				school: university,
 			};
 
@@ -71,20 +72,24 @@ export default function Register({ navigation }) {
 				.then(async (res) => {
 					await axios
 						.post(url + "/SendVerification", { Mail: email })
+						.then(() => {
+							navigation.replace("Verification", { ...res.data, email: email });
+						})
 						.catch((error) => {
 							console.log("verification error: ", error);
 						});
-					navigation.replace("Verification", { ...res.data, email: email });
 				})
 				.catch((error) => {
 					console.log("register error: ", error);
 				});
 		} else {
-			Alert.alert(
-				"Hata!",
-				"Boş bıraktığın bir soru var, istersen bir kontrol et.",
-				[{ text: "Kontrol Edeyim" }]
-			);
+			if (getAge(parsedDate) < 18) {
+				Alert.alert("Hata!", "Yaşın 18'den küçük olamaz.", [{ text: "Kontrol Edeyim" }]);
+			} else {
+				Alert.alert("Hata!", "Boş bıraktığın bir soru var, istersen bir kontrol et.", [
+					{ text: "Kontrol Edeyim" },
+				]);
+			}
 		}
 	};
 
@@ -126,13 +131,11 @@ export default function Register({ navigation }) {
 		setDate(currentDate);
 
 		let formattedDate =
-			(currentDate.getDate() < 10
-				? "0" + currentDate.getDate()
-				: currentDate.getDate()) +
-			"/" +
 			(currentDate.getMonth() + 1 < 10
 				? "0" + (currentDate.getMonth() + 1)
 				: currentDate.getMonth() + 1) +
+			"/" +
+			(currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()) +
 			"/" +
 			currentDate.getFullYear();
 		setParsedDate(formattedDate);
@@ -141,18 +144,11 @@ export default function Register({ navigation }) {
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style={"dark"} />
-			<View
-				style={[
-					commonStyles.Header,
-					{ marginTop: 80, justifyContent: "space-around" },
-				]}
-			>
+			<View style={[commonStyles.Header, { marginTop: 80, justifyContent: "space-around" }]}>
 				<TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
-						counter > 0
-							? handleBackward(refList[counter - 1])
-							: navigation.replace("WelcomePage");
+						counter > 0 ? handleBackward(refList[counter - 1]) : navigation.replace("WelcomePage");
 					}}
 				>
 					{counter > 0 ? (
@@ -190,9 +186,7 @@ export default function Register({ navigation }) {
 							},
 						]}
 					>
-						<Gradient
-							style={{ borderRadius: 7, alignItems: "center" }}
-						></Gradient>
+						<Gradient style={{ borderRadius: 7, alignItems: "center" }}></Gradient>
 					</Animated.View>
 				</View>
 
@@ -461,9 +455,7 @@ export default function Register({ navigation }) {
 								justifyContent: "center",
 							}}
 						>
-							<Text style={styles.QuestionCardText}>
-								Merhaba!{"\n"}Benim adım
-							</Text>
+							<Text style={styles.QuestionCardText}>Merhaba!{"\n"}Benim adım</Text>
 						</View>
 						<TextInput
 							onSubmitEditing={() => {
@@ -492,8 +484,8 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					Biz de kullanıcı adının ayca_22 olmasını isterdik{"\n"}ama burada
-					gerçek ismine ihtiyacımız var.
+					Biz de kullanıcı adının ayca_22 olmasını isterdik{"\n"}ama burada gerçek ismine
+					ihtiyacımız var.
 				</Animated.Text>
 				<Animated.Text
 					style={[
@@ -506,9 +498,8 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					dorm, üniversiteliler tarafından sadece üniversiteliler için
-					tasarlandı. Bu yüzden, sadece üniversite e-posta adresinle kayıt
-					olabilirsin.
+					dorm, üniversiteliler tarafından sadece üniversiteliler için tasarlandı. Bu yüzden, sadece
+					üniversite e-posta adresinle kayıt olabilirsin.
 				</Animated.Text>
 			</View>
 		</View>

@@ -23,6 +23,7 @@ import { Octicons, Feather, Ionicons } from "@expo/vector-icons";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
 import { CustomModal } from "../../visualComponents/customComponents";
+import { StatusBar } from "expo-status-bar";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
@@ -81,7 +82,6 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 			destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
 			// const destination = snapPoint(x.value, event.velocityX, SNAP_POINTS);
 			x.value = withSpring(destination.value);
-			// x.value = withSequence(withSpring(destination.value), withSpring(0));
 		})
 		.onFinalize(() => {
 			// TODO: decrease the daily number of likes by one if the value is greater than 0 and send the LIKED/DISLIKED data to backend
@@ -217,7 +217,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 									{photoList.map((item, index) => {
 										// console.log("In Map: ", item);
 										return (
-											<Animated.Image
+											<Image
 												key={index}
 												source={{
 													uri: item?.PhotoLink ?? "AAA",
@@ -300,7 +300,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 											<Text
 												style={{
 													color: colors.white,
-													fontSize: 24,
+													fontSize: width * 0.06,
 													fontWeight: "bold",
 													letterSpacing: 1.05,
 												}}
@@ -584,78 +584,13 @@ export default function ProfileCards({ navigation, route }) {
 			}`
 	);
 
-	const peopleList = route.params?.list;
+	// const peopleList = route.params?.list;
 
-	// const [peopleList, setPeopleList] = React.useState([]);
-	// React.useEffect(() => {
-	// 	setPeopleList(route.params?.list ?? []);
-	// 	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-	// }, []);
+	const peopleList = route.params.list;
 
-	// const PeopleList = [
-	// 	{
-	// 		About: "about",
-	// 		Alkol: "drink",
-	// 		Beslenme: "diet",
-	// 		Burc: "sign",
-	// 		Din: "religion",
-	// 		Gender: "gender",
-	// 		Major: "major",
-	// 		Name: "name1",
-	// 		School: "university",
-	// 		Sigara: "smoke",
-
-	// 		Surname: "AAAAAA",
-	// 		UserId: 1,
-	// 		photos: [
-	// 			{
-	// 				PhotoLink:
-	// 					"https://m.media-amazon.com/images/M/MV5BZjgwOGI3ZWEtNjBiMy00ZjM3LWFkNWYtNmU1MzY1ZGZkMDU2XkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UX1013_.jpg",
-	// 				UserId: 1,
-	// 				Photo_Order: 1,
-	// 			},
-	// 			{
-	// 				PhotoLink:
-	// 					"https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg",
-	// 				UserId: 1,
-	// 				Photo_Order: 2,
-	// 			},
-	// 		],
-	// 	},
-	// 	{
-	// 		About: "about",
-	// 		Alkol: "drink",
-	// 		Beslenme: "diet",
-	// 		Burc: "sign",
-	// 		Din: "religion",
-	// 		Gender: "gender",
-	// 		Major: "major",
-	// 		Name: "name2",
-	// 		School: "university",
-	// 		Sigara: "smoke",
-
-	// 		Surname: "AAAAAA",
-	// 		UserId: 2,
-	// 		photos: [
-	// 			{
-	// 				PhotoLink:
-	// 					"https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg",
-	// 				UserId: 2,
-	// 				Photo_Order: 1,
-	// 			},
-	// 			{
-	// 				PhotoLink:
-	// 					"https://m.media-amazon.com/images/M/MV5BZjgwOGI3ZWEtNjBiMy00ZjM3LWFkNWYtNmU1MzY1ZGZkMDU2XkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_FMjpg_UX1013_.jpg",
-	// 				UserId: 2,
-	// 				Photo_Order: 2,
-	// 			},
-	// 		],
-	// 	},
-	// ];
-
-	const handlePopupSubmit = () => {
+	function handlePopupSubmit() {
 		console.log("super like submit...");
-	};
+	}
 
 	const hour = 15;
 	const minute = 20;
@@ -663,6 +598,7 @@ export default function ProfileCards({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<View
 				name={"header"}
 				style={{
@@ -701,8 +637,8 @@ export default function ProfileCards({ navigation, route }) {
 						key={index}
 						index={index}
 						card={item}
-						setPopupVisible={(val) => setPopupVisible(val)}
 						backFace={backFace}
+						setPopupVisible={(val) => setPopupVisible(val)}
 						numberOfSuperLikes={numberOfSuperLikes}
 					/>
 				))}
@@ -805,6 +741,7 @@ export default function ProfileCards({ navigation, route }) {
 				dismiss={() => {
 					setPopupVisible(false);
 				}}
+				// style={{ position: "absolute" }}
 			>
 				<View
 					style={{

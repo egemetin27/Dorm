@@ -3,6 +3,7 @@ import { Text, View, Image, Dimensions, Pressable, TouchableOpacity } from "reac
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
@@ -33,41 +34,111 @@ export default function PhotoUpload({ navigation, route }) {
 		}
 	};
 
-	const handleAdd = (result) => {
-		axios
-			.get(url + "/SecurePhotoLink")
-			.then((res) => {
-				const uploadUrl = res.data.url;
-
-				fetch(uploadUrl, {
-					method: "PUT",
-					body: result,
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "multipart/form-data",
-					},
-				}).then((res) => {
-					if (res.ok) {
-						const photoLink = uploadUrl.split("?")[0];
-						setPhotoList([...photoList, photoLink]);
-					} else {
-						console.log("ERROR UPLOADING IMAGE");
-					}
-				});
-			})
-			.catch((error) => {
-				console.log({ error });
-			});
+	const handleAdd = (photo) => {
+		console.log({
+			Photo_Order: photoList.length + 1,
+			PhotoLink: photo.uri,
+			photo: photo,
+		});
+		setPhotoList([
+			...photoList,
+			{
+				Photo_Order: photoList.length + 1,
+				PhotoLink: photo.uri,
+				photo: photo,
+			},
+		]);
 	};
 
-	const handleSubmit = () => {
-		navigation.replace("Hobbies", { userID: userID, email: email, password: password });
+	const handleDelete = () => {
+		//TODO: delete "toBeDeleted"
+		const filtered = [];
+		for (item of photoList) {
+			if (item.Photo_Order != toBeDeleted.Photo_Order) {
+				if (item.Photo_Order > toBeDeleted.Photo_Order) {
+					filtered.push({ ...item, Photo_Order: item.Photo_Order - 1 });
+				} else {
+					filtered.push(item);
+				}
+			}
+		}
+		console.log(filtered);
+		setPhotoList(filtered);
+		setModalVisibility(false);
+	};
+
+	const handleSave = async () => {
+		try {
+			const newList = await Promise.all(
+				photoList.map(async (item, index) => {
+					if (item?.photo ?? false) {
+						const returnVal = await axios
+							.get(url + "/SecurePhotoLink")
+							.then(async (res) => {
+								const uploadUrl = res.data.url;
+								const returned = await fetch(uploadUrl, {
+									method: "PUT",
+									body: item.photo,
+									headers: {
+										Accept: "application/json",
+										"Content-Type": "multipart/form-data",
+									},
+								})
+									.then((res) => {
+										if (res.ok) {
+											const photoLink = uploadUrl.split("?")[0];
+
+											return {
+												Photo_Order: item.Photo_Order,
+												PhotoLink: photoLink,
+											};
+										} else {
+											console.log("ERROR UPLOADING IMAGE");
+										}
+									})
+									.catch((err) => {
+										console.log(err);
+									});
+								return returned;
+							})
+							.catch((error) => {
+								console.log({ error });
+							});
+						return returnVal;
+					}
+					return item;
+				})
+			);
+			await axios
+				.post(url + "/addPhotoLink", {
+					UserId: userID,
+					photos: newList,
+				})
+				.then(async (res) => {
+					// setPhotoList(newList);
+
+					const dataStr = await SecureStore.getItemAsync("userData");
+					const userData = JSON.parse(dataStr);
+					const storedValue = JSON.stringify({
+						...userData,
+						Photo: newList,
+					});
+					await SecureStore.setItemAsync("userData", storedValue);
+					navigation.replace("Hobbies", { userID: userID, email: email, password: password });
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} catch (err) {
+			console.log("ERROR SAVING: ", err);
+		}
 	};
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<View style={[commonStyles.Header, { paddingHorizontal: 30, justifyContent: "flex-end" }]}>
-				<TouchableOpacity onPress={handleSubmit}>
+				<TouchableOpacity onPress={handleSave}>
 					<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
 				</TouchableOpacity>
 			</View>

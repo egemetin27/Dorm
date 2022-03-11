@@ -12,23 +12,26 @@ import {
 	KeyboardAvoidingView,
 	FlatList,
 	Image,
+	PlatformColor,
+	Platform,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import { Ionicons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import * as SecureStore from "expo-secure-store";
+import { StatusBar } from "expo-status-bar";
 
 import { CustomModal, CustomPicker } from "../../visualComponents/customComponents";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { url } from "../../connection";
+import { getAge } from "../../nonVisualComponents/generalFunctions";
+import Gender from "../afterRegisteration/Gender";
 
 const { height, width } = Dimensions.get("window");
 
 export default function Profile({ route, navigation }) {
-	const { photoList } = route.params;
-
 	const [progressBarVisible, setVisibility] = React.useState(true);
 	const [progress, setProgress] = React.useState(0);
 	const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
@@ -50,6 +53,7 @@ export default function Profile({ route, navigation }) {
 	const [smoke, setSmoke] = React.useState("");
 	const [hobbies, setHobbies] = React.useState("");
 	const [about, setAbout] = React.useState("");
+	const [PHOTO_LIST, setPhotoList] = React.useState("");
 
 	const [city, setCity] = React.useState([0, 1, 0]);
 
@@ -70,7 +74,7 @@ export default function Profile({ route, navigation }) {
 		{ key: 3, choice: "Belirtmek İstemiyorum" },
 	];
 
-	const PHOTO_LIST = route.params?.photoList ?? [];
+	// const PHOTO_LIST = route.params?.photoList ?? [];
 
 	// const [PHOTO_LIST, setPhotoList] = React.useState([
 	// 	{
@@ -95,8 +99,9 @@ export default function Profile({ route, navigation }) {
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
 		console.log({ data });
-		setName(data.Name);
-		// setAge(data.)
+
+		setName(data.Name + " " + data.Surname);
+		setAge(getAge(data.Birth_date));
 		setSex(GENDER_LIST[data.Gender]);
 		setSchool(data.School);
 		setUserID(data.UserId);
@@ -107,12 +112,19 @@ export default function Profile({ route, navigation }) {
 		setAlcohol(data.Alkol);
 		setSmoke(data.Sigara);
 		setAbout(data.About);
+		setPhotoList(data.Photo);
 		// setHobbies;
 	}, []);
 
 	const handleSave = async () => {
+		const lName = name.slice(name.lastIndexOf(" ") + 1);
+		const fName = name.slice(0, name.lastIndexOf(" "));
+
 		const dataToSend = {
 			UserId: userID,
+			Name: fName,
+			Surname: lName,
+			Gender: sex.key,
 			Major: major,
 			Din: religion,
 			Burc: sign,
@@ -164,6 +176,7 @@ export default function Profile({ route, navigation }) {
 
 	return (
 		<View style={[commonStyles.Container, { alignItems: "center" }]}>
+			<StatusBar style="dark" />
 			<View
 				style={{
 					height: 100,
@@ -286,8 +299,7 @@ export default function Profile({ route, navigation }) {
 				keyboardShouldPersistTaps="handled"
 			>
 				<KeyboardAvoidingView
-					behavior= {(Platform.OS === 'ios')? "padding" : "height"}
-					style = {{flex: 1}}
+					behavior={Platform.OS === "ios" ? "padding" : null}
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
 						{PHOTO_LIST && PHOTO_LIST.length != 0 ? (
@@ -316,7 +328,7 @@ export default function Profile({ route, navigation }) {
 											<Image
 												style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
 												resizeMode="contain"
-												source={{ uri: item.url }}
+												source={{ uri: item.PhotoLink }}
 											/>
 										</Pressable>
 									</View>
@@ -974,37 +986,6 @@ export default function Profile({ route, navigation }) {
 				setVisible={setModalVisibile}
 				setChoice={setSex}
 			/>
-
-			{/* <CustomModal
-				visible={modalVisible}
-				transparent={true}
-				dismiss={() => {
-					setModalVisibile(false);
-				}}
-				animationType="fade"
-			>
-				<View style={[styles.modalContainer]}>
-					<FlatList
-						data={GENDER_LIST}
-						renderItem={({ item }) => (
-							<TouchableOpacity
-								style={{
-									height: height / 16,
-									justifyContent: "center",
-									alignItems: "center",
-									width: "100%",
-								}}
-								onPress={() => {
-									setSex(item.choice);
-									setModalVisibile(false);
-								}}
-							>
-								<Text style={{ fontSize: width / 22 }}>{item.choice}</Text>
-							</TouchableOpacity>
-						)}
-					/>
-				</View>
-			</CustomModal> */}
 		</View>
 	);
 }

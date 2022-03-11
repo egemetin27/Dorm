@@ -38,8 +38,8 @@ import EventCards from "../Pages/User/EventCards";
 /////
 // OTHER SCREENS
 import Settings from "../Pages/Settings";
-import Tutorial from "../Pages/Tutorial";
 import Chat from "../Pages/User/Chat";
+import Tutorial from "../Pages/Tutorial";
 /////
 // COMPONENTS
 import { AuthContext } from "../nonVisualComponents/Context";
@@ -86,10 +86,7 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText
-									style={{ fontSize: 13, fontWeight: "bold" }}
-									text={"Profil"}
-								/>
+								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Profil"} />
 							) : (
 								<Text
 									style={{
@@ -126,10 +123,7 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText
-									style={{ fontSize: 13, fontWeight: "bold" }}
-									text={"Ana Sayfa"}
-								/>
+								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Ana Sayfa"} />
 							) : (
 								<Text
 									style={{
@@ -166,10 +160,7 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText
-									style={{ fontSize: 13, fontWeight: "bold" }}
-									text={"Mesajlar"}
-								/>
+								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Mesajlar"} />
 							) : (
 								<Text
 									style={{
@@ -230,10 +221,7 @@ export default function StackNavigator() {
 
 	const authContext = React.useMemo(() => ({
 		signIn: async ({ email, password }) => {
-			const encryptedPassword = await digestStringAsync(
-				CryptoDigestAlgorithm.SHA256,
-				password
-			);
+			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 			const dataToBeSent = { Mail: email, password: encryptedPassword };
 
 			axios
@@ -241,9 +229,16 @@ export default function StackNavigator() {
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
 						// If signed in
+						const photoList = res.data.Photo.map((item) => {
+							return {
+								PhotoLink: item.PhotoLink,
+								Photo_Order: item.Photo_Order,
+							};
+						});
 						const userData = JSON.stringify({
 							...res.data,
 							password: password,
+							Photo: photoList,
 						});
 
 						await SecureStore.setItemAsync("userData", userData);
@@ -302,11 +297,8 @@ export default function StackNavigator() {
 									<Stack.Screen name="Tutorial" component={Tutorial} />
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
-									<Stack.Screen name = "Chat" component={Chat}/>
-									<Stack.Screen
-										name="ProfilePhotos"
-										component={ProfilePhotos}
-									/>
+									<Stack.Screen name = "Chat" component = {Chat} />
+									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 									<Stack.Screen name="ProfileCards" component={ProfileCards} />
 									<Stack.Screen name="EventCards" component={EventCards} />
 								</Stack.Group>
@@ -314,26 +306,17 @@ export default function StackNavigator() {
 								// Screens for non-logged in users
 
 								<Stack.Group screenOptions={{ headerShown: false }}>
-									<Stack.Screen name="Onboarding" component={Onboarding} />
 									<Stack.Screen name="WelcomePage" component={WelcomePage} />
+									<Stack.Screen name="Onboarding" component={Onboarding} />
 									<Stack.Screen name="LetsMeet" component={LetsMeet} />
 									<Stack.Screen name="Register" component={Register} />
 									<Stack.Screen name="Verification" component={Verification} />
-									<Stack.Screen
-										name="FirstPassword"
-										component={FirstPassword}
-									/>
-									<Stack.Screen
-										name="AfterRegister"
-										component={AfterRegister}
-									/>
+									<Stack.Screen name="FirstPassword" component={FirstPassword} />
+									<Stack.Screen name="AfterRegister" component={AfterRegister} />
 									<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 									<Stack.Screen name="Login" component={Login} />
-									<Stack.Screen
-										name="ForgotPassword"
-										component={ForgotPassword}
-									/>
+									<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 									<Stack.Screen name="NewPassword" component={NewPassword} />
 								</Stack.Group>
 							)}

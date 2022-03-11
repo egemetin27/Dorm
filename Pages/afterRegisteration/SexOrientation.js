@@ -1,13 +1,15 @@
 import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
-import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+import { StatusBar } from "expo-status-bar";
 
+import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+import commonStyles from "../../visualComponents/styles";
 import { Switch } from "../../visualComponents/customComponents";
 
 export default sexOrientation = ({ value, setValue, isEnabled }) => {
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>

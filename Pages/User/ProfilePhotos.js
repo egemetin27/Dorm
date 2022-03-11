@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
 	StyleSheet,
 	View,
@@ -9,12 +9,15 @@ import {
 	Image,
 	Text,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import commonStyles from "../../visualComponents/styles";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
-import { Gradient, GradientText, colors } from "../../visualComponents/colors";
-import { CustomModal } from "../../visualComponents/customComponents";
+import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import { StatusBar } from "expo-status-bar";
+
+import { Gradient, GradientText, colors } from "../../visualComponents/colors";
+import commonStyles from "../../visualComponents/styles";
+import { CustomModal } from "../../visualComponents/customComponents";
 import { url } from "../../connection";
 
 const { width, height } = Dimensions.get("window");
@@ -28,7 +31,7 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 			<Image
 				style={{ height: "100%", width: "100%" }}
 				resizeMode="contain"
-				source={{ uri: photo.url }}
+				source={{ uri: photo.PhotoLink }}
 			/>
 			<View
 				style={{
@@ -63,37 +66,15 @@ export default function ProfilePhotos({ route, navigation }) {
 	const [toBeDeleted, setToBeDeleted] = React.useState(null);
 	const [PHOTO_LIST, setPhotoList] = React.useState(route.params?.photoList || []);
 
-	const listToUpload = React.useRef([]).current;
-	// const [PHOTO_LIST, setPhotoList] = React.useState([
-	// 	{
-	// 		key: 1,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/1f85541f-853d-4741-bbcb-06929f058d7d.jpg",
-	// 		photo: "from server",
-	// 	},
-	// 	{
-	// 		key: 2,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/6bb520a0-9e1b-4757-9bb4-6de742b19d78.jpg",
-	// 		photo: "not from server",
-	// 	},
-	// 	{
-	// 		key: 3,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/a8e8b42d-477b-4173-8eeb-ede5747f367b.jpg",
-	// 	},
-	// 	{
-	// 		key: 4,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/f597e788-e7c5-4b0a-8726-f80527c14c40.jpg",
-	// 	},
-	// ]);
-
 	const { userID } = route.params;
 
 	const handleDelete = () => {
 		//TODO: delete "toBeDeleted"
 		const filtered = [];
 		for (item of PHOTO_LIST) {
-			if (item.key != toBeDeleted.key) {
-				if (item.key > toBeDeleted.key) {
-					filtered.push({ ...item, key: item.key - 1 });
+			if (item.Photo_Order != toBeDeleted.Photo_Order) {
+				if (item.Photo_Order > toBeDeleted.Photo_Order) {
+					filtered.push({ ...item, Photo_Order: item.Photo_Order - 1 });
 				} else {
 					filtered.push(item);
 				}
@@ -117,15 +98,26 @@ export default function ProfilePhotos({ route, navigation }) {
 	};
 
 	const handleAdd = (photo) => {
-		setPhotoList([...PHOTO_LIST, { key: PHOTO_LIST.length + 1, url: photo.uri, photo: photo }]);
+		console.log({
+			Photo_Order: PHOTO_LIST.length + 1,
+			PhotoLink: photo.uri,
+			photo: photo,
+		});
+		setPhotoList([
+			...PHOTO_LIST,
+			{
+				Photo_Order: PHOTO_LIST.length + 1,
+				PhotoLink: photo.uri,
+				photo: photo,
+			},
+		]);
 	};
 
 	const handleSave = async () => {
 		try {
 			const newList = await Promise.all(
 				PHOTO_LIST.map(async (item, index) => {
-					console.log({ item });
-					if (item.photo ?? false) {
+					if (item?.photo ?? false) {
 						const returnVal = await axios
 							.get(url + "/SecurePhotoLink")
 							.then(async (res) => {
@@ -141,9 +133,11 @@ export default function ProfilePhotos({ route, navigation }) {
 									.then((res) => {
 										if (res.ok) {
 											const photoLink = uploadUrl.split("?")[0];
-											console.log({ photoLink });
 
-											return { key: item.key, url: photoLink };
+											return {
+												Photo_Order: item.Photo_Order,
+												PhotoLink: photoLink,
+											};
 										} else {
 											console.log("ERROR UPLOADING IMAGE");
 										}
@@ -158,14 +152,25 @@ export default function ProfilePhotos({ route, navigation }) {
 							});
 						return returnVal;
 					}
-					return {};
+					return item;
 				})
 			);
+			await axios
+				.post(url + "/addPhotoLink", {
+					UserId: userID,
+					photos: newList,
+				})
+				.then(async (res) => {
+					// setPhotoList(newList);
 
-			axios
-				.post(url + "/addPhotoLink", { UserId: userID, photos: newList })
-				.then((res) => {
-					setPhotoList(newList);
+					const dataStr = await SecureStore.getItemAsync("userData");
+					const userData = JSON.parse(dataStr);
+					const storedValue = JSON.stringify({
+						...userData,
+						Photo: newList,
+					});
+					await SecureStore.setItemAsync("userData", storedValue);
+
 					navigation.replace("MainScreen", {
 						screen: "Profile",
 						photoList: newList,
@@ -181,6 +186,7 @@ export default function ProfilePhotos({ route, navigation }) {
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<View name={"Header"} style={commonStyles.Header}>
 				<View style={{ marginLeft: 20 }}>
 					<TouchableOpacity

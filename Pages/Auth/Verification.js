@@ -26,39 +26,39 @@ export default function Verification({ navigation, route }) {
 
 		const ver = { Mail: email, VerCode: strCode };
 
-		// axios
-		// 	.post(url + "/CheckVerification", ver)
-		// 	.then((res) => {
-		// 		//TODO: check if res.data.id is positive or negative and show error message accordingly
+		axios
+			.post(url + "/CheckVerification", ver)
+			.then((res) => {
+				//TODO: check if res.data.id is positive or negative and show error message accordingly
 
-		// 		console.log(res.data);
-		// 		if (res.data?.Verification > 0) {
-		// 			route.params?.changePass
-		// 				? navigation.replace("NewPassword", { userID: UserId, email: email })
-		// 				: navigation.replace("FirstPassword", { userID: UserId, email: email });
-		// 		} else {
-		// 			setWrongInput(true);
-		// 			input0.current.clear();
-		// 			input1.current.clear();
-		// 			input2.current.clear();
-		// 			input3.current.clear();
+				console.log(res.data);
+				if (res.data?.Verification > 0) {
+					route.params?.changePass
+						? navigation.replace("NewPassword", { userID: UserId, email: email })
+						: navigation.replace("FirstPassword", { userID: UserId, email: email });
+				} else {
+					setWrongInput(true);
+					input0.current.clear();
+					input1.current.clear();
+					input2.current.clear();
+					input3.current.clear();
 
-		// 			input0.current.focus();
-		// 			verification.current = [-1, -1, -1, -1];
-		// 			setIsAllEntered(false);
-		// 		}
-		// 	})
-		// 	.catch((error) => {
-		// 		console.log({ error });
-		// 	});
+					input0.current.focus();
+					verification.current = [-1, -1, -1, -1];
+					setIsAllEntered(false);
+				}
+			})
+			.catch((error) => {
+				console.log({ error });
+			});
 
-		navigation.replace("FirstPassword", { userID: UserId, email: email });
+		// navigation.replace("FirstPassword", { userID: UserId, email: email });
 	};
 
 	const resendCode = () => {
-		// axios.post(url + "/SendVerification", { Mail: email }).catch((error) => {
-		// 	console.log({ error });
-		// });
+		axios.post(url + "/SendVerification", { Mail: email }).catch((error) => {
+			console.log({ error });
+		});
 	};
 
 	const checkIfDone = () => {

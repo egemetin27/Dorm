@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Octicons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
+import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -21,13 +22,14 @@ import { url } from "../../connection";
 
 const { height, width } = Dimensions.get("window");
 
-
 import {
 	API,
 	graphqlOperation,
   } from 'aws-amplify';
 import {getMsgUser} from "../../src/graphql/queries"
 import {createMsgUser} from "../../src/graphql/mutations"
+
+
 const CategoryList = [
 	{
 		key: "Favorilerin",
@@ -143,21 +145,13 @@ const Category = (props) => {
 					marginHorizontal: 0,
 					marginLeft: 15,
 					marginRight: props.index + 1 == CategoryList.length ? 15 : 0,
-					backgroundColor:
-						props.selectedCategory == props.index
-							? "transparent"
-							: colors.white,
+					backgroundColor: props.selectedCategory == props.index ? "transparent" : colors.white,
 				},
 			]}
 		>
-			{props.selectedCategory == props.index && (
-				<Gradient style={{ position: "absolute" }} />
-			)}
+			{props.selectedCategory == props.index && <Gradient style={{ position: "absolute" }} />}
 
-			<Pressable
-				onPress={() => props.setSelectedCategory(props.index)}
-				style={{ width: "100%" }}
-			>
+			<Pressable onPress={() => props.setSelectedCategory(props.index)} style={{ width: "100%" }}>
 				<View
 					name={"icon"}
 					style={{
@@ -171,27 +165,18 @@ const Category = (props) => {
 						style={[
 							styles.categoryIcon,
 							{
-								tintColor:
-									props.selectedCategory == props.index
-										? colors.white
-										: colors.cool_gray,
+								tintColor: props.selectedCategory == props.index ? colors.white : colors.cool_gray,
 							},
 						]}
 						source={props.children.url}
 					/>
 				</View>
 
-				<View
-					name={"name"}
-					style={{ width: "100%", height: "40%", alignItems: "center" }}
-				>
+				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center" }}>
 					<Text
 						style={{
 							fontSize: width * 0.035,
-							color:
-								props.selectedCategory == props.index
-									? colors.white
-									: colors.cool_gray,
+							color: props.selectedCategory == props.index ? colors.white : colors.cool_gray,
 						}}
 					>
 						{props.children.key}
@@ -331,8 +316,8 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-
 	}, []);
+
 
 	React.useEffect(async () => {
 
@@ -377,15 +362,13 @@ export default function MainPage({ navigation }) {
 		}
 	
 		fetchUser();
-	  }, [])
+	}, [])
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<ScrollView style={{ width: width }} showsVerticalScrollIndicator={false}>
-				<View
-					name={"PeopleHeader"}
-					style={[commonStyles.Header, { height: height * 0.05 }]}
-				>
+				<View name={"PeopleHeader"} style={[commonStyles.Header, { height: height * 0.05 }]}>
 					<GradientText
 						text={"Kişiler"}
 						style={{
@@ -472,10 +455,7 @@ export default function MainPage({ navigation }) {
 				</View>
 
 				<View name={"EventsContainer"} style={{ width: "100%" }}>
-					<View
-						name={"Categories"}
-						style={{ width: "100%", height: height * 0.12 }}
-					>
+					<View name={"Categories"} style={{ width: "100%", height: height * 0.12 }}>
 						<FlatList
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}

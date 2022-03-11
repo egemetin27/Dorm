@@ -12,6 +12,8 @@ import { Feather } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { StatusBar } from "expo-status-bar";
+
 import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
 import { CustomModal, Switch } from "../visualComponents/customComponents";
@@ -361,6 +363,7 @@ export default function Settings({ navigation, route }) {
 
 	return (
 		<View style={[commonStyles.Container]}>
+			<StatusBar style="dark" />
 			<View name={"Header"} style={styles.header}>
 				<TouchableOpacity
 					name={"backButton"}

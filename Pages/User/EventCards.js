@@ -16,6 +16,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
@@ -88,7 +89,7 @@ const Card = ({ event }) => {
 
 	return (
 		<View name={"cards"} style={{ width: "100%", justifyContent: "center", height: height * 0.76 }}>
-			{/* <TapGestureHandler numberOfTaps={2} onGestureEvent={tapHandler}> */}
+			<StatusBar style="dark" />
 			<GestureDetector gesture={tapHandler}>
 				<Animated.View style={{}}>
 					<Animated.View

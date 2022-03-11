@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, TouchableWithoutFeedback, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../visualComponents/styles";
 
@@ -27,6 +28,7 @@ export default function Tutorial({ navigation }) {
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<TouchableWithoutFeedback
 				onPress={() => {
 					index < 8 ? setIndex(index + 1) : handleEnd();

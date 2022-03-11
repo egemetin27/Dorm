@@ -8,10 +8,13 @@ import {
 	FlatList,
 	TouchableOpacity,
 } from "react-native";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import axios from "axios";
+import { StatusBar } from "expo-status-bar";
 
+import { AuthContext } from "../../nonVisualComponents/Context";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+import { url } from "../../connection";
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,8 +24,18 @@ export default function Hobbies({ navigation, route }) {
 
 	const { signIn } = React.useContext(AuthContext);
 	const handleSubmit = () => {
-		console.log("Submitting...");
-		signIn({ email: email, password: password });
+		axios
+			.post(url + "/interests", {
+				UserId: userID,
+				hobbies: hobbies,
+			})
+			.then((res) => {
+				console.log("Submitting...");
+				signIn({ email: email, password: password });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	const sport = [
@@ -90,6 +103,7 @@ export default function Hobbies({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" />
 			<View style={[commonStyles.Header, { paddingHorizontal: 30, justifyContent: "flex-end" }]}>
 				<TouchableOpacity onPress={handleSubmit}>
 					<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
@@ -98,122 +112,173 @@ export default function Hobbies({ navigation, route }) {
 			<View
 				style={{
 					width: "100%",
-					alignItems: "flex-start",
-					paddingHorizontal: 30,
+					overflow: "hidden",
+					paddingBottom: 10,
 					marginTop: 20,
 				}}
 			>
-				<GradientText text={"İlgi Alanlarım"} style={{ fontSize: 30, fontWeight: "bold" }} />
+				<View
+					style={{
+						width: "100%",
+						alignItems: "flex-start",
+						paddingHorizontal: 30,
+						paddingBottom: 10,
+						elevation: 10,
+						backgroundColor: "#F4F3F3",
+					}}
+				>
+					<GradientText text={"İlgi Alanlarım"} style={{ fontSize: 30, fontWeight: "bold" }} />
+				</View>
+				<ScrollView
+					contentContainerStyle={{ paddingBottom: 150 }}
+					showsVerticalScrollIndicator={false}
+				>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Spor"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={sport}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Yaratıcılık"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={creativity}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Yeme & İçme"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={consumables}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Film & Dizi"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={movies}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Okumak"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={reading}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Müzik"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={music}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Değerler ve Aktivizm"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={activism}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+					<View style={{ marginTop: 30 }}>
+						<GradientText
+							text={"Değerler ve Özellikler"}
+							style={{
+								fontSize: 20,
+								fontWeight: "bold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+						<FlatList
+							style={{ marginTop: 10 }}
+							showsHorizontalScrollIndicator={false}
+							data={traits}
+							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
+							horizontal={true}
+						/>
+					</View>
+				</ScrollView>
 			</View>
-			<ScrollView
-				contentContainerStyle={{ paddingBottom: 150 }}
-				showsVerticalScrollIndicator={false}
-			>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Spor"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={sport}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Yaratıcılık"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={creativity}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Yeme & İçme"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={consumables}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Film & Dizi"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={movies}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Okumak"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={reading}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Müzik"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={music}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Değerler ve Aktivizm"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={activism}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-				<View style={{ marginTop: 30 }}>
-					<GradientText
-						text={"Değerler ve Özellikler"}
-						style={{ fontSize: 20, fontWeight: "bold", letterSpacing: 1.2, marginLeft: 20 }}
-					/>
-					<FlatList
-						style={{ marginTop: 10 }}
-						showsHorizontalScrollIndicator={false}
-						data={traits}
-						renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-						horizontal={true}
-					/>
-				</View>
-			</ScrollView>
 		</View>
 	);
 }
