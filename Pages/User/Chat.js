@@ -74,12 +74,7 @@ export default function Chat({ navigation, route }) {
 			    	borderRadius: 8,
                     height: height * 0.75
 			    }}
-			    data = {lists}
-			    renderItem={({item,index}) => {
-			    	if (item.Message != null) {
-			    		return <MsgBox data= {item} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()}/>;
-			    	}
-			    }}
+			    
                 
 			/>
             
