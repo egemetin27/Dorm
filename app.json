@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Dorm",
+    "slug": "Dorm",
+    "version": "1.0.3",
+    "orientation": "portrait",
+    "icon": "./assets/logoGradient.png",
+    "splash": {
+      "image": "./assets/splashscreen.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#FFFFFF"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.meetdorm.dorm"
+    },
+    "android": {
+            
+      "package": "com.meetdorm.dorm",
+      "versionCode": 4
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Dorm to access your photos.",
+          "isAccessMediaLocationEnabled": "true"
+        }
+      ]
+    ]
+  }
+}

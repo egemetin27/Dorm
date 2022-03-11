@@ -1,0 +1,21 @@
+{
+  "api": {
+    "dormmsg": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 15,
+              "apiKeyExpirationDate": "2022-03-25T13:39:14.788Z",
+              "description": "testAPI"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        }
+      }
+    }
+  }
+}
