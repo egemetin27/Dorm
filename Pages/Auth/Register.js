@@ -10,6 +10,7 @@ import {
 	Pressable,
 	Dimensions,
 	Alert,
+	Platform,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
@@ -31,8 +32,8 @@ export default function Register({ navigation }) {
 	const refList = [animRef1, animRef2, animRef3, animRef4];
 
 	const [name, setName] = React.useState("");
-	const [date, setDate] = React.useState(new Date());
-	const [parsedDate, setParsedDate] = React.useState("");
+	const [date, setDate] = React.useState(new Date(1598051730000));
+	const [parsedDate, setParsedDate] = React.useState("gg/aa/yyyy");
 	const [city, setCity] = React.useState("İstanbul");
 	const [university, setUniversity] = React.useState("");
 	const [email, setEmail] = React.useState("");
@@ -94,6 +95,7 @@ export default function Register({ navigation }) {
 	};
 
 	const handleForward = (ref) => {
+		setShow(false);
 		Animated.timing(ref, {
 			useNativeDriver: false,
 			toValue: 1,
@@ -108,6 +110,7 @@ export default function Register({ navigation }) {
 	};
 
 	const handleBackward = (ref) => {
+		setShow(false);
 		Animated.timing(ref, {
 			useNativeDriver: false,
 			toValue: 0,
@@ -122,14 +125,16 @@ export default function Register({ navigation }) {
 	};
 
 	const showDatePicker = () => {
+		console.log("lel");
 		setShow(true);
 	};
 
 	const datePick = (event, selectedDate) => {
 		const currentDate = selectedDate || date;
-		setShow(false);
+		setShow(Platform.OS === "ios");
 		setDate(currentDate);
-
+		
+		
 		let formattedDate =
 			(currentDate.getMonth() + 1 < 10
 				? "0" + (currentDate.getMonth() + 1)
@@ -139,10 +144,11 @@ export default function Register({ navigation }) {
 			"/" +
 			currentDate.getFullYear();
 		setParsedDate(formattedDate);
+		
 	};
 
 	return (
-		<View style={commonStyles.Container}>
+		<View>
 			<StatusBar style={"dark"} />
 			<View style={[commonStyles.Header, { marginTop: 80, justifyContent: "space-around" }]}>
 				<TouchableOpacity
@@ -208,6 +214,7 @@ export default function Register({ navigation }) {
 					</Text>
 				</TouchableOpacity>
 			</View>
+			
 
 			<View name={"CardsContainer"} style={styles.CardsContainer}>
 				<View
@@ -399,29 +406,17 @@ export default function Register({ navigation }) {
 						>
 							<Text style={styles.QuestionCardText}>Doğum{"\n"}Tarihim</Text>
 						</View>
-						<Pressable onPress={showDatePicker} style={styles.QuestionInput}>
-							<TextInput
-								placeholder="gg/aa/yyyy"
-								color={colors.black}
-								style={styles.QuestionInput}
-								editable={false}
-								value={parsedDate}
-								onSubmitEditing={() => {
-									handleForward(refList[counter]);
-								}}
-							/>
-						</Pressable>
+						<TouchableOpacity onPress={showDatePicker} style={styles.QuestionInput}>
+							<Text style = {styles.QuestionInput}>
+								{parsedDate}
+							</Text>					
+								
+						</TouchableOpacity>
+
+						
 					</Gradient>
 				</Animated.View>
-				{show && (
-					<DateTimePicker
-						testID="dateTimePicker"
-						value={date}
-						mode={"date"}
-						display="default"
-						onChange={datePick}
-					/>
-				)}
+				
 
 				<Animated.View
 					name={"NameCard"}
@@ -472,6 +467,14 @@ export default function Register({ navigation }) {
 					</Gradient>
 				</Animated.View>
 			</View>
+			{show && (
+        		<DateTimePicker
+          			testID="dateTimePicker"
+          			value={date}
+          			mode= "date"
+          			onChange={datePick}
+        		/>
+      		)}
 			<View style={styles.TextContainer}>
 				<Animated.Text
 					style={[
@@ -502,6 +505,7 @@ export default function Register({ navigation }) {
 					üniversite e-posta adresinle kayıt olabilirsin.
 				</Animated.Text>
 			</View>
+			
 		</View>
 	);
 }

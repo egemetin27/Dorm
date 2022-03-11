@@ -2,8 +2,8 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import {API} from "aws-amplify";
 import Amplify from 'aws-amplify'
-import awsconfig from './src/aws-exports'
-Amplify.configure(awsconfig)
+import awsmobile from './src/aws-exports'
+Amplify.configure(awsmobile)
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
