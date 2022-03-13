@@ -8,8 +8,8 @@ export const getMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -24,8 +24,8 @@ export const listMsgUsers = /* GraphQL */ `
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       nextToken
     }
@@ -34,36 +34,39 @@ export const listMsgUsers = /* GraphQL */ `
 export const getUserChat = /* GraphQL */ `
   query GetUserChat($id: ID!) {
     getUserChat(id: $id) {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -77,28 +80,29 @@ export const listUserChats = /* GraphQL */ `
   ) {
     listUserChats(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
+        id
         firstUser {
           id
           name
           imageUri
-          createdAt
           updatedAt
+          createdAt
         }
         secondUser {
           id
           name
           imageUri
-          createdAt
           updatedAt
+          createdAt
         }
         lastMsg
-        mode
-        massages {
+        mod
+        messages {
           nextToken
         }
-        id
-        createdAt
         updatedAt
+        status
+        createdAt
         userChatFirstUserId
         userChatSecondUserId
       }
@@ -110,17 +114,46 @@ export const getSentMsg = /* GraphQL */ `
   query GetSentMsg($id: ID!) {
     getSentMsg(id: $id) {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }
@@ -134,17 +167,125 @@ export const listSentMsgs = /* GraphQL */ `
     listSentMsgs(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        chat {
+          id
+          lastMsg
+          mod
+          updatedAt
+          status
+          createdAt
+          userChatFirstUserId
+          userChatSecondUserId
+        }
         sender {
           id
           name
           imageUri
-          createdAt
           updatedAt
+          createdAt
         }
         text
-        createdAt
         updatedAt
-        userChatMassagesId
+        status
+        createdAt
+        userChatMessagesId
+        sentMsgChatId
+        sentMsgSenderId
+      }
+      nextToken
+    }
+  }
+`;
+export const chatByDate = /* GraphQL */ `
+  query ChatByDate(
+    $status: String!
+    $updatedAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserChatFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    chatByDate(
+      status: $status
+      updatedAt: $updatedAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
+      nextToken
+    }
+  }
+`;
+export const msgByDate = /* GraphQL */ `
+  query MsgByDate(
+    $status: String!
+    $updatedAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelSentMsgFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    msgByDate(
+      status: $status
+      updatedAt: $updatedAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chat {
+          id
+          lastMsg
+          mod
+          updatedAt
+          status
+          createdAt
+          userChatFirstUserId
+          userChatSecondUserId
+        }
+        sender {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        text
+        updatedAt
+        status
+        createdAt
+        userChatMessagesId
+        sentMsgChatId
         sentMsgSenderId
       }
       nextToken

@@ -7,19 +7,35 @@ type MsgUser @model {
   id: ID!
   name: String!
   imageUri: String
+  updatedAt: AWSDateTime!
 }
 
 type UserChat @model {
+  id: ID!
   firstUser: MsgUser @hasOne
   secondUser: MsgUser @hasOne
   lastMsg: String
-  mode: Int!
-  massages: [SentMsg] @hasMany
+  mod: Int!
+  messages: [SentMsg] @hasMany
+  updatedAt: AWSDateTime!
+  status: String!
+    @index(
+      name: "chatByDate"
+      queryField: "chatByDate"
+      sortKeyFields: ["updatedAt"]
+    )
 }
 
 type SentMsg @model {
   id: ID!
+  chat: UserChat @hasOne
   sender: MsgUser @hasOne
-  chatID: UserChat @hasOne
   text: String!
+  updatedAt: AWSDateTime!
+  status: String!
+    @index(
+      name: "msgByDate"
+      queryField: "msgByDate"
+      sortKeyFields: ["updatedAt"]
+    )
 }

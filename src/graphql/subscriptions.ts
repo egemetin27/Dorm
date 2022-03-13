@@ -8,8 +8,8 @@ export const onCreateMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -19,8 +19,8 @@ export const onUpdateMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -30,44 +30,47 @@ export const onDeleteMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
 export const onCreateUserChat = /* GraphQL */ `
   subscription OnCreateUserChat {
     onCreateUserChat {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -76,36 +79,39 @@ export const onCreateUserChat = /* GraphQL */ `
 export const onUpdateUserChat = /* GraphQL */ `
   subscription OnUpdateUserChat {
     onUpdateUserChat {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -114,36 +120,39 @@ export const onUpdateUserChat = /* GraphQL */ `
 export const onDeleteUserChat = /* GraphQL */ `
   subscription OnDeleteUserChat {
     onDeleteUserChat {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -153,17 +162,46 @@ export const onCreateSentMsg = /* GraphQL */ `
   subscription OnCreateSentMsg {
     onCreateSentMsg {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }
@@ -172,17 +210,46 @@ export const onUpdateSentMsg = /* GraphQL */ `
   subscription OnUpdateSentMsg {
     onUpdateSentMsg {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }
@@ -191,17 +258,46 @@ export const onDeleteSentMsg = /* GraphQL */ `
   subscription OnDeleteSentMsg {
     onDeleteSentMsg {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }

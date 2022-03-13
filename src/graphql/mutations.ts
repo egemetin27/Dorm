@@ -11,8 +11,8 @@ export const createMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -25,8 +25,8 @@ export const updateMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -39,8 +39,8 @@ export const deleteMsgUser = /* GraphQL */ `
       id
       name
       imageUri
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -50,36 +50,39 @@ export const createUserChat = /* GraphQL */ `
     $condition: ModelUserChatConditionInput
   ) {
     createUserChat(input: $input, condition: $condition) {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -91,36 +94,39 @@ export const updateUserChat = /* GraphQL */ `
     $condition: ModelUserChatConditionInput
   ) {
     updateUserChat(input: $input, condition: $condition) {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -132,36 +138,39 @@ export const deleteUserChat = /* GraphQL */ `
     $condition: ModelUserChatConditionInput
   ) {
     deleteUserChat(input: $input, condition: $condition) {
+      id
       firstUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       secondUser {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       lastMsg
-      mode
-      massages {
+      mod
+      messages {
         items {
           id
           text
-          createdAt
           updatedAt
-          userChatMassagesId
+          status
+          createdAt
+          userChatMessagesId
+          sentMsgChatId
           sentMsgSenderId
         }
         nextToken
       }
-      id
-      createdAt
       updatedAt
+      status
+      createdAt
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -174,17 +183,46 @@ export const createSentMsg = /* GraphQL */ `
   ) {
     createSentMsg(input: $input, condition: $condition) {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }
@@ -196,17 +234,46 @@ export const updateSentMsg = /* GraphQL */ `
   ) {
     updateSentMsg(input: $input, condition: $condition) {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }
@@ -218,17 +285,46 @@ export const deleteSentMsg = /* GraphQL */ `
   ) {
     deleteSentMsg(input: $input, condition: $condition) {
       id
+      chat {
+        id
+        firstUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        secondUser {
+          id
+          name
+          imageUri
+          updatedAt
+          createdAt
+        }
+        lastMsg
+        mod
+        messages {
+          nextToken
+        }
+        updatedAt
+        status
+        createdAt
+        userChatFirstUserId
+        userChatSecondUserId
+      }
       sender {
         id
         name
         imageUri
-        createdAt
         updatedAt
+        createdAt
       }
       text
-      createdAt
       updatedAt
-      userChatMassagesId
+      status
+      createdAt
+      userChatMessagesId
+      sentMsgChatId
       sentMsgSenderId
     }
   }

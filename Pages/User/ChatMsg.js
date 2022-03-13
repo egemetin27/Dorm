@@ -14,32 +14,53 @@ import moment from "moment";
 
 const { height, width } = Dimensions.get("window");
 
-// Yeni schemalara göre tekrardan yazilacak.
 const ChatMsg = (props) => {
+  const isMyMessage = () => {
+    return props.data.sentMsgSenderId == props.myUserID;
+  }
+
   return (
-        <View style={styles.container}>
-          
-        </View>
-  );
-};
+    <View style={styles.container}>
+      <View style={[
+        styles.messageBox, {
+          backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
+          marginLeft: isMyMessage() ? 50 : 0,
+          marginRight: isMyMessage() ? 0 : 50,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderBottomLeftRadius: isMyMessage() ? 20 : 0,
+          borderBottomRightRadius: isMyMessage() ? 0 : 20,
+        }
+      ]}>
+        {!isMyMessage() && <Text style={styles.name}>{props.data.sender.name}</Text>}
+        <Text style={styles.message}>{props.data.text}</Text>
+        <Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
+      </View>
+    </View>
+  )
+}
 
 export default ChatMsg;
 
+
 const styles = StyleSheet.create({
   container: {
-    height: 80,
-    width: width,
-    
-    justifyContent: 'center',
-    marginBottom: 10,
-    marginTop: 5,
-    borderRadius: 10,
+    padding: 10,
   },
-  deleteBox: {
-    backgroundColor: colors.light_gray,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    height: 80,
+  messageBox: {
+    borderRadius: 5,
+    padding: 10,
   },
+  name: {
+    color: "black",
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  message: {
+
+  },
+  time: {
+    alignSelf: "flex-end",
+    color: 'grey'
+  }
 });
