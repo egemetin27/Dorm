@@ -11,16 +11,24 @@ import {
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { colors } from '../../visualComponents/colors';
 import moment from "moment";
+import * as SecureStore from "expo-secure-store";
 
 const { height, width } = Dimensions.get("window");
 
 const MsgBox = (props) => {
+
+
   const rightSwipe = (progress, dragX) => {
+
     const scale = dragX.interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
       extrapolate: 'clamp',
     });
+
+    
+
+
     return (
         <View style = {{flexDirection: "row", borderRadius: 10, backgroundColor: "#F4F3F3"}}>
             <TouchableOpacity onPress={props.handleDelete} activeOpacity = {0.6}>
@@ -62,23 +70,23 @@ const MsgBox = (props) => {
                     <Image
                         style = {{resizeMode: "contain", width: "100%", height: "100%", borderRadius: 40}}
                         source = {{
-                            uri: props.data.img
+                            uri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg"
                         }}
                     />
                 </View>
                 
                 <View style = {{flexDirection: "column", width: "55%", marginLeft: 10,justifyContent: "space-between"}}>
                     <Text style = {{fontSize: 18, marginTop: 10}}>
-                        {props.data.name}
+                      {props.data.name}
                     </Text>
                     <Text style = {{fontSize: 14, marginBottom: 10}}>
-                        {props.data.Message}
+                      {props.lastMsg}
                     </Text>
                 </View>
                 <View style = {{width: "25%", alignItems: "flex-end", marginRight: 5}}>
                     <Text style = {{marginBottom: height*0.02, marginRight: 5, fontSize: 14}}>
-                      {props.data && moment(props.data.lasttime).format("LT")
-                      
+                      {
+                        moment(props.lastTime).format("DD/MM/YYYY")
                       }
                     </Text>
                 </View>

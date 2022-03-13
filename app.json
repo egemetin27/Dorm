@@ -2,7 +2,7 @@
   "expo": {
     "name": "Dorm",
     "slug": "Dorm",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/logoGradient.png",
     "splash": {
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.meetdorm.dorm",
-      "versionCode": 6
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/favicon.png"

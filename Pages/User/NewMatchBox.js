@@ -16,7 +16,9 @@ const { height, width } = Dimensions.get("window");
 const NewMatchBox = (props) => {
     return (
       <View>
-        <TouchableOpacity style = {{
+        <TouchableOpacity
+        onPress={props.openChat} 
+        style = {{
                 flexDirection: "row",
                 alignItems: "stretch",
                 justifyContent: "space-evenly",
@@ -27,7 +29,7 @@ const NewMatchBox = (props) => {
           <Image
             style = {{resizeMode: "contain", width: "100%", height: "100%", borderRadius: 30}}
             source = {{
-              uri: props.data.img
+              uri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg"
             }}
           />
         </TouchableOpacity>

@@ -77,7 +77,7 @@ export type DeleteMsgUserInput = {
 
 export type CreateUserChatInput = {
   lastMsg?: string | null,
-  mode?: number | null,
+  mode: number,
   id?: string | null,
   userChatFirstUserId?: string | null,
   userChatSecondUserId?: string | null,
@@ -126,7 +126,7 @@ export type UserChat = {
   firstUser?: MsgUser | null,
   secondUser?: MsgUser | null,
   lastMsg?: string | null,
-  mode?: number | null,
+  mode: number,
   massages?: ModelSentMsgConnection | null,
   id: string,
   createdAt: string,
@@ -305,7 +305,7 @@ export type CreateUserChatMutation = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -352,7 +352,7 @@ export type UpdateUserChatMutation = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -399,7 +399,7 @@ export type DeleteUserChatMutation = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -556,7 +556,7 @@ export type GetUserChatQuery = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -606,7 +606,7 @@ export type ListUserChatsQuery = {
         updatedAt: string,
       } | null,
       lastMsg?: string | null,
-      mode?: number | null,
+      mode: number,
       massages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -728,7 +728,7 @@ export type OnCreateUserChatSubscription = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -770,7 +770,7 @@ export type OnUpdateUserChatSubscription = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -812,7 +812,7 @@ export type OnDeleteUserChatSubscription = {
       updatedAt: string,
     } | null,
     lastMsg?: string | null,
-    mode?: number | null,
+    mode: number,
     massages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {

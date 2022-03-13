@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 import {
@@ -30,75 +30,20 @@ import { render } from "react-dom";
 import { red } from "react-native-redash";
 import * as SecureStore from "expo-secure-store";
 
-/*
-	React.useEffect(async () => {
-		const dataStr = await SecureStore.getItemAsync("userData");
-		const data = JSON.parse(dataStr);
-		console.log(data);
-		setUserID(data.UserId);
-		setUserName(data.Name);
-	}, []);
 
-	
+import {
+	API,
+	graphqlOperation,
+	Auth,
+  } from 'aws-amplify';
 
-	// run this snippet only when App is first mounted
-	React.useEffect( () => {
-		const fetchUser = async () => {	
-		  
-			const userData = await API.graphql(
-			  graphqlOperation(
-				getMsgUser,
-				{ id: userID }
-				)
-			)
-			console.log(userData);
-
-			const testData = await API.graphql(
-				graphqlOperation(
-				  listUserChats,
-				  { filter: {
-					  or: [
-						  { userChatFirstUserId: {eq: "6771"}},
-						  { userChatSecondUserId: {eq: "6772"}}
-					  ]
-				  }}
-				  )
-			)
-			console.log(testData);
-					
-			if (userData.data.getMsgUser) {
-			  console.log("User is already registered in database");
-			  return;
-			}
-	
-			const newUser = {
-			  id: userID,
-			  name: userName,
-			  imageUri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg",
-			}
-	
-			await API.graphql(
-			  graphqlOperation(
-				createMsgUser,
-				{ input: newUser }
-			  )
-			)
-		  
-		}
-	
-		fetchUser();
-	  }, [])
-	*/
-
+import { listUserChats, getMsgUser } from "../../src/graphql/queries";
+import { onCreateUserChat, onDeleteUserChat, onUpdateUserChat} from "../../src/graphql/subscriptions"
 
 	export default function Messages({ route, navigation }) {
 		const [chatMode, setChatMode] = React.useState([1, 0]);
-		const [lists, setLists] = useState(msgData);
-	
 		const deleteItem = (index) => {
-			const arr = [...lists];
-			arr.splice(index,1);
-			setLists(arr);
+			
 		};
 
 		const openChat = async () => {
@@ -108,9 +53,108 @@ import * as SecureStore from "expo-secure-store";
 				chatID: 1,
 			});
 		};
+
+		const [chatRooms, setChatRooms] = useState([]);
+		const [myUserID, setmyUserID] = useState("");
+		const [otherUser, setotherUser] = useState([]);
+
+		const fetchNewUsers = async (myUserID) => {	
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const data = JSON.parse(dataStr);
+			//console.log(data);
+	
+			const userID = data.UserId.toString();
+					
+			const msgBoxData = await API.graphql(
+				graphqlOperation(
+				  listUserChats,
+				  { filter: {
+					  or: [
+						  { userChatFirstUserId: {eq: userID}},
+						  { userChatSecondUserId: {eq: userID}}
+					  ]
+				  }}
+				  )
+			)
+			//console.log(msgBoxData.data.listUserChats.items);
+			await setChatRooms(msgBoxData.data.listUserChats.items)
+			//console.log(chatRooms);
+		}
+
+		React.useEffect(async () => {
+
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const data = JSON.parse(dataStr);
+			//console.log(data);
+	
+			const userID = data.UserId.toString();
+			const userName = data.Name;
+			const fetchUser = async () => {	
+			  
+				const userData = await API.graphql(
+				  graphqlOperation(
+					getMsgUser,
+					{ id: userID }
+					)
+				)
+						
+				const msgBoxData = await API.graphql(
+					graphqlOperation(
+					  listUserChats,
+					  { filter: {
+						  or: [
+							  { userChatFirstUserId: {eq: userID}},
+							  { userChatSecondUserId: {eq: userID}}
+						  ]
+					  }}
+					  )
+				)
+
+
+				await setChatRooms(msgBoxData.data.listUserChats.items)
+				await setmyUserID(userID)
+				//console.log(chatRooms);
+			}
+
+			fetchUser();
+		}, [])
+
+		React.useEffect(async () => {
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const data = JSON.parse(dataStr);
+			//console.log(data);
+	
+			const userID = data.UserId.toString();
+			const subscription = API.graphql(
+			  graphqlOperation(onCreateUserChat)
+			).subscribe({
+			  next: (data) => {
+				console.log("---------------------------");
+				console.log(data.value.data.onCreateUserChat.firstUser.id);
+				console.log("---------------------------");
+
+				
+				if (data.value.data.onCreateUserChat.firstUser.id != userID && data.value.data.onCreateUserChat.secondUser.id != userID) {
+				  console.log("Message is in another chat")
+				  return;
+				}
+				else{
+					console.log("Message is in your chat")
+				}
+				
+		
+				fetchNewUsers();
+				// setMessages([newMessage, ...messages]);
+			  }
+			});
+		
+			return () => subscription.unsubscribe();
+		}, [])
+
+
 	
 		return (
-			<View style={[commonStyles.Container, { alignItems: "center" , flex: 1}]}>
+			<View style={{width: width, height: height}}>
 				<View name={"Header"} style={commonStyles.Header}>
 					<View style={{ marginLeft: 20 }}>
 						{
@@ -202,14 +246,13 @@ import * as SecureStore from "expo-secure-store";
 								<View style={{marginBottom:10}} />
 	
 								<View>
-	
 									<FlatList
 										horizontal = {true}
 										showsHorizontalScrollIndicator={false}
-										data={lists}
+										data={chatRooms}
 										renderItem={({item,index}) => {
-											if (item.mode == 0 && item.Message == null) {
-												return <NewMatchBox data= {item}/>;
+											if (item.mode == 0 && item.lastMsg == null) {
+												return <NewMatchBox data= {item} openChat = {() => openChat()} userID = {myUserID}/>;
 											}
 										}}
 	
@@ -222,10 +265,13 @@ import * as SecureStore from "expo-secure-store";
 											flexDirection: "row",
 											borderRadius: 8,
 										}}
-										data = {lists}
+										data = {chatRooms}
 										renderItem={({item,index}) => {
-											if (item.mode == 0 && item.Message != null) {
-												return <MsgBox data= {item} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()}/>;
+											if (item.mode == 0 && item.lastMsg != null && item.firstUser.id == myUserID) {
+												return <MsgBox data= {item.secondUser} lastMsg = {item.lastMsg} lastTime = {item.updatedAt} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()} userID = {myUserID}/>;
+											}
+											if (item.mode == 0 && item.lastMsg != null && item.secondUser.id == myUserID) {
+												return <MsgBox data= {item.firstUser} lastMsg = {item.lastMsg} lastTime = {item.updatedAt} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()} userID = {myUserID}/>;
 											}
 										}}
 									/>
@@ -241,10 +287,10 @@ import * as SecureStore from "expo-secure-store";
 									<FlatList
 										horizontal = {true}
 										showsHorizontalScrollIndicator={false}
-										data={lists}
+										data={chatRooms}
 										renderItem={({item,index}) => {
-											if (item.mode == 1 && item.Message == null) {
-												return <NewMatchBox data= {item}/>;
+											if (item.mode == 1 && item.lastMsg == null) {
+												return <NewMatchBox data= {item} openChat = {() => openChat()} userID = {myUserID}/>;
 											}
 										}}
 	
@@ -257,10 +303,13 @@ import * as SecureStore from "expo-secure-store";
 											flexDirection: "row",
 											borderRadius: 8,
 										}}
-										data = {lists}
+										data = {chatRooms}
 										renderItem={({item,index}) => {
-											if (item.mode == 1 && item.Message != null) {
-												return <MsgBox data= {item} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()}/>;
+											if (item.mode == 1 && item.lastMsg != null && item.firstUser.id == myUserID) {
+												return <MsgBox data= {item.secondUser} lastMsg = {item.lastMsg} lastTime = {item.updatedAt} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()} userID = {myUserID}/>;
+											}
+											if (item.mode == 1 && item.lastMsg != null && item.secondUser.id == myUserID) {
+												return <MsgBox data= {item.firstUser} lastMsg = {item.lastMsg} lastTime = {item.updatedAt} handleDelete = {() => deleteItem(index)} openChat = {() => openChat()} userID = {myUserID}/>;
 											}
 										}}
 									/>

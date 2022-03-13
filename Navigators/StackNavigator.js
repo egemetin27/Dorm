@@ -229,7 +229,7 @@ export default function StackNavigator() {
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
 						// If signed in
-						const photoList = res.data.photo.map((item) => {
+						const photoList = res.data.Photo.map((item) => {
 							return {
 								PhotoLink: item.PhotoLink,
 								Photo_Order: item.Photo_Order,

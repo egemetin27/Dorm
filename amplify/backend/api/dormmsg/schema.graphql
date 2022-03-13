@@ -20,5 +20,6 @@ type UserChat @model {
 type SentMsg @model {
   id: ID!
   sender: MsgUser @hasOne
+  chatID: UserChat @hasOne
   text: String!
 }
