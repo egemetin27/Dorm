@@ -12,8 +12,6 @@ import {
 	KeyboardAvoidingView,
 	FlatList,
 	Image,
-	PlatformColor,
-	Platform,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -98,7 +96,6 @@ export default function Profile({ route, navigation }) {
 	React.useEffect(async () => {
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
-		console.log({ data });
 
 		setName(data.Name + " " + data.Surname);
 		setAge(getAge(data.Birth_date));
@@ -113,7 +110,7 @@ export default function Profile({ route, navigation }) {
 		setSmoke(data.Sigara);
 		setAbout(data.About);
 		setPhotoList(data.Photo);
-		// setHobbies;
+		setHobbies(data.interest);
 	}, []);
 
 	const handleSave = async () => {
@@ -298,9 +295,7 @@ export default function Profile({ route, navigation }) {
 				contentContainerStyle={{ width: width }}
 				keyboardShouldPersistTaps="handled"
 			>
-				<KeyboardAvoidingView
-					behavior={Platform.OS === "ios" ? "padding" : null}
-				>
+				<KeyboardAvoidingView>
 					<View name={"Photos"} style={[styles.photosContainer]}>
 						{PHOTO_LIST && PHOTO_LIST.length != 0 ? (
 							// TODO: styling should be implemented more resiliently
@@ -898,7 +893,40 @@ export default function Profile({ route, navigation }) {
 							>
 								İlgi Alanlarım
 							</Animated.Text>
-							<TextInput
+							<View
+								style={[
+									{
+										width: "100%",
+										height: "100%",
+									},
+								]}
+							>
+								<FlatList
+									// style={{ backgroundColor: "blue" }}
+									contentContainerStyle={{
+										alignItems: "flex-end",
+										paddingBottom: 12,
+										paddingHorizontal: 20,
+									}}
+									keyExtractor={(item) => {
+										item.InterestName;
+									}}
+									horizontal={true}
+									showsHorizontalScrollIndicator={false}
+									data={hobbies}
+									renderItem={({ item }) => {
+										return (
+											<Text style={{ color: colors.black, fontSize: 20 }}>{item.InterestName}</Text>
+										);
+									}}
+									ItemSeparatorComponent={() =>
+										// prettier-ignore
+										<Text style={{ color: colors.gray, fontSize: 20 }}>  |  </Text>
+									}
+								/>
+							</View>
+
+							{/* <TextInput
 								editable={isEditable}
 								style={[styles.input, { color: colors.black }]}
 								onChangeText={setHobbies}
@@ -909,7 +937,7 @@ export default function Profile({ route, navigation }) {
 								onBlur={() => {
 									if (hobbies == "") handleBlur(hobbiesRef);
 								}}
-							/>
+							/> */}
 						</View>
 
 						<View

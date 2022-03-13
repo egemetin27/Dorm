@@ -20,8 +20,23 @@ import commonStyles from "../../visualComponents/styles";
 import { Gradient, colors } from "../../visualComponents/colors";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
+import { CustomPicker } from "../../visualComponents/customComponents";
 
 const { width, height } = Dimensions.get("window");
+
+const UnivList = [
+	{ key: 1, choice: "Acıbadem Üniversitesi" },
+	{ key: 2, choice: "Bahçeşehir Üniversitesi" },
+	{ key: 3, choice: "Bilgi Üniversitesi" },
+	{ key: 4, choice: "Boğaziçi Üniversitesi" },
+	{ key: 5, choice: "Galatasaray Üniversitesi" },
+	{ key: 6, choice: "İstanbul Teknik Üniversitesi" },
+	{ key: 7, choice: "Koç Üniversitesi" },
+	{ key: 8, choice: "Mimar Sinan Üniversitesi" },
+	{ key: 9, choice: "Özyeğin Üniversitesi" },
+	{ key: 10, choice: "Sabancı Üniversitesi" },
+	{ key: 11, choice: "Yeditepe Üniversitesi" },
+];
 
 export default function Register({ navigation }) {
 	const animRef1 = React.useRef(new Animated.Value(0)).current;
@@ -32,12 +47,13 @@ export default function Register({ navigation }) {
 	const refList = [animRef1, animRef2, animRef3, animRef4];
 
 	const [name, setName] = React.useState("");
-	const [date, setDate] = React.useState(new Date(1598051730000));
+	const [date, setDate] = React.useState(new Date());
 	const [parsedDate, setParsedDate] = React.useState("gg/aa/yyyy");
 	const [city, setCity] = React.useState("İstanbul");
 	const [university, setUniversity] = React.useState("");
 	const [email, setEmail] = React.useState("");
 
+	const [univListVisible, setUnivListVisible] = React.useState(false);
 	const [show, setShow] = React.useState(false);
 
 	const [counter, counterChanger] = React.useState(0);
@@ -65,7 +81,7 @@ export default function Register({ navigation }) {
 				city: city,
 				// bDay: date,
 				bDay: parsedDate,
-				school: university,
+				school: university.choice,
 			};
 
 			axios
@@ -125,7 +141,6 @@ export default function Register({ navigation }) {
 	};
 
 	const showDatePicker = () => {
-		console.log("lel");
 		setShow(true);
 	};
 
@@ -144,7 +159,6 @@ export default function Register({ navigation }) {
 			"/" +
 			currentDate.getFullYear();
 		setParsedDate(formattedDate);
-		
 	};
 
 	return (
@@ -214,7 +228,6 @@ export default function Register({ navigation }) {
 					</Text>
 				</TouchableOpacity>
 			</View>
-			
 
 			<View name={"CardsContainer"} style={styles.CardsContainer}>
 				<View
@@ -296,10 +309,29 @@ export default function Register({ navigation }) {
 						>
 							<Text style={styles.QuestionCardText}>Üniversitem</Text>
 						</View>
-						<TextInput
-							onSubmitEditing={() => {
-								handleRegister();
+						<Pressable
+							style={{ width: "100%" }}
+							onPress={() => {
+								setUnivListVisible(true);
 							}}
+						>
+							<View
+								style={[styles.QuestionInput, { justifyContent: "center", alignItems: "center" }]}
+							>
+								<Text
+									style={[
+										{
+											color: university != "" ? colors.black : colors.medium_gray,
+											fontSize: 20,
+										},
+									]}
+								>
+									{university.choice ?? "Üniversiteni Seç"}
+								</Text>
+							</View>
+						</Pressable>
+
+						{/* <TextInput
 							onChangeText={setUniversity}
 							value={university}
 							placeholder="Üniversitenin Adı"
@@ -307,7 +339,7 @@ export default function Register({ navigation }) {
 							onSubmitEditing={() => {
 								handleForward(refList[counter]);
 							}}
-						/>
+						/> */}
 					</Gradient>
 				</Animated.View>
 
@@ -347,21 +379,6 @@ export default function Register({ navigation }) {
 						</View>
 
 						<View style={styles.QuestionInput}>
-							{/* <Picker
-								ref={pickerRef}
-								selectedValue={city}
-								style={{ width: "50%", alignSelf: "center" }}
-								onValueChange={(itemValue, itemIndex) => setCity(itemValue)}
-							>
-								<Picker.Item
-									label="Okuduğun Şehir"
-									value={null}
-									enabled={false}
-									color={colors.medium_gray}
-								/>
-								<Picker.Item label="Istanbul" value="Istanbul" />
-								<Picker.Item label="Ankara" value="Ankara" />
-							</Picker> */}
 							<TextInput
 								editable={false}
 								value={city}
@@ -407,7 +424,7 @@ export default function Register({ navigation }) {
 							<Text style={styles.QuestionCardText}>Doğum{"\n"}Tarihim</Text>
 						</View>
 						<TouchableOpacity onPress={showDatePicker} style={styles.QuestionInput}>
-							<Text style = {styles.QuestionInput}>
+							<Text style = {[styles.QuestionInput, {alignContent: "center", paddingTop: 15}]}>
 								{parsedDate}
 							</Text>					
 								
@@ -453,9 +470,6 @@ export default function Register({ navigation }) {
 							<Text style={styles.QuestionCardText}>Merhaba!{"\n"}Benim adım</Text>
 						</View>
 						<TextInput
-							onSubmitEditing={() => {
-								handleRegister();
-							}}
 							onChangeText={setName}
 							value={name}
 							placeholder="Adın ve Soyadın"
@@ -505,7 +519,14 @@ export default function Register({ navigation }) {
 					üniversite e-posta adresinle kayıt olabilirsin.
 				</Animated.Text>
 			</View>
-			
+
+			<CustomPicker
+				style={{ width: width * 0.7, height: height * 0.6, maxWidth: 300, maxHeight: 500 }}
+				data={UnivList}
+				visible={univListVisible}
+				setVisible={setUnivListVisible}
+				setChoice={setUniversity}
+			/>
 		</View>
 	);
 }

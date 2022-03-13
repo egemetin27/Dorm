@@ -38,7 +38,7 @@ import EventCards from "../Pages/User/EventCards";
 /////
 // OTHER SCREENS
 import Settings from "../Pages/Settings";
-import Chat from "../Pages/User/Chat";
+import Chat from "../Pages/User/Chat";	
 import Tutorial from "../Pages/Tutorial";
 /////
 // COMPONENTS
@@ -242,6 +242,7 @@ export default function StackNavigator() {
 						});
 
 						await SecureStore.setItemAsync("userData", userData);
+						await SecureStore.setItemAsync("userID", res.data.UserId.toString());
 
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
@@ -297,10 +298,11 @@ export default function StackNavigator() {
 									<Stack.Screen name="Tutorial" component={Tutorial} />
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
-									<Stack.Screen name = "Chat" component = {Chat} />
+									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 									<Stack.Screen name="ProfileCards" component={ProfileCards} />
 									<Stack.Screen name="EventCards" component={EventCards} />
+									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							) : (
 								// Screens for non-logged in users

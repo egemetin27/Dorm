@@ -2,7 +2,7 @@ export const getGender = (val) => {
 	if (val == 0) return "Kadın";
 	else if (val == 1) return "Erkek";
 	else if (val == 2) return "Non-Binary";
-	else if (val == 3) return "Beyan Edmilmemdi";
+	else return "Beyan Edmilmemdi";
 };
 
 export const getAge = (date) => {

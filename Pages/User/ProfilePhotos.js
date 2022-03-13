@@ -158,6 +158,7 @@ export default function ProfilePhotos({ route, navigation }) {
 			await axios
 				.post(url + "/addPhotoLink", {
 					UserId: userID,
+					userPhoto: 1,
 					photos: newList,
 				})
 				.then(async (res) => {

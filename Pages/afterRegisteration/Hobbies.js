@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
+import * as SecureStore from "expo-secure-store";
 
 import { AuthContext } from "../../nonVisualComponents/Context";
 import commonStyles from "../../visualComponents/styles";
@@ -29,9 +30,16 @@ export default function Hobbies({ navigation, route }) {
 				UserId: userID,
 				hobbies: hobbies,
 			})
-			.then((res) => {
-				console.log("Submitting...");
-				signIn({ email: email, password: password });
+			.then(async (res) => {
+				if (email == "" && password == "") {
+					// TODO: hobbies is not as the same format as hobbies that is come from backend
+					const dataStr = await SecureStore.getItemAsync("userData");
+					const data = JSON.parse(dataStr);
+					const newData = { ...data, interest: hobbies };
+					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
+				} else {
+					signIn({ email: email, password: password });
+				}
 			})
 			.catch((err) => {
 				console.log(err);

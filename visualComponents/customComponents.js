@@ -120,8 +120,9 @@ export const CustomPicker = ({ style, visible, setVisible, data, setChoice }) =>
 			}}
 			animationType="fade"
 		>
-			<View style={[styles.pickerContainer]}>
+			<View style={[styles.pickerContainer, style]}>
 				<FlatList
+					showsVerticalScrollIndicator={false}
 					data={data}
 					renderItem={({ item }) => (
 						<TouchableOpacity
@@ -142,6 +143,25 @@ export const CustomPicker = ({ style, visible, setVisible, data, setChoice }) =>
 				/>
 			</View>
 		</CustomModal>
+	);
+};
+
+export const AnimatedModal = (props) => {
+	const { visible } = props;
+	const animStyle = useAnimatedStyle(() => {
+		return {
+			zIndex: withTiming(visible.value ? 2 : -1),
+			opacity: withTiming(visible.value ? 1 : 0),
+		};
+	});
+
+	return (
+		<Animated.View style={[{ width: "100%", height: "100%", position: "absolute" }, animStyle]}>
+			<TouchableWithoutFeedback onPress={props.dismiss}>
+				<View style={[styles.modalOverlay, props?.overlay]} />
+			</TouchableWithoutFeedback>
+			<View style={styles.modalContent}>{props.children}</View>
+		</Animated.View>
 	);
 };
 

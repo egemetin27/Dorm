@@ -1,5 +1,5 @@
 import React from "react";
-import {
+import ReactNative, {
 	Text,
 	View,
 	Dimensions,
@@ -7,311 +7,117 @@ import {
 	ScrollView,
 	FlatList,
 	TouchableOpacity,
+	Image,
 } from "react-native";
 import axios from "axios";
+import { StatusBar } from "expo-status-bar";
+import { Feather } from "@expo/vector-icons";
 
 import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
-import { StatusBar } from "expo-status-bar";
+import { AnimatedModal } from "../visualComponents/customComponents";
 import { url } from "../connection";
+import { useSharedValue } from "react-native-reanimated";
 
 const { height, width } = Dimensions.get("window");
 
 export default function Hobbies() {
-	const [hobbies, setHobbies] = React.useState([]);
-	// const { userID, email, password } = route.params;
-
-	const handleSubmit = () => {
-		axios
-			.post(url + "/interests", {
-				UserId: 6771,
-				hobbies: hobbies,
-			})
-			.then((res) => {
-				console.log(res.data);
-			})
-			.catch((err) => console.log(err));
-		console.log("Submitting...");
-		console.log({
-			UserId: 6771,
-			hobbies: hobbies,
-		});
-		// signIn({ email: email, password: password });
-	};
-
-	const sport = [
-		{ key: "🏀 Basketbol" },
-		{ key: "🏋️ Fitness" },
-		{ key: "🏐 Voleybol" },
-		{ key: "🧘 Yoga" },
-		{ key: "🎾 Tenis" },
-		{ key: "🚶 Doğa Yürüyüşü" },
-		{ key: "🤿 Dalış" },
-		{ key: "🏄 Sörf" },
-		{ key: "⛵ Yelken" },
-		{ key: "⛷️ Kayak" },
-		{ key: "🏂 Snowboard" },
-		{ key: "🏃🏻 Koşu" },
-		{ key: "🏊🏻 Yüzme" },
-		{ key: "🤼 Dövüş Sanatları" },
-	];
-
-	// Müzik, Dans, Fotoğrafçılık,  Plastik sanatlar, Makyaj, Vlogging, Yazı
-	const creativity = [
-		{ key: "🎸 Müzik" },
-		{ key: "💃 Dans" },
-		{ key: "📹 Vlog" },
-		{ key: "📝 Yazı" },
-		{ key: "🎨 Resim" },
-	];
-
-	// Şarap, Bira, Viski, Vegan, Vejetaryen, Tatlı, Gastronomi, Kahve, Meyhane Kültürü
-	const consumables = [
-		{ key: "🍷 Şarap" },
-		{ key: "🍺 Bira" },
-		{ key: "🍸 Kokteyl" },
-		{ key: "🥦 Vegan" },
-	];
-
-	// Aksiyon, Animasyon, Anime, Komedi, Belgesel, Dram, Fantastik, Bilim Kurgu, Korku, Gerilim, Avrupa Sineması, Süper kahraman, Yarışma programları
-	const movies = [
-		{ key: "🦸 Süper Kahraman" },
-		{ key: "🙀 Korku" },
-		{ key: "🧑‍🚀 Bilim Kurgu" },
-	];
-
-	// Klasikler, Aksiyon ve Macera, Biyografi, Çizgi roman, Fantastik, Korku, Şiir, Felsefe, Tarih, Siyaset, Suç, Psikoloji
-	const reading = [
-		{ key: "🖊️ Klasik" },
-		{ key: "🏺 Tarih" },
-		{ key: "🔪 Suç" },
-		{ key: "🧝‍♀️ Fantastik" },
-	];
-
-	// Blues, Klasik, Cpuntry, Elektronik, Folk & Akustik, Funk, Hip hop, House, Indie, Jazz, K-pop, Latin, Metal, Pop, Punk, R&B, Rap, Reggae, Rock, Alternatif Rock, Soul
-	const music = [
-		{ key: "🎹 Klasik" },
-		{ key: "🎷 Jazz" },
-		{ key: "🎸 Rock" },
-		{ key: "🪕 Country" },
-	];
-
-	// Feminist, LGBTQ+ destekçisi, Çevrecilik, Trans destekçisi, İnsan hakları
-	const activism = [
-		{ key: "💁🏻‍♀️ Feminist" },
-		{ key: "🏳️‍🌈 LGBTQ+ destekçisi" },
-		{ key: "🌲 Çevrecilik" },
-	];
-
-	// Aile sevgisi, Açık fikirlilik, Alçak gönüllülük, Romantiklik, Özgüven, Yaratıcılık, Empati, Zeka, Pozitiflik, Kendini tanımak, Espiri anlayışı, Sosyal farkındalık, Hayvanseverlik
-	const traits = [
-		{ key: "Aile Sevgisi" },
-		{ key: "Açık Fikirlilik" },
-		{ key: "Alçak Gönüllülük" },
-	];
+	const modalVisible = useSharedValue(true);
 
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar />
-			<View
-				style={[
-					commonStyles.Header,
-					{ paddingHorizontal: 30, justifyContent: "flex-end" },
-				]}
-			>
-				<TouchableOpacity onPress={handleSubmit}>
-					<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
-				</TouchableOpacity>
-			</View>
-			<View
-				style={{
-					width: "100%",
-					overflow: "hidden",
-					paddingBottom: 10,
-					marginTop: 20,
+			<TouchableOpacity
+				style={{ width: 200, height: 120, backgroundColor: "blue" }}
+				onPress={() => {
+					modalVisible.value = true;
+				}}
+			/>
+
+			<AnimatedModal
+				visible={modalVisible}
+				dismiss={() => {
+					modalVisible.value = false;
+					console.log("AAA");
+					console.log(modalVisible.value);
 				}}
 			>
 				<View
 					style={{
-						width: "100%",
-						alignItems: "flex-start",
-						paddingHorizontal: 30,
-						paddingBottom: 10,
-						elevation: 10,
-						backgroundColor: "#F4F3F3",
+						width: width * 0.8,
+						aspectRatio: 1,
+						maxHeight: height * 0.5,
+						backgroundColor: "white",
+						borderRadius: 10,
+						alignItems: "center",
+						paddingVertical: 30,
+						paddingHorizontal: 40,
 					}}
 				>
-					<GradientText
-						text={"İlgi Alanlarım"}
-						style={{ fontSize: 30, fontWeight: "bold" }}
+					<ReactNative.TouchableOpacity
+						onPress={() => {
+							modalVisible.value = false;
+						}}
+						style={{ position: "absolute", top: 15, right: 20 }}
+					>
+						<Text
+							style={{
+								color: colors.medium_gray,
+								fontSize: 16,
+								fontWeight: "600",
+								letterSpacing: 0.5,
+							}}
+						>
+							Kapat
+						</Text>
+					</ReactNative.TouchableOpacity>
+					<Image
+						source={require("../assets/superLikeFinished.png")}
+						style={{ height: "24%" }}
+						resizeMode={"contain"}
 					/>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.medium_gray,
+							fontSize: 16,
+						}}
+					>
+						Kıvılcım hakların bitti! Gün içinde tekrar yenilecek ama aranızdaki kıvılcımlar hiçbir
+						yere kaçmıyor
+					</Text>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.cool_gray,
+							fontSize: 16,
+						}}
+					>
+						Kıvılcım hakkın için kalan süre:{"\n"}
+						<Feather name="clock" size={16} color={colors.cool_gray} />
+						{/* {hour} saat {minute} dakika {second} saniye */}
+					</Text>
+					<ReactNative.TouchableOpacity
+						// onPress={handlePopupSubmit}
+						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
+					>
+						<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
+							<Text
+								style={{
+									color: colors.white,
+									fontSize: 20,
+									fontWeight: "bold",
+									letterSpacing: 1,
+								}}
+							>
+								Devam Et
+							</Text>
+						</Gradient>
+					</ReactNative.TouchableOpacity>
 				</View>
-				<ScrollView
-					contentContainerStyle={{ paddingBottom: 150 }}
-					showsVerticalScrollIndicator={false}
-				>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Spor"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={sport}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Yaratıcılık"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={creativity}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Yeme & İçme"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={consumables}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Film & Dizi"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={movies}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Okumak"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={reading}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Müzik"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={music}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Değerler ve Aktivizm"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={activism}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-					<View style={{ marginTop: 30 }}>
-						<GradientText
-							text={"Değerler ve Özellikler"}
-							style={{
-								fontSize: 20,
-								fontWeight: "bold",
-								letterSpacing: 1.2,
-								marginLeft: 20,
-							}}
-						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={traits}
-							renderItem={({ item }) => (
-								<Item value={hobbies} setValue={setHobbies} item={item} />
-							)}
-							horizontal={true}
-						/>
-					</View>
-				</ScrollView>
-			</View>
+			</AnimatedModal>
 		</View>
 	);
 }

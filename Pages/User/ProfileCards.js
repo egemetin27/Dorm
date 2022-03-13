@@ -1,5 +1,13 @@
 import React from "react";
-import ReactNative, { View, Text, Image, StyleSheet, Dimensions, Pressable } from "react-native";
+import ReactNative, {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	Dimensions,
+	Pressable,
+	FlatList,
+} from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -18,17 +26,21 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
+import { StatusBar } from "expo-status-bar";
 import { snapPoint, ReText } from "react-native-redash";
-import { Octicons, Feather, Ionicons } from "@expo/vector-icons";
+import { Octicons, Feather } from "@expo/vector-icons";
+
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
-import { CustomModal } from "../../visualComponents/customComponents";
-import { StatusBar } from "expo-status-bar";
+import { AnimatedModal } from "../../visualComponents/customComponents";
+import axios from "axios";
+import { url } from "../../connection";
+import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 
-const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) => {
+const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
 	const destination = useSharedValue(0);
@@ -43,7 +55,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 		Beslenme: diet,
 		Burc: sign,
 		Din: religion,
-		Gender: gender,
+		Gender: genderNo,
 		Major: major,
 		Name: fName,
 		School: university,
@@ -51,8 +63,8 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 		Surname: sName,
 		UserId: id,
 		photos: photoList,
-		// age
-		// hobbies,
+		Birth_Date: bDay,
+		interest: hobbies,
 	} = card ?? {
 		id: 0,
 		name: "name",
@@ -71,8 +83,17 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 	};
 
 	const name = fName + " " + sName;
-	const age = "22";
-	const hobbies = ["A", "B", "C"];
+	const gender = getGender(genderNo);
+	const age = getAge(bDay);
+
+	const onSwipe = async (val) => {
+		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
+		await axios.post(url + "/LikeDislike", {
+			isLike: val,
+			userSwiped: myID,
+			otherUser: id,
+		});
+	};
 
 	const panHandler = Gesture.Pan()
 		.onUpdate((event) => {
@@ -86,10 +107,10 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 		.onFinalize(() => {
 			// TODO: decrease the daily number of likes by one if the value is greater than 0 and send the LIKED/DISLIKED data to backend
 			destination.value > 0
-				? console.log("LIKED")
+				? runOnJS(onSwipe)(0)
 				: destination.value < 0
-				? console.log("DISLIKED")
-				: console.log("NOTHING");
+				? runOnJS(onSwipe)(2)
+				: null;
 		});
 
 	const tapHandler = Gesture.Tap()
@@ -181,6 +202,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 	const handleSuperlike = () => {
 		// TODO: send the like data to database and if the daily number of superlike is finished, show the popup
 		if (numberOfSuperLikes.value > 0) {
+			onSwipe(1);
 			setLikeFlag(true);
 			numberOfSuperLikes.value--;
 		} else {
@@ -500,7 +522,17 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 											}}
 										>
 											İlgi Alanları{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{hobbies}</Text>
+											{hobbies.map((item, index) => {
+												return (
+													<Text style={{ fontWeight: "bold", fontSize: 22 }}>
+														{item.InterestName}
+														{hobbies.length > index + 1 ? (
+															<Text style={{ fontWeight: "bold", fontSize: 22 }}> | </Text>
+														) : null}
+													</Text>
+												);
+											})}
+											{/* <Text style={{ fontWeight: "bold", fontSize: 22 }}>{hobbies}</Text> */}
 										</Text>
 										<Text
 											name={"About"}
@@ -570,7 +602,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes }) =>
 };
 
 export default function ProfileCards({ navigation, route }) {
-	const [popupVisible, setPopupVisible] = React.useState(false);
+	const popupVisible = useSharedValue(false);
 
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
@@ -584,12 +616,11 @@ export default function ProfileCards({ navigation, route }) {
 			}`
 	);
 
-	// const peopleList = route.params?.list;
-
 	const peopleList = route.params.list;
+	const { myID } = route.params;
 
 	function handlePopupSubmit() {
-		console.log("super like submit...");
+		console.log("super like popup submit...");
 	}
 
 	const hour = 15;
@@ -638,8 +669,9 @@ export default function ProfileCards({ navigation, route }) {
 						index={index}
 						card={item}
 						backFace={backFace}
-						setPopupVisible={(val) => setPopupVisible(val)}
+						setPopupVisible={(val) => (popupVisible.value = val)}
 						numberOfSuperLikes={numberOfSuperLikes}
+						myID={myID}
 					/>
 				))}
 			</View>
@@ -736,10 +768,10 @@ export default function ProfileCards({ navigation, route }) {
 				</Pressable>
 			</View>
 
-			<CustomModal
+			<AnimatedModal
 				visible={popupVisible}
 				dismiss={() => {
-					setPopupVisible(false);
+					popupVisible.value = false;
 				}}
 				// style={{ position: "absolute" }}
 			>
@@ -757,7 +789,7 @@ export default function ProfileCards({ navigation, route }) {
 				>
 					<ReactNative.TouchableOpacity
 						onPress={() => {
-							setPopupVisible(false);
+							popupVisible.value = false;
 						}}
 						style={{ position: "absolute", top: 15, right: 20 }}
 					>
@@ -818,7 +850,7 @@ export default function ProfileCards({ navigation, route }) {
 						</Gradient>
 					</ReactNative.TouchableOpacity>
 				</View>
-			</CustomModal>
+			</AnimatedModal>
 		</View>
 	);
 }

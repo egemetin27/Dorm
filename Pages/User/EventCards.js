@@ -451,6 +451,7 @@ export default function EventCards({ navigation, route }) {
 			<Carousel
 				defaultIndex={idx}
 				width={width}
+				loop={false}
 				data={list}
 				renderItem={({ item }) => <Card event={item} />}
 			/>

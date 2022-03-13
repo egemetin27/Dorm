@@ -19,8 +19,10 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
+import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { height, width } = Dimensions.get("window");
+
 
 import {
 	API,
@@ -61,13 +63,13 @@ const CategoryList = [
 const People = ({ person, openProfiles, index, length }) => {
 	const {
 		Name: name,
-		// age,
+		Birth_Date: bDay,
 		School: university,
 		Major: major,
 		photos: photoList,
 	} = person;
 
-	const age = "DUZELT";
+	const age = getAge(bDay);
 
 	return (
 		<Pressable
@@ -114,7 +116,6 @@ const People = ({ person, openProfiles, index, length }) => {
 						letterSpacing: 1.05,
 					}}
 				>
-					{/* TODO: name • age {'\n'} university {'\n'} major */}
 					{name} • {age}
 				</Text>
 				<Text
@@ -133,7 +134,45 @@ const People = ({ person, openProfiles, index, length }) => {
 		</Pressable>
 	);
 };
-const Category = (props) => {
+const Category = ({
+	index,
+	selectedCategory,
+	setSelectedCategory,
+	setShownEvents,
+	eventList,
+	children,
+}) => {
+	const filterEvents = (idx) => {
+		if (idx == 0) {
+			return;
+		}
+		if (idx == 1) {
+			const filtered = eventList.filter((item) => item.Kacmaz == 1);
+			setShownEvents(filtered);
+			return;
+		}
+		if (idx == 2) {
+			const filtered = eventList.filter((item) => item.Kampus == 1);
+			setShownEvents(filtered);
+			return;
+		}
+		if (idx == 3) {
+			const filtered = eventList.filter((item) => item.Culture == 1);
+			setShownEvents(filtered);
+			return;
+		}
+		if (idx == 4) {
+			const filtered = eventList.filter((item) => item.Konser == 1);
+			setShownEvents(filtered);
+			return;
+		}
+		if (idx == 5) {
+			const filtered = eventList.filter((item) => item.Film == 1);
+			setShownEvents(filtered);
+			return;
+		}
+	};
+
 	return (
 		<View
 			style={[
@@ -144,14 +183,20 @@ const Category = (props) => {
 					aspectRatio: 1 / 1,
 					marginHorizontal: 0,
 					marginLeft: 15,
-					marginRight: props.index + 1 == CategoryList.length ? 15 : 0,
-					backgroundColor: props.selectedCategory == props.index ? "transparent" : colors.white,
+					marginRight: index + 1 == CategoryList.length ? 15 : 0,
+					backgroundColor: selectedCategory == index ? "transparent" : colors.white,
 				},
 			]}
 		>
-			{props.selectedCategory == props.index && <Gradient style={{ position: "absolute" }} />}
+			{selectedCategory == index && <Gradient style={{ position: "absolute" }} />}
 
-			<Pressable onPress={() => props.setSelectedCategory(props.index)} style={{ width: "100%" }}>
+			<Pressable
+				onPress={() => {
+					setSelectedCategory(index);
+					filterEvents(index);
+				}}
+				style={{ width: "100%" }}
+			>
 				<View
 					name={"icon"}
 					style={{
@@ -165,10 +210,10 @@ const Category = (props) => {
 						style={[
 							styles.categoryIcon,
 							{
-								tintColor: props.selectedCategory == props.index ? colors.white : colors.cool_gray,
+								tintColor: selectedCategory == index ? colors.white : colors.cool_gray,
 							},
 						]}
-						source={props.children.url}
+						source={children.url}
 					/>
 				</View>
 
@@ -176,10 +221,10 @@ const Category = (props) => {
 					<Text
 						style={{
 							fontSize: width * 0.035,
-							color: props.selectedCategory == props.index ? colors.white : colors.cool_gray,
+							color: selectedCategory == index ? colors.white : colors.cool_gray,
 						}}
 					>
-						{props.children.key}
+						{children.key}
 					</Text>
 				</View>
 			</Pressable>
@@ -286,7 +331,9 @@ const Event = ({ event, openEvents, index, length }) => {
 export default function MainPage({ navigation }) {
 	const [selectedCategory, setSelectedCategory] = React.useState(1);
 	const [eventList, setEventList] = React.useState([]);
+	const [shownEvents, setShownEvents] = React.useState([]);
 	const [peopleList, setPeopleList] = React.useState([]);
+	const [myID, setMyID] = React.useState(null);
 
 	React.useEffect(async () => {
 		let abortController = new AbortController();
@@ -294,8 +341,8 @@ export default function MainPage({ navigation }) {
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const userID = userData.UserId;
-
-		const people = await axios
+		setMyID(userID);
+		await axios
 			.post(url + "/Swipelist", { UserId: userID })
 			.then((res) => {
 				setPeopleList(res.data);
@@ -303,11 +350,11 @@ export default function MainPage({ navigation }) {
 			.catch((err) => {
 				console.log(err);
 			});
-
-		const events = await axios
+		await axios
 			.get(url + "/EventList")
 			.then((res) => {
 				setEventList(res.data);
+				setShownEvents(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -364,6 +411,7 @@ export default function MainPage({ navigation }) {
 		fetchUser();
 	}, [])
 
+	
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
@@ -421,6 +469,7 @@ export default function MainPage({ navigation }) {
 										navigation.navigate("ProfileCards", {
 											idx: idx,
 											list: arr,
+											myID: myID,
 										});
 									}}
 								/>
@@ -465,6 +514,8 @@ export default function MainPage({ navigation }) {
 									index={index}
 									selectedCategory={selectedCategory}
 									setSelectedCategory={setSelectedCategory}
+									setShownEvents={setShownEvents}
+									eventList={eventList}
 								>
 									{item}
 								</Category>
@@ -478,16 +529,20 @@ export default function MainPage({ navigation }) {
 							keyExtractor={(item) => {
 								item.EventId.toString();
 							}}
-							data={eventList}
+							data={shownEvents}
 							renderItem={({ item, index }) => (
 								<Event
 									index={index}
 									event={item}
-									length={eventList.length}
+									length={shownEvents.length}
 									openEvents={(idx) => {
+										var arr = new Array(...shownEvents);
+										const element = arr[idx];
+										arr.splice(idx, 1);
+										arr.splice(0, 0, element);
 										navigation.navigate("EventCards", {
 											idx: idx,
-											list: eventList,
+											list: arr,
 										});
 									}}
 								/>

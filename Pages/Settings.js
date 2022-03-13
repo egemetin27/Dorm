@@ -1,5 +1,6 @@
 import React from "react";
 import {
+	Alert,
 	View,
 	Text,
 	ScrollView,
@@ -100,7 +101,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 	);
 };
 
-const FreezeAccountModal = ({ visible, dismiss }) => {
+const FreezeAccountModal = ({ visible, dismiss, signOut }) => {
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -149,6 +150,16 @@ const FreezeAccountModal = ({ visible, dismiss }) => {
 				</Text>
 
 				<TouchableOpacity
+					onPress={async () => {
+						await axios
+							.post(url + "/FreezeAccount", { UserId: userID })
+							.then(() => {
+								signOut();
+							})
+							.catch((err) => {
+								console.log(err);
+							});
+					}}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -167,7 +178,11 @@ const FreezeAccountModal = ({ visible, dismiss }) => {
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					onPress={() => {}}
+					onPress={() => {
+						Alert.alert("Üzgünüz", "Bu buton henüz implemente edilmedi :(", [
+							{ text: "Tamamdır..." },
+						]);
+					}}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -569,7 +584,12 @@ export default function Settings({ navigation, route }) {
 
 				<TouchableOpacity
 					style={styles.buttonContainer}
-					onPress={() => setDeleteAccountModal(true)}
+					// onPress={() => setDeleteAccountModal(true)}
+					onPress={() => {
+						Alert.alert("Üzgünüz", "Hesabını silme özelliği henüz mevcut değil :(", [
+							{ text: "tamamdır" },
+						]);
+					}}
 				>
 					<Text style={[styles.buttonText, { color: colors.red }]}>Hesabımı Sil</Text>
 					<Feather name="chevron-right" size={20} color={colors.red} />
@@ -584,7 +604,11 @@ export default function Settings({ navigation, route }) {
 					signOut();
 				}}
 			/>
+
 			<FreezeAccountModal
+				signOut={() => {
+					signOut();
+				}}
 				visible={freezeAccountModal}
 				dismiss={() => setFreezeAccountModal(false)}
 			/>
