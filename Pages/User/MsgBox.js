@@ -79,7 +79,7 @@ const MsgBox = (props) => {
                     <Text style = {{fontSize: 18, marginTop: 10}}>
                       {props.data.name}
                     </Text>
-                    <Text style = {{fontSize: 14, marginBottom: 10}}>
+                    <Text numberOfLines={1} style = {{fontSize: 14, marginBottom: 10}}>
                       {props.lastMsg}
                     </Text>
                 </View>

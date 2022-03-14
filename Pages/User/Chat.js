@@ -185,7 +185,7 @@ export default function Chat({ navigation, route }) {
 						style={{ fontSize: 18, fontWeight: "bold", paddingLeft: 0 }}
                     />
                     <Text style = {{fontSize: 10, marginBottom: 10}}>
-                    	{"çevrimiçi"}
+                    	{"-"}
                     </Text>
                 </View>
 				<TouchableOpacity
