@@ -23,16 +23,15 @@ import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { height, width } = Dimensions.get("window");
 
-
-import {
-	API,
-	graphqlOperation,
-  } from 'aws-amplify';
-import {getMsgUser} from "../../src/graphql/queries"
-import {createMsgUser} from "../../src/graphql/mutations"
-
+import { API, graphqlOperation } from "aws-amplify";
+import { getMsgUser } from "../../src/graphql/queries";
+import { createMsgUser } from "../../src/graphql/mutations";
 
 const CategoryList = [
+	{
+		key: "Tüm Etkinlikler",
+		url: "",
+	},
 	{
 		key: "Favorilerin",
 		url: require("../../assets/HomeScreenCategoryIcons/Favs.png"),
@@ -136,37 +135,47 @@ const People = ({ person, openProfiles, index, length }) => {
 };
 const Category = ({
 	index,
+	userID,
 	selectedCategory,
 	setSelectedCategory,
 	setShownEvents,
 	eventList,
 	children,
 }) => {
-	const filterEvents = (idx) => {
+	const filterEvents = async (idx) => {
 		if (idx == 0) {
+			setShownEvents(eventList);
 			return;
 		}
 		if (idx == 1) {
+			await axios
+				.post(url + "/getLikedEvent", { UserId: userID })
+				.then((res) => setShownEvents(res.data))
+				.catch((err) => console.log(err));
+			// setShownEvents(list);
+			return;
+		}
+		if (idx == 2) {
 			const filtered = eventList.filter((item) => item.Kacmaz == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 2) {
+		if (idx == 3) {
 			const filtered = eventList.filter((item) => item.Kampus == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 3) {
+		if (idx == 4) {
 			const filtered = eventList.filter((item) => item.Culture == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 4) {
+		if (idx == 5) {
 			const filtered = eventList.filter((item) => item.Konser == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 5) {
+		if (idx == 6) {
 			const filtered = eventList.filter((item) => item.Film == 1);
 			setShownEvents(filtered);
 			return;
@@ -232,7 +241,7 @@ const Category = ({
 	);
 };
 const Event = ({ event, openEvents, index, length }) => {
-	const { Description, Date, StartTime, Location } = event;
+	const { Description, Date, StartTime, Location, photos } = event;
 
 	return (
 		<Pressable
@@ -248,6 +257,10 @@ const Event = ({ event, openEvents, index, length }) => {
 				},
 			]}
 		>
+			<Image
+				source={{ uri: photos.length > 0 ? photos[0] : "AAAA" }}
+				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+			/>
 			<Gradient
 				colors={["rgba(0,0,0,0.005)", "rgba(0,0,0,0.3)"]}
 				start={{ x: 0.5, y: 0 }}
@@ -319,21 +332,22 @@ const Event = ({ event, openEvents, index, length }) => {
 						{Location}
 					</Text>
 				</View>
-
-				{/* <Text style={{ color: colors.white, fontSize: 15, paddingLeft: 10, fontStyle: "italic" }}>
-					date
-				</Text> */}
 			</Gradient>
 		</Pressable>
 	);
 };
 
 export default function MainPage({ navigation }) {
-	const [selectedCategory, setSelectedCategory] = React.useState(1);
+	const [selectedCategory, setSelectedCategory] = React.useState(0);
 	const [eventList, setEventList] = React.useState([]);
 	const [shownEvents, setShownEvents] = React.useState([]);
 	const [peopleList, setPeopleList] = React.useState([]);
 	const [myID, setMyID] = React.useState(null);
+	const eventsRef = React.useRef();
+
+	React.useEffect(() => {
+		if (shownEvents.length > 0) eventsRef.current.scrollToIndex({ index: 0 });
+	});
 
 	React.useEffect(async () => {
 		let abortController = new AbortController();
@@ -365,53 +379,38 @@ export default function MainPage({ navigation }) {
 		};
 	}, []);
 
-
 	React.useEffect(async () => {
-
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
 		console.log(data);
 
 		const userID = data.UserId.toString();
 		const userName = data.Name;
-		const fetchUser = async () => {	
-		  
-			const userData = await API.graphql(
-			  graphqlOperation(
-				getMsgUser,
-				{ id: userID }
-				)
-			)
+		const fetchUser = async () => {
+			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			console.log(userData);
-					
+
 			if (userData.data.getMsgUser) {
-			  console.log("User is already registered in database");
-			  return;
-			}
-			else{
+				console.log("User is already registered in database");
+				return;
+			} else {
 				console.log("User does not exists");
 			}
-	
-			const newUser = {
-			  id: userID,
-			  name: userName,
-			  imageUri: null,
-			}
-			console.log(newUser);
-			await API.graphql(
-				graphqlOperation(
-				  createMsgUser,
-				  { input: newUser}
-				)
-			  )
-			
-			console.log("New user created");
-		}
-	
-		fetchUser();
-	}, [])
 
-	
+			const newUser = {
+				id: userID,
+				name: userName,
+				imageUri: null,
+			};
+			console.log(newUser);
+			await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
+
+			console.log("New user created");
+		};
+
+		fetchUser();
+	}, []);
+
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
@@ -512,6 +511,7 @@ export default function MainPage({ navigation }) {
 							renderItem={({ item, index }) => (
 								<Category
 									index={index}
+									userID={myID}
 									selectedCategory={selectedCategory}
 									setSelectedCategory={setSelectedCategory}
 									setShownEvents={setShownEvents}
@@ -524,6 +524,7 @@ export default function MainPage({ navigation }) {
 					</View>
 					<View name={"Events"} style={{ width: "100%", height: height / 3 }}>
 						<FlatList
+							ref={eventsRef}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
 							keyExtractor={(item) => {
@@ -536,13 +537,9 @@ export default function MainPage({ navigation }) {
 									event={item}
 									length={shownEvents.length}
 									openEvents={(idx) => {
-										var arr = new Array(...shownEvents);
-										const element = arr[idx];
-										arr.splice(idx, 1);
-										arr.splice(0, 0, element);
 										navigation.navigate("EventCards", {
 											idx: idx,
-											list: arr,
+											list: shownEvents,
 										});
 									}}
 								/>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Image, Dimensions } from "react-native";
+import { View, Text, Image, Dimensions, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
@@ -38,7 +38,7 @@ import EventCards from "../Pages/User/EventCards";
 /////
 // OTHER SCREENS
 import Settings from "../Pages/Settings";
-import Chat from "../Pages/User/Chat";	
+import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
 /////
 // COMPONENTS
@@ -251,7 +251,7 @@ export default function StackNavigator() {
 					}
 				})
 				.catch((error) => {
-					console.log({ error });
+					Alert.alert("Hata", error.response.data, [{ text: "Kontrol Edeyim" }]);
 				});
 		},
 		signOut: async () => {

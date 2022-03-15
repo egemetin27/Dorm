@@ -685,7 +685,7 @@ export default function ProfileCards({ navigation, route }) {
 					text={derivedText}
 					style={{
 						textAlign: "center",
-						fontSize: 18,
+						fontSize: width * 0.04,
 						color: colors.medium_gray,
 						letterSpacing: 0.2,
 					}}

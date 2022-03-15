@@ -300,6 +300,7 @@ export default function Profile({ route, navigation }) {
 						{PHOTO_LIST && PHOTO_LIST.length != 0 ? (
 							// TODO: styling should be implemented more resiliently
 							<Carousel
+								loop={false}
 								mode={"parallax"}
 								modeConfig={{
 									parallaxScrollingOfset: 100,

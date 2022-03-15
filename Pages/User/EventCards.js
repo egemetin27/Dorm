@@ -17,20 +17,25 @@ import Animated, {
 import Carousel from "react-native-reanimated-carousel";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import * as SecureStore from "expo-secure-store";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
+import axios from "axios";
+import { url } from "../../connection";
 
 const { width, height } = Dimensions.get("window");
 
 const Card = ({ event }) => {
 	const {
+		EventId,
 		Description: name,
 		Date: date,
 		StartTime: time,
 		Location: location,
 		Category: genre,
 		Organizator: seller,
+		photos: photoList,
 		favorited = false,
 	} = event;
 
@@ -82,8 +87,16 @@ const Card = ({ event }) => {
 	// how much the Fav star should go up relative to the height of the surrounding circle (height * constant = marginBottom)
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
-	const handleFavorited = () => {
-		// send favorited value to database
+	const handleFavorited = async () => {
+		if (!favFlag) {
+			const id = await SecureStore.getItemAsync("userID");
+			await axios
+				.post(url + "/likeEvent", { UserId: id, eventId: EventId })
+				.then((res) => console.log(res.data))
+				.catch((err) => console.log(err));
+
+			// send favorited value to database
+		}
 		setFavFlag(!favFlag);
 	};
 
@@ -106,32 +119,24 @@ const Card = ({ event }) => {
 							showsVerticalScrollIndicator={false}
 							onScroll={handleScroll}
 						>
-							{arr.map((item, index) => {
+							{photoList.map((item, index) => {
 								return (
-									<View
+									<Image
 										key={index}
+										source={{
+											uri: item ?? "AAA",
+										}}
 										style={{
-											width: "100%",
 											height: width * 1.35,
-											backgroundColor: item.color,
+											resizeMode: "cover",
+											backgroundColor: "red",
 										}}
 									/>
-									// <Image
-									// 	key={index}
-									// 	source={{
-									// 		uri: item,
-									// 	}}
-									// 	style={{
-									// 		height: width * 1.35,
-									// 		resizeMode: "cover",
-									// 		backgroundColor: "red",
-									// 	}}
-									// />
 								);
 							})}
 						</ScrollView>
 
-						<View
+						<View // photo order indicator dots
 							style={{
 								position: "absolute",
 								left: 20,
@@ -140,7 +145,7 @@ const Card = ({ event }) => {
 								minHeight: arr.length * 10 + 16,
 							}}
 						>
-							{arr.map((_, index) => {
+							{photoList.map((_, index) => {
 								return (
 									<Animated.View
 										key={index}
@@ -441,7 +446,11 @@ export default function EventCards({ navigation, route }) {
 					elevation: 10,
 				}}
 			>
-				<TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => {
+						navigation.replace("MainScreen", { screen: "AnaSayfa" });
+					}}
+				>
 					<Ionicons name="arrow-back-outline" size={30} color="black" />
 				</TouchableOpacity>
 				<Text style={{}}>dorm</Text>
