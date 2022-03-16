@@ -10,6 +10,7 @@ import {
 	Pressable,
 	ScrollView,
 	Alert,
+	BackHandler,
 } from "react-native";
 import { Octicons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
@@ -148,11 +149,8 @@ const Category = ({
 			return;
 		}
 		if (idx == 1) {
-			await axios
-				.post(url + "/getLikedEvent", { UserId: userID })
-				.then((res) => setShownEvents(res.data))
-				.catch((err) => console.log(err));
-			// setShownEvents(list);
+			const filtered = eventList.filter((item) => item.isLiked == 1);
+			setShownEvents(filtered);
 			return;
 		}
 		if (idx == 2) {
@@ -365,7 +363,7 @@ export default function MainPage({ navigation }) {
 				console.log(err);
 			});
 		await axios
-			.get(url + "/EventList")
+			.post(url + "/EventList", { UserId: userID })
 			.then((res) => {
 				setEventList(res.data);
 				setShownEvents(res.data);
@@ -382,14 +380,11 @@ export default function MainPage({ navigation }) {
 	React.useEffect(async () => {
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
-		console.log(data);
 
 		const userID = data.UserId.toString();
 		const userName = data.Name;
 		const fetchUser = async () => {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
-			console.log(userData);
-
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
 				return;
@@ -409,6 +404,24 @@ export default function MainPage({ navigation }) {
 		};
 
 		fetchUser();
+	}, []);
+
+	React.useEffect(() => {
+		const backAction = () => {
+			Alert.alert("Emin Misin?", "Uygulamayı Kapatmak İstiyor Musun?", [
+				{
+					text: "Vazgeç",
+					onPress: () => null,
+					style: "cancel",
+				},
+				{ text: "EVET", onPress: () => BackHandler.exitApp() },
+			]);
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
 	}, []);
 
 	return (

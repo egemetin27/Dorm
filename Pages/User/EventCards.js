@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, Pressable, BackHandler } from "react-native";
 import {
 	ScrollView,
 	TouchableOpacity,
@@ -36,8 +36,10 @@ const Card = ({ event }) => {
 		Category: genre,
 		Organizator: seller,
 		photos: photoList,
-		favorited = false,
+		isLiked,
 	} = event;
+
+	const favorited = isLiked == 1 ? true : false;
 
 	const progress = useSharedValue(0);
 	const turn = useSharedValue(1); // 1 => front, -1 => back
@@ -88,14 +90,19 @@ const Card = ({ event }) => {
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
 	const handleFavorited = async () => {
+		const id = await SecureStore.getItemAsync("userID");
 		if (!favFlag) {
-			const id = await SecureStore.getItemAsync("userID");
 			await axios
 				.post(url + "/likeEvent", { UserId: id, eventId: EventId })
 				.then((res) => console.log(res.data))
 				.catch((err) => console.log(err));
 
 			// send favorited value to database
+		} else {
+			await axios
+				.post(url + "/dislikeEvent", { UserId: id, eventId: EventId })
+				.then((res) => console.log(res.data))
+				.catch((err) => console.log(err));
 		}
 		setFavFlag(!favFlag);
 	};
@@ -388,48 +395,16 @@ const Card = ({ event }) => {
 export default function EventCards({ navigation, route }) {
 	const { idx, list } = route.params;
 
-	// const list = [
-	// 	{
-	// 		key: 1,
-	// 		name: "1",
-	// 		date: "date1",
-	// 		time: "time1",
-	// 		location: "location1",
-	// 		genre: "genre1",
-	// 		seller: "seller1",
-	// 		favorited: false,
-	// 	},
-	// 	{
-	// 		key: 2,
-	// 		name: "2",
-	// 		date: "date2",
-	// 		time: "time2",
-	// 		location: "location2",
-	// 		genre: "genre2",
-	// 		seller: "seller2",
-	// 		favorited: false,
-	// 	},
-	// 	{
-	// 		key: 3,
-	// 		name: "3",
-	// 		date: "date3",
-	// 		time: "time3",
-	// 		location: "location3",
-	// 		genre: "genre3",
-	// 		seller: "seller3",
-	// 		favorited: false,
-	// 	},
-	// 	{
-	// 		key: 4,
-	// 		name: "4",
-	// 		date: "date4",
-	// 		time: "time4",
-	// 		location: "location4",
-	// 		genre: "genre4",
-	// 		seller: "seller4",
-	// 		favorited: false,
-	// 	},
-	// ];
+	React.useEffect(() => {
+		const backAction = () => {
+			navigation.replace("MainScreen", { screen: "AnaSayfa" });
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
+	}, []);
 
 	return (
 		<View style={commonStyles.Container}>
@@ -469,7 +444,7 @@ export default function EventCards({ navigation, route }) {
 			<View name={"tab-Bar"} style={styles.tabBar}>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreen", { screen: "Profil" });
+						navigation.replace("MainScreen", { screen: "Profil" });
 					}}
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
@@ -486,7 +461,7 @@ export default function EventCards({ navigation, route }) {
 				</Pressable>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreen", { screen: "AnaSayfa" });
+						navigation.replace("MainScreen", { screen: "AnaSayfa" });
 					}}
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
@@ -504,7 +479,7 @@ export default function EventCards({ navigation, route }) {
 				</Pressable>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreen", { screen: "Mesajlar" });
+						navigation.replace("MainScreen", { screen: "Mesajlar" });
 					}}
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>

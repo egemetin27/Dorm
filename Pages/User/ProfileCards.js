@@ -6,7 +6,7 @@ import ReactNative, {
 	StyleSheet,
 	Dimensions,
 	Pressable,
-	FlatList,
+	BackHandler,
 } from "react-native";
 import {
 	ScrollView,
@@ -627,6 +627,17 @@ export default function ProfileCards({ navigation, route }) {
 	const minute = 20;
 	const second = 51; // TODO: get this data from database
 
+	React.useEffect(() => {
+		const backAction = () => {
+			navigation.replace("MainScreen", { screen: "AnaSayfa" });
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
+	}, []);
+
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
@@ -647,7 +658,7 @@ export default function ProfileCards({ navigation, route }) {
 			>
 				<TouchableOpacity
 					onPress={() => {
-						navigation.goBack();
+						navigation.replace("MainScreen", { screen: "AnaSayfa" });
 					}}
 				>
 					<Feather style={{}} name="chevron-left" size={30} color={colors.cool_gray} />
@@ -695,7 +706,7 @@ export default function ProfileCards({ navigation, route }) {
 			<View name={"tab-Bar"} style={styles.tabBar}>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreen", { screen: "Profil" });
+						navigation.replace("MainScreen", { screen: "Profil" });
 					}}
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
@@ -720,7 +731,7 @@ export default function ProfileCards({ navigation, route }) {
 				</Pressable>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreen", { screen: "AnaSayfa" });
+						navigation.replace("MainScreen", { screen: "AnaSayfa" });
 					}}
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
@@ -744,7 +755,7 @@ export default function ProfileCards({ navigation, route }) {
 				</Pressable>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreen", { screen: "Mesajlar" });
+						navigation.replace("MainScreen", { screen: "Mesajlar" });
 					}}
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
