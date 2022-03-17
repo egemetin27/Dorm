@@ -8,6 +8,7 @@ type MsgUser @model {
   name: String!
   imageUri: String
   updatedAt: AWSDateTime!
+  pushToken: String
 }
 
 type UserChat @model {
@@ -15,9 +16,10 @@ type UserChat @model {
   firstUser: MsgUser @hasOne
   secondUser: MsgUser @hasOne
   lastMsg: String
-  mod: Int!
   messages: [SentMsg] @hasMany
-  updatedAt: AWSDateTime!
+  mod: Int!
+  updatedAt: String!
+  createdAt: String!
   status: String!
     @index(
       name: "chatByDate"

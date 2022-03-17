@@ -219,8 +219,15 @@ export default function Chat({ navigation, route }) {
 				}}
 				inverted
 			/>
-          <InputBox myUserID = {myUserID} chatID = {chatID}/>
-          <KeyboardSpacer/>
+          	<InputBox myUserID = {myUserID} chatID = {chatID}/>
+			{
+				Platform.OS == "ios"?
+				<KeyboardSpacer/>
+				: null
+			}			  
+		  
+
+          
         </View>
       );
 }

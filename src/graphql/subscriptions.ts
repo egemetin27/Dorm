@@ -9,6 +9,7 @@ export const onCreateMsgUser = /* GraphQL */ `
       name
       imageUri
       updatedAt
+      pushToken
       createdAt
     }
   }
@@ -20,6 +21,7 @@ export const onUpdateMsgUser = /* GraphQL */ `
       name
       imageUri
       updatedAt
+      pushToken
       createdAt
     }
   }
@@ -31,6 +33,7 @@ export const onDeleteMsgUser = /* GraphQL */ `
       name
       imageUri
       updatedAt
+      pushToken
       createdAt
     }
   }
@@ -44,6 +47,7 @@ export const onCreateUserChat = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       secondUser {
@@ -51,10 +55,10 @@ export const onCreateUserChat = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       lastMsg
-      mod
       messages {
         items {
           id
@@ -68,9 +72,10 @@ export const onCreateUserChat = /* GraphQL */ `
         }
         nextToken
       }
+      mod
       updatedAt
-      status
       createdAt
+      status
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -85,6 +90,7 @@ export const onUpdateUserChat = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       secondUser {
@@ -92,10 +98,10 @@ export const onUpdateUserChat = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       lastMsg
-      mod
       messages {
         items {
           id
@@ -109,9 +115,10 @@ export const onUpdateUserChat = /* GraphQL */ `
         }
         nextToken
       }
+      mod
       updatedAt
-      status
       createdAt
+      status
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -126,6 +133,7 @@ export const onDeleteUserChat = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       secondUser {
@@ -133,10 +141,10 @@ export const onDeleteUserChat = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       lastMsg
-      mod
       messages {
         items {
           id
@@ -150,9 +158,10 @@ export const onDeleteUserChat = /* GraphQL */ `
         }
         nextToken
       }
+      mod
       updatedAt
-      status
       createdAt
+      status
       userChatFirstUserId
       userChatSecondUserId
     }
@@ -169,6 +178,7 @@ export const onCreateSentMsg = /* GraphQL */ `
           name
           imageUri
           updatedAt
+          pushToken
           createdAt
         }
         secondUser {
@@ -176,16 +186,17 @@ export const onCreateSentMsg = /* GraphQL */ `
           name
           imageUri
           updatedAt
+          pushToken
           createdAt
         }
         lastMsg
-        mod
         messages {
           nextToken
         }
+        mod
         updatedAt
-        status
         createdAt
+        status
         userChatFirstUserId
         userChatSecondUserId
       }
@@ -194,6 +205,7 @@ export const onCreateSentMsg = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       text
@@ -217,6 +229,7 @@ export const onUpdateSentMsg = /* GraphQL */ `
           name
           imageUri
           updatedAt
+          pushToken
           createdAt
         }
         secondUser {
@@ -224,16 +237,17 @@ export const onUpdateSentMsg = /* GraphQL */ `
           name
           imageUri
           updatedAt
+          pushToken
           createdAt
         }
         lastMsg
-        mod
         messages {
           nextToken
         }
+        mod
         updatedAt
-        status
         createdAt
+        status
         userChatFirstUserId
         userChatSecondUserId
       }
@@ -242,6 +256,7 @@ export const onUpdateSentMsg = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       text
@@ -265,6 +280,7 @@ export const onDeleteSentMsg = /* GraphQL */ `
           name
           imageUri
           updatedAt
+          pushToken
           createdAt
         }
         secondUser {
@@ -272,16 +288,17 @@ export const onDeleteSentMsg = /* GraphQL */ `
           name
           imageUri
           updatedAt
+          pushToken
           createdAt
         }
         lastMsg
-        mod
         messages {
           nextToken
         }
+        mod
         updatedAt
-        status
         createdAt
+        status
         userChatFirstUserId
         userChatSecondUserId
       }
@@ -290,6 +307,7 @@ export const onDeleteSentMsg = /* GraphQL */ `
         name
         imageUri
         updatedAt
+        pushToken
         createdAt
       }
       text
