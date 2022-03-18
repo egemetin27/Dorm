@@ -8,6 +8,7 @@ import {
 	Pressable,
 	BackHandler,
 	Linking,
+	Alert,
 } from "react-native";
 import {
 	ScrollView,
@@ -112,22 +113,28 @@ const Card = ({ event, myID, navigation }) => {
 
 	const explorePeople = async () => {
 		// TODO:
-		// await axios
-		// 	.post(url + "/", {
-		// 		EventId: EventId,
-		// 	})
-		// 	.then((res) => {
-		// 		console.log(res);
-		// 		navigation.replace("ProfileCards", {
-		// 			list: res.data,
-		// 			myID: myID,
-		// 		});
-		// 	});
 
-		navigation.replace("ProfileCards", {
-			list: [],
-			myID: myID,
-		});
+		await axios
+			.post(url + "/eventParticipants", {
+				eventId: EventId,
+				UserId: myID,
+			})
+			.then((res) => {
+				if (res.data.length > 0) {
+					navigation.replace("ProfileCards", {
+						list: res.data,
+						myID: myID,
+					});
+				} else {
+					Alert.alert("Etkinliği Beğenen Kimse Yok :/");
+				}
+			})
+			.catch((err) => console.log(err));
+
+		// navigation.replace("ProfileCards", {
+		// 	list: [],
+		// 	myID: myID,
+		// });
 	};
 
 	return (

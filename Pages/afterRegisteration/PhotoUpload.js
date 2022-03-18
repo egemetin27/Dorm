@@ -18,19 +18,20 @@ export default function PhotoUpload({ navigation, route }) {
 	const [photoList, setPhotoList] = React.useState([]);
 
 	const pickImage = async () => {
-		// const [status, reqPermission] = ImagePicker.getMediaLibraryPermissions();
-
-		// console.log({ status });
-		// console.log({ reqPermission });
-
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [2, 3],
-			quality: 1,
-		});
-		if (!result.cancelled) {
-			handleAdd(result);
+		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
+		if (!granted) {
+			const x = await ImagePicker.requestMediaLibraryPermissionsAsync(false);
+			console.log(x);
+		} else {
+			let result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [2, 3],
+				quality: 1,
+			});
+			if (!result.cancelled) {
+				handleAdd(result);
+			}
 		}
 	};
 

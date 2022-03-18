@@ -8,6 +8,7 @@ import {
 	Image,
 	Text,
 	ActivityIndicator,
+	BackHandler,
 } from "react-native";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -69,10 +70,21 @@ export default function ProfilePhotos({ route, navigation }) {
 
 	const { userID } = route.params;
 
-	const handleDelete = () => {
+	React.useEffect(() => {
+		const backAction = () => {
+			handleSave();
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
+	}, []);
+
+	const handleDelete = async () => {
 		//TODO: delete "toBeDeleted"
 		const filtered = [];
-		for (item of PHOTO_LIST) {
+		for (const item of PHOTO_LIST) {
 			if (item.Photo_Order != toBeDeleted.Photo_Order) {
 				if (item.Photo_Order > toBeDeleted.Photo_Order) {
 					filtered.push({ ...item, Photo_Order: item.Photo_Order - 1 });
@@ -81,29 +93,36 @@ export default function ProfilePhotos({ route, navigation }) {
 				}
 			}
 		}
-		console.log(filtered);
+
+		if (toBeDeleted?.photo == undefined) {
+			const response = await axios.post(url + "/deleteS3Photo", {
+				photoName: toBeDeleted.PhotoLink.split("/")[3],
+			});
+			console.log(response.data);
+		}
+
 		setPhotoList(filtered);
 		setModalVisibility(false);
 	};
 
 	const pickImage = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [2, 3],
-			quality: 1,
-		});
-		if (!result.cancelled) {
-			handleAdd(result);
+		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
+		if (!granted) {
+			await ImagePicker.requestMediaLibraryPermissionsAsync(false);
+		} else {
+			let result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [2, 3],
+				quality: 1,
+			});
+			if (!result.cancelled) {
+				handleAdd(result);
+			}
 		}
 	};
 
 	const handleAdd = (photo) => {
-		console.log({
-			Photo_Order: PHOTO_LIST.length + 1,
-			PhotoLink: photo.uri,
-			photo: photo,
-		});
 		setPhotoList([
 			...PHOTO_LIST,
 			{
@@ -192,13 +211,7 @@ export default function ProfilePhotos({ route, navigation }) {
 			<StatusBar style="dark" />
 			<View name={"Header"} style={commonStyles.Header}>
 				<View style={{ marginLeft: 20 }}>
-					<TouchableOpacity
-						onPress={() => {
-							navigation.navigate("MainScreen", {
-								screen: "Profile",
-							});
-						}}
-					>
+					<TouchableOpacity onPress={handleSave}>
 						<Feather name="arrow-left" size={30} color={colors.gray} style={{ paddingLeft: 15 }} />
 					</TouchableOpacity>
 				</View>
