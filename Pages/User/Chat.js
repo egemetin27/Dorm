@@ -123,40 +123,7 @@ export default function Chat({ navigation, route }) {
 		} catch (error) {
 			console.log(error);
 		}
-		
 	}, [])
-	
-
-	/*
-	React.useEffect(async () => {
-		
-		const subscription = API.graphql(
-		graphqlOperation(onCreateSentMsg)
-		).subscribe({
-			next: (data) => {
-			console.log("---------------------------");
-			console.log(data.value.data.onCreateSentMsg);
-			console.log("---------------------------");
-
-						
-			if (data.value.data.onCreateUserChat.firstUser.id != userID && data.value.data.onCreateUserChat.secondUser.id != userID) {
-				console.log("Message is in another chat")
-				return;
-			}
-			else{
-				console.log("Message is in your chat")
-			}
-			
-				
-		
-			fetchNewUsers();
-			// setMessages([newMessage, ...messages]);
-			}
-		});
-		
-		return () => subscription.unsubscribe();
-	}, [])
-	*/
 
 	return (
         <View style={styles.inner}>
