@@ -647,16 +647,16 @@ export default function ProfileCards({ navigation, route }) {
 			<View
 				name={"header"}
 				style={{
+					backgroundColor: "#F4F3F3",
 					flexDirection: "row",
-					height: height * 0.14,
+					height: height * 0.15,
 					width: width,
 					marginBottom: 20,
-					backgroundColor: colors.white,
 					elevation: 10,
-					paddingVertical: 20,
-					paddingHorizontal: 30,
+					paddingHorizontal: 20,
 					justifyContent: "space-between",
-					alignItems: "flex-end",
+					alignItems: "center",
+					paddingTop: height * 0.05,
 				}}
 			>
 				<TouchableOpacity
@@ -664,8 +664,13 @@ export default function ProfileCards({ navigation, route }) {
 						navigation.replace("MainScreen", { screen: "AnaSayfa" });
 					}}
 				>
-					<Feather style={{}} name="chevron-left" size={30} color={colors.cool_gray} />
+					<Feather name="chevron-left" size={30} color={colors.cool_gray} />
 				</TouchableOpacity>
+				<Image
+					source={require("../../assets/dorm_text.png")}
+					resizeMode="center"
+					style={{ maxWidth: "30%", height: "40%" }}
+				/>
 				<TouchableOpacity>
 					{/* TODO: open filtering modal here  */}
 					<Octicons

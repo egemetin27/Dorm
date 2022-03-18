@@ -31,97 +31,16 @@ export default function Hobbies() {
 	const likeFlag = false;
 
 	return (
-		<View style={{ height: height, width: width }}>
-			<LinearGradient
-				colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
-				locations={[0, 0.1, 1]}
-				start={{ x: 0.5, y: 0 }}
-				end={{ x: 0.5, y: 1 }}
+		<View style={{ height: height, width: width, justifyContent: "center", alignItems: "center" }}>
+			<Image
+				source={require("../assets/dorm_text.png")}
+				resizeMode="contain"
 				style={{
-					minHeight: height * 0.16,
-					width: "100%",
-					position: "absolute",
-					bottom: 0,
-					paddingVertical: 20,
+					// tintColor: colors.cool_gray,
+					// backgroundColor: "red",
+					height: "10%",
 				}}
-			>
-				<View
-					style={{
-						width: "100%",
-						height: "100%",
-						flexDirection: "row",
-						alignItems: "center",
-						justifyContent: "space-between",
-						paddingHorizontal: 20,
-					}}
-				>
-					<View style={{ flexShrink: 1 }}>
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: width * 0.06,
-								fontWeight: "bold",
-								letterSpacing: 1.05,
-							}}
-						>
-							{name} • {age}
-							{/* Name • Age */}
-						</Text>
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: width * 0.045,
-								fontSize: 18,
-								fontStyle: "italic",
-							}}
-						>
-							{university}
-							{"\n"}
-							{major}
-						</Text>
-					</View>
-
-					<View
-						style={{
-							backgroundColor: colors.white,
-							height: width * 0.16,
-							aspectRatio: 1 / 1,
-							borderRadius: width * 0.08,
-						}}
-					>
-						<TouchableOpacity>
-							<View
-								style={{
-									width: "100%",
-									height: "100%",
-									justifyContent: "center",
-									alignItems: "center",
-								}}
-							>
-								{likeFlag ? (
-									<Image
-										style={{
-											width: "65%",
-											height: "65%",
-											resizeMode: "center",
-										}}
-										source={require("../assets/spark_filled.png")}
-									/>
-								) : (
-									<Image
-										style={{
-											width: "65%",
-											height: "65%",
-											resizeMode: "center",
-										}}
-										source={require("../assets/spark_outline.png")}
-									/>
-								)}
-							</View>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</LinearGradient>
+			/>
 		</View>
 	);
 }

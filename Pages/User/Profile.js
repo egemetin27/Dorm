@@ -24,8 +24,7 @@ import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
-import Gender from "../afterRegisteration/Gender";
-
+import { GenderList } from "../../nonVisualComponents/Lists";
 const { height, width } = Dimensions.get("window");
 
 export default function Profile({ route, navigation }) {
@@ -81,13 +80,6 @@ export default function Profile({ route, navigation }) {
 	const hobbiesRef = React.useRef(new Animated.Value(0)).current;
 	const aboutRef = React.useRef(new Animated.Value(0)).current;
 
-	const GENDER_LIST = [
-		{ key: 0, choice: "Kadın" },
-		{ key: 1, choice: "Erkek" },
-		{ key: 2, choice: "Non-Binary" },
-		{ key: 3, choice: "Belirtmek İstemiyorum" },
-	];
-
 	React.useEffect(async () => {
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
@@ -95,7 +87,7 @@ export default function Profile({ route, navigation }) {
 		setUserID(data.UserId);
 		setName(data.Name + " " + data.Surname);
 		setAge(getAge(data.Birth_date));
-		setSex(GENDER_LIST[data.Gender]);
+		setSex(GenderList[data.Gender]);
 		setSchool(data.School);
 		setMajor(data.Major);
 		setReligion(data.Din);
@@ -876,82 +868,84 @@ export default function Profile({ route, navigation }) {
 							/>
 						</View>
 
-						<View
-							name={"Hobbies"}
-							style={[styles.inputContainer, { backgroundColor: colors.white }]}
+						<Pressable
+							disabled={!isEditable}
+							onPress={() => {
+								if (isEditable) {
+									navigation.replace("Hobbies", {
+										hobbyList: hobbies,
+										userID: userID,
+										email: "",
+										password: "",
+									});
+								}
+							}}
 						>
-							<Animated.Text
-								style={[
-									styles.placeHolder,
-									{
-										transform: [
-											{
-												translateY:
-													hobbies == ""
-														? hobbiesRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
-														: -20,
-											},
-										],
-										fontSize:
-											hobbies == ""
-												? hobbiesRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
-												: 15,
-									},
-								]}
-							>
-								İlgi Alanlarım
-							</Animated.Text>
 							<View
-								style={[
-									{
-										width: "100%",
-										height: "100%",
-									},
-								]}
+								name={"Hobbies"}
+								style={[styles.inputContainer, { backgroundColor: colors.white }]}
 							>
-								<FlatList
-									// style={{ backgroundColor: "blue" }}
-									contentContainerStyle={{
-										alignItems: "flex-end",
-										paddingBottom: 12,
-										paddingHorizontal: 20,
-									}}
-									keyExtractor={(item) => item.InterestName}
-									horizontal={true}
-									showsHorizontalScrollIndicator={false}
-									data={hobbies}
-									renderItem={({ item }) => {
-										return (
-											<Text style={{ color: colors.black, fontSize: 20 }}>{item.InterestName}</Text>
-										);
-									}}
-									ItemSeparatorComponent={() =>
-										// prettier-ignore
-										<Text style={{ color: colors.gray, fontSize: 20 }}>  |  </Text>
-									}
-								/>
+								<Animated.Text
+									style={[
+										styles.placeHolder,
+										{
+											transform: [
+												{
+													translateY:
+														hobbies == ""
+															? hobbiesRef.interpolate({
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
+															: -20,
+												},
+											],
+											fontSize:
+												hobbies == ""
+													? hobbiesRef.interpolate({
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
+													: 15,
+										},
+									]}
+								>
+									İlgi Alanlarım
+								</Animated.Text>
+								<View
+									style={[
+										{
+											width: "100%",
+											height: "100%",
+										},
+									]}
+								>
+									<FlatList
+										// style={{ backgroundColor: "blue" }}
+										contentContainerStyle={{
+											alignItems: "flex-end",
+											paddingBottom: 12,
+											paddingHorizontal: 20,
+										}}
+										keyExtractor={(item) => item.InterestName}
+										horizontal={true}
+										showsHorizontalScrollIndicator={false}
+										data={hobbies}
+										renderItem={({ item }) => {
+											return (
+												<Text style={{ color: colors.black, fontSize: 20 }}>
+													{item.InterestName}
+												</Text>
+											);
+										}}
+										ItemSeparatorComponent={() =>
+											// prettier-ignore
+											<Text style={{ color: colors.gray, fontSize: 20 }}>  |  </Text>
+										}
+									/>
+								</View>
 							</View>
-
-							{/* <TextInput
-								editable={isEditable}
-								style={[styles.input, { color: colors.black }]}
-								onChangeText={setHobbies}
-								value={hobbies}
-								onFocus={() => {
-									handleFocus(hobbiesRef);
-								}}
-								onBlur={() => {
-									if (hobbies == "") handleBlur(hobbiesRef);
-								}}
-							/> */}
-						</View>
-
+						</Pressable>
 						<View
 							name={"About"}
 							style={[
@@ -1021,7 +1015,14 @@ export default function Profile({ route, navigation }) {
 			</ScrollView>
 
 			<CustomPicker
-				data={GENDER_LIST}
+				data={GenderList}
+				visible={modalVisible}
+				setVisible={setModalVisibile}
+				setChoice={setSex}
+			/>
+
+			<CustomPicker
+				data={GenderList}
 				visible={modalVisible}
 				setVisible={setModalVisibile}
 				setChoice={setSex}

@@ -490,12 +490,12 @@ export default function EventCards({ navigation, route }) {
 				style={{
 					backgroundColor: "#F4F3F3",
 					height: height * 0.15,
-					width: "100%",
+					width: width,
 					flexDirection: "row",
 					justifyContent: "space-between",
 					paddingHorizontal: 20,
-					paddingVertical: 25,
-					alignItems: "flex-end",
+					paddingTop: height * 0.05,
+					alignItems: "center",
 					elevation: 10,
 				}}
 			>
@@ -506,8 +506,12 @@ export default function EventCards({ navigation, route }) {
 				>
 					<Ionicons name="arrow-back-outline" size={30} color="black" />
 				</TouchableOpacity>
-				<Text style={{}}>dorm</Text>
-				<Ionicons name="arrow-back-outline" size={30} color="#F4F3F3" />
+				<Image
+					source={require("../../assets/dorm_text.png")}
+					resizeMode="center"
+					style={{ maxWidth: "30%", height: "40%" }}
+				/>
+				<Ionicons name="arrow-back-outline" size={30} color="transparent" />
 			</View>
 
 			<Carousel
