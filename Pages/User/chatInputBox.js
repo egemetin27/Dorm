@@ -12,7 +12,7 @@ const InputBox = (props) => {
 
     const sendMessage = async() =>{
         try {
-            /*
+            
             const newMessageData = await API.graphql(
                 graphqlOperation(
                     createSentMsg,
@@ -27,8 +27,8 @@ const InputBox = (props) => {
                     }
                 )
             )
-            */
-            console.log(props.otherUser);
+            
+            console.log(props.otherUser.pushToken);
         } catch (e) {
             console.log(e);
         }
@@ -52,6 +52,27 @@ const InputBox = (props) => {
             console.log(e);
         }
     }
+    const sendNotification = async() =>{
+        try {
+            console.log(props.otherUser.pushToken);
+            console.log(message);
+            let response = fetch ('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: props.otherUser.pushToken,
+                    sound: 'default',
+                    title: props.otherUser.name,
+                    body: message
+                })
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     return (
         <View style = {{flexDirection: "row", margin: 10, alignItems: "flex-end"}}>
@@ -69,10 +90,14 @@ const InputBox = (props) => {
             <TouchableOpacity 
                 name = {"sendMsgButton"}
                 onPress = {() => {
-                    //console.log(message);
-                    sendMessage();
-                    updateChat();
-                    setMessage("");
+                    console.log(message);
+                    if (message != "") {
+                        sendMessage();
+                        updateChat();
+                        setMessage("");
+                        sendNotification();  
+                    }
+                    
                 }}
                 style= {{backgroundColor: "blue", borderRadius: 45, width: 45, height: 45, justifyContent: "center", alignItems: "center"}}
             >

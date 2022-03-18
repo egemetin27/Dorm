@@ -404,13 +404,10 @@ export default function MainPage({ navigation }) {
 		let finalStatus = await existingStatus;
 		console.log(existingStatus);
 		console.log(finalStatus);
-		if(existingStatus != "granted")
+		if(existingStatus != "granted" && Platform.OS == "ios")
 		{
-			if (Platform.OS == "ios") {
-				const { status } = await Notifications.requestPermissionsAsync();
-				finalStatus = status;				
-			}
-			
+			const { status } = await Notifications.requestPermissionsAsync();
+			finalStatus = status;				
 		}
 		if(finalStatus != "granted") {
 			alert("Failed to get push token for notifications.");
@@ -457,12 +454,11 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
-		/*
+		
 		const token = await registerForPushNotificationAsync();
 		console.log("-----------------");
 		console.log(token);
 		console.log("-----------------");
-		*/
 		const userName = userData.Name;
 		async function fetchUser() {
 			const newUser = {
