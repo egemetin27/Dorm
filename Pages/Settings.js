@@ -298,6 +298,7 @@ export default function Settings({ navigation, route }) {
 		campusGhost: ghost,
 		schoolLover: onlyCampus,
 		userID,
+		sesToken,
 	} = route.params || { invisibility: true, campusGhost: true, schoolLover: true };
 
 	const { signOut } = React.useContext(AuthContext);
@@ -341,8 +342,13 @@ export default function Settings({ navigation, route }) {
 	const handleCampusGhost = (value) => {
 		setCampusGhost(value);
 		axios
-			.post(url + "/BlockCampus", { BlockCampus: value ? "1" : "0", UserId: userID }) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(
+				url + "/BlockCampus",
+				{ BlockCampus: value ? "1" : "0", UserId: userID },
+				{ headers: { "access-token": sesToken } }
+			) // There is a typo (not Change but Chage) TODO: make userID variable
 			.then(async (res) => {
+				console.log(res.data);
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, BlockCampus: value ? "1" : "0" };

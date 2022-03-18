@@ -187,44 +187,12 @@ export default function StackNavigator() {
 	const [introShown, setIntroShown] = React.useState(); // is this the firs time the app is opened
 	const [tutorialShown, setTutorialShown] = React.useState(); // is the tutorial screen shown before
 
-	React.useEffect(() => {
-		async function prepare() {
-			try {
-				// await AsyncStorage.removeItem("isLoggedIn");
-
-				// Keep the splash screen visible while we fetch resources
-				await SplashScreen.preventAutoHideAsync();
-
-				await AsyncStorage.getItem("introShown").then((res) => {
-					// set intro shown value to true or false according to the data in local storage
-					setIntroShown(res == "yes" ? true : false);
-				});
-
-				await AsyncStorage.getItem("tutorialShown").then((res) => {
-					// set tutorial shown value to true or false according to the data in local storage
-					setTutorialShown(res == "yes" ? true : false);
-				});
-
-				await AsyncStorage.getItem("isLoggedIn").then((res) => {
-					// set logged in value to true or false according to the data in local storage
-					setIsLoggedIn(res == "yes" ? true : false);
-				});
-			} catch (e) {
-				console.warn(e);
-			} finally {
-				setAppIsReady(true); // app is ready
-			}
-		}
-
-		prepare();
-	}, []);
-
 	const authContext = React.useMemo(() => ({
 		signIn: async ({ email, password }) => {
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 			const dataToBeSent = { Mail: email, password: encryptedPassword };
 
-			axios
+			await axios
 				.post(url + "/Login", dataToBeSent)
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
@@ -238,6 +206,7 @@ export default function StackNavigator() {
 						const userData = JSON.stringify({
 							...res.data,
 							password: password,
+							email: email,
 							Photo: photoList,
 						});
 
@@ -266,6 +235,46 @@ export default function StackNavigator() {
 		},
 	}));
 
+	React.useEffect(() => {
+		async function prepare() {
+			try {
+				// await AsyncStorage.removeItem("isLoggedIn");
+
+				// Keep the splash screen visible while we fetch resources
+				await SplashScreen.preventAutoHideAsync();
+
+				await AsyncStorage.getItem("introShown").then((res) => {
+					// set intro shown value to true or false according to the data in local storage
+					setIntroShown(res == "yes" ? true : false);
+				});
+
+				await AsyncStorage.getItem("tutorialShown").then((res) => {
+					// set tutorial shown value to true or false according to the data in local storage
+					setTutorialShown(res == "yes" ? true : false);
+				});
+
+				await AsyncStorage.getItem("isLoggedIn").then(async (res) => {
+					// set logged in value to true or false according to the data in local storage
+
+					if (res == "yes") {
+						const { signIn } = authContext;
+						const userStr = await SecureStore.getItemAsync("userData");
+						const { email, password } = JSON.parse(userStr);
+						await signIn({ email: email, password: password });
+					} else {
+						setIsLoggedIn(false);
+					}
+				});
+			} catch (e) {
+				console.warn(e);
+			} finally {
+				setAppIsReady(true); // app is ready
+			}
+		}
+
+		prepare();
+	}, []);
+
 	const onLayoutRootView = React.useCallback(async () => {
 		if (appIsReady) {
 			await SplashScreen.hideAsync(); // hide splash screen if the app is ready
@@ -277,6 +286,7 @@ export default function StackNavigator() {
 	} else {
 		return (
 			<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+				<StatusBar style={"auto"} />
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator
@@ -294,7 +304,7 @@ export default function StackNavigator() {
 							{isLoggedIn ? (
 								// Screens for logged in users
 								<Stack.Group screenOptions={{ headerShown: false }}>
-									<Stack.Screen name="Tutorial" component={Tutorial} />
+									{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
 									<Stack.Screen name="Chat" component={Chat} />

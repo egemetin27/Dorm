@@ -21,7 +21,7 @@ import { Gradient, colors } from "../../visualComponents/colors";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 import { CustomPicker } from "../../visualComponents/customComponents";
-import { UnivList } from "../../nonVisualComponents/Lists";
+import { univList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
 
@@ -499,7 +499,7 @@ export default function Register({ navigation }) {
 
 			<CustomPicker
 				style={{ width: width * 0.7, height: height * 0.6, maxWidth: 300, maxHeight: 500 }}
-				data={UnivList}
+				data={univList}
 				visible={univListVisible}
 				setVisible={setUnivListVisible}
 				setChoice={setUniversity}

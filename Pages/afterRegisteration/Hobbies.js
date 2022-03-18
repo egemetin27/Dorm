@@ -21,7 +21,7 @@ const { height, width } = Dimensions.get("window");
 
 export default function Hobbies({ navigation, route }) {
 	const [hobbies, setHobbies] = React.useState(
-		route.params?.hobbyList.map((item) => item.InterestName) || []
+		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
 	const { userID, email, password } = route.params;
 

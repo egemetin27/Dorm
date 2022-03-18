@@ -125,7 +125,12 @@ export default function PhotoUpload({ navigation, route }) {
 						Photo: newList,
 					});
 					await SecureStore.setItemAsync("userData", storedValue);
-					navigation.replace("Hobbies", { userID: userID, email: email, password: password });
+					navigation.replace("Hobbies", {
+						userID: userID,
+						email: email,
+						password: password,
+						hobbyList: [],
+					});
 				})
 				.catch((err) => {
 					console.log(err);

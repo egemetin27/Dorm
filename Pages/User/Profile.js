@@ -24,7 +24,7 @@ import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
-import { GenderList } from "../../nonVisualComponents/Lists";
+import { genderList, signList } from "../../nonVisualComponents/Lists";
 const { height, width } = Dimensions.get("window");
 
 export default function Profile({ route, navigation }) {
@@ -33,7 +33,8 @@ export default function Profile({ route, navigation }) {
 	const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
 
 	const [isEditable, setEditibility] = React.useState(false);
-	const [modalVisible, setModalVisibile] = React.useState(false);
+	const [genderVisible, setGenderVisible] = React.useState(false);
+	const [signVisible, setSignVisible] = React.useState(false);
 
 	const [userID, setUserID] = React.useState(null);
 
@@ -87,7 +88,7 @@ export default function Profile({ route, navigation }) {
 		setUserID(data.UserId);
 		setName(data.Name + " " + data.Surname);
 		setAge(getAge(data.Birth_date));
-		setSex(GenderList[data.Gender]);
+		setSex(genderList[data.Gender]);
 		setSchool(data.School);
 		setMajor(data.Major);
 		setReligion(data.Din);
@@ -245,6 +246,7 @@ export default function Profile({ route, navigation }) {
 										campusGhost: user.BlockCampus == "1" ? true : false,
 										schoolLover: user.OnlyCampus == "1" ? true : false,
 										userID: user.UserId,
+										sesToken: user.sesToken,
 									});
 								}}
 							>
@@ -435,7 +437,7 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setModalVisibile(true);
+												setGenderVisible(true);
 										  }
 										: () => {}
 								}
@@ -725,18 +727,17 @@ export default function Profile({ route, navigation }) {
 							>
 								Burcum
 							</Animated.Text>
-							<TextInput
-								editable={isEditable}
-								style={[styles.input, { color: colors.black }]}
-								onChangeText={setSign}
-								value={sign}
-								onFocus={() => {
-									handleFocus(signRef);
-								}}
-								onBlur={() => {
-									if (sign == "") handleBlur(signRef);
-								}}
-							/>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setSignVisible(true);
+										  }
+										: () => {}
+								}
+							>
+								<Text style={[styles.input, { color: colors.black }]}>{sign.choice}</Text>
+							</Pressable>
 						</View>
 
 						<View name={"Diet"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
@@ -1015,17 +1016,18 @@ export default function Profile({ route, navigation }) {
 			</ScrollView>
 
 			<CustomPicker
-				data={GenderList}
-				visible={modalVisible}
-				setVisible={setModalVisibile}
+				data={genderList}
+				visible={genderVisible}
+				setVisible={setGenderVisible}
 				setChoice={setSex}
 			/>
 
 			<CustomPicker
-				data={GenderList}
-				visible={modalVisible}
-				setVisible={setModalVisibile}
-				setChoice={setSex}
+				data={signList}
+				visible={signVisible}
+				setVisible={setSignVisible}
+				setChoice={setSign}
+				style={{ height: height * 0.5, width: width * 0.6 }}
 			/>
 		</View>
 	);

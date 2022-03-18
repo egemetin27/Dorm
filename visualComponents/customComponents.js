@@ -123,6 +123,7 @@ export const CustomPicker = ({ style, visible, setVisible, data, setChoice }) =>
 		>
 			<View style={[styles.pickerContainer, style]}>
 				<FlatList
+					style={{ width: "100%" }}
 					showsVerticalScrollIndicator={false}
 					data={data}
 					renderItem={({ item }) => (
@@ -138,7 +139,7 @@ export const CustomPicker = ({ style, visible, setVisible, data, setChoice }) =>
 								setVisible(false);
 							}}
 						>
-							<Text style={{ fontSize: width / 22 }}>{item.choice}</Text>
+							<Text style={{ fontSize: width / 22, textAlign: "center" }}>{item.choice}</Text>
 						</TouchableOpacity>
 					)}
 				/>
