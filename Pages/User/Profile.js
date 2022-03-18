@@ -20,8 +20,7 @@ import Carousel from "react-native-reanimated-carousel";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
-import { CustomModal, CustomPicker } from "../../visualComponents/customComponents";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
@@ -909,9 +908,7 @@ export default function Profile({ route, navigation }) {
 										paddingBottom: 12,
 										paddingHorizontal: 20,
 									}}
-									keyExtractor={(item) => {
-										item.InterestName;
-									}}
+									keyExtractor={(item) => item.InterestName}
 									horizontal={true}
 									showsHorizontalScrollIndicator={false}
 									data={hobbies}

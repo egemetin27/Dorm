@@ -11,6 +11,7 @@ import {
 	ScrollView,
 	Alert,
 	BackHandler,
+	ActivityIndicator,
 } from "react-native";
 import { Octicons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
@@ -30,8 +31,9 @@ import { createMsgUser } from "../../src/graphql/mutations";
 
 const CategoryList = [
 	{
-		key: "Tüm Etkinlikler",
-		url: "",
+		key: "Tümü",
+		// url: "",
+		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
 	},
 	{
 		key: "Favorilerin",
@@ -95,7 +97,8 @@ const People = ({ person, openProfiles, index, length }) => {
 			)}
 
 			<Gradient
-				colors={["rgba(0,0,0,0.005)", "rgba(0,0,0,0.3)"]}
+				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+				locations={[0, 0.1, 1]}
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
@@ -107,17 +110,51 @@ const People = ({ person, openProfiles, index, length }) => {
 					paddingBottom: width * 0.02,
 				}}
 			>
-				<Text
+				{/* <Text
+					numberOfLines={1}
+					// ellipsizeMode={"clip"}
 					style={{
+						overflow: "scroll",
 						color: colors.white,
 						fontSize: width * 0.045,
-						paddingLeft: 10,
+						paddingHorizontal: 10,
 						fontWeight: "bold",
 						letterSpacing: 1.05,
 					}}
+				> */}
+				<View
+					style={{
+						flexDirection: "row",
+						paddingHorizontal: 10,
+					}}
 				>
-					{name} • {age}
-				</Text>
+					<View style={{ flexShrink: 1 }}>
+						<Text
+							numberOfLines={1}
+							style={{
+								width: "100%",
+								color: colors.white,
+								fontSize: width * 0.045,
+								fontWeight: "bold",
+								letterSpacing: 1.05,
+							}}
+						>
+							{name}
+						</Text>
+					</View>
+					<Text
+						style={{
+							color: colors.white,
+							fontSize: width * 0.045,
+							fontWeight: "bold",
+							letterSpacing: 1.05,
+						}}
+					>
+						{" "}
+						• {age}
+					</Text>
+				</View>
+				{/* </Text> */}
 				<Text
 					style={{
 						color: colors.white,
@@ -226,6 +263,8 @@ const Category = ({
 
 				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center" }}>
 					<Text
+						numberOfLines={1}
+						adjustsFontSizeToFit={true}
 						style={{
 							fontSize: width * 0.035,
 							color: selectedCategory == index ? colors.white : colors.cool_gray,
@@ -260,7 +299,8 @@ const Event = ({ event, openEvents, index, length }) => {
 				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 			/>
 			<Gradient
-				colors={["rgba(0,0,0,0.005)", "rgba(0,0,0,0.3)"]}
+				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+				locations={[0, 0.1, 1]}
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
@@ -271,6 +311,7 @@ const Event = ({ event, openEvents, index, length }) => {
 				}}
 			>
 				<Text
+					numberOfLines={1}
 					style={{
 						color: colors.white,
 						fontSize: width * 0.045,
@@ -321,6 +362,7 @@ const Event = ({ event, openEvents, index, length }) => {
 						style={{ paddingLeft: 10 }}
 					/>
 					<Text
+						numberOfLines={1}
 						style={{
 							color: colors.white,
 							fontSize: width * 0.035,
@@ -336,6 +378,7 @@ const Event = ({ event, openEvents, index, length }) => {
 };
 
 export default function MainPage({ navigation }) {
+	const [isAppReady, setIsAppReady] = React.useState(false);
 	const [selectedCategory, setSelectedCategory] = React.useState(0);
 	const [eventList, setEventList] = React.useState([]);
 	const [shownEvents, setShownEvents] = React.useState([]);
@@ -343,47 +386,35 @@ export default function MainPage({ navigation }) {
 	const [myID, setMyID] = React.useState(null);
 	const eventsRef = React.useRef();
 
-	React.useEffect(() => {
-		if (shownEvents.length > 0) eventsRef.current.scrollToIndex({ index: 0 });
-	});
-
 	React.useEffect(async () => {
 		let abortController = new AbortController();
-
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
-		const userID = userData.UserId;
+		const userID = userData.UserId.toString();
 		setMyID(userID);
-		await axios
-			.post(url + "/Swipelist", { UserId: userID })
-			.then((res) => {
-				setPeopleList(res.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-		await axios
-			.post(url + "/EventList", { UserId: userID })
-			.then((res) => {
-				setEventList(res.data);
-				setShownEvents(res.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
 
-		return () => {
-			abortController.abort();
-		};
-	}, []);
+		async function prepare() {
+			await axios
+				.post(url + "/Swipelist", { UserId: userID })
+				.then((res) => {
+					setPeopleList(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+			await axios
+				.post(url + "/EventList", { UserId: userID })
+				.then((res) => {
+					setEventList(res.data);
+					setShownEvents(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
 
-	React.useEffect(async () => {
-		const dataStr = await SecureStore.getItemAsync("userData");
-		const data = JSON.parse(dataStr);
-
-		const userID = data.UserId.toString();
-		const userName = data.Name;
-		const fetchUser = async () => {
+		const userName = userData.Name;
+		async function fetchUser() {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
@@ -401,9 +432,20 @@ export default function MainPage({ navigation }) {
 			await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
 
 			console.log("New user created");
-		};
+		}
 
-		fetchUser();
+		try {
+			await prepare();
+			await fetchUser();
+		} catch (err) {
+			console.log(err);
+		} finally {
+			setIsAppReady(true);
+		}
+
+		return () => {
+			abortController.abort();
+		};
 	}, []);
 
 	React.useEffect(() => {
@@ -423,6 +465,22 @@ export default function MainPage({ navigation }) {
 
 		return () => backHandler.remove();
 	}, []);
+
+	React.useEffect(() => {
+		if (eventsRef.current && shownEvents.length > 0) {
+			eventsRef.current.scrollToIndex({ index: 0 });
+		}
+	});
+
+	if (!isAppReady) {
+		return (
+			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
+				<StatusBar style="dark" />
+
+				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+			</View>
+		);
+	}
 
 	return (
 		<View style={commonStyles.Container}>
@@ -462,9 +520,7 @@ export default function MainPage({ navigation }) {
 				>
 					{peopleList.length > 0 ? (
 						<FlatList
-							keyExtractor={(item) => {
-								item.UserId.toString();
-							}}
+							keyExtractor={(item) => item.UserId.toString()}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
 							data={peopleList}
@@ -479,7 +535,6 @@ export default function MainPage({ navigation }) {
 										arr.splice(idx, 1);
 										arr.splice(0, 0, element);
 										navigation.navigate("ProfileCards", {
-											idx: idx,
 											list: arr,
 											myID: myID,
 										});
@@ -540,9 +595,7 @@ export default function MainPage({ navigation }) {
 							ref={eventsRef}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
-							keyExtractor={(item) => {
-								item.EventId.toString();
-							}}
+							keyExtractor={(item) => item.EventId.toString()}
 							data={shownEvents}
 							renderItem={({ item, index }) => (
 								<Event
@@ -553,6 +606,7 @@ export default function MainPage({ navigation }) {
 										navigation.navigate("EventCards", {
 											idx: idx,
 											list: shownEvents,
+											myID: myID,
 										});
 									}}
 								/>
@@ -569,6 +623,7 @@ const styles = StyleSheet.create({
 	categoryIcon: {
 		marginTop: "10%",
 		height: "80%",
+		maxWidth: "50%",
 		resizeMode: "contain",
 	},
 });

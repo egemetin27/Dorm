@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image, Dimensions, Pressable, TouchableOpacity } from "react-native";
+import { Text, View, Image, Dimensions, Pressable, TouchableOpacity, Alert } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
@@ -69,6 +69,10 @@ export default function PhotoUpload({ navigation, route }) {
 
 	const handleSave = async () => {
 		try {
+			if (photoList == []) {
+				Alert.alert("Hata!", "En az bir fotoğraf yüklemelisin", [{ text: "Kontrol Edeyim" }]);
+				return;
+			}
 			const newList = await Promise.all(
 				photoList.map(async (item, index) => {
 					if (item?.photo ?? false) {
