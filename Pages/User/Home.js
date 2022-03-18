@@ -398,25 +398,24 @@ export default function MainPage({ navigation }) {
 	const [myID, setMyID] = React.useState(null);
 	const eventsRef = React.useRef();
 
-	async function registerForPushNotificationAsync(){
+	async function registerForPushNotificationAsync() {
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
-		let finalStatus = await existingStatus;
-		console.log(existingStatus);
-		console.log(finalStatus);
-		if(existingStatus != "granted" && Platform.OS == "ios")
-		{
+		let finalStatus = existingStatus;
+		console.log({ existingStatus });
+		console.log({ finalStatus });
+		if (existingStatus != "granted" && Platform.OS == "ios") {
 			const { status } = await Notifications.requestPermissionsAsync();
-			finalStatus = status;				
+			finalStatus = status;
 		}
-		if(finalStatus != "granted") {
+		if (finalStatus != "granted") {
 			alert("Failed to get push token for notifications.");
 			return null;
 		}
 		token = (await Notifications.getExpoPushTokenAsync()).data;
 		console.log(token);
 
-		if(Platform.OS == "android"){
+		if (Platform.OS == "android") {
 			Notifications.setNotificationChannelAsync("default", {
 				name: "default",
 				importance: Notifications.AndroidImportance.MAX,
@@ -454,11 +453,10 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
-		
-		const token = await registerForPushNotificationAsync();
-		console.log("-----------------");
-		console.log(token);
-		console.log("-----------------");
+		// const token = await registerForPushNotificationAsync();
+		// console.log("-----------------");
+		// console.log(token);
+		// console.log("-----------------");
 		const userName = userData.Name;
 		async function fetchUser() {
 			const newUser = {
@@ -470,14 +468,17 @@ export default function MainPage({ navigation }) {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
-				await API.graphql(graphqlOperation(updateMsgUser, {input: {id: userID, name: userName, pushToken: token}}))
+				await API.graphql(
+					graphqlOperation(updateMsgUser, {
+						input: { id: userID, name: userName, pushToken: token },
+					})
+				);
 
 				return;
 			} else {
 				console.log("User does not exists");
 			}
 
-			
 			console.log(newUser);
 			await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
 

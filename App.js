@@ -7,12 +7,8 @@ Amplify.configure(awsmobile);
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
-
 import Temp from "./Pages/Temp";
-import Temp2 from "./Pages/User/Temp2";
 
-import Settings from "./Pages/Settings";
-import Chat from "./Pages/User/Chat";
 export default function App() {
 	return <Stack />;
 	// return <Temp />;
