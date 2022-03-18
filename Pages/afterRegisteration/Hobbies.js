@@ -20,7 +20,9 @@ import { url } from "../../connection";
 const { height, width } = Dimensions.get("window");
 
 export default function Hobbies({ navigation, route }) {
-	const [hobbies, setHobbies] = React.useState([]);
+	const [hobbies, setHobbies] = React.useState(
+		route.params?.hobbyList.map((item) => item.InterestName) || []
+	);
 	const { userID, email, password } = route.params;
 
 	const { signIn } = React.useContext(AuthContext);
@@ -33,10 +35,16 @@ export default function Hobbies({ navigation, route }) {
 			.then(async (res) => {
 				if (email == "" && password == "") {
 					// TODO: hobbies is not as the same format as hobbies that is come from backend
+					const newHobbyList = hobbies.map((item) => {
+						return { InterestName: item };
+					});
+
 					const dataStr = await SecureStore.getItemAsync("userData");
 					const data = JSON.parse(dataStr);
-					const newData = { ...data, interest: hobbies };
+					const newData = { ...data, interest: newHobbyList };
+
 					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
+					navigation.replace("MainScreen", { screen: "Profile" });
 				} else {
 					signIn({ email: email, password: password });
 				}
@@ -292,7 +300,7 @@ export default function Hobbies({ navigation, route }) {
 }
 
 const Item = ({ item, value, setValue }) => {
-	const [activity, setActivity] = React.useState(false);
+	const [activity, setActivity] = React.useState(value.includes(item.key));
 
 	const toggleActivity = () => {
 		if (!activity && value.length < 5) {

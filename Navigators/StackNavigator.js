@@ -277,7 +277,6 @@ export default function StackNavigator() {
 	} else {
 		return (
 			<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-				<StatusBar style={"auto"} />
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator

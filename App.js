@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import {API} from "aws-amplify";
-import Amplify from 'aws-amplify'
-import awsmobile from './src/aws-exports'
-Amplify.configure(awsmobile)
+import { API } from "aws-amplify";
+import Amplify from "aws-amplify";
+import awsmobile from "./src/aws-exports";
+Amplify.configure(awsmobile);
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
@@ -12,7 +12,7 @@ import Temp from "./Pages/Temp";
 import Temp2 from "./Pages/User/Temp2";
 
 import Settings from "./Pages/Settings";
-import Chat from "./Pages/User/Chat"
+import Chat from "./Pages/User/Chat";
 export default function App() {
 	return <Stack />;
 	// return <Temp />;

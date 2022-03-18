@@ -3,11 +3,12 @@ import {
 	StyleSheet,
 	View,
 	TouchableOpacity,
-	FlatList,
 	Dimensions,
 	Pressable,
 	Image,
 	Text,
+	ActivityIndicator,
+	BackHandler,
 } from "react-native";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -65,13 +66,25 @@ export default function ProfilePhotos({ route, navigation }) {
 	const [modalVisible, setModalVisibility] = React.useState(false);
 	const [toBeDeleted, setToBeDeleted] = React.useState(null);
 	const [PHOTO_LIST, setPhotoList] = React.useState(route.params?.photoList || []);
+	const [isLoading, setIsLoading] = React.useState(false);
 
 	const { userID } = route.params;
 
-	const handleDelete = () => {
+	React.useEffect(() => {
+		const backAction = () => {
+			handleSave();
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
+	}, []);
+
+	const handleDelete = async () => {
 		//TODO: delete "toBeDeleted"
 		const filtered = [];
-		for (item of PHOTO_LIST) {
+		for (const item of PHOTO_LIST) {
 			if (item.Photo_Order != toBeDeleted.Photo_Order) {
 				if (item.Photo_Order > toBeDeleted.Photo_Order) {
 					filtered.push({ ...item, Photo_Order: item.Photo_Order - 1 });
@@ -80,29 +93,36 @@ export default function ProfilePhotos({ route, navigation }) {
 				}
 			}
 		}
-		console.log(filtered);
+
+		if (toBeDeleted?.photo == undefined) {
+			const response = await axios.post(url + "/deleteS3Photo", {
+				photoName: toBeDeleted.PhotoLink.split("/")[3],
+			});
+			console.log(response.data);
+		}
+
 		setPhotoList(filtered);
 		setModalVisibility(false);
 	};
 
 	const pickImage = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [2, 3],
-			quality: 1,
-		});
-		if (!result.cancelled) {
-			handleAdd(result);
+		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
+		if (!granted) {
+			await ImagePicker.requestMediaLibraryPermissionsAsync(false);
+		} else {
+			let result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [2, 3],
+				quality: 1,
+			});
+			if (!result.cancelled) {
+				handleAdd(result);
+			}
 		}
 	};
 
 	const handleAdd = (photo) => {
-		console.log({
-			Photo_Order: PHOTO_LIST.length + 1,
-			PhotoLink: photo.uri,
-			photo: photo,
-		});
 		setPhotoList([
 			...PHOTO_LIST,
 			{
@@ -115,6 +135,7 @@ export default function ProfilePhotos({ route, navigation }) {
 
 	const handleSave = async () => {
 		try {
+			setIsLoading(true);
 			const newList = await Promise.all(
 				PHOTO_LIST.map(async (item, index) => {
 					if (item?.photo ?? false) {
@@ -171,7 +192,7 @@ export default function ProfilePhotos({ route, navigation }) {
 						Photo: newList,
 					});
 					await SecureStore.setItemAsync("userData", storedValue);
-
+					setIsLoading(false);
 					navigation.replace("MainScreen", {
 						screen: "Profile",
 						photoList: newList,
@@ -190,13 +211,7 @@ export default function ProfilePhotos({ route, navigation }) {
 			<StatusBar style="dark" />
 			<View name={"Header"} style={commonStyles.Header}>
 				<View style={{ marginLeft: 20 }}>
-					<TouchableOpacity
-						onPress={() => {
-							navigation.navigate("MainScreen", {
-								screen: "Profile",
-							});
-						}}
-					>
+					<TouchableOpacity onPress={handleSave}>
 						<Feather name="arrow-left" size={30} color={colors.gray} style={{ paddingLeft: 15 }} />
 					</TouchableOpacity>
 				</View>
@@ -236,7 +251,7 @@ export default function ProfilePhotos({ route, navigation }) {
 					position: "relative",
 				}}
 			>
-				<Text style={{ fontSize: 18, color: colors.medium_gray }}>
+				<Text style={{ fontSize: width * 0.04, color: colors.medium_gray }}>
 					En sevdiğin fotoğraflarından 4 tane seçebilirsin
 				</Text>
 			</View>
@@ -251,7 +266,15 @@ export default function ProfilePhotos({ route, navigation }) {
 			>
 				<View style={styles.modalContainer}>
 					<Image source={require("../../assets/sadFace.png")} />
-					<Text style={{ color: colors.dark_gray, fontSize: 16, marginTop: 10 }}>
+					<Text
+						style={{
+							color: colors.dark_gray,
+							fontSize: width * 0.042,
+							fontWeight: "500",
+							marginTop: 10,
+							textAlign: "center",
+						}}
+					>
 						Fotoğrafını profilinden kaldırmak üzeresin. Emin misin?{"\n"}
 						{"\n"}Tabii tekrar galerinden ekleyebilirsin
 					</Text>
@@ -278,6 +301,20 @@ export default function ProfilePhotos({ route, navigation }) {
 					</TouchableOpacity>
 				</View>
 			</CustomModal>
+			{isLoading && (
+				<View
+					style={[
+						commonStyles.Container,
+						{
+							position: "absolute",
+							justifyContent: "center",
+							backgroundColor: "rgba(128,128,128,0.5)",
+						},
+					]}
+				>
+					<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+				</View>
+			)}
 		</View>
 	);
 }
@@ -305,7 +342,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 23,
 		borderRadius: 20,
 		backgroundColor: colors.white,
-		width: width * 0.7,
+		width: width * 0.8,
 		aspectRatio: 1 / 1,
 		alignItems: "center",
 		justifyContent: "center",

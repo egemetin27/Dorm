@@ -20,13 +20,11 @@ import Carousel from "react-native-reanimated-carousel";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
-import { CustomModal, CustomPicker } from "../../visualComponents/customComponents";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
-import Gender from "../afterRegisteration/Gender";
-
+import { GenderList } from "../../nonVisualComponents/Lists";
 const { height, width } = Dimensions.get("window");
 
 export default function Profile({ route, navigation }) {
@@ -39,8 +37,8 @@ export default function Profile({ route, navigation }) {
 
 	const [userID, setUserID] = React.useState(null);
 
-	const [name, setName] = React.useState(""); // get these info from backend
-	const [major, setMajor] = React.useState(""); // get these info from backend
+	const [name, setName] = React.useState("");
+	const [major, setMajor] = React.useState("");
 	const [age, setAge] = React.useState("");
 	const [sex, setSex] = React.useState("");
 	const [school, setSchool] = React.useState("");
@@ -52,6 +50,23 @@ export default function Profile({ route, navigation }) {
 	const [hobbies, setHobbies] = React.useState("");
 	const [about, setAbout] = React.useState("");
 	const [PHOTO_LIST, setPhotoList] = React.useState("");
+
+	// const [userData, setUserData] = React.useState({
+	// 	userID: "",
+	// 	name: "",
+	// 	major: "",
+	// 	age: "",
+	// 	sex: "",
+	// 	school: "",
+	// 	religion: "",
+	// 	sign: "",
+	// 	diet: "",
+	// 	alcohol: "",
+	// 	smoke: "",
+	// 	hobbies: "",
+	// 	about: "",
+	// 	PhotoList: "",
+	// });
 
 	const [city, setCity] = React.useState([0, 1, 0]);
 
@@ -65,43 +80,15 @@ export default function Profile({ route, navigation }) {
 	const hobbiesRef = React.useRef(new Animated.Value(0)).current;
 	const aboutRef = React.useRef(new Animated.Value(0)).current;
 
-	const GENDER_LIST = [
-		{ key: 0, choice: "Kadın" },
-		{ key: 1, choice: "Erkek" },
-		{ key: 2, choice: "Non-Binary" },
-		{ key: 3, choice: "Belirtmek İstemiyorum" },
-	];
-
-	// const PHOTO_LIST = route.params?.photoList ?? [];
-
-	// const [PHOTO_LIST, setPhotoList] = React.useState([
-	// 	{
-	// 		key: 1,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/1f85541f-853d-4741-bbcb-06929f058d7d.jpg",
-	// 	},
-	// 	{
-	// 		key: 2,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/6bb520a0-9e1b-4757-9bb4-6de742b19d78.jpg",
-	// 	},
-	// 	{
-	// 		key: 3,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/a8e8b42d-477b-4173-8eeb-ede5747f367b.jpg",
-	// 	},
-	// 	{
-	// 		key: 4,
-	// 		url: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540cankrmn%252FDorm/ImagePicker/f597e788-e7c5-4b0a-8726-f80527c14c40.jpg",
-	// 	},
-	// ]);
-
 	React.useEffect(async () => {
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
 
+		setUserID(data.UserId);
 		setName(data.Name + " " + data.Surname);
 		setAge(getAge(data.Birth_date));
-		setSex(GENDER_LIST[data.Gender]);
+		setSex(GenderList[data.Gender]);
 		setSchool(data.School);
-		setUserID(data.UserId);
 		setMajor(data.Major);
 		setReligion(data.Din);
 		setSign(data.Burc);
@@ -111,6 +98,23 @@ export default function Profile({ route, navigation }) {
 		setAbout(data.About);
 		setPhotoList(data.Photo);
 		setHobbies(data.interest);
+
+		// setUserData({
+		// 	userID: data.UserId,
+		// 	name: data.Name + " " + data.Surname,
+		// 	major: data.Major,
+		// 	age: getAge(data.Birth_date),
+		// 	sex: GENDER_LIST[data.Gender],
+		// 	school: data.School,
+		// 	religion: data.Din,
+		// 	sign: data.Burc,
+		// 	diet: data.Beslenme,
+		// 	alcohol: data.Alkol,
+		// 	smoke: data.Sigara,
+		// 	hobbies: data.interest,
+		// 	about: data.About,
+		// 	PhotoList: data.Photo,
+		// });
 	}, []);
 
 	const handleSave = async () => {
@@ -313,12 +317,13 @@ export default function Profile({ route, navigation }) {
 									<View style={[styles.photo]}>
 										<Pressable
 											onPress={() => {
-												isEditable
-													? navigation.navigate("ProfilePhotos", {
-															photoList: PHOTO_LIST,
-															userID: userID,
-													  })
-													: {};
+												if (isEditable) {
+													setEditibility(false);
+													navigation.navigate("ProfilePhotos", {
+														photoList: PHOTO_LIST,
+														userID: userID,
+													});
+												}
 											}}
 										>
 											<Image
@@ -863,84 +868,84 @@ export default function Profile({ route, navigation }) {
 							/>
 						</View>
 
-						<View
-							name={"Hobbies"}
-							style={[styles.inputContainer, { backgroundColor: colors.white }]}
+						<Pressable
+							disabled={!isEditable}
+							onPress={() => {
+								if (isEditable) {
+									navigation.replace("Hobbies", {
+										hobbyList: hobbies,
+										userID: userID,
+										email: "",
+										password: "",
+									});
+								}
+							}}
 						>
-							<Animated.Text
-								style={[
-									styles.placeHolder,
-									{
-										transform: [
-											{
-												translateY:
-													hobbies == ""
-														? hobbiesRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
-														: -20,
-											},
-										],
-										fontSize:
-											hobbies == ""
-												? hobbiesRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
-												: 15,
-									},
-								]}
-							>
-								İlgi Alanlarım
-							</Animated.Text>
 							<View
-								style={[
-									{
-										width: "100%",
-										height: "100%",
-									},
-								]}
+								name={"Hobbies"}
+								style={[styles.inputContainer, { backgroundColor: colors.white }]}
 							>
-								<FlatList
-									// style={{ backgroundColor: "blue" }}
-									contentContainerStyle={{
-										alignItems: "flex-end",
-										paddingBottom: 12,
-										paddingHorizontal: 20,
-									}}
-									keyExtractor={(item) => {
-										item.InterestName;
-									}}
-									horizontal={true}
-									showsHorizontalScrollIndicator={false}
-									data={hobbies}
-									renderItem={({ item }) => {
-										return (
-											<Text style={{ color: colors.black, fontSize: 20 }}>{item.InterestName}</Text>
-										);
-									}}
-									ItemSeparatorComponent={() =>
-										// prettier-ignore
-										<Text style={{ color: colors.gray, fontSize: 20 }}>  |  </Text>
-									}
-								/>
+								<Animated.Text
+									style={[
+										styles.placeHolder,
+										{
+											transform: [
+												{
+													translateY:
+														hobbies == ""
+															? hobbiesRef.interpolate({
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
+															: -20,
+												},
+											],
+											fontSize:
+												hobbies == ""
+													? hobbiesRef.interpolate({
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
+													: 15,
+										},
+									]}
+								>
+									İlgi Alanlarım
+								</Animated.Text>
+								<View
+									style={[
+										{
+											width: "100%",
+											height: "100%",
+										},
+									]}
+								>
+									<FlatList
+										// style={{ backgroundColor: "blue" }}
+										contentContainerStyle={{
+											alignItems: "flex-end",
+											paddingBottom: 12,
+											paddingHorizontal: 20,
+										}}
+										keyExtractor={(item) => item.InterestName}
+										horizontal={true}
+										showsHorizontalScrollIndicator={false}
+										data={hobbies}
+										renderItem={({ item }) => {
+											return (
+												<Text style={{ color: colors.black, fontSize: 20 }}>
+													{item.InterestName}
+												</Text>
+											);
+										}}
+										ItemSeparatorComponent={() =>
+											// prettier-ignore
+											<Text style={{ color: colors.gray, fontSize: 20 }}>  |  </Text>
+										}
+									/>
+								</View>
 							</View>
-
-							{/* <TextInput
-								editable={isEditable}
-								style={[styles.input, { color: colors.black }]}
-								onChangeText={setHobbies}
-								value={hobbies}
-								onFocus={() => {
-									handleFocus(hobbiesRef);
-								}}
-								onBlur={() => {
-									if (hobbies == "") handleBlur(hobbiesRef);
-								}}
-							/> */}
-						</View>
-
+						</Pressable>
 						<View
 							name={"About"}
 							style={[
@@ -1010,7 +1015,14 @@ export default function Profile({ route, navigation }) {
 			</ScrollView>
 
 			<CustomPicker
-				data={GENDER_LIST}
+				data={GenderList}
+				visible={modalVisible}
+				setVisible={setModalVisibile}
+				setChoice={setSex}
+			/>
+
+			<CustomPicker
+				data={GenderList}
 				visible={modalVisible}
 				setVisible={setModalVisibile}
 				setChoice={setSex}

@@ -1,5 +1,15 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions, Pressable, BackHandler } from "react-native";
+import {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	Dimensions,
+	Pressable,
+	BackHandler,
+	Linking,
+	Alert,
+} from "react-native";
 import {
 	ScrollView,
 	TouchableOpacity,
@@ -26,9 +36,10 @@ import { url } from "../../connection";
 
 const { width, height } = Dimensions.get("window");
 
-const Card = ({ event }) => {
+const Card = ({ event, myID, navigation }) => {
 	const {
 		EventId,
+		BuyLink,
 		Description: name,
 		Date: date,
 		StartTime: time,
@@ -79,13 +90,6 @@ const Card = ({ event }) => {
 		}
 	);
 
-	const arr = [
-		{ key: "A", color: "red" },
-		{ key: "B", color: "blue" },
-		{ key: "C", color: "green" },
-		{ key: "D", color: "orange" },
-	];
-
 	// how much the Fav star should go up relative to the height of the surrounding circle (height * constant = marginBottom)
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
@@ -105,6 +109,32 @@ const Card = ({ event }) => {
 				.catch((err) => console.log(err));
 		}
 		setFavFlag(!favFlag);
+	};
+
+	const explorePeople = async () => {
+		// TODO:
+
+		await axios
+			.post(url + "/eventParticipants", {
+				eventId: EventId,
+				UserId: myID,
+			})
+			.then((res) => {
+				if (res.data.length > 0) {
+					navigation.replace("ProfileCards", {
+						list: res.data,
+						myID: myID,
+					});
+				} else {
+					Alert.alert("Etkinliği Beğenen Kimse Yok :/");
+				}
+			})
+			.catch((err) => console.log(err));
+
+		// navigation.replace("ProfileCards", {
+		// 	list: [],
+		// 	myID: myID,
+		// });
 	};
 
 	return (
@@ -149,7 +179,7 @@ const Card = ({ event }) => {
 								left: 20,
 								top: 20,
 								justifyContent: "space-between",
-								minHeight: arr.length * 10 + 16,
+								minHeight: photoList.length * 10 + 16,
 							}}
 						>
 							{photoList.map((_, index) => {
@@ -221,7 +251,7 @@ const Card = ({ event }) => {
 									<Text
 										style={{
 											color: colors.white,
-											fontSize: 18,
+											fontSize: width * 0.045,
 											fontStyle: "italic",
 										}}
 									>
@@ -292,26 +322,26 @@ const Card = ({ event }) => {
 							animatedBackFace,
 						]}
 					>
-						{/* <Image
-										source={{
-											uri: photoList[backfaceIndex],
-										}}
-										blurRadius={20}
-										style={{
-											position: "absolute",
-											width: width * 0.9,
-											aspectRatio: 1 / 1.5,
-											resizeMode: "cover",
-											transform: [{ rotateY: "180deg" }],
-										}}
-									/> */}
+						<Image
+							source={{
+								uri: photoList[backfaceIndex],
+							}}
+							blurRadius={20}
+							style={{
+								position: "absolute",
+								width: width * 0.9,
+								aspectRatio: 1 / 1.5,
+								resizeMode: "cover",
+								transform: [{ rotateY: "180deg" }],
+							}}
+						/>
 						<View
 							name={"colorFilter"}
 							style={{
 								width: "100%",
 								height: "100%",
 								position: "absolute",
-								backgroundColor: "rgba(0,0,0,0.25)",
+								backgroundColor: "rgba(64,64,64,0.5)",
 							}}
 						/>
 						<ScrollView
@@ -326,62 +356,110 @@ const Card = ({ event }) => {
 									name={"Location"}
 									style={{
 										color: colors.light_gray,
-										fontSize: 18,
+										fontSize: width * 0.045,
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Yer{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: 22 }}>{location}</Text>
+									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{location}</Text>
 								</Text>
 								<Text
 									name={"Date"}
 									style={{
 										color: colors.light_gray,
-										fontSize: 18,
+										fontSize: width * 0.045,
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Tarih{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: 22 }}>{date}</Text>
+									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{date}</Text>
 								</Text>
 								<Text
 									name={"Time"}
 									style={{
 										color: colors.light_gray,
-										fontSize: 18,
+										fontSize: width * 0.045,
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Saat{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: 22 }}>{time}</Text>
+									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{time}</Text>
 								</Text>
 								<Text
 									name={"Genre"}
 									style={{
 										color: colors.light_gray,
-										fontSize: 18,
+										fontSize: width * 0.045,
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Tür{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: 22 }}>{genre}</Text>
+									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{genre}</Text>
 								</Text>
 								<Text
 									name={"Seller"}
 									style={{
 										color: colors.light_gray,
-										fontSize: 18,
+										fontSize: width * 0.045,
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Bilet Platformu{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: 22 }}>{seller}</Text>
+									<View style={{ alignContent: "center" }}>
+										<Pressable
+											onPress={async () => {
+												await Linking.openURL(BuyLink);
+											}}
+										>
+											<View style={{ flexDirection: "row" }}>
+												<Text
+													style={{
+														color: colors.light_gray,
+														textDecorationLine: "underline",
+														fontSize: width * 0.055,
+														fontWeight: "bold",
+													}}
+												>
+													{seller}
+												</Text>
+												<Text style={{ fontSize: width * 0.045, color: colors.light_gray }}>
+													{" "}
+													⇗
+												</Text>
+											</View>
+										</Pressable>
+									</View>
 								</Text>
+								<TouchableOpacity onPress={explorePeople}>
+									<View
+										style={{
+											width: width * 0.6,
+											height: 40,
+											borderRadius: 10,
+											borderWidth: 1,
+											borderColor: colors.light_gray,
+											justifyContent: "center",
+											alignItems: "center",
+											marginTop: 10,
+										}}
+									>
+										<Text
+											numberOfLines={1}
+											adjustsFontSizeToFit={true}
+											style={{
+												fontSize: width * 0.04,
+												color: colors.light_gray,
+											}}
+										>
+											Etkinliği Beğenen Kişileri Keşfet
+										</Text>
+									</View>
+								</TouchableOpacity>
 							</View>
 						</ScrollView>
 					</Animated.View>
@@ -393,7 +471,7 @@ const Card = ({ event }) => {
 };
 
 export default function EventCards({ navigation, route }) {
-	const { idx, list } = route.params;
+	const { idx, list, myID } = route.params;
 
 	React.useEffect(() => {
 		const backAction = () => {
@@ -412,12 +490,12 @@ export default function EventCards({ navigation, route }) {
 				style={{
 					backgroundColor: "#F4F3F3",
 					height: height * 0.15,
-					width: "100%",
+					width: width,
 					flexDirection: "row",
 					justifyContent: "space-between",
 					paddingHorizontal: 20,
-					paddingVertical: 25,
-					alignItems: "flex-end",
+					paddingTop: height * 0.05,
+					alignItems: "center",
 					elevation: 10,
 				}}
 			>
@@ -428,8 +506,12 @@ export default function EventCards({ navigation, route }) {
 				>
 					<Ionicons name="arrow-back-outline" size={30} color="black" />
 				</TouchableOpacity>
-				<Text style={{}}>dorm</Text>
-				<Ionicons name="arrow-back-outline" size={30} color="#F4F3F3" />
+				<Image
+					source={require("../../assets/dorm_text.png")}
+					resizeMode="center"
+					style={{ maxWidth: "30%", height: "40%" }}
+				/>
+				<Ionicons name="arrow-back-outline" size={30} color="transparent" />
 			</View>
 
 			<Carousel
@@ -437,7 +519,7 @@ export default function EventCards({ navigation, route }) {
 				width={width}
 				loop={false}
 				data={list}
-				renderItem={({ item }) => <Card event={item} />}
+				renderItem={({ item }) => <Card event={item} myID={myID} navigation={navigation} />}
 			/>
 
 			{/* PART: TabBar */}

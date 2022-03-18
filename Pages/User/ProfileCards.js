@@ -29,6 +29,7 @@ import Animated, {
 import { StatusBar } from "expo-status-bar";
 import { snapPoint, ReText } from "react-native-redash";
 import { Octicons, Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
@@ -299,26 +300,30 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 									</TouchableOpacity>
 								</View>
 
-								<Gradient
+								<LinearGradient
 									colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
 									locations={[0, 0.1, 1]}
 									start={{ x: 0.5, y: 0 }}
 									end={{ x: 0.5, y: 1 }}
 									style={{
-										height: "15%",
+										minHeight: height * 0.12,
 										width: "100%",
 										position: "absolute",
 										bottom: 0,
+										paddingVertical: 10,
 									}}
 								>
 									<View
 										style={{
 											width: "100%",
 											height: "100%",
-											justifyContent: "center",
+											flexDirection: "row",
+											alignItems: "center",
+											justifyContent: "space-between",
+											paddingHorizontal: 20,
 										}}
 									>
-										<View style={{ position: "absolute", left: 20 }}>
+										<View style={{ flexShrink: 1 }}>
 											<Text
 												style={{
 													color: colors.white,
@@ -333,7 +338,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											<Text
 												style={{
 													color: colors.white,
-													fontSize: 18,
+													fontSize: width * 0.045,
 													fontStyle: "italic",
 												}}
 											>
@@ -345,10 +350,8 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 
 										<View
 											style={{
-												position: "absolute",
-												right: 20,
 												backgroundColor: colors.white,
-												height: "70%",
+												height: width * 0.16,
 												aspectRatio: 1 / 1,
 												borderRadius: Dimensions.get("window").height * 0.1,
 											}}
@@ -385,7 +388,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											</TouchableOpacity>
 										</View>
 									</View>
-								</Gradient>
+								</LinearGradient>
 							</Animated.View>
 
 							{/* PART: backface */}
@@ -397,7 +400,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 										width: width * 0.9,
 										position: "absolute",
 										backfaceVisibility: "hidden",
-										backgroundColor: "transparent",
+										backgroundColor: colors.cool_gray,
 									},
 									animatedBackFace,
 								]}
@@ -644,16 +647,16 @@ export default function ProfileCards({ navigation, route }) {
 			<View
 				name={"header"}
 				style={{
+					backgroundColor: "#F4F3F3",
 					flexDirection: "row",
-					height: height * 0.14,
+					height: height * 0.15,
 					width: width,
 					marginBottom: 20,
-					backgroundColor: colors.white,
 					elevation: 10,
-					paddingVertical: 20,
-					paddingHorizontal: 30,
+					paddingHorizontal: 20,
 					justifyContent: "space-between",
-					alignItems: "flex-end",
+					alignItems: "center",
+					paddingTop: height * 0.05,
 				}}
 			>
 				<TouchableOpacity
@@ -661,8 +664,13 @@ export default function ProfileCards({ navigation, route }) {
 						navigation.replace("MainScreen", { screen: "AnaSayfa" });
 					}}
 				>
-					<Feather style={{}} name="chevron-left" size={30} color={colors.cool_gray} />
+					<Feather name="chevron-left" size={30} color={colors.cool_gray} />
 				</TouchableOpacity>
+				<Image
+					source={require("../../assets/dorm_text.png")}
+					resizeMode="center"
+					style={{ maxWidth: "30%", height: "40%" }}
+				/>
 				<TouchableOpacity>
 					{/* TODO: open filtering modal here  */}
 					<Octicons

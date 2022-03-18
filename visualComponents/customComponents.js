@@ -17,6 +17,7 @@ import Animated, {
 	interpolate,
 	withTiming,
 } from "react-native-reanimated";
+import { StatusBar } from "expo-status-bar";
 
 import { Gradient, colors } from "./colors";
 
@@ -173,8 +174,8 @@ const styles = StyleSheet.create({
 	},
 	modalOverlay: {
 		position: "absolute",
-		height: "100%",
-		width: "100%",
+		height: height,
+		width: width,
 		backgroundColor: "rgba(0,0,0,0.4)",
 	},
 	pickerContainer: {

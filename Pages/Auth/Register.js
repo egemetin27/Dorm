@@ -21,22 +21,9 @@ import { Gradient, colors } from "../../visualComponents/colors";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 import { CustomPicker } from "../../visualComponents/customComponents";
+import { UnivList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
-
-const UnivList = [
-	{ key: 1, choice: "Acıbadem Üniversitesi" },
-	{ key: 2, choice: "Bahçeşehir Üniversitesi" },
-	{ key: 3, choice: "Bilgi Üniversitesi" },
-	{ key: 4, choice: "Boğaziçi Üniversitesi" },
-	{ key: 5, choice: "Galatasaray Üniversitesi" },
-	{ key: 6, choice: "İstanbul Teknik Üniversitesi" },
-	{ key: 7, choice: "Koç Üniversitesi" },
-	{ key: 8, choice: "Mimar Sinan Üniversitesi" },
-	{ key: 9, choice: "Özyeğin Üniversitesi" },
-	{ key: 10, choice: "Sabancı Üniversitesi" },
-	{ key: 11, choice: "Yeditepe Üniversitesi" },
-];
 
 export default function Register({ navigation }) {
 	const animRef1 = React.useRef(new Animated.Value(0)).current;
@@ -148,8 +135,7 @@ export default function Register({ navigation }) {
 		const currentDate = selectedDate || date;
 		setShow(Platform.OS === "ios");
 		setDate(currentDate);
-		
-		
+
 		let formattedDate =
 			(currentDate.getMonth() + 1 < 10
 				? "0" + (currentDate.getMonth() + 1)
@@ -424,16 +410,12 @@ export default function Register({ navigation }) {
 							<Text style={styles.QuestionCardText}>Doğum{"\n"}Tarihim</Text>
 						</View>
 						<TouchableOpacity onPress={showDatePicker} style={styles.QuestionInput}>
-							<Text style = {[styles.QuestionInput, {alignContent: "center", paddingTop: 15}]}>
+							<Text style={[styles.QuestionInput, { alignContent: "center", paddingTop: 15 }]}>
 								{parsedDate}
-							</Text>					
-								
+							</Text>
 						</TouchableOpacity>
-
-						
 					</Gradient>
 				</Animated.View>
-				
 
 				<Animated.View
 					name={"NameCard"}
@@ -482,13 +464,8 @@ export default function Register({ navigation }) {
 				</Animated.View>
 			</View>
 			{show && (
-        		<DateTimePicker
-          			testID="dateTimePicker"
-          			value={date}
-          			mode= "date"
-          			onChange={datePick}
-        		/>
-      		)}
+				<DateTimePicker testID="dateTimePicker" value={date} mode="date" onChange={datePick} />
+			)}
 			<View style={styles.TextContainer}>
 				<Animated.Text
 					style={[
