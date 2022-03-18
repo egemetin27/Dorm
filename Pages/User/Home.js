@@ -398,6 +398,7 @@ export default function MainPage({ navigation }) {
 	const [myID, setMyID] = React.useState(null);
 	const eventsRef = React.useRef();
 
+	/*
 	async function registerForPushNotificationAsync() {
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -427,6 +428,7 @@ export default function MainPage({ navigation }) {
 		}
 		return token;
 	}
+	*/
 
 	React.useEffect(async () => {
 		let abortController = new AbortController();
@@ -460,8 +462,8 @@ export default function MainPage({ navigation }) {
 		console.log("-----------------");
 		console.log(token);
 		console.log("-----------------");
-		const userName = userData.Name;
 		*/
+		const userName = userData.Name;
 		async function fetchUser() {
 			const newUser = {
 				id: userID,
