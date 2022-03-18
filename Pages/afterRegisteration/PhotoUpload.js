@@ -4,6 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
+import * as SecureStore from "expo-secure-store";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
@@ -21,7 +22,6 @@ export default function PhotoUpload({ navigation, route }) {
 		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
 		if (!granted) {
 			const x = await ImagePicker.requestMediaLibraryPermissionsAsync(false);
-			console.log(x);
 		} else {
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -36,11 +36,6 @@ export default function PhotoUpload({ navigation, route }) {
 	};
 
 	const handleAdd = (photo) => {
-		console.log({
-			Photo_Order: photoList.length + 1,
-			PhotoLink: photo.uri,
-			photo: photo,
-		});
 		setPhotoList([
 			...photoList,
 			{
@@ -70,7 +65,7 @@ export default function PhotoUpload({ navigation, route }) {
 
 	const handleSave = async () => {
 		try {
-			if (photoList == []) {
+			if (photoList.length == 0) {
 				Alert.alert("Hata!", "En az bir fotoğraf yüklemelisin", [{ text: "Kontrol Edeyim" }]);
 				return;
 			}
@@ -185,7 +180,7 @@ export default function PhotoUpload({ navigation, route }) {
 									]}
 								>
 									<Image
-										source={{ uri: item }}
+										source={{ uri: item.PhotoLink }}
 										style={{ height: "100%", width: "100%" }}
 										resizeMode="contain"
 									/>
