@@ -474,11 +474,13 @@ export default function MainPage({ navigation }) {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
+				/*
 				await API.graphql(
 					graphqlOperation(updateMsgUser, {
 						input: { id: userID, name: userName, pushToken: token },
 					})
 				);
+				*/
 
 				return;
 			} else {
