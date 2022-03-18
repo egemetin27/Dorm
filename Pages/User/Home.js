@@ -401,6 +401,7 @@ export default function MainPage({ navigation }) {
 	async function registerForPushNotificationAsync(){
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
+		alert("Get Permission");
 		let finalStatus = await existingStatus;
 		console.log(existingStatus);
 		console.log(finalStatus);
@@ -454,23 +455,24 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
-		
+		/*
 		const token = await registerForPushNotificationAsync();
 		console.log("-----------------");
 		console.log(token);
 		console.log("-----------------");
 		const userName = userData.Name;
+		*/
 		async function fetchUser() {
 			const newUser = {
 				id: userID,
 				name: userName,
-				pushToken: token,
+				pushToken: null,
 			};
 
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
-				await API.graphql(graphqlOperation(updateMsgUser, {input: {id: userID, name: userName, pushToken: token}}))
+				await API.graphql(graphqlOperation(updateMsgUser, {input: {id: userID, name: userName, pushToken: null}}))
 
 				return;
 			} else {

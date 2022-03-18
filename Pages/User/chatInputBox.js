@@ -27,8 +27,6 @@ const InputBox = (props) => {
                     }
                 )
             )
-            
-            console.log(props.otherUser.pushToken);
         } catch (e) {
             console.log(e);
         }
@@ -95,7 +93,7 @@ const InputBox = (props) => {
                         sendMessage();
                         updateChat();
                         setMessage("");
-                        sendNotification();  
+                        //sendNotification();  
                     }
                     
                 }}
