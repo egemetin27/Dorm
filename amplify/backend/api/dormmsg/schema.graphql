@@ -6,7 +6,6 @@ input AMPLIFY {
 type MsgUser @model {
   id: ID!
   name: String!
-  imageUri: String
   updatedAt: AWSDateTime!
   pushToken: String
 }

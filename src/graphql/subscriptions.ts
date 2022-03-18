@@ -7,7 +7,6 @@ export const onCreateMsgUser = /* GraphQL */ `
     onCreateMsgUser {
       id
       name
-      imageUri
       updatedAt
       pushToken
       createdAt
@@ -19,7 +18,6 @@ export const onUpdateMsgUser = /* GraphQL */ `
     onUpdateMsgUser {
       id
       name
-      imageUri
       updatedAt
       pushToken
       createdAt
@@ -31,7 +29,6 @@ export const onDeleteMsgUser = /* GraphQL */ `
     onDeleteMsgUser {
       id
       name
-      imageUri
       updatedAt
       pushToken
       createdAt
@@ -45,7 +42,6 @@ export const onCreateUserChat = /* GraphQL */ `
       firstUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -53,7 +49,6 @@ export const onCreateUserChat = /* GraphQL */ `
       secondUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -88,7 +83,6 @@ export const onUpdateUserChat = /* GraphQL */ `
       firstUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -96,7 +90,6 @@ export const onUpdateUserChat = /* GraphQL */ `
       secondUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -131,7 +124,6 @@ export const onDeleteUserChat = /* GraphQL */ `
       firstUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -139,7 +131,6 @@ export const onDeleteUserChat = /* GraphQL */ `
       secondUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -176,7 +167,6 @@ export const onCreateSentMsg = /* GraphQL */ `
         firstUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -184,7 +174,6 @@ export const onCreateSentMsg = /* GraphQL */ `
         secondUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -203,7 +192,6 @@ export const onCreateSentMsg = /* GraphQL */ `
       sender {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -227,7 +215,6 @@ export const onUpdateSentMsg = /* GraphQL */ `
         firstUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -235,7 +222,6 @@ export const onUpdateSentMsg = /* GraphQL */ `
         secondUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -254,7 +240,6 @@ export const onUpdateSentMsg = /* GraphQL */ `
       sender {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -278,7 +263,6 @@ export const onDeleteSentMsg = /* GraphQL */ `
         firstUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -286,7 +270,6 @@ export const onDeleteSentMsg = /* GraphQL */ `
         secondUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -305,7 +288,6 @@ export const onDeleteSentMsg = /* GraphQL */ `
       sender {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt

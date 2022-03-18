@@ -139,7 +139,39 @@ export default function Messages({ route, navigation }) {
 			return () => subscription.unsubscribe();
 		} catch (error) {}
 	}, []);
+	
+	React.useEffect(async () => {
+		try {
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const data = JSON.parse(dataStr);
+			//console.log(data);
 
+			const userID = data.UserId.toString();
+			const subscription = API.graphql(graphqlOperation(onUpdateUserChat)).subscribe({
+				next: (data) => {
+					console.log("---------------------------");
+					console.log(data.value.data.onUpdateUserChat.firstUser.id);
+					console.log("---------------------------");
+
+					if (
+						data.value.data.onUpdateUserChat.firstUser.id != userID &&
+						data.value.data.onUpdateUserChat.secondUser.id != userID
+					) {
+						console.log("Message is in another chat");
+						return;
+					} else {
+						console.log("Message is in your chat");
+					}
+
+					fetchNewUsers();
+					// setMessages([newMessage, ...messages]);
+				},
+			});
+
+			return () => subscription.unsubscribe();
+		} catch (error) {}
+	}, []);
+	
 	return (
 		<View style={{ width: width, height: height }}>
 			<View name={"Header"} style={commonStyles.Header}>

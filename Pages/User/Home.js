@@ -12,6 +12,7 @@ import {
 	Alert,
 	BackHandler,
 	ActivityIndicator,
+	Platform,
 } from "react-native";
 import { Octicons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
@@ -27,7 +28,18 @@ const { height, width } = Dimensions.get("window");
 
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../../src/graphql/queries";
-import { createMsgUser } from "../../src/graphql/mutations";
+import { createMsgUser, updateMsgUser } from "../../src/graphql/mutations";
+import { Constants } from "@aws-amplify/core";
+import * as Notifications from "expo-notifications";
+import { useSafeAreaFrame } from "react-native-safe-area-context";
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: false,
+	}),
+});
 
 const CategoryList = [
 	{
@@ -386,6 +398,38 @@ export default function MainPage({ navigation }) {
 	const [myID, setMyID] = React.useState(null);
 	const eventsRef = React.useRef();
 
+	async function registerForPushNotificationAsync(){
+		let token;
+		const { status: existingStatus } = await Notifications.getPermissionsAsync();
+		let finalStatus = await existingStatus;
+		console.log(existingStatus);
+		console.log(finalStatus);
+		if(existingStatus != "granted")
+		{
+			if (Platform.OS == "ios") {
+				const { status } = await Notifications.requestPermissionsAsync();
+				finalStatus = status;				
+			}
+			
+		}
+		if(finalStatus != "granted") {
+			alert("Failed to get push token for notifications.");
+			return null;
+		}
+		token = (await Notifications.getExpoPushTokenAsync()).data;
+		console.log(token);
+
+		if(Platform.OS == "android"){
+			Notifications.setNotificationChannelAsync("default", {
+				name: "default",
+				importance: Notifications.AndroidImportance.MAX,
+				vibrationPattern: [0, 250, 250, 250],
+				lightColor: "#FF231F7C",
+			});
+		}
+		return token;
+	}
+
 	React.useEffect(async () => {
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
@@ -413,21 +457,31 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
+		/*
+		const token = await registerForPushNotificationAsync();
+		console.log("-----------------");
+		console.log(token);
+		console.log("-----------------");
+		*/
 		const userName = userData.Name;
 		async function fetchUser() {
+			const newUser = {
+				id: userID,
+				name: userName,
+				pushToken: token,
+			};
+
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
+				await API.graphql(graphqlOperation(updateMsgUser, {input: {id: userID, name: userName, pushToken: token}}))
+
 				return;
 			} else {
 				console.log("User does not exists");
 			}
 
-			const newUser = {
-				id: userID,
-				name: userName,
-				imageUri: null,
-			};
+			
 			console.log(newUser);
 			await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
 

@@ -12,6 +12,7 @@ const InputBox = (props) => {
 
     const sendMessage = async() =>{
         try {
+            /*
             const newMessageData = await API.graphql(
                 graphqlOperation(
                     createSentMsg,
@@ -26,6 +27,8 @@ const InputBox = (props) => {
                     }
                 )
             )
+            */
+            console.log(props.otherUser);
         } catch (e) {
             console.log(e);
         }

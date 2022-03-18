@@ -7,7 +7,6 @@ export const getMsgUser = /* GraphQL */ `
     getMsgUser(id: $id) {
       id
       name
-      imageUri
       updatedAt
       pushToken
       createdAt
@@ -24,7 +23,6 @@ export const listMsgUsers = /* GraphQL */ `
       items {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -40,7 +38,6 @@ export const getUserChat = /* GraphQL */ `
       firstUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -48,7 +45,6 @@ export const getUserChat = /* GraphQL */ `
       secondUser {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -88,7 +84,6 @@ export const listUserChats = /* GraphQL */ `
         firstUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -96,7 +91,6 @@ export const listUserChats = /* GraphQL */ `
         secondUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -125,7 +119,6 @@ export const getSentMsg = /* GraphQL */ `
         firstUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -133,7 +126,6 @@ export const getSentMsg = /* GraphQL */ `
         secondUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -152,7 +144,6 @@ export const getSentMsg = /* GraphQL */ `
       sender {
         id
         name
-        imageUri
         updatedAt
         pushToken
         createdAt
@@ -189,7 +180,6 @@ export const listSentMsgs = /* GraphQL */ `
         sender {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -228,7 +218,6 @@ export const chatByDate = /* GraphQL */ `
         firstUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -236,7 +225,6 @@ export const chatByDate = /* GraphQL */ `
         secondUser {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
@@ -288,7 +276,6 @@ export const msgByDate = /* GraphQL */ `
         sender {
           id
           name
-          imageUri
           updatedAt
           pushToken
           createdAt
