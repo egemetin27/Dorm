@@ -11,6 +11,7 @@ import {
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { colors } from '../../visualComponents/colors';
 import moment from "moment";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,21 +22,40 @@ const ChatMsg = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={[
-        styles.messageBox, {
-          backgroundColor: isMyMessage() ? '#DCF8C5' : 'white',
-          marginLeft: isMyMessage() ? 50 : 0,
-          marginRight: isMyMessage() ? 0 : 50,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          borderBottomLeftRadius: isMyMessage() ? 20 : 0,
-          borderBottomRightRadius: isMyMessage() ? 0 : 20,
-        }
-      ]}>
-        {!isMyMessage() && <Text style={styles.name}>{props.data.sender.name}</Text>}
-        <Text style={styles.message}>{props.data.text}</Text>
-        <Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
-      </View>
+      {(isMyMessage()) ? (
+            <LinearGradient
+							colors={["#4136F1", "#8743FF"]}
+							start={{ x: 0, y: 0 }}
+							end={{ x: 1, y: 1 }}
+							locations={[0, 1]}
+							style={{
+                borderRadius: 5,
+                borderBottomStartRadius: 0,
+                padding: 10,
+                marginLeft: 50,
+                marginRight: 0,
+                overflow: "hidden",
+                borderTopLeftRadius: 20,
+
+							}}
+						>
+              <Text style={{color: "white"}}>{props.data.text}</Text>
+              <Text style={{alignSelf: "flex-end", color: "white"}}>{moment(props.data.updatedAt).fromNow()}</Text>
+						</LinearGradient>          
+					) : (
+						<View style = {[styles.messageBox, {
+              marginLeft: 0,
+              marginRight: 50,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 20
+            }]}>
+              <Text style={styles.name}>{props.data.sender.name}</Text>
+              <Text style={styles.message}>{props.data.text}</Text>
+              <Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
+            </View>
+			)}
     </View>
   )
 }

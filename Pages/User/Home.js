@@ -399,6 +399,9 @@ export default function MainPage({ navigation }) {
 	const [sesToken, setSesToken] = React.useState("");
 	const eventsRef = React.useRef();
 
+	//Filtre Modal
+	const [filtreModal, setFiltreModal] = React.useState(false);
+
 	/*
 	async function registerForPushNotificationAsync() {
 		let token;

@@ -570,7 +570,11 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}
+					onPress = {() => {
+						navigation.navigate("GizlilikPolitikasi");
+					}}
+				>
 					<Text style={styles.buttonText}>Gizlilik Politikası</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>

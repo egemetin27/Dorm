@@ -3,8 +3,6 @@ import { View, Text, TextInput } from 'react-native';
 import {Ionicons, FontAwesome5} from "@expo/vector-icons"
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { API, graphqlOperation } from 'aws-amplify';
-
-
 import {createSentMsg, updateSentMsg, updateUserChat} from "../../src/graphql/mutations";
 
 const InputBox = (props) => {
@@ -88,13 +86,14 @@ const InputBox = (props) => {
             <TouchableOpacity 
                 name = {"sendMsgButton"}
                 onPress = {() => {
-                    console.log(message);
+                    
                     if (message != "") {
                         sendMessage();
                         updateChat();
                         setMessage("");
                         //sendNotification();  
                     }
+                    
                     
                 }}
                 style= {{backgroundColor: "blue", borderRadius: 45, width: 45, height: 45, justifyContent: "center", alignItems: "center"}}

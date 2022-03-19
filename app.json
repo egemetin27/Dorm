@@ -16,10 +16,11 @@
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
-			"supportsTablet": true,
+			"supportsTablet": false,
 			"bundleIdentifier": "com.meetdorm.dorm"
 		},
 		"android": {
+			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
 			"versionCode": 18
 		},
