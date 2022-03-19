@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -19,6 +19,11 @@ export default function FirstPassword({ navigation, route }) {
 
 	const handleSubmit = async () => {
 		const { userID, email } = route.params;
+
+		if (password.length < 8) {
+			Alert.alert("Şifren en az 8 karakterli olmalı");
+			return;
+		}
 
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 

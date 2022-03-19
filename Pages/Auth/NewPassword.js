@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
@@ -15,6 +15,11 @@ export default function NewPassword({ navigation, route }) {
 	const animRef = React.useRef(new Animated.Value(0)).current;
 
 	const HandleButton = () => {
+		if (password.length < 8) {
+			Alert.alert("Şifren en az 8 karakterli olmalı");
+			return;
+		}
+
 		axios
 			.post(url + "/PasswordRegister", { password: password, UserId: userID })
 			.then((res) => {

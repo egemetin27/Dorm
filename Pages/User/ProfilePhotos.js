@@ -68,7 +68,7 @@ export default function ProfilePhotos({ route, navigation }) {
 	const [PHOTO_LIST, setPhotoList] = React.useState(route.params?.photoList || []);
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	const { userID } = route.params;
+	const { userID, sesToken } = route.params;
 
 	React.useEffect(() => {
 		const backAction = () => {
@@ -95,9 +95,13 @@ export default function ProfilePhotos({ route, navigation }) {
 		}
 
 		if (toBeDeleted?.photo == undefined) {
-			const response = await axios.post(url + "/deleteS3Photo", {
-				photoName: toBeDeleted.PhotoLink.split("/")[3],
-			});
+			const response = await axios.post(
+				url + "/deleteS3Photo",
+				{
+					photoName: toBeDeleted.PhotoLink.split("/")[3],
+				},
+				{ headers: { "access-token": sesToken } }
+			);
 			console.log(response.data);
 		}
 
@@ -177,11 +181,15 @@ export default function ProfilePhotos({ route, navigation }) {
 				})
 			);
 			await axios
-				.post(url + "/addPhotoLink", {
-					UserId: userID,
-					userPhoto: 1,
-					photos: newList,
-				})
+				.post(
+					url + "/addPhotoLink",
+					{
+						UserId: userID,
+						userPhoto: 1,
+						photos: newList,
+					},
+					{ headers: { "access-token": sesToken } }
+				)
 				.then(async (res) => {
 					// setPhotoList(newList);
 

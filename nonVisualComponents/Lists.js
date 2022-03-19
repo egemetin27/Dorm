@@ -44,9 +44,18 @@ export const signList = [
 ];
 
 export const dietList = [
-	{ key: 1, choice: "" },
-	{ key: 1, choice: "" },
-	{ key: 1, choice: "" },
-	{ key: 1, choice: "" },
-	{ key: 1, choice: "" },
+	{ key: 1, choice: "Her şeyi yerim" },
+	{ key: 2, choice: "Vejetaryen" },
+	{ key: 3, choice: "Vegan" },
+	{ key: 4, choice: "Pesketaryen" },
+	{ key: 5, choice: "Glutensiz" },
+	{ key: 6, choice: "Belirtmek İstemiyorum" },
+];
+
+export const smokeAndDrinkList = [
+	{ key: 1, choice: "Sık sık" },
+	{ key: 2, choice: "Sosyal ortamlarda" },
+	{ key: 3, choice: "Arada sırada" },
+	{ key: 4, choice: "Asla" },
+	{ key: 5, choice: "Belirtmek İstemiyorum" },
 ];

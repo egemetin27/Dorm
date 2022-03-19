@@ -152,7 +152,11 @@ const FreezeAccountModal = ({ visible, dismiss, signOut }) => {
 				<TouchableOpacity
 					onPress={async () => {
 						await axios
-							.post(url + "/FreezeAccount", { UserId: userID })
+							.post(
+								url + "/FreezeAccount",
+								{ UserId: userID },
+								{ headers: { "access-token": sesToken } }
+							)
 							.then(() => {
 								signOut();
 							})
@@ -326,7 +330,11 @@ export default function Settings({ navigation, route }) {
 		setInvisibility(value);
 
 		axios
-			.post(url + "/ChangeVisibility", { invisible: value ? "1" : "0", UserId: userID }) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(
+				url + "/ChangeVisibility",
+				{ invisible: value ? "1" : "0", UserId: userID },
+				{ headers: { "access-token": sesToken } }
+			) // There is a typo (not Change but Chage) TODO: make userID variable
 			.then(async (res) => {
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
@@ -363,7 +371,11 @@ export default function Settings({ navigation, route }) {
 	const handleSchoolLover = (value) => {
 		setSchoolLover(value);
 		axios
-			.post(url + "/OnlyCampus", { OnlyCampus: value ? "1" : "0", UserId: userID }) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(
+				url + "/OnlyCampus",
+				{ OnlyCampus: value ? "1" : "0", UserId: userID },
+				{ headers: { "access-token": sesToken } }
+			) // There is a typo (not Change but Chage) TODO: make userID variable
 			.then(async (res) => {
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);

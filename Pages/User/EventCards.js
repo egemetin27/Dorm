@@ -97,14 +97,22 @@ const Card = ({ event, myID, navigation }) => {
 		const id = await SecureStore.getItemAsync("userID");
 		if (!favFlag) {
 			await axios
-				.post(url + "/likeEvent", { UserId: id, eventId: EventId })
+				.post(
+					url + "/likeEvent",
+					{ UserId: id, eventId: EventId },
+					{ headers: { "access-token": sesToken } }
+				)
 				.then((res) => console.log(res.data))
 				.catch((err) => console.log(err));
 
 			// send favorited value to database
 		} else {
 			await axios
-				.post(url + "/dislikeEvent", { UserId: id, eventId: EventId })
+				.post(
+					url + "/dislikeEvent",
+					{ UserId: id, eventId: EventId },
+					{ headers: { "access-token": sesToken } }
+				)
 				.then((res) => console.log(res.data))
 				.catch((err) => console.log(err));
 		}
@@ -115,10 +123,14 @@ const Card = ({ event, myID, navigation }) => {
 		// TODO:
 
 		await axios
-			.post(url + "/eventParticipants", {
-				eventId: EventId,
-				UserId: myID,
-			})
+			.post(
+				url + "/eventParticipants",
+				{
+					eventId: EventId,
+					UserId: myID,
+				},
+				{ headers: { "access-token": sesToken } }
+			)
 			.then((res) => {
 				if (res.data.length > 0) {
 					navigation.replace("ProfileCards", {
@@ -471,7 +483,7 @@ const Card = ({ event, myID, navigation }) => {
 };
 
 export default function EventCards({ navigation, route }) {
-	const { idx, list, myID } = route.params;
+	const { idx, list, myID, sesToken } = route.params;
 
 	React.useEffect(() => {
 		const backAction = () => {
@@ -519,7 +531,9 @@ export default function EventCards({ navigation, route }) {
 				width={width}
 				loop={false}
 				data={list}
-				renderItem={({ item }) => <Card event={item} myID={myID} navigation={navigation} />}
+				renderItem={({ item }) => (
+					<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
+				)}
 			/>
 
 			{/* PART: TabBar */}

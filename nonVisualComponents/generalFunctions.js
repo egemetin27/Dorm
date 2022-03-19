@@ -9,3 +9,12 @@ export const getAge = (date) => {
 	var birthday = new Date(date);
 	return ~~((Date.now() - birthday) / 31557600000);
 };
+
+export const getChoice = (str, arr) => {
+	console.log(str);
+	if (str == "null") return "";
+	const idx = arr.findIndex((item) => {
+		return item.choice == str;
+	});
+	return arr[idx];
+};

@@ -216,11 +216,11 @@ export default function StackNavigator() {
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
 					} else {
-						console.log("wrong Password");
+						console.log(res);
 					}
 				})
 				.catch((error) => {
-					Alert.alert("Hata", error.response.data, [{ text: "Kontrol Edeyim" }]);
+					Alert.alert("Hata", error?.response?.data, [{ text: "Kontrol Edeyim" }]);
 				});
 		},
 		signOut: async () => {

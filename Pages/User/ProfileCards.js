@@ -41,7 +41,7 @@ import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 
-const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID }) => {
+const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID, sesToken }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
 	const destination = useSharedValue(0);
@@ -89,11 +89,15 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		await axios.post(url + "/LikeDislike", {
-			isLike: val,
-			userSwiped: myID,
-			otherUser: id,
-		});
+		await axios.post(
+			url + "/LikeDislike",
+			{
+				isLike: val,
+				userSwiped: myID,
+				otherUser: id,
+			},
+			{ headers: { "access-token": sesToken } }
+		);
 	};
 
 	const panHandler = Gesture.Pan()
@@ -620,7 +624,7 @@ export default function ProfileCards({ navigation, route }) {
 	);
 
 	const peopleList = route.params.list;
-	const { myID } = route.params;
+	const { myID, sesToken } = route.params;
 
 	function handlePopupSubmit() {
 		console.log("super like popup submit...");
@@ -691,6 +695,7 @@ export default function ProfileCards({ navigation, route }) {
 						setPopupVisible={(val) => (popupVisible.value = val)}
 						numberOfSuperLikes={numberOfSuperLikes}
 						myID={myID}
+						sesToken={sesToken}
 					/>
 				))}
 			</View>

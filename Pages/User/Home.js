@@ -396,6 +396,7 @@ export default function MainPage({ navigation }) {
 	const [shownEvents, setShownEvents] = React.useState([]);
 	const [peopleList, setPeopleList] = React.useState([]);
 	const [myID, setMyID] = React.useState(null);
+	const [sesToken, setSesToken] = React.useState("");
 	const eventsRef = React.useRef();
 
 	/*
@@ -435,19 +436,22 @@ export default function MainPage({ navigation }) {
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const userID = userData.UserId.toString();
+		const myToken = userData.sesToken;
 		setMyID(userID);
+		setSesToken(myToken);
 
 		async function prepare() {
 			await axios
-				.post(url + "/Swipelist", { UserId: userID })
+				.post(url + "/Swipelist", { UserId: userID }, { headers: { "access-token": myToken } })
 				.then((res) => {
 					setPeopleList(res.data);
+					console.log(res.data);
 				})
 				.catch((err) => {
 					console.log(err);
 				});
 			await axios
-				.post(url + "/EventList", { UserId: userID })
+				.post(url + "/EventList", { UserId: userID }, { headers: { "access-token": myToken } })
 				.then((res) => {
 					setEventList(res.data);
 					setShownEvents(res.data);
@@ -596,6 +600,7 @@ export default function MainPage({ navigation }) {
 										navigation.navigate("ProfileCards", {
 											list: arr,
 											myID: myID,
+											sesToken: sesToken,
 										});
 									}}
 								/>
@@ -666,6 +671,7 @@ export default function MainPage({ navigation }) {
 											idx: idx,
 											list: shownEvents,
 											myID: myID,
+											sesToken: sesToken,
 										});
 									}}
 								/>

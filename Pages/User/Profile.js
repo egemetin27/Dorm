@@ -23,9 +23,9 @@ import { StatusBar } from "expo-status-bar";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
-import { getAge } from "../../nonVisualComponents/generalFunctions";
-import { genderList, signList } from "../../nonVisualComponents/Lists";
-const { height, width } = Dimensions.get("window");
+import { getAge, getChoice } from "../../nonVisualComponents/generalFunctions";
+import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
+const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
 	const [progressBarVisible, setVisibility] = React.useState(true);
@@ -35,8 +35,12 @@ export default function Profile({ route, navigation }) {
 	const [isEditable, setEditibility] = React.useState(false);
 	const [genderVisible, setGenderVisible] = React.useState(false);
 	const [signVisible, setSignVisible] = React.useState(false);
+	const [dietVisible, setDietVisible] = React.useState(false);
+	const [smokeVisible, setSmokeVisible] = React.useState(false);
+	const [drinkVisible, setDrinkVisible] = React.useState(false);
 
 	const [userID, setUserID] = React.useState(null);
+	const [sesToken, setSesToken] = React.useState("");
 
 	const [name, setName] = React.useState("");
 	const [major, setMajor] = React.useState("");
@@ -46,7 +50,7 @@ export default function Profile({ route, navigation }) {
 	const [religion, setReligion] = React.useState("");
 	const [sign, setSign] = React.useState("");
 	const [diet, setDiet] = React.useState("");
-	const [alcohol, setAlcohol] = React.useState("");
+	const [drink, setDrink] = React.useState("");
 	const [smoke, setSmoke] = React.useState("");
 	const [hobbies, setHobbies] = React.useState("");
 	const [about, setAbout] = React.useState("");
@@ -76,7 +80,7 @@ export default function Profile({ route, navigation }) {
 	const religionRef = React.useRef(new Animated.Value(0)).current;
 	const signRef = React.useRef(new Animated.Value(0)).current;
 	const dietRef = React.useRef(new Animated.Value(0)).current;
-	const alcoholRef = React.useRef(new Animated.Value(0)).current;
+	const drinkRef = React.useRef(new Animated.Value(0)).current;
 	const smokeRef = React.useRef(new Animated.Value(0)).current;
 	const hobbiesRef = React.useRef(new Animated.Value(0)).current;
 	const aboutRef = React.useRef(new Animated.Value(0)).current;
@@ -85,6 +89,7 @@ export default function Profile({ route, navigation }) {
 		const dataStr = await SecureStore.getItemAsync("userData");
 		const data = JSON.parse(dataStr);
 
+		setSesToken(data.sesToken);
 		setUserID(data.UserId);
 		setName(data.Name + " " + data.Surname);
 		setAge(getAge(data.Birth_date));
@@ -92,14 +97,13 @@ export default function Profile({ route, navigation }) {
 		setSchool(data.School);
 		setMajor(data.Major);
 		setReligion(data.Din);
-		setSign(data.Burc);
-		setDiet(data.Beslenme);
-		setAlcohol(data.Alkol);
-		setSmoke(data.Sigara);
+		setSign(getChoice(data.Burc, signList));
+		setDiet(getChoice(data.Beslenme, dietList));
+		setDrink(getChoice(data.Alkol, smokeAndDrinkList));
+		setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
 		setAbout(data.About);
 		setPhotoList(data.Photo);
 		setHobbies(data.interest);
-
 		// setUserData({
 		// 	userID: data.UserId,
 		// 	name: data.Name + " " + data.Surname,
@@ -129,15 +133,15 @@ export default function Profile({ route, navigation }) {
 			Gender: sex.key,
 			Major: major,
 			Din: religion,
-			Burc: sign,
-			Beslenme: diet,
-			Alkol: alcohol,
-			Sigara: smoke,
+			Burc: sign.choice,
+			Beslenme: diet.choice,
+			Alkol: drink.choice,
+			Sigara: smoke.choice,
 			About: about,
 		};
 
 		await axios
-			.post(url + "/IdentityUpdate", dataToSend)
+			.post(url + "/IdentityUpdate", dataToSend, { headers: { "access-token": sesToken } })
 			.then(async (res) => {
 				const dataStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(dataStr);
@@ -324,6 +328,7 @@ export default function Profile({ route, navigation }) {
 													navigation.navigate("ProfilePhotos", {
 														photoList: PHOTO_LIST,
 														userID: userID,
+														sesToken: sesToken,
 													});
 												}
 											}}
@@ -343,6 +348,7 @@ export default function Profile({ route, navigation }) {
 									navigation.replace("ProfilePhotos", {
 										photoList: PHOTO_LIST,
 										userID: userID,
+										sesToken: sesToken,
 									});
 								}}
 							>
@@ -768,18 +774,17 @@ export default function Profile({ route, navigation }) {
 							>
 								Beslenme Tercihim
 							</Animated.Text>
-							<TextInput
-								editable={isEditable}
-								style={[styles.input, { color: colors.black }]}
-								onChangeText={setDiet}
-								value={diet}
-								onFocus={() => {
-									handleFocus(dietRef);
-								}}
-								onBlur={() => {
-									if (diet == "") handleBlur(dietRef);
-								}}
-							/>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setDietVisible(true);
+										  }
+										: () => {}
+								}
+							>
+								<Text style={[styles.input, { color: colors.black }]}>{diet.choice}</Text>
+							</Pressable>
 						</View>
 
 						<View
@@ -793,8 +798,8 @@ export default function Profile({ route, navigation }) {
 										transform: [
 											{
 												translateY:
-													alcohol == ""
-														? alcoholRef.interpolate({
+													drink == ""
+														? drinkRef.interpolate({
 																inputRange: [0, 1],
 																outputRange: [0, -20],
 														  })
@@ -802,8 +807,8 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize:
-											alcohol == ""
-												? alcoholRef.interpolate({
+											drink == ""
+												? drinkRef.interpolate({
 														inputRange: [0, 1],
 														outputRange: [20, 15],
 												  })
@@ -813,18 +818,17 @@ export default function Profile({ route, navigation }) {
 							>
 								Alkol Kullanımım
 							</Animated.Text>
-							<TextInput
-								editable={isEditable}
-								style={[styles.input, { color: colors.black }]}
-								onChangeText={setAlcohol}
-								value={alcohol}
-								onFocus={() => {
-									handleFocus(alcoholRef);
-								}}
-								onBlur={() => {
-									if (alcohol == "") handleBlur(alcoholRef);
-								}}
-							/>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setDrinkVisible(true);
+										  }
+										: () => {}
+								}
+							>
+								<Text style={[styles.input, { color: colors.black }]}>{drink.choice}</Text>
+							</Pressable>
 						</View>
 
 						<View name={"Smoke"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
@@ -855,18 +859,17 @@ export default function Profile({ route, navigation }) {
 							>
 								Sigara Kullanımım
 							</Animated.Text>
-							<TextInput
-								editable={isEditable}
-								style={[styles.input, { color: colors.black }]}
-								onChangeText={setSmoke}
-								value={smoke}
-								onFocus={() => {
-									handleFocus(smokeRef);
-								}}
-								onBlur={() => {
-									if (smoke == "") handleBlur(smokeRef);
-								}}
-							/>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setSmokeVisible(true);
+										  }
+										: () => {}
+								}
+							>
+								<Text style={[styles.input, { color: colors.black }]}>{smoke.choice}</Text>
+							</Pressable>
 						</View>
 
 						<Pressable
@@ -878,6 +881,7 @@ export default function Profile({ route, navigation }) {
 										userID: userID,
 										email: "",
 										password: "",
+										sesToken: sesToken,
 									});
 								}
 							}}
@@ -1028,6 +1032,27 @@ export default function Profile({ route, navigation }) {
 				setVisible={setSignVisible}
 				setChoice={setSign}
 				style={{ height: height * 0.5, width: width * 0.6 }}
+			/>
+			<CustomPicker
+				data={dietList}
+				visible={dietVisible}
+				setVisible={setDietVisible}
+				setChoice={setDiet}
+				style={{ height: (6 * height) / 16, width: width * 0.6 }}
+			/>
+			<CustomPicker
+				data={smokeAndDrinkList}
+				visible={drinkVisible}
+				setVisible={setDrinkVisible}
+				setChoice={setDrink}
+				style={{ height: (5 * height) / 16, width: width * 0.6 }}
+			/>
+			<CustomPicker
+				data={smokeAndDrinkList}
+				visible={smokeVisible}
+				setVisible={setSmokeVisible}
+				setChoice={setSmoke}
+				style={{ height: (5 * height) / 16, width: width * 0.6 }}
 			/>
 		</View>
 	);

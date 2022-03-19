@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
 	StyleSheet,
 	Text,
@@ -139,7 +138,7 @@ export default function Messages({ route, navigation }) {
 			return () => subscription.unsubscribe();
 		} catch (error) {}
 	}, []);
-	
+
 	React.useEffect(async () => {
 		try {
 			const dataStr = await SecureStore.getItemAsync("userData");
@@ -171,7 +170,7 @@ export default function Messages({ route, navigation }) {
 			return () => subscription.unsubscribe();
 		} catch (error) {}
 	}, []);
-	
+
 	return (
 		<View style={{ width: width, height: height }}>
 			<View name={"Header"} style={commonStyles.Header}>
