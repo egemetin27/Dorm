@@ -402,7 +402,7 @@ export default function MainPage({ navigation }) {
 	//Filtre Modal
 	const [filtreModal, setFiltreModal] = React.useState(false);
 
-	/*
+	
 	async function registerForPushNotificationAsync() {
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -410,7 +410,7 @@ export default function MainPage({ navigation }) {
 		let finalStatus = await existingStatus;
 		console.log(existingStatus);
 		console.log(finalStatus);
-		if(existingStatus != "granted" && Platform.OS == "ios")
+		if(existingStatus != "granted")
 		{
 			const { status } = await Notifications.requestPermissionsAsync();
 			finalStatus = status;
@@ -432,7 +432,7 @@ export default function MainPage({ navigation }) {
 		}
 		return token;
 	}
-	*/
+	
 
 	React.useEffect(async () => {
 		let abortController = new AbortController();
@@ -464,12 +464,12 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
-		/*
+		
 		const token = await registerForPushNotificationAsync();
 		console.log("-----------------");
 		console.log(token);
 		console.log("-----------------");
-		*/
+		
 		const userName = userData.Name;
 		async function fetchUser() {
 			const newUser = {
@@ -481,13 +481,13 @@ export default function MainPage({ navigation }) {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 			if (userData.data.getMsgUser) {
 				console.log("User is already registered in database");
-				/*
+				
 				await API.graphql(
 					graphqlOperation(updateMsgUser, {
 						input: { id: userID, name: userName, pushToken: token },
 					})
 				);
-				*/
+				
 
 				return;
 			} else {

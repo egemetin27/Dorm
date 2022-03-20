@@ -44,7 +44,7 @@ export default function GizlilikPolitikasi({ navigation, route }) {
 			</View>
             <View>
                 <Text>
-                    apkdaspokdoaspksaokasods
+                    ----
                 </Text>
             </View>
         </View>
