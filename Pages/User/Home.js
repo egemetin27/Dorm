@@ -33,13 +33,7 @@ import { Constants } from "@aws-amplify/core";
 import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 
-Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldPlaySound: true,
-		shouldSetBadge: false,
-	}),
-});
+
 
 const CategoryList = [
 	{
@@ -406,7 +400,6 @@ export default function MainPage({ navigation }) {
 	async function registerForPushNotificationAsync() {
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
-		alert("Get Permission");
 		let finalStatus = await existingStatus;
 		console.log(existingStatus);
 		console.log(finalStatus);
@@ -430,6 +423,7 @@ export default function MainPage({ navigation }) {
 				lightColor: "#FF231F7C",
 			});
 		}
+
 		return token;
 	}
 	

@@ -4,6 +4,7 @@ import {Ionicons, FontAwesome5} from "@expo/vector-icons"
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { API, graphqlOperation } from 'aws-amplify';
 import {createSentMsg, updateSentMsg, updateUserChat} from "../../src/graphql/mutations";
+import * as SecureStore from "expo-secure-store";
 
 const InputBox = (props) => {
     const [message, setMessage] = React.useState("");
@@ -50,8 +51,13 @@ const InputBox = (props) => {
     }
     const sendNotification = async() =>{
         try {
-            console.log(props.otherUser.pushToken);
+            let abortController = new AbortController();
+		    const userDataStr = await SecureStore.getItemAsync("userData");
+		    const userData = JSON.parse(userDataStr);
+		    const userName = userData.Name;
+            console.log(userName);
             console.log(message);
+            
             let response = fetch ('https://exp.host/--/api/v2/push/send', {
                 method: 'POST',
                 headers: {
@@ -61,10 +67,11 @@ const InputBox = (props) => {
                 body: JSON.stringify({
                     to: props.otherUser.pushToken,
                     sound: 'default',
-                    title: props.otherUser.name,
+                    title: userName,
                     body: message
                 })
             });
+            
         } catch (e) {
             console.log(e);
         }
@@ -76,7 +83,7 @@ const InputBox = (props) => {
                 <FontAwesome5 name = "laugh-beam" size={24} color= "grey"/>
                 <TextInput style = {{flex: 1, marginHorizontal: 10, }} 
                     multiline
-                    placeholder = "Mesajın"
+                    placeholder = {props.otherUser.name}
                     value={message}
                     onChangeText={setMessage}
 
@@ -91,7 +98,7 @@ const InputBox = (props) => {
                         sendMessage();
                         updateChat();
                         setMessage("");
-                        //sendNotification();  
+                        sendNotification();  
                     }
                     
                     

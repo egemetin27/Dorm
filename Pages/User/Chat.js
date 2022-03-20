@@ -19,6 +19,7 @@ import Animated from "react-native-reanimated";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import KeyboardSpacer from 'react-native-keyboard-spacer'
+import { url } from "../../connection";
 
 
 import commonStyles from "../../visualComponents/styles";
@@ -46,6 +47,7 @@ import { decompose2d } from "react-native-redash";
 
 export default function Chat({ navigation, route }) {
 	const [chatMessages, setChatMessages] = useState([]);
+	const [imageUri, setImageUri] = useState("https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg");
 
 	const {
         otherUser,
@@ -89,10 +91,61 @@ export default function Chat({ navigation, route }) {
 			console.log(error);
 		}
 	}
+	/*
+	async function prepare() {
+		await axios
+			.post(url + "/Swipelist", { UserId: userID }, { headers: { "access-token": myToken } })
+			.then((res) => {
+				setPeopleList(res.data);
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+		await axios
+			.post(url + "/EventList", { UserId: userID }, { headers: { "access-token": myToken } })
+			.then((res) => {
+				setEventList(res.data);
+				setShownEvents(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+	//getProfilePic
+	*/
+
+	const fetchImageUri = async () => {
+		try {
+			let abortController = new AbortController();
+			const userDataStr = await SecureStore.getItemAsync("userData");
+			const userData = JSON.parse(userDataStr);
+			const userID = userData.UserId.toString();
+			const myToken = userData.sesToken;
+			await axios
+			.post(url + "/getProfilePic", { UserId: otherUser.id }, { headers: { "access-token": myToken } })
+			.then((res) => {
+				//setPeopleList(res.data);
+				console.log(res.data);
+				if(res.data == [])
+				{
+					console.log("there is no img");
+					alert("there is no img");
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+			
+		} catch(e) {
+			console.log(e);
+		}
+	}
 
 	React.useEffect(async () => {
 		fetchNewMessages();
 		fetchMsg();
+		fetchImageUri();
 	}, [])
 
 	React.useEffect(async () => {
@@ -140,7 +193,7 @@ export default function Chat({ navigation, route }) {
 				<Image
                     style = {{resizeMode: "contain", width: "10%", height: "60%", borderRadius: 40}}
                     source = {{
-                        uri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg"
+                        uri: imageUri
                     }}
                 />
 				<View style = {{width: "2%"}}>

@@ -35,7 +35,6 @@ const ChatMsg = (props) => {
                 marginLeft: 50,
                 marginRight: 0,
                 overflow: "hidden",
-                borderTopLeftRadius: 20,
 
 							}}
 						>
