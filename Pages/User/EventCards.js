@@ -36,7 +36,7 @@ import { url } from "../../connection";
 
 const { width, height } = Dimensions.get("window");
 
-const Card = ({ event, myID, navigation }) => {
+const Card = ({ event, myID, navigation, sesToken }) => {
 	const {
 		EventId,
 		BuyLink,
@@ -136,6 +136,7 @@ const Card = ({ event, myID, navigation }) => {
 					navigation.replace("ProfileCards", {
 						list: res.data,
 						myID: myID,
+						sesToken: sesToken,
 					});
 				} else {
 					Alert.alert("Etkinliği Beğenen Kimse Yok :/");
