@@ -79,7 +79,7 @@ export default function RToplulukKurallari({ navigation }) {
 						onValueChange={setChecked}
 						color={isChecked ? '#4630EB' : undefined}
 					/>
-					<Text>Mahremiyet Politikasını, Kullanıcı Sözleşmesini & Topluluk Kurallarını okudum ve kabul ediyorum.</Text>
+					<Text> <Text style={{color: "blue"}}>Mahremiyet Politikasını</Text>, <Text style={{color: "blue"}}>Kullanıcı Sözleşmesini</Text> & <Text style={{color: "blue"}}>Topluluk Kurallarını</Text> okudum ve kabul ediyorum.</Text>
 
 				</View>
             </ScrollView>
