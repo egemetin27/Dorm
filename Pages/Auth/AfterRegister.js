@@ -3,6 +3,7 @@ import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 import commonStyles from "../../visualComponents/styles";
 import { GradientText, colors } from "../../visualComponents/colors";
@@ -12,9 +13,6 @@ import Gender from "../afterRegisteration/Gender";
 import Expectation from "../afterRegisteration/Expectation";
 import SexOrientation from "../afterRegisteration/SexOrientation";
 import Interested from "../afterRegisteration/Interested";
-
-import PhotoUpload from "../afterRegisteration/PhotoUpload";
-import Hobbies from "../afterRegisteration/Hobbies";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -30,12 +28,14 @@ export default function AfterRegister({ route, navigation }) {
 	const genderSwitch = useSharedValue(false);
 	const orientationSwitch = useSharedValue(false);
 
-	const { userID, email, password } = route.params;
-
 	const handleSubmit = async () => {
 		// TODO: send the choices to database
+
+		const dataStr = await SecureStore.getItemAsync("userData");
+		const data = JSON.parse(dataStr);
+
 		const choices = {
-			UserId: userID,
+			UserId: data.UserId,
 			gender: gender - 1,
 			expectation: expectation - 1,
 			InterestedSex: interested - 1,
@@ -44,10 +44,13 @@ export default function AfterRegister({ route, navigation }) {
 			GenderVisibility: genderSwitch.value ? "1" : "0",
 		};
 
-		axios
-			.post(url + "/AfterRegister", choices)
+		await axios
+			.post(url + "/AfterRegister", choices, { headers: { "access-token": data.sesToken } })
 			.then((res) => {
-				navigation.replace("PhotoUpload", { userID: userID, email: email, password: password });
+				navigation.replace("PhotoUpload", {
+					userID: data.userID,
+					sesToken: data.sesToken,
+				});
 			})
 			.catch((error) => {
 				console.log({ error });

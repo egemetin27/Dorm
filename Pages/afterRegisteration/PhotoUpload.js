@@ -14,7 +14,7 @@ import { url } from "../../connection";
 const { width, height } = Dimensions.get("screen");
 
 export default function PhotoUpload({ navigation, route }) {
-	const { userID, email, password } = route.params;
+	const { userID, sesToken } = route.params;
 
 	const [photoList, setPhotoList] = React.useState([]);
 
@@ -73,7 +73,7 @@ export default function PhotoUpload({ navigation, route }) {
 				photoList.map(async (item, index) => {
 					if (item?.photo ?? false) {
 						const returnVal = await axios
-							.get(url + "/SecurePhotoLink")
+							.get(url + "/SecurePhotoLink", { headers: { "access-token": sesToken } })
 							.then(async (res) => {
 								const uploadUrl = res.data.url;
 								const returned = await fetch(uploadUrl, {
@@ -110,11 +110,15 @@ export default function PhotoUpload({ navigation, route }) {
 				})
 			);
 			await axios
-				.post(url + "/addPhotoLink", {
-					UserId: userID,
-					userPhoto: 1,
-					photos: newList,
-				})
+				.post(
+					url + "/addPhotoLink",
+					{
+						UserId: userID,
+						userPhoto: 1,
+						photos: newList,
+					},
+					{ headers: { "access-token": sesToken } }
+				)
 				.then(async (res) => {
 					// setPhotoList(newList);
 
@@ -127,9 +131,8 @@ export default function PhotoUpload({ navigation, route }) {
 					await SecureStore.setItemAsync("userData", storedValue);
 					navigation.replace("Hobbies", {
 						userID: userID,
-						email: email,
-						password: password,
 						hobbyList: [],
+						isNewUSer: true,
 					});
 				})
 				.catch((err) => {

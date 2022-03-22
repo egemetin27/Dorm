@@ -40,7 +40,7 @@ import EventCards from "../Pages/User/EventCards";
 import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
-import GizlilikPolitikasi from "../Pages/GizlilikPolitikasi"
+import GizlilikPolitikasi from "../Pages/GizlilikPolitikasi";
 /////
 // COMPONENTS
 import { AuthContext } from "../nonVisualComponents/Context";
@@ -187,9 +187,12 @@ export default function StackNavigator() {
 	const [isLoggedIn, setIsLoggedIn] = React.useState(false); // is the user logged in or not
 	const [introShown, setIntroShown] = React.useState(); // is this the firs time the app is opened
 	const [tutorialShown, setTutorialShown] = React.useState(); // is the tutorial screen shown before
+	const [newUser, setNewUser] = React.useState(false);
 
 	const authContext = React.useMemo(() => ({
-		signIn: async ({ email, password }) => {
+		signIn: async ({ email, password, isNewUser }) => {
+			if (isNewUser) setNewUser(true);
+
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 			const dataToBeSent = { Mail: email, password: encryptedPassword };
 
@@ -220,8 +223,11 @@ export default function StackNavigator() {
 						console.log(res.data);
 					}
 				})
-				.catch((error) => {
+				.catch(async (error) => {
 					Alert.alert("Hata", error?.response?.data, [{ text: "Kontrol Edeyim" }]);
+					await SecureStore.deleteItemAsync("userData");
+					await AsyncStorage.removeItem("isLoggedIn");
+					setIsLoggedIn(false);
 				});
 		},
 		signOut: async () => {
@@ -261,7 +267,7 @@ export default function StackNavigator() {
 						const { signIn } = authContext;
 						const userStr = await SecureStore.getItemAsync("userData");
 						const { email, password } = JSON.parse(userStr);
-						await signIn({ email: email, password: password });
+						await signIn({ email: email, password: password, isNewUser: false });
 					} else {
 						setIsLoggedIn(false);
 					}
@@ -300,20 +306,25 @@ export default function StackNavigator() {
 									? "WelcomePage"
 									: "Onboarding"
 							}
-							// initialRouteName={"PhotoUpload"}
 						>
 							{isLoggedIn ? (
 								// Screens for logged in users
 								<Stack.Group screenOptions={{ headerShown: false }}>
 									{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
+									{newUser && (
+										<>
+											<Stack.Screen name="AfterRegister" component={AfterRegister} />
+											<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
+										</>
+									)}
+									<Stack.Screen name="Hobbies" component={Hobbies} />
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
-									<Stack.Screen name="GizlilikPolitikasi" component={GizlilikPolitikasi}/>
+									<Stack.Screen name="GizlilikPolitikasi" component={GizlilikPolitikasi} />
 									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 									<Stack.Screen name="ProfileCards" component={ProfileCards} />
 									<Stack.Screen name="EventCards" component={EventCards} />
-									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							) : (
 								// Screens for non-logged in users
@@ -321,14 +332,11 @@ export default function StackNavigator() {
 								<Stack.Group screenOptions={{ headerShown: false }}>
 									<Stack.Screen name="WelcomePage" component={WelcomePage} />
 									<Stack.Screen name="Onboarding" component={Onboarding} />
+									<Stack.Screen name="Login" component={Login} />
 									<Stack.Screen name="LetsMeet" component={LetsMeet} />
 									<Stack.Screen name="Register" component={Register} />
 									<Stack.Screen name="Verification" component={Verification} />
 									<Stack.Screen name="FirstPassword" component={FirstPassword} />
-									<Stack.Screen name="AfterRegister" component={AfterRegister} />
-									<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
-									<Stack.Screen name="Hobbies" component={Hobbies} />
-									<Stack.Screen name="Login" component={Login} />
 									<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 									<Stack.Screen name="NewPassword" component={NewPassword} />
 								</Stack.Group>

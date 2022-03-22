@@ -204,16 +204,16 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 		}
 	);
 
-	const handleSuperlike = () => {
-		// TODO: send the like data to database and if the daily number of superlike is finished, show the popup
-		if (numberOfSuperLikes.value > 0) {
-			onSwipe(1);
-			setLikeFlag(true);
-			numberOfSuperLikes.value--;
-		} else {
-			setPopupVisible(true);
-		}
-	};
+	// const handleSuperlike = () => {
+	// 	// TODO: send the like data to database and if the daily number of superlike is finished, show the popup
+	// 	if (numberOfSuperLikes.value > 0) {
+	// 		onSwipe(1);
+	// 		setLikeFlag(true);
+	// 		numberOfSuperLikes.value--;
+	// 	} else {
+	// 		setPopupVisible(true);
+	// 	}
+	// };
 
 	const composedGesture = Gesture.Race(tapHandler, panHandler);
 
@@ -352,7 +352,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											</Text>
 										</View>
 
-										<View
+										{/* <View
 											style={{
 												backgroundColor: colors.white,
 												height: width * 0.16,
@@ -390,7 +390,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 													)}
 												</View>
 											</TouchableOpacity>
-										</View>
+										</View> */}
 									</View>
 								</LinearGradient>
 							</Animated.View>
@@ -531,7 +531,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											İlgi Alanları{"\n"}
 											{hobbies.map((item, index) => {
 												return (
-													<Text style={{ fontWeight: "bold", fontSize: 22 }}>
+													<Text key={index} style={{ fontWeight: "bold", fontSize: 22 }}>
 														{item.InterestName}
 														{hobbies.length > index + 1 ? (
 															<Text style={{ fontWeight: "bold", fontSize: 22 }}> | </Text>

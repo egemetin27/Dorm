@@ -12,7 +12,6 @@ import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import * as SecureStore from "expo-secure-store";
 
-import { AuthContext } from "../../nonVisualComponents/Context";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { url } from "../../connection";
@@ -23,30 +22,33 @@ export default function Hobbies({ navigation, route }) {
 	const [hobbies, setHobbies] = React.useState(
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
-	const { userID, email, password } = route.params;
+	const { userID, isNewUser } = route.params;
+	const handleSubmit = async () => {
+		const dataStr = await SecureStore.getItemAsync("userData");
+		const data = JSON.parse(dataStr);
 
-	const { signIn } = React.useContext(AuthContext);
-	const handleSubmit = () => {
 		axios
-			.post(url + "/interests", {
-				UserId: userID,
-				hobbies: hobbies,
-			})
+			.post(
+				url + "/interests",
+				{
+					UserId: userID,
+					hobbies: hobbies,
+				},
+				{ headers: { "access-token": data.sesToken } }
+			)
 			.then(async (res) => {
-				if (email == "" && password == "") {
-					// TODO: hobbies is not as the same format as hobbies that is come from backend
-					const newHobbyList = hobbies.map((item) => {
-						return { InterestName: item };
-					});
+				const newHobbyList = hobbies.map((item) => {
+					return { InterestName: item };
+				});
 
-					const dataStr = await SecureStore.getItemAsync("userData");
-					const data = JSON.parse(dataStr);
-					const newData = { ...data, interest: newHobbyList };
+				const newData = { ...data, interest: newHobbyList };
 
-					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
-					navigation.replace("MainScreen", { screen: "Profile" });
+				await SecureStore.setItemAsync("userData", JSON.stringify(newData));
+
+				if (isNewUser) {
+					navigation.replace("MainScreen", { screen: "AnaSayfa" });
 				} else {
-					signIn({ email: email, password: password });
+					navigation.replace("MainScreen", { screen: "Profil" });
 				}
 			})
 			.catch((err) => {

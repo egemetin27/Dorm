@@ -93,15 +93,15 @@ export default function Profile({ route, navigation }) {
 		setUserID(data.UserId);
 		setName(data.Name + " " + data.Surname);
 		setAge(getAge(data.Birth_date));
-		setSex(genderList[data.Gender]);
+		setSex(data.Gender == "null" ? "" : genderList[data.Gender]);
 		setSchool(data.School);
-		setMajor(data.Major);
-		setReligion(data.Din);
+		setMajor(data.Major == "null" ? "" : data.Major);
+		setReligion(data.Din == "null" ? "" : data.Din);
 		setSign(getChoice(data.Burc, signList));
 		setDiet(getChoice(data.Beslenme, dietList));
 		setDrink(getChoice(data.Alkol, smokeAndDrinkList));
 		setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
-		setAbout(data.About);
+		setAbout(data.About == "null" ? "" : data.About);
 		setPhotoList(data.Photo);
 		setHobbies(data.interest);
 		// setUserData({
@@ -302,7 +302,7 @@ export default function Profile({ route, navigation }) {
 			)} */}
 			<ScrollView
 				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ width: width }}
+				contentContainerStyle={{ width: width, paddingBottom: 30 }}
 				keyboardShouldPersistTaps="handled"
 			>
 				<KeyboardAvoidingView>
@@ -879,9 +879,7 @@ export default function Profile({ route, navigation }) {
 									navigation.replace("Hobbies", {
 										hobbyList: hobbies,
 										userID: userID,
-										email: "",
-										password: "",
-										sesToken: sesToken,
+										isNewUser: false,
 									});
 								}
 							}}
