@@ -17,14 +17,19 @@ import {
 import { Feather, Octicons } from "@expo/vector-icons";
 
 
-import commonStyles from "../visualComponents/styles";
-import { colors, Gradient, GradientText } from "../visualComponents/colors";
+import commonStyles from "../../visualComponents/styles";
+import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 const { width, height } = Dimensions.get("window");
 
 
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+};
 
-
-export default function MahremiyetPolitikasi ({ navigation, route }){
+export default function RMahremiyetPolitikasi ({ navigation }){
+	const [state, setState] = React.useState(false)
     return (
      <View style={styles.container}>
 
@@ -45,6 +50,11 @@ export default function MahremiyetPolitikasi ({ navigation, route }){
 			</View>
             <ScrollView 
             style={styles.tcContainer}
+            onScroll={({nativeEvent}) => {
+                if (isCloseToBottom(nativeEvent)) {
+                  setState(true);
+                }
+              }}
             >
                 <Text style={styles.tcP}>Bizim için her konuda içinizin rahat olması çok önemli, bu konulara bize güvenerek verdiğiniz kişisel verileriniz de dahil! Bu yüzden hangi verilerinizi topladığımız, nasıl kullandığımız ve ne kadarını tuttuğumuzla ilgili olan aydınlatma metnimizi açık ve anlaşılır bir şekilde hazırladık. Her türlü sorunuz için bize ulaşabilirsiniz.</Text>
                 <Text style={styles.tcP}>Bu mahremiyet politikasının ilk versiyonudur. 22.03.2022 tarihinden itibaren geçerlidir. </Text>
@@ -107,6 +117,15 @@ export default function MahremiyetPolitikasi ({ navigation, route }){
 				<Text style={styles.tcP}>{'\n'}Mahremiyet Politikamız,  6698 sayılı Kişisel Verilerin Korunması Kanunu çerçevesinde titizlikle hazırlanmıştır. Haklarınız ve verilerinizin korunmasıyla ilgili daha detaylı bilgi almak için: kvkk.gov.tr</Text>
 				<Text style={styles.tcP}>{'\n'}6698 sayılı Kişisel Verilerin Korunması Kanunu çerçevesinde kişisel/özel nitelikli kişisel verilerimin; dorm hizmetleri kullanılarak tamamen veya kısmen elde edilmesi, kaydedilmesi, depolanması, değiştirilmesi, güncellenmesi, sınıflandırılması, işlendikleri amaç için gerekli olan ya da ilgili kanunda öngörülen süre kadar muhafaza edilmesi, kanuni nedenlerle veya yapılan işin niteliği gereği üçüncü kişiler ile paylaşılması, yurtdışına aktarılması da dahil olmak üzere yukarıda açıklandığı üzere işlenmesine, konu hakkında tereddüde yer vermeyecek şekilde bilgi sahibi ve aydınlatılmış olarak açık rızam ile onay veriyorum.</Text>
             </ScrollView>
+
+            <TouchableOpacity 
+				disabled={ !state }
+				onPress={()=> {
+					navigation.replace("RKullaniciSözlesmesi");
+				}} 
+				style={ state ? styles.button : styles.buttonDisabled }>
+				<Text style={styles.buttonLabel}>Devam</Text>
+			</TouchableOpacity>
       </View>
     );
 }
@@ -151,7 +170,7 @@ const styles = {
   	tcContainer: {
     	marginTop: 15,
       	marginBottom: 15,
-      	height: height * .84
+      	height: height * .75
   	},
 
   	button:{
