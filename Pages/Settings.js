@@ -572,15 +572,28 @@ export default function Settings({ navigation, route }) {
 
 				<TouchableOpacity style={styles.buttonContainer}
 					onPress = {() => {
-						navigation.navigate("GizlilikPolitikasi");
+						navigation.navigate("MahremiyetPolitikasi");
 					}}
 				>
-					<Text style={styles.buttonText}>Gizlilik Politikası</Text>
+					<Text style={styles.buttonText}>Mahremiyet Politikası</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}>
-					<Text style={styles.buttonText}>Şartlar ve Koşullar</Text>
+				<TouchableOpacity style={styles.buttonContainer}
+					onPress = {() => {
+						navigation.navigate("KullaniciSözlesmesi");
+					}}
+				>
+					<Text style={styles.buttonText}>Kullanıcı Sözleşmesi</Text>
+					<Feather name="chevron-right" size={20} color="#4A4A4A" />
+				</TouchableOpacity>
+
+				<TouchableOpacity style={styles.buttonContainer}
+					onPress = {() => {
+						navigation.navigate("ToplulukKurallari");
+					}}
+				>
+					<Text style={styles.buttonText}>Topluluk Kuralları</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 

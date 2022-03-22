@@ -57,7 +57,7 @@ export default function LetsMeet({ navigation }) {
 						{ width: width * 0.8, maxHeight: height * 0.1, marginTop: height * 0.03 },
 					]}
 					onPress={() => {
-						navigation.replace("Register");
+						navigation.replace("RMahremiyetPolitikasi");
 					}}
 				>
 					<Gradient style={{ borderRadius: 8, justifyContent: "center" }}>
@@ -68,3 +68,56 @@ export default function LetsMeet({ navigation }) {
 		</View>
 	);
 }
+
+
+const styles = {
+
+	container:{
+	  marginTop: 20,
+	  marginLeft: 10,
+	  marginRight: 10
+	},
+	title: {
+		fontSize: 22,
+		alignSelf: 'center'
+	},
+	tcP: {
+		marginTop: 10,
+		marginBottom: 10,
+		fontSize: 12
+	},
+	tcP:{
+		marginTop: 10,
+		fontSize: 12
+	},
+	tcL:{
+		marginLeft: 10,
+		marginTop: 10,
+		marginBottom: 10,
+		fontSize: 12
+	},
+	tcContainer: {
+		marginTop: 15,
+		marginBottom: 15,
+		height: height * .7
+	},
+  
+	button:{
+		backgroundColor: '#136AC7',
+		borderRadius: 5,
+		padding: 10
+	},
+  
+	buttonDisabled:{
+	  backgroundColor: '#999',
+	  borderRadius: 5,
+	  padding: 10
+   },
+  
+	buttonLabel:{
+		fontSize: 14,
+		color: '#FFF',
+		alignSelf: 'center'
+	}
+  
+  }

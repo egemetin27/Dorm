@@ -22,6 +22,9 @@ import ForgotPassword from "../Pages/Auth/ForgotPassword";
 import Verification from "../Pages/Auth/Verification";
 import LetsMeet from "../Pages/Auth/LetsMeet";
 import Register from "../Pages/Auth/Register";
+import RMahremiyetPolitikasi from "../Pages/Auth/RMahremiyetPolitikasi";
+import RKullaniciSözlesmesi from "../Pages/Auth/RKullaniciSözlesmesi";
+import RToplulukKurallari from "../Pages/Auth/RToplulukKurallari";
 import FirstPassword from "../Pages/Auth/FirstPassword";
 import NewPassword from "../Pages/Auth/NewPassword";
 import AfterRegister from "../Pages/Auth/AfterRegister";
@@ -41,6 +44,9 @@ import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
 import GizlilikPolitikasi from "../Pages/GizlilikPolitikasi";
+import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi";
+import KullaniciSözlesmesi from "../Pages/KullaniciSözlesmesi";
+import ToplulukKurallari from "../Pages/ToplulukKurallari";
 /////
 // COMPONENTS
 import { AuthContext } from "../nonVisualComponents/Context";
@@ -321,6 +327,9 @@ export default function StackNavigator() {
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
 									<Stack.Screen name="GizlilikPolitikasi" component={GizlilikPolitikasi} />
+									<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi} />
+									<Stack.Screen name="KullaniciSözlesmesi" component={KullaniciSözlesmesi} />
+									<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />
 									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 									<Stack.Screen name="ProfileCards" component={ProfileCards} />
@@ -335,6 +344,9 @@ export default function StackNavigator() {
 									<Stack.Screen name="Login" component={Login} />
 									<Stack.Screen name="LetsMeet" component={LetsMeet} />
 									<Stack.Screen name="Register" component={Register} />
+									<Stack.Screen name="RMahremiyetPolitikasi" component={RMahremiyetPolitikasi} />
+									<Stack.Screen name="RKullaniciSözlesmesi" component={RKullaniciSözlesmesi} />
+									<Stack.Screen name="RToplulukKurallari" component={RToplulukKurallari} />
 									<Stack.Screen name="Verification" component={Verification} />
 									<Stack.Screen name="FirstPassword" component={FirstPassword} />
 									<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
