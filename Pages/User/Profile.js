@@ -713,7 +713,7 @@ export default function Profile({ route, navigation }) {
 										transform: [
 											{
 												translateY:
-													sign == ""
+													sign.choice == ""
 														? signRef.interpolate({
 																inputRange: [0, 1],
 																outputRange: [0, -20],
@@ -722,7 +722,7 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize:
-											sign == ""
+											sign.choice == ""
 												? signRef.interpolate({
 														inputRange: [0, 1],
 														outputRange: [20, 15],
@@ -754,7 +754,7 @@ export default function Profile({ route, navigation }) {
 										transform: [
 											{
 												translateY:
-													diet == ""
+													diet.choice == ""
 														? dietRef.interpolate({
 																inputRange: [0, 1],
 																outputRange: [0, -20],
@@ -763,7 +763,7 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize:
-											diet == ""
+											diet.choice == ""
 												? dietRef.interpolate({
 														inputRange: [0, 1],
 														outputRange: [20, 15],
@@ -798,7 +798,7 @@ export default function Profile({ route, navigation }) {
 										transform: [
 											{
 												translateY:
-													drink == ""
+													drink.choice == ""
 														? drinkRef.interpolate({
 																inputRange: [0, 1],
 																outputRange: [0, -20],
@@ -807,7 +807,7 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize:
-											drink == ""
+											drink.choice == ""
 												? drinkRef.interpolate({
 														inputRange: [0, 1],
 														outputRange: [20, 15],
@@ -839,7 +839,7 @@ export default function Profile({ route, navigation }) {
 										transform: [
 											{
 												translateY:
-													smoke == ""
+													smoke.choice == ""
 														? smokeRef.interpolate({
 																inputRange: [0, 1],
 																outputRange: [0, -20],
@@ -848,7 +848,7 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize:
-											smoke == ""
+											smoke.choice == ""
 												? smokeRef.interpolate({
 														inputRange: [0, 1],
 														outputRange: [20, 15],

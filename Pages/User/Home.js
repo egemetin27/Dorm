@@ -442,7 +442,6 @@ export default function MainPage({ navigation }) {
 				.post(url + "/Swipelist", { UserId: userID }, { headers: { "access-token": myToken } })
 				.then((res) => {
 					setPeopleList(res.data);
-					console.log(res.data);
 				})
 				.catch((err) => {
 					console.log(err);

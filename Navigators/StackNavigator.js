@@ -217,7 +217,7 @@ export default function StackNavigator() {
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
 					} else {
-						console.log(res);
+						console.log(res.data);
 					}
 				})
 				.catch((error) => {
