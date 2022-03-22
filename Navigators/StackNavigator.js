@@ -40,7 +40,7 @@ import EventCards from "../Pages/User/EventCards";
 import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
-import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi"
+import GizlilikPolitikasi from "../Pages/GizlilikPolitikasi"
 /////
 // COMPONENTS
 import { AuthContext } from "../nonVisualComponents/Context";
@@ -308,7 +308,7 @@ export default function StackNavigator() {
 									{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
-									<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi}/>
+									<Stack.Screen name="GizlilikPolitikasi" component={GizlilikPolitikasi}/>
 									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 									<Stack.Screen name="ProfileCards" component={ProfileCards} />
