@@ -43,7 +43,6 @@ import EventCards from "../Pages/User/EventCards";
 import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
-import GizlilikPolitikasi from "../Pages/GizlilikPolitikasi";
 import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi";
 import KullaniciSözlesmesi from "../Pages/KullaniciSözlesmesi";
 import ToplulukKurallari from "../Pages/ToplulukKurallari";
@@ -326,7 +325,6 @@ export default function StackNavigator() {
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 									<Stack.Screen name="MainScreen" component={MainScreen} />
 									<Stack.Screen name="Settings" component={Settings} />
-									<Stack.Screen name="GizlilikPolitikasi" component={GizlilikPolitikasi} />
 									<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi} />
 									<Stack.Screen name="KullaniciSözlesmesi" component={KullaniciSözlesmesi} />
 									<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />
