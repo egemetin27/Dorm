@@ -95,6 +95,14 @@ export default function ProfilePhotos({ route, navigation }) {
 		}
 
 		if (toBeDeleted?.photo == undefined) {
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const userData = JSON.parse(dataStr);
+			const storedValue = JSON.stringify({
+				...userData,
+				Photo: filtered,
+			});
+			await SecureStore.setItemAsync("userData", storedValue);
+
 			const response = await axios.post(
 				url + "/deleteS3Photo",
 				{
@@ -144,7 +152,7 @@ export default function ProfilePhotos({ route, navigation }) {
 				PHOTO_LIST.map(async (item, index) => {
 					if (item?.photo ?? false) {
 						const returnVal = await axios
-							.get(url + "/SecurePhotoLink")
+							.get(url + "/SecurePhotoLink", { headers: { "access-token": sesToken } })
 							.then(async (res) => {
 								const uploadUrl = res.data.url;
 								const returned = await fetch(uploadUrl, {

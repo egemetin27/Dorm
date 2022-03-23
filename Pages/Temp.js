@@ -58,7 +58,12 @@ export default function Hobbies() {
 					textAlign: "center",
 				}}
 				value={txt}
-				onChangeText={setTxt}
+				onChangeText={(text) => {
+					setTxt(text);
+				}}
+				onEndEditing={() => {
+					console.log("AAAAAa");
+				}}
 			/>
 			<TouchableOpacity
 				onPress={() => {

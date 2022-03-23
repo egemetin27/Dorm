@@ -50,11 +50,14 @@ export default function Register({ navigation }) {
 	const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
 
 	const handleRegister = async () => {
-		const lName = name.slice(name.lastIndexOf(" ") + 1);
-		const fName = name.slice(0, name.lastIndexOf(" "));
+		const fullName = name.trim();
+		const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
+		const fName = fullName.slice(0, fullName.lastIndexOf(" "));
+
+		const trimmedMail = email.trim();
 
 		if (
-			emailRegex.test(email) &&
+			emailRegex.test(trimmedMail) &&
 			fName != "" &&
 			lName != "" &&
 			parsedDate != "" &&
@@ -62,11 +65,10 @@ export default function Register({ navigation }) {
 			getAge(parsedDate) >= 18
 		) {
 			const profile = {
-				mail: email,
+				mail: trimmedMail,
 				name: fName,
 				surName: lName,
 				city: city,
-				// bDay: date,
 				bDay: parsedDate,
 				school: university.choice,
 			};
@@ -75,9 +77,9 @@ export default function Register({ navigation }) {
 				.post(url + "/register", profile)
 				.then(async (res) => {
 					await axios
-						.post(url + "/SendVerification", { Mail: email })
+						.post(url + "/SendVerification", { Mail: trimmedMail })
 						.then(() => {
-							navigation.replace("Verification", { ...res.data, email: email });
+							navigation.replace("Verification", { ...res.data, email: trimmedMail });
 						})
 						.catch((error) => {
 							console.log("verification error: ", error);

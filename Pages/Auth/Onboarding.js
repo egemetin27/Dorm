@@ -106,8 +106,9 @@ export default function Onboarding({ navigation }) {
 						name={"icon 1"}
 						resizeMode="contain"
 						style={{
+							aspectRatio: 1,
 							width: width / 1.2,
-							height: width / 1.2,
+							maxHeight: height * 0.4,
 							position: "absolute",
 							opacity: counter == 0 ? 1 : 0,
 						}}
@@ -117,8 +118,9 @@ export default function Onboarding({ navigation }) {
 						name={"icon 2"}
 						resizeMode="contain"
 						style={{
+							aspectRatio: 1,
 							width: width / 1.2,
-							height: width / 1.2,
+							maxHeight: height * 0.4,
 							position: "absolute",
 							opacity: counter == 1 ? 1 : 0,
 						}}
@@ -128,8 +130,9 @@ export default function Onboarding({ navigation }) {
 						name={"icon 3"}
 						resizeMode="contain"
 						style={{
+							aspectRatio: 1,
 							width: width / 1.2,
-							height: width / 1.2,
+							maxHeight: height * 0.4,
 							position: "absolute",
 							opacity: counter == 2 ? 1 : 0,
 						}}
@@ -163,8 +166,9 @@ export default function Onboarding({ navigation }) {
 								style={{
 									letterSpacing: 0.75,
 									fontWeight: "bold",
-									fontSize: 20,
-									lineHeight: 20,
+									fontSize: height * 0.025,
+									// fontSize: 20,
+									lineHeight: height * 0.025,
 								}}
 							>
 								{counter != 2 ? "Sonraki" : "Başlayalım"}
@@ -181,7 +185,8 @@ export default function Onboarding({ navigation }) {
 									letterSpacing: 0.75,
 									opacity: 0,
 									fontWeight: "bold",
-									fontSize: 20,
+									fontSize: height * 0.025,
+									// fontSize: 20,
 								}}
 							>
 								{counter != 2 ? "Sonraki" : "Başlayalım"}
@@ -198,14 +203,14 @@ const styles = StyleSheet.create({
 	TextHeader: {
 		color: colors.white,
 		fontWeight: "bold",
-		fontSize: 42,
+		fontSize: height * 0.05,
 	},
 	TextContent: {
 		marginTop: 5,
 		color: colors.white,
 		fontWeight: "200",
 		letterSpacing: 0.9,
-		fontSize: 18,
+		fontSize: height * 0.02,
 	},
 	Circle: {
 		marginTop: width / 27,

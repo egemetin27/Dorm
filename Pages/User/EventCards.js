@@ -25,7 +25,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import * as SecureStore from "expo-secure-store";
 
@@ -517,14 +517,14 @@ export default function EventCards({ navigation, route }) {
 						navigation.replace("MainScreen", { screen: "AnaSayfa" });
 					}}
 				>
-					<Ionicons name="arrow-back-outline" size={30} color="black" />
+					<Feather name="chevron-left" size={30} color={colors.cool_gray} />
 				</TouchableOpacity>
 				<Image
 					source={require("../../assets/dorm_text.png")}
 					resizeMode="center"
 					style={{ maxWidth: "30%", height: "40%" }}
 				/>
-				<Ionicons name="arrow-back-outline" size={30} color="transparent" />
+				<Feather name="chevron-left" size={30} color={colors.cool_gray} />
 			</View>
 
 			<Carousel

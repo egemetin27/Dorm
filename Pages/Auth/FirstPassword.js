@@ -9,6 +9,7 @@ import Crypto, { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+import { AuthContext } from "../../nonVisualComponents/Context";
 
 export default function FirstPassword({ navigation, route }) {
 	const [password, setPassword] = React.useState("");
@@ -16,6 +17,7 @@ export default function FirstPassword({ navigation, route }) {
 	const [passwordShown, setPasswordShown] = React.useState(false);
 
 	const animRef = React.useRef(new Animated.Value(0)).current;
+	const { signIn } = React.useContext(AuthContext);
 
 	const handleSubmit = async () => {
 		const { userID, email } = route.params;
@@ -26,18 +28,18 @@ export default function FirstPassword({ navigation, route }) {
 		}
 
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
-
 		const dataToBeSent = { password: encryptedPassword, UserId: userID }; //TODO: userID should be come from route.params.id
 
 		axios
 			.post(url + "/PasswordRegister", dataToBeSent)
 			.then(() => {
 				console.log("Password Updated Successfully");
-				navigation.replace("AfterRegister", {
-					userID: userID,
-					email: email,
-					password: password,
-				});
+				signIn({ email: email, password: password, isNewUser: true });
+				// navigation.replace("AfterRegister", {
+				// 	userID: userID,
+				// 	email: email,
+				// 	password: password,
+				// });
 			})
 			.catch((error) => {
 				console.log({ error });

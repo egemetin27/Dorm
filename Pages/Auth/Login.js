@@ -1,13 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	TouchableOpacity,
-	TextInput,
-	Animated,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import commonStyles from "../../visualComponents/styles";
@@ -51,11 +44,11 @@ export default function Login({ navigation }) {
 	const { signIn } = React.useContext(AuthContext);
 	const handleLogin = async () => {
 		// if (emailRegex.test(email)) {
-		// 	signIn({ email: email, password: password });
+		// 	signIn({ email: email, password: password, isNewUser: false });
 		// } else {
 		// 	setWrongInput({ value: true, message: "E-posta adresi geçersiz!" });
 		// }
-		signIn({ email: email, password: password });
+		signIn({ email: email, password: password, isNewUser: false });
 	};
 
 	return (
@@ -75,9 +68,7 @@ export default function Login({ navigation }) {
 				<View
 					style={[
 						commonStyles.inputContainer,
-						wrongInput.value
-							? commonStyles.InvalidInput
-							: commonStyles.ValidInput,
+						wrongInput.value ? commonStyles.InvalidInput : commonStyles.ValidInput,
 					]}
 				>
 					<Animated.Text
@@ -120,9 +111,7 @@ export default function Login({ navigation }) {
 					style={[
 						commonStyles.inputContainer,
 						{ marginTop: 20, justifyContent: "center" },
-						wrongInput.value
-							? commonStyles.InvalidInput
-							: commonStyles.ValidInput,
+						wrongInput.value ? commonStyles.InvalidInput : commonStyles.ValidInput,
 					]}
 				>
 					<Animated.Text
@@ -173,9 +162,7 @@ export default function Login({ navigation }) {
 				</View>
 				{wrongInput.value && (
 					<View style={{ marginTop: 8, left: 2, position: "relative" }}>
-						<Text
-							style={{ color: "#FF4646", fontSize: 14, letterSpacing: 0.3 }}
-						>
+						<Text style={{ color: "#FF4646", fontSize: 14, letterSpacing: 0.3 }}>
 							{wrongInput.message}
 						</Text>
 					</View>
@@ -200,10 +187,7 @@ export default function Login({ navigation }) {
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					style={[
-						commonStyles.button,
-						{ position: "absolute", marginTop: 210 },
-					]}
+					style={[commonStyles.button, { position: "absolute", marginTop: 210 }]}
 					disabled={email == "" || password == ""}
 					onPress={handleLogin}
 				>
@@ -243,9 +227,7 @@ export default function Login({ navigation }) {
 							navigation.navigate("LetsMeet");
 						}}
 					>
-						<Text style={{ color: "#6B46D2", fontWeight: "bold" }}>
-							dorm'a Katıl
-						</Text>
+						<Text style={{ color: "#6B46D2", fontWeight: "bold" }}>dorm'a Katıl</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

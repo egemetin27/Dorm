@@ -1,12 +1,12 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "./colors";
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("screen");
 
 export default styles = StyleSheet.create({
 	Container: {
-		height: "100%",
-		width: "100%",
+		height: height,
+		width: width,
 		backgroundColor: "#F4F3F3",
 		alignItems: "center",
 		zIndex: 0,
@@ -25,9 +25,8 @@ export default styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	inputContainer: {
-		position: "relative",
-		width: 327,
-		height: 56,
+		width: width * 0.8,
+		aspectRatio: 6 / 1,
 		borderRadius: 8,
 		alignSelf: "center",
 		justifyContent: "center",
@@ -41,17 +40,14 @@ export default styles = StyleSheet.create({
 		borderWidth: 1.5,
 	},
 	input: {
-		width: 327,
-		height: 56,
-		left: 15,
+		width: width * 0.8,
+		aspectRatio: 6 / 1,
+		paddingLeft: 15,
 		borderRadius: 8,
 	},
 	button: {
 		backgroundColor: "#B6B6B6",
-		position: "relative",
-		// width: 327,
-		// height: 56,
-		width: "80%",
+		width: width * 0.8,
 		aspectRatio: 6 / 1,
 		alignItems: "center",
 		justifyContent: "center",
@@ -67,7 +63,7 @@ export default styles = StyleSheet.create({
 		color: "#FFFFFF",
 		fontStyle: "normal",
 		fontWeight: "600",
-		fontSize: 16,
+		fontSize: height * 0.02,
 		textAlign: "center",
 		letterSpacing: 1.2,
 	},
