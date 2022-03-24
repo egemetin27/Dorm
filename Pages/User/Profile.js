@@ -182,87 +182,89 @@ export default function Profile({ route, navigation }) {
 
 	return (
 		<View style={[commonStyles.Container, { alignItems: "center" }]}>
-			<StatusBar style="dark" />
+			<StatusBar style="dark" translucent={false} backgroundColor={"#F4F3F3"} />
 			<View
 				style={{
-					height: 100,
+					height: height * 0.08,
 					width: "100%",
 					backgroundColor: "#F4F3F3",
 					elevation: 10,
+					flexDirection: "row",
+					alignItems: "flex-end",
+					paddingBottom: height * 0.02,
+					justifyContent: "space-between",
 				}}
 			>
-				<View name={"Header"} style={commonStyles.Header}>
-					<View style={{ marginLeft: 20 }}>
-						{isEditable ? (
-							<TouchableOpacity onPress={() => setEditibility(!isEditable)}>
-								<MaterialCommunityIcons
-									name="arrow-left"
-									size={30}
-									color={colors.gray}
-									style={{ paddingRight: 15 }}
-								/>
-							</TouchableOpacity>
-						) : (
-							<GradientText
-								style={{ fontSize: 30, fontWeight: "bold", letterSpacing: 1.2 }}
-								text={"Profilim"}
+				<View style={{ marginLeft: 20 }}>
+					{isEditable ? (
+						<TouchableOpacity onPress={() => setEditibility(!isEditable)}>
+							<MaterialCommunityIcons
+								name="arrow-left"
+								size={30}
+								color={colors.gray}
+								style={{ paddingRight: 15 }}
 							/>
-						)}
-					</View>
-					<View style={{ flexDirection: "row", alignSelf: "center" }}>
-						{isEditable ? (
-							<TouchableOpacity
-								onPress={() => {
-									setEditibility(false);
-									handleSave();
-								}}
-							>
-								<GradientText
-									style={{ fontSize: 25, letterSpacing: 1.2, paddingRight: 15 }}
-									text={"Kaydet"}
-								/>
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity
-								onPress={() => {
-									setEditibility(true);
-								}}
-							>
-								<MaterialCommunityIcons
-									name="pencil"
-									size={27}
-									color={colors.gray}
-									style={{ paddingRight: 15 }}
-								/>
-							</TouchableOpacity>
-						)}
+						</TouchableOpacity>
+					) : (
+						<GradientText
+							style={{ fontSize: 30, fontWeight: "bold", letterSpacing: 1.2 }}
+							text={"Profilim"}
+						/>
+					)}
+				</View>
+				<View style={{ flexDirection: "row" }}>
+					{isEditable ? (
+						<TouchableOpacity
+							onPress={() => {
+								setEditibility(false);
+								handleSave();
+							}}
+						>
+							<GradientText
+								style={{ fontSize: 25, letterSpacing: 1.2, paddingRight: 15 }}
+								text={"Kaydet"}
+							/>
+						</TouchableOpacity>
+					) : (
+						<TouchableOpacity
+							onPress={() => {
+								setEditibility(true);
+							}}
+						>
+							<MaterialCommunityIcons
+								name="pencil"
+								size={27}
+								color={colors.gray}
+								style={{ paddingRight: 15 }}
+							/>
+						</TouchableOpacity>
+					)}
 
-						{isEditable ? (
-							<></>
-						) : (
-							<TouchableOpacity
-								onPress={async () => {
-									const userStr = await SecureStore.getItemAsync("userData");
-									const user = JSON.parse(userStr);
+					{isEditable ? (
+						<></>
+					) : (
+						<TouchableOpacity
+							onPress={async () => {
+								const userStr = await SecureStore.getItemAsync("userData");
+								const user = JSON.parse(userStr);
 
-									navigation.navigate("Settings", {
-										invisibility: user.Invisible == "1" ? true : false,
-										campusGhost: user.BlockCampus == "1" ? true : false,
-										schoolLover: user.OnlyCampus == "1" ? true : false,
-										userID: user.UserId,
-										sesToken: user.sesToken,
-									});
-								}}
-							>
-								<MaterialCommunityIcons
-									name="cog"
-									size={27}
-									color={colors.gray}
-									style={{ paddingRight: 15 }}
-								/>
-							</TouchableOpacity>
-						)}
-					</View>
+								navigation.navigate("Settings", {
+									invisibility: user.Invisible == "1" ? true : false,
+									campusGhost: user.BlockCampus == "1" ? true : false,
+									schoolLover: user.OnlyCampus == "1" ? true : false,
+									userID: user.UserId,
+									sesToken: user.sesToken,
+								});
+							}}
+						>
+							<MaterialCommunityIcons
+								name="cog"
+								size={27}
+								color={colors.gray}
+								style={{ paddingRight: 15 }}
+							/>
+						</TouchableOpacity>
+					)}
 				</View>
 			</View>
 			{/* {progressBarVisible && (

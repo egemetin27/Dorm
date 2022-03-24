@@ -120,8 +120,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	};
 
 	const explorePeople = async () => {
-		// TODO:
-
 		await axios
 			.post(
 				url + "/eventParticipants",
@@ -143,11 +141,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 				}
 			})
 			.catch((err) => console.log(err));
-
-		// navigation.replace("ProfileCards", {
-		// 	list: [],
-		// 	myID: myID,
-		// });
 	};
 
 	return (
@@ -426,6 +419,14 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									<View style={{ alignContent: "center" }}>
 										<Pressable
 											onPress={async () => {
+												await axios
+													.post(
+														url + "/eventLinkClick",
+														{ EventId: EventId },
+														{ headers: { "access-token": sesToken } }
+													)
+													.catch((err) => console.log(err));
+
 												await Linking.openURL(BuyLink);
 											}}
 										>
@@ -524,7 +525,7 @@ export default function EventCards({ navigation, route }) {
 					resizeMode="center"
 					style={{ maxWidth: "30%", height: "40%" }}
 				/>
-				<Feather name="chevron-left" size={30} color={colors.cool_gray} />
+				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
 
 			<Carousel

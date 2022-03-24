@@ -6,7 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import StatusBar from "expo-status-bar/build/ExpoStatusBar";
+import { StatusBar } from "expo-status-bar";
 import { url } from "../connection";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
@@ -43,7 +43,6 @@ import EventCards from "../Pages/User/EventCards";
 import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
-import GizlilikPolitikasi from "../Pages/GizlilikPolitikasi";
 import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi";
 import KullaniciSözlesmesi from "../Pages/KullaniciSözlesmesi";
 import ToplulukKurallari from "../Pages/ToplulukKurallari";
@@ -198,6 +197,7 @@ export default function StackNavigator() {
 	const authContext = React.useMemo(() => ({
 		signIn: async ({ email, password, isNewUser }) => {
 			if (isNewUser) setNewUser(true);
+			else setNewUser(false);
 
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 			const dataToBeSent = { Mail: email, password: encryptedPassword };
@@ -303,30 +303,29 @@ export default function StackNavigator() {
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator
-							initialRouteName={
-								isLoggedIn
-									? tutorialShown
-										? "MainScreen"
-										: "Tutorial"
-									: introShown
-									? "WelcomePage"
-									: "Onboarding"
-							}
+						// initialRouteName={
+						// 	isLoggedIn
+
+						// 		? tutorialShown
+						// 			? "MainScreen"
+						// 			: "Tutorial"
+						// 		: introShown
+						// 		? "WelcomePage"
+						// 		: "Onboarding"
+						// }
 						>
 							{isLoggedIn ? (
 								// Screens for logged in users
-								<Stack.Group screenOptions={{ headerShown: false }}>
+								<Stack.Group
+									screenOptions={{ headerShown: false }}
+									navigationKey={newUser ? "new" : "old"}
+								>
 									{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
-									{newUser && (
-										<>
-											<Stack.Screen name="AfterRegister" component={AfterRegister} />
-											<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
-										</>
-									)}
-									<Stack.Screen name="Hobbies" component={Hobbies} />
+									{newUser && <Stack.Screen name="AfterRegister" component={AfterRegister} />}
 									<Stack.Screen name="MainScreen" component={MainScreen} />
+									<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
+									<Stack.Screen name="Hobbies" component={Hobbies} />
 									<Stack.Screen name="Settings" component={Settings} />
-									<Stack.Screen name="GizlilikPolitikasi" component={GizlilikPolitikasi} />
 									<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi} />
 									<Stack.Screen name="KullaniciSözlesmesi" component={KullaniciSözlesmesi} />
 									<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />

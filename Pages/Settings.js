@@ -101,7 +101,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 	);
 };
 
-const FreezeAccountModal = ({ visible, dismiss, signOut }) => {
+const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => {
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -208,7 +208,14 @@ const FreezeAccountModal = ({ visible, dismiss, signOut }) => {
 	);
 };
 
-const DeleteAccountModal = ({ visible, dismiss }) => {
+const DeleteAccountModal = ({
+	visible,
+	dismiss,
+	showFreezeAccountModal,
+	signOut,
+	sesToken,
+	userID,
+}) => {
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -256,6 +263,10 @@ const DeleteAccountModal = ({ visible, dismiss }) => {
 				</Text>
 
 				<TouchableOpacity
+					onPress={() => {
+						dismiss();
+						showFreezeAccountModal();
+					}}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -274,7 +285,19 @@ const DeleteAccountModal = ({ visible, dismiss }) => {
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					onPress={() => {}}
+					onPress={() => {
+						axios
+							.post(
+								url + "/deleteAccount",
+								{ UserId: userID },
+								{ headers: { "access-token": sesToken } }
+							)
+							.then((res) => {
+								console.log(res.data);
+								signOut();
+							})
+							.catch((err) => console.log(err));
+					}}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -396,7 +419,7 @@ export default function Settings({ navigation, route }) {
 
 	return (
 		<View style={[commonStyles.Container]}>
-			<StatusBar style="dark" />
+			<StatusBar style="dark" translucent={false} backgroundColor={colors.white} />
 			<View name={"Header"} style={styles.header}>
 				<TouchableOpacity
 					name={"backButton"}
@@ -411,7 +434,10 @@ export default function Settings({ navigation, route }) {
 					style={{ fontSize: 36, fontWeight: "bold", paddingLeft: 0 }}
 				/>
 			</View>
-			<ScrollView style={{ width: "100%" }} showsVerticalScrollIndicator={false}>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ width: width, paddingBottom: 40 }}
+			>
 				{/* <TouchableOpacity
 					style={styles.buttonContainer}
 					onPress={() => {
@@ -570,8 +596,9 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}
-					onPress = {() => {
+				<TouchableOpacity
+					style={styles.buttonContainer}
+					onPress={() => {
 						navigation.navigate("MahremiyetPolitikasi");
 					}}
 				>
@@ -579,8 +606,9 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}
-					onPress = {() => {
+				<TouchableOpacity
+					style={styles.buttonContainer}
+					onPress={() => {
 						navigation.navigate("KullaniciSözlesmesi");
 					}}
 				>
@@ -588,8 +616,9 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}
-					onPress = {() => {
+				<TouchableOpacity
+					style={styles.buttonContainer}
+					onPress={() => {
 						navigation.navigate("ToplulukKurallari");
 					}}
 				>
@@ -619,12 +648,12 @@ export default function Settings({ navigation, route }) {
 
 				<TouchableOpacity
 					style={styles.buttonContainer}
-					// onPress={() => setDeleteAccountModal(true)}
-					onPress={() => {
-						Alert.alert("Üzgünüz", "Hesabını silme özelliği henüz mevcut değil :(", [
-							{ text: "tamamdır" },
-						]);
-					}}
+					onPress={() => setDeleteAccountModal(true)}
+					// onPress={() => {
+					// 	Alert.alert("Üzgünüz", "Hesabını silme özelliği henüz mevcut değil :(", [
+					// 		{ text: "tamamdır" },
+					// 	]);
+					// }}
 				>
 					<Text style={[styles.buttonText, { color: colors.red }]}>Hesabımı Sil</Text>
 					<Feather name="chevron-right" size={20} color={colors.red} />
@@ -646,10 +675,16 @@ export default function Settings({ navigation, route }) {
 				}}
 				visible={freezeAccountModal}
 				dismiss={() => setFreezeAccountModal(false)}
+				sesToken={sesToken}
+				userID={userID}
 			/>
 			<DeleteAccountModal
 				visible={deleteAccountModal}
 				dismiss={() => setDeleteAccountModal(false)}
+				showFreezeAccountModal={() => setFreezeAccountModal(true)}
+				signOut={signOut}
+				sesToken={sesToken}
+				userID={userID}
 			/>
 
 			{/* <CustomModal
@@ -927,7 +962,7 @@ const styles = StyleSheet.create({
 	header: {
 		backgroundColor: colors.white,
 		width: "100%",
-		height: 100,
+		height: height * 0.08,
 		elevation: 20,
 		flexDirection: "row",
 		alignItems: "flex-end",

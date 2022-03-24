@@ -199,11 +199,11 @@ export default function Verification({ navigation, route }) {
 								if (text == "") input2.current.focus();
 								else input3.current.blur();
 							}}
-							onChangeText={(text) => {
-								verification.current[3] = text;
-								checkIfDone();
-								if (text == "") input2.current.focus();
-							}}
+							// onChangeText={(text) => {
+							// 	verification.current[3] = text;
+							// 	checkIfDone();
+							// 	if (text == "") input2.current.focus();
+							// }}
 						/>
 					</View>
 				</View>

@@ -8,10 +8,11 @@ Amplify.configure(awsmobile);
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
+import Match from "./Pages/User/Match";
 
 export default function App() {
-	return <Stack />;
-	// return <Temp />;
+	// return <Stack />;
+	return <Match />;
 }
 
 const styles = StyleSheet.create({

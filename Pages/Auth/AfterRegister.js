@@ -48,7 +48,7 @@ export default function AfterRegister({ route, navigation }) {
 			.post(url + "/AfterRegister", choices, { headers: { "access-token": data.sesToken } })
 			.then((res) => {
 				navigation.replace("PhotoUpload", {
-					userID: data.userID,
+					userID: data.UserId,
 					sesToken: data.sesToken,
 				});
 			})

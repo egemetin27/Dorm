@@ -48,29 +48,8 @@ export default function Hobbies() {
 	};
 
 	return (
-		<View style={{ height: height, width: width, justifyContent: "center", alignItems: "center" }}>
-			<TextInput
-				style={{
-					width: 200,
-					height: 120,
-					backgroundColor: "rgba(0,0,0,0.2)",
-					fontSize: 40,
-					textAlign: "center",
-				}}
-				value={txt}
-				onChangeText={(text) => {
-					setTxt(text);
-				}}
-				onEndEditing={() => {
-					console.log("AAAAAa");
-				}}
-			/>
-			<TouchableOpacity
-				onPress={() => {
-					foo(txt, arr);
-				}}
-				style={{ width: 200, height: 40, backgroundColor: "rgba(100,0,50,0.5)" }}
-			/>
-		</View>
+		<View
+			style={{ height: height, width: width, justifyContent: "center", alignItems: "center" }}
+		></View>
 	);
 }
