@@ -270,6 +270,7 @@ export default function StackNavigator() {
 					Now: require("../assets/fonts/now.otf"),
 					NowBold: require("../assets/fonts/now_bold.otf"),
 					Poppins: require("../assets/fonts/Poppins.ttf"),
+					PoppinsItalic: require("../assets/fonts/Poppins_Italic.ttf"),
 					PoppinsSemiBold: require("../assets/fonts/Poppins-SemiBold.ttf"),
 					PoppinsBold: require("../assets/fonts/Poppins_bold.ttf"),
 					PoppinsExtraBold: require("../assets/fonts/Poppins-ExtraBold.ttf"),

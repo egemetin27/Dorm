@@ -233,6 +233,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								height: "15%",
 								width: "100%",
 								position: "absolute",
+								justifyContent: "flex-end",
 								bottom: 0,
 							}}
 						>
@@ -247,7 +248,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									<Text
 										style={{
 											color: colors.white,
-											fontSize: 24,
+											fontSize: width * 0.057,
+											lineHeight: width * 0.062,
 											fontFamily: "PoppinsSemiBold",
 											letterSpacing: 1.05,
 										}}
@@ -258,7 +260,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 										style={{
 											color: colors.white,
 											fontSize: width * 0.045,
-											fontStyle: "italic",
+											fontFamily: "PoppinsItalic",
+											lineHeight: width * 0.06,
 										}}
 									>
 										{date}
@@ -574,11 +577,11 @@ export default function EventCards({ navigation, route }) {
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
 					<Image
-						source={require("../../assets/TabBarIcons/anasayfa.png")}
+						source={require("../../assets/logoGradient.png")}
 						resizeMode="contain"
 						style={{
 							tintColor: colors.cool_gray,
-							height: height / 27,
+							height: height / 30,
 						}}
 					/>
 					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>

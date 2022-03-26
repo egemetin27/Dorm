@@ -101,7 +101,7 @@ const People = ({ person, openProfiles, index, length }) => {
 			)}
 
 			<Gradient
-				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.75)"]}
 				locations={[0, 0.1, 1]}
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
@@ -111,21 +111,9 @@ const People = ({ person, openProfiles, index, length }) => {
 					position: "absolute",
 					bottom: 0,
 					justifyContent: "flex-end",
-					paddingBottom: width * 0.02,
+					paddingBottom: width * 0.01,
 				}}
 			>
-				{/* <Text
-					numberOfLines={1}
-					// ellipsizeMode={"clip"}
-					style={{
-						overflow: "scroll",
-						color: colors.white,
-						fontSize: width * 0.045,
-						paddingHorizontal: 10,
-						fontFamily: "PoppinsSemiBold",
-						letterSpacing: 1.05,
-					}}
-				> */}
 				<View
 					style={{
 						flexDirection: "row",
@@ -158,13 +146,13 @@ const People = ({ person, openProfiles, index, length }) => {
 						• {age}
 					</Text>
 				</View>
-				{/* </Text> */}
 				<Text
 					style={{
 						color: colors.white,
 						fontSize: width * 0.035,
 						paddingLeft: 10,
-						fontStyle: "italic",
+						fontFamily: "PoppinsItalic",
+						lineHeight: width * 0.04,
 					}}
 				>
 					{university}
@@ -305,7 +293,7 @@ const Event = ({ event, openEvents, index, length }) => {
 				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 			/>
 			<Gradient
-				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.75)"]}
 				locations={[0, 0.1, 1]}
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
@@ -313,6 +301,8 @@ const Event = ({ event, openEvents, index, length }) => {
 					height: "25%",
 					width: "100%",
 					position: "absolute",
+					justifyContent: "flex-end",
+					paddingBottom: width * 0.01,
 					bottom: 0,
 				}}
 			>
@@ -321,6 +311,7 @@ const Event = ({ event, openEvents, index, length }) => {
 					style={{
 						color: colors.white,
 						fontSize: width * 0.045,
+						lineHeight: width * 0.05,
 						paddingLeft: 10,
 						fontFamily: "PoppinsSemiBold",
 						letterSpacing: 1.05,
@@ -335,12 +326,14 @@ const Event = ({ event, openEvents, index, length }) => {
 							width: "100%",
 							flexDirection: "row",
 							justifyContent: "space-between",
+							paddingTop: width * 0.01,
 						}}
 					>
 						<Text
 							style={{
 								color: colors.white,
 								fontSize: width * 0.035,
+								lineHeight: width * 0.04,
 								paddingLeft: 10,
 							}}
 						>
@@ -350,6 +343,7 @@ const Event = ({ event, openEvents, index, length }) => {
 							style={{
 								color: colors.white,
 								fontSize: width * 0.035,
+								lineHeight: width * 0.04,
 								paddingRight: 10,
 							}}
 						>
@@ -370,8 +364,10 @@ const Event = ({ event, openEvents, index, length }) => {
 					<Text
 						numberOfLines={1}
 						style={{
+							paddingTop: width * 0.01,
 							color: colors.white,
 							fontSize: width * 0.035,
+							lineHeight: width * 0.04,
 							paddingRight: 10,
 						}}
 					>

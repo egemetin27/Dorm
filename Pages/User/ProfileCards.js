@@ -343,7 +343,8 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 												style={{
 													color: colors.white,
 													fontSize: width * 0.045,
-													fontStyle: "italic",
+													fontFamily: "PoppinsItalic",
+													lineHeight: width * 0.05,
 												}}
 											>
 												{university}
@@ -754,11 +755,11 @@ export default function ProfileCards({ navigation, route }) {
 					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
 				>
 					<Image
-						source={require("../../assets/TabBarIcons/anasayfa.png")}
+						source={require("../../assets/logoGradient.png")}
 						resizeMode="contain"
 						style={{
 							tintColor: colors.cool_gray,
-							height: height / 27,
+							height: height / 30,
 						}}
 					/>
 					<Text
