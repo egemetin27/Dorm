@@ -43,7 +43,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 					style={{ height: "20%", aspectRatio: 1 }}
 					resizeMode={"contain"}
 				/>
-				<Text style={{ color: colors.dark_gray, fontSize: 24, fontWeight: "bold" }}>
+				<Text style={{ color: colors.dark_gray, fontSize: 24, fontFamily: "PoppinsSemiBold" }}>
 					Oturumumu Kapat
 				</Text>
 				<Text
@@ -52,7 +52,6 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 						paddingHorizontal: "5%",
 						color: colors.dark_gray,
 						fontSize: 16,
-						fontWeight: "400",
 						textAlign: "center",
 					}}
 				>
@@ -71,8 +70,17 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 						marginTop: 20,
 					}}
 				>
-					<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
-						<Text style={{ color: colors.white, fontSize: 20, fontWeight: "bold" }}>Vazgeçtim</Text>
+					<Gradient
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+							Vazgeçtim
+						</Text>
 					</Gradient>
 				</TouchableOpacity>
 
@@ -92,7 +100,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 						borderColor: "#B6B6B6",
 					}}
 				>
-					<Text style={{ fontSize: 20, color: "#B6B6B6", fontWeight: "bold" }}>
+					<Text style={{ fontSize: 20, color: "#B6B6B6", fontFamily: "PoppinsSemiBold" }}>
 						Oturumumu Kapat
 					</Text>
 				</TouchableOpacity>
@@ -132,7 +140,7 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => 
 					style={{ height: "20%", aspectRatio: 1 }}
 					resizeMode={"contain"}
 				/>
-				<Text style={{ color: colors.dark_gray, fontSize: 24, fontWeight: "bold" }}>
+				<Text style={{ color: colors.dark_gray, fontSize: 24, fontFamily: "PoppinsSemiBold" }}>
 					Hesabımı Dondur
 				</Text>
 				<Text
@@ -141,7 +149,6 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => 
 						paddingHorizontal: "5%",
 						color: colors.dark_gray,
 						fontSize: 16,
-						fontWeight: "400",
 						textAlign: "center",
 					}}
 				>
@@ -174,8 +181,15 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => 
 						marginTop: 20,
 					}}
 				>
-					<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
-						<Text style={{ color: colors.white, fontSize: 20, fontWeight: "bold" }}>
+					<Gradient
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
 							Hesabımı Dondur
 						</Text>
 					</Gradient>
@@ -201,7 +215,9 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => 
 						borderColor: "#B6B6B6",
 					}}
 				>
-					<Text style={{ fontSize: 20, color: "#B6B6B6", fontWeight: "bold" }}>Görünmez Ol</Text>
+					<Text style={{ fontSize: 20, color: "#B6B6B6", fontFamily: "PoppinsSemiBold" }}>
+						Görünmez Ol
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</CustomModal>
@@ -246,7 +262,7 @@ const DeleteAccountModal = ({
 					style={{ height: "20%", aspectRatio: 1 }}
 					resizeMode={"contain"}
 				/>
-				<Text style={{ color: colors.dark_gray, fontSize: 24, fontWeight: "bold" }}>
+				<Text style={{ color: colors.dark_gray, fontSize: 24, fontFamily: "PoppinsSemiBold" }}>
 					Hesabımı Sil
 				</Text>
 				<Text
@@ -277,8 +293,15 @@ const DeleteAccountModal = ({
 						marginTop: 20,
 					}}
 				>
-					<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
-						<Text style={{ color: colors.white, fontSize: 20, fontWeight: "bold" }}>
+					<Gradient
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
 							Hesabımı Dondur
 						</Text>
 					</Gradient>
@@ -312,7 +335,9 @@ const DeleteAccountModal = ({
 						borderColor: "#B6B6B6",
 					}}
 				>
-					<Text style={{ fontSize: 20, color: "#B6B6B6", fontWeight: "bold" }}>Hesabımı Sil</Text>
+					<Text style={{ fontSize: 20, color: "#B6B6B6", fontFamily: "PoppinsSemiBold" }}>
+						Hesabımı Sil
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</CustomModal>
@@ -429,10 +454,7 @@ export default function Settings({ navigation, route }) {
 				>
 					<Feather name="chevron-left" size={36} color="#4A4A4A" />
 				</TouchableOpacity>
-				<GradientText
-					text={"Ayarlar"}
-					style={{ fontSize: 36, fontWeight: "bold", paddingLeft: 0 }}
-				/>
+				<GradientText text={"Ayarlar"} style={{ fontSize: 32, fontFamily: "NowBold" }} />
 			</View>
 			<ScrollView
 				showsVerticalScrollIndicator={false}
@@ -455,7 +477,7 @@ export default function Settings({ navigation, route }) {
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} /> */}
 
 				<View style={styles.buttonContainer}>
-					<Text style={{ fontSize: 20, fontWeight: "bold", color: "#333333" }}>
+					<Text style={{ fontSize: 20, fontFamily: "PoppinsSemiBold", color: "#333333" }}>
 						Eşleşme Ayarları
 					</Text>
 				</View>
@@ -524,7 +546,9 @@ export default function Settings({ navigation, route }) {
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} />
 
 				<View style={styles.buttonContainer}>
-					<Text style={{ fontSize: 20, fontWeight: "bold", color: "#333333" }}>Bildirimler</Text>
+					<Text style={{ fontSize: 20, fontFamily: "PoppinsSemiBold", color: "#333333" }}>
+						Bildirimler
+					</Text>
 				</View>
 
 				<View style={{ paddingBottom: 16 }}>
@@ -588,7 +612,9 @@ export default function Settings({ navigation, route }) {
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} />
 
 				<View style={styles.buttonContainer}>
-					<Text style={{ fontSize: 20, fontWeight: "bold", color: "#333333" }}>Yasal</Text>
+					<Text style={{ fontSize: 20, fontFamily: "PoppinsSemiBold", color: "#333333" }}>
+						Yasal
+					</Text>
 				</View>
 
 				<TouchableOpacity style={styles.buttonContainer}>
@@ -718,7 +744,7 @@ export default function Settings({ navigation, route }) {
 					>
 						<Feather name="x" size={32} color={colors.medium_gray} />
 					</TouchableOpacity>
-					<GradientText text={"Superdormer"} style={{ fontSize: 36, fontWeight: "bold" }} />
+					<GradientText text={"Superdormer"} style={{ fontSize: 36, fontFamily: "PoppinsSemiBold" }} />
 					<View
 						style={{
 							width: "100%",
@@ -814,7 +840,7 @@ export default function Settings({ navigation, route }) {
 						}}
 					>
 						<View>
-							<Text style={{ fontSize: 18, fontWeight: "bold", color: colors.dark_gray }}>
+							<Text style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 								1 Aylık Üyelik
 							</Text>
 							<Text style={{ fontSize: 15, fontWeight: "normal", color: colors.medium_gray }}>
@@ -822,9 +848,9 @@ export default function Settings({ navigation, route }) {
 							</Text>
 						</View>
 						<View>
-							<Text style={{ fontSize: 30, fontWeight: "bold", color: colors.dark_gray }}>
+							<Text style={{ fontSize: 30, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 								{Math.floor(oneMonthPrice)}
-								<Text style={{ fontSize: 16, fontWeight: "bold", color: colors.dark_gray }}>
+								<Text style={{ fontSize: 16, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 									{oneMonthPrice % 1 == 0 ? "" : "." + Math.round((oneMonthPrice * 100) % 100)}
 								</Text>
 								<Text style={{ fontSize: 16, fontWeight: "normal", color: colors.dark_gray }}>
@@ -877,7 +903,7 @@ export default function Settings({ navigation, route }) {
 							</Text>
 						</View>
 						<View>
-							<Text style={{ fontSize: 18, fontWeight: "bold", color: colors.dark_gray }}>
+							<Text style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 								3 Aylık Üyelik
 							</Text>
 							<Text style={{ fontSize: 15, fontWeight: "normal", color: colors.medium_gray }}>
@@ -885,9 +911,9 @@ export default function Settings({ navigation, route }) {
 							</Text>
 						</View>
 						<View>
-							<Text style={{ fontSize: 30, fontWeight: "bold", color: colors.dark_gray }}>
+							<Text style={{ fontSize: 30, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 								{Math.floor(threeMonthPrice)}
-								<Text style={{ fontSize: 16, fontWeight: "bold", color: colors.dark_gray }}>
+								<Text style={{ fontSize: 16, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 									{threeMonthPrice % 1 == 0 ? "" : "." + Math.round((threeMonthPrice * 100) % 100)}
 								</Text>
 								<Text style={{ fontSize: 16, fontWeight: "normal", color: colors.dark_gray }}>
@@ -914,7 +940,7 @@ export default function Settings({ navigation, route }) {
 						}}
 					>
 						<View>
-							<Text style={{ fontSize: 18, fontWeight: "bold", color: colors.dark_gray }}>
+							<Text style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 								6 Aylık Üyelik
 							</Text>
 							<Text style={{ fontSize: 15, fontWeight: "normal", color: colors.medium_gray }}>
@@ -922,9 +948,9 @@ export default function Settings({ navigation, route }) {
 							</Text>
 						</View>
 						<View>
-							<Text style={{ fontSize: 30, fontWeight: "bold", color: colors.dark_gray }}>
+							<Text style={{ fontSize: 30, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 								{Math.floor(sixMonthPrice)}
-								<Text style={{ fontSize: 16, fontWeight: "bold", color: colors.dark_gray }}>
+								<Text style={{ fontSize: 16, fontFamily: "PoppinsSemiBold", color: colors.dark_gray }}>
 									{sixMonthPrice % 1 == 0 ? "" : "." + Math.round((sixMonthPrice * 100) % 100)}
 								</Text>
 								<Text style={{ fontSize: 16, fontWeight: "normal", color: colors.dark_gray }}>
@@ -947,7 +973,7 @@ export default function Settings({ navigation, route }) {
 						}}
 					>
 						<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
-							<Text style={{ color: colors.white, fontSize: 20, fontWeight: "bold" }}>
+							<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
 								Superdormer Ol
 							</Text>
 						</Gradient>

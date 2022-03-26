@@ -295,7 +295,12 @@ export default function ProfilePhotos({ route, navigation }) {
 						{"\n"}Tabii tekrar galerinden ekleyebilirsin
 					</Text>
 					<TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-						<Gradient>
+						<Gradient
+							style={{
+								width: "100%",
+								height: "100%",
+							}}
+						>
 							<View
 								style={{
 									flex: 1,

@@ -7,6 +7,7 @@ import {
 	ScrollView,
 	FlatList,
 	TouchableOpacity,
+	ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
@@ -22,38 +23,46 @@ export default function Hobbies({ navigation, route }) {
 	const [hobbies, setHobbies] = React.useState(
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
+	const [isLoading, setIsLoading] = React.useState(false);
 	const { userID, isNewUser } = route.params;
+
 	const handleSubmit = async () => {
-		const dataStr = await SecureStore.getItemAsync("userData");
-		const data = JSON.parse(dataStr);
+		try {
+			setIsLoading(true);
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const data = JSON.parse(dataStr);
 
-		axios
-			.post(
-				url + "/interests",
-				{
-					UserId: userID,
-					hobbies: hobbies,
-				},
-				{ headers: { "access-token": data.sesToken } }
-			)
-			.then(async (res) => {
-				const newHobbyList = hobbies.map((item) => {
-					return { InterestName: item };
+			axios
+				.post(
+					url + "/interests",
+					{
+						UserId: userID,
+						hobbies: hobbies,
+					},
+					{ headers: { "access-token": data.sesToken } }
+				)
+				.then(async (res) => {
+					const newHobbyList = hobbies.map((item) => {
+						return { InterestName: item };
+					});
+
+					const newData = { ...data, interest: newHobbyList };
+
+					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
+					setIsLoading(false);
+					if (isNewUser) {
+						navigation.replace("MainScreen", { screen: "AnaSayfa" });
+					} else {
+						navigation.replace("MainScreen", { screen: "Profil" });
+					}
+				})
+				.catch((err) => {
+					setIsLoading(false);
+					console.log(err);
 				});
-
-				const newData = { ...data, interest: newHobbyList };
-
-				await SecureStore.setItemAsync("userData", JSON.stringify(newData));
-
-				if (isNewUser) {
-					navigation.replace("MainScreen", { screen: "AnaSayfa" });
-				} else {
-					navigation.replace("MainScreen", { screen: "Profil" });
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const sport = [
@@ -145,7 +154,7 @@ export default function Hobbies({ navigation, route }) {
 						backgroundColor: "#F4F3F3",
 					}}
 				>
-					<GradientText text={"İlgi Alanlarım"} style={{ fontSize: 30, fontWeight: "bold" }} />
+					<GradientText text={"İlgi Alanlarım"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
 				</View>
 				<ScrollView
 					contentContainerStyle={{ paddingBottom: 150 }}
@@ -156,7 +165,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Spor"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -174,7 +183,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Yaratıcılık"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -192,7 +201,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Yeme & İçme"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -210,7 +219,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Film & Dizi"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -228,7 +237,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Okumak"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -246,7 +255,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Müzik"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -264,7 +273,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Değerler ve Aktivizm"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -282,7 +291,7 @@ export default function Hobbies({ navigation, route }) {
 							text={"Değerler ve Özellikler"}
 							style={{
 								fontSize: 20,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.2,
 								marginLeft: 20,
 							}}
@@ -297,6 +306,20 @@ export default function Hobbies({ navigation, route }) {
 					</View>
 				</ScrollView>
 			</View>
+			{isLoading && (
+				<View
+					style={[
+						commonStyles.Container,
+						{
+							position: "absolute",
+							justifyContent: "center",
+							backgroundColor: "rgba(128,128,128,0.5)",
+						},
+					]}
+				>
+					<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+				</View>
+			)}
 		</View>
 	);
 }
@@ -337,6 +360,8 @@ const Item = ({ item, value, setValue }) => {
 						paddingHorizontal: 10,
 						justifyContent: "center",
 						alignItems: "center",
+						width: "100%",
+						height: "100%",
 					}}
 				>
 					<Text style={{ color: colors.white }}>{item.key}</Text>

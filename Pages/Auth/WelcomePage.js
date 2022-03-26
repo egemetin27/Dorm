@@ -12,7 +12,9 @@ export default function WelcomePage({ navigation }) {
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style={"light"} />
-			<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
+			<Gradient
+				style={{ justifyContent: "center", alignItems: "center", width: "100%", height: "100%" }}
+			>
 				<Image
 					resizeMode="contain"
 					style={{
@@ -28,8 +30,8 @@ export default function WelcomePage({ navigation }) {
 						color: colors.white,
 						fontSize: height * 0.05,
 						lineHeight: height * 0.055,
-						fontWeight: "bold",
 						textAlign: "center",
+						fontFamily: "NowBold",
 					}}
 				>
 					Tanışmanın{"\n"}Yeni Yolu
@@ -51,7 +53,7 @@ export default function WelcomePage({ navigation }) {
 				>
 					<GradientText
 						text={"Oturum Aç"}
-						style={{ fontSize: 22, fontWeight: "bold", letterSpacing: 0.75 }}
+						style={{ fontSize: 22, fontFamily: "PoppinsSemiBold", letterSpacing: 0.75 }}
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -74,9 +76,9 @@ export default function WelcomePage({ navigation }) {
 					<Text
 						style={{
 							letterSpacing: 0.75,
-							fontWeight: "bold",
 							fontSize: 22,
 							color: colors.white,
+							fontFamily: "Poppins",
 						}}
 					>
 						dorm'a Katıl

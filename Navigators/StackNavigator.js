@@ -11,6 +11,8 @@ import { url } from "../connection";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
+import { loadAsync } from "expo-font";
+import { setCustomText, setCustomTextInput } from "react-native-global-props";
 
 import { colors, GradientText } from "../visualComponents/colors";
 
@@ -63,7 +65,7 @@ function MainScreen({ route, navigation }) {
 		<Tab.Navigator
 			backBehavior="initialRoute"
 			screenOptions={{
-				tabBarStyle: { height: height / 12, paddingBottom: height / 100 },
+				tabBarStyle: { height: height / 12, paddingBottom: height / 120 },
 				headerShown: false,
 				tabBarShowLabel: false,
 				tabBarHideOnKeyboard: true,
@@ -92,12 +94,15 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Profil"} />
+								<GradientText
+									style={{ fontSize: height * 0.015, fontFamily: "PoppinsSemiBold" }}
+									text={"Profil"}
+								/>
 							) : (
 								<Text
 									style={{
-										fontSize: 13,
-										fontWeight: "bold",
+										fontSize: height * 0.015,
+										fontFamily: "PoppinsSemiBold",
 										color: colors.cool_gray,
 									}}
 								>
@@ -121,20 +126,24 @@ function MainScreen({ route, navigation }) {
 							}}
 						>
 							<Image
-								source={require("../assets/TabBarIcons/anasayfa.png")}
+								source={require("../assets/logoGradient.png")}
+								// source={require("../assets/TabBarIcons/anasayfa.png")}
 								resizeMode="contain"
 								style={{
 									tintColor: focused ? {} : colors.cool_gray,
-									height: height / 27,
+									height: height / 30,
 								}}
 							/>
 							{focused ? (
-								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Ana Sayfa"} />
+								<GradientText
+									style={{ fontSize: height * 0.015, fontFamily: "PoppinsSemiBold" }}
+									text={"Ana Sayfa"}
+								/>
 							) : (
 								<Text
 									style={{
-										fontSize: 13,
-										fontWeight: "bold",
+										fontSize: height * 0.015,
+										fontFamily: "PoppinsSemiBold",
 										color: colors.cool_gray,
 									}}
 								>
@@ -166,12 +175,15 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Mesajlar"} />
+								<GradientText
+									style={{ fontSize: height * 0.015, fontFamily: "PoppinsSemiBold" }}
+									text={"Mesajlar"}
+								/>
 							) : (
 								<Text
 									style={{
-										fontSize: 13,
-										fontWeight: "bold",
+										fontSize: height * 0.015,
+										fontFamily: "PoppinsSemiBold",
 										color: colors.cool_gray,
 									}}
 								>
@@ -251,10 +263,20 @@ export default function StackNavigator() {
 	React.useEffect(() => {
 		async function prepare() {
 			try {
-				// await AsyncStorage.removeItem("isLoggedIn");
-
 				// Keep the splash screen visible while we fetch resources
 				await SplashScreen.preventAutoHideAsync();
+
+				await loadAsync({
+					Now: require("../assets/fonts/now.otf"),
+					NowBold: require("../assets/fonts/now_bold.otf"),
+					Poppins: require("../assets/fonts/Poppins.ttf"),
+					PoppinsSemiBold: require("../assets/fonts/Poppins-SemiBold.ttf"),
+					PoppinsBold: require("../assets/fonts/Poppins_bold.ttf"),
+					PoppinsExtraBold: require("../assets/fonts/Poppins-ExtraBold.ttf"),
+				});
+
+				setCustomText({ style: { fontFamily: "Poppins" } });
+				setCustomTextInput({ style: { fontFamily: "Poppins" } });
 
 				await AsyncStorage.getItem("introShown").then((res) => {
 					// set intro shown value to true or false according to the data in local storage
@@ -303,16 +325,15 @@ export default function StackNavigator() {
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator
-						// initialRouteName={
-						// 	isLoggedIn
-
-						// 		? tutorialShown
-						// 			? "MainScreen"
-						// 			: "Tutorial"
-						// 		: introShown
-						// 		? "WelcomePage"
-						// 		: "Onboarding"
-						// }
+							initialRouteName={
+								isLoggedIn
+									? tutorialShown
+										? "MainScreen"
+										: "Tutorial"
+									: introShown
+									? "WelcomePage"
+									: "Onboarding"
+							}
 						>
 							{isLoggedIn ? (
 								// Screens for logged in users

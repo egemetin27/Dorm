@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
+
 Amplify.configure(awsmobile);
 
 import Stack from "./Navigators/StackNavigator";
@@ -11,8 +12,8 @@ import Temp from "./Pages/Temp";
 import Match from "./Pages/User/Match";
 
 export default function App() {
-	// return <Stack />;
-	return <Match />;
+	return <Stack />;
+	// return <Temp />;
 }
 
 const styles = StyleSheet.create({

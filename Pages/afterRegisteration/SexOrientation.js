@@ -13,7 +13,7 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
-				<GradientText text={"Cinsel Yönelimim"} style={{ fontSize: 30, fontWeight: "bold" }} />
+				<GradientText text={"Cinsel Yönelimim"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
 			</View>
 
 			<TouchableOpacity
@@ -23,15 +23,25 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 1 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Heteroseksüel
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Heteroseksüel"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -42,15 +52,25 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 234 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Biseksüel
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Biseksüel"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -61,15 +81,25 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 34 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Homoseksüel
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Homoseksüel"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -80,15 +110,25 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 4 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Panseksüel
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Panseksüel"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -99,15 +139,25 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 5 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Aseksüel
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Aseksüel"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>

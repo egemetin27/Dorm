@@ -1,3 +1,4 @@
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
 	StyleSheet,
@@ -173,11 +174,12 @@ export default function Messages({ route, navigation }) {
 
 	return (
 		<View style={{ width: width, height: height }}>
-			<View name={"Header"} style={commonStyles.Header}>
+			<StatusBar style="dark" translucent={false} />
+			<View name={"Header"} style={[commonStyles.Header, { marginTop: height * 0.02 }]}>
 				<View style={{ marginLeft: 20 }}>
 					{
 						<GradientText
-							style={{ fontSize: 27, fontWeight: "bold", letterSpacing: 1.2 }}
+							style={{ fontSize: 27, fontFamily: "NowBold", letterSpacing: 1.2 }}
 							text={"Sohbetlerim"}
 						/>
 					}
@@ -198,7 +200,7 @@ export default function Messages({ route, navigation }) {
 			>
 				<View style={{ flex: 1 }}>
 					{chatMod[0] == 1 ? (
-						<Gradient style={{ height: height * 0.06 }}>
+						<Gradient style={{ height: height * 0.06, width: "100%" }}>
 							<TouchableOpacity
 								style={{
 									backgroundColor: "#F4F3F3",
@@ -209,7 +211,7 @@ export default function Messages({ route, navigation }) {
 									style={{
 										marginLeft: width * 0.1,
 										fontSize: 18,
-										fontWeight: "bold",
+										fontFamily: "PoppinsSemiBold",
 										letterSpacing: 1.2,
 										justifyContent: "center",
 										alignItems: "center",
@@ -231,7 +233,7 @@ export default function Messages({ route, navigation }) {
 				</View>
 				<View style={{ flex: 1 }}>
 					{chatMod[1] == 1 ? (
-						<Gradient style={{ height: height * 0.06 }}>
+						<Gradient style={{ height: height * 0.06, width: "100%" }}>
 							<TouchableOpacity
 								style={{
 									backgroundColor: "#F4F3F3",
@@ -242,7 +244,7 @@ export default function Messages({ route, navigation }) {
 									style={{
 										marginLeft: width * 0.05,
 										fontSize: 18,
-										fontWeight: "bold",
+										fontFamily: "PoppinsSemiBold",
 										letterSpacing: 1.2,
 										justifyContent: "center",
 										alignItems: "center",

@@ -19,7 +19,7 @@ export default function LetsMeet({ navigation }) {
 			<StatusBar style={"dark"} />
 			<GradientText
 				text={"Hoş geldin\nTanışalım mı?"}
-				style={{ fontSize: height * 0.05, fontWeight: "bold", height: height * 0.12 }}
+				style={{ fontSize: height * 0.05, fontFamily: "NowBold", height: height * 0.12 }}
 			/>
 
 			<Text
@@ -54,7 +54,9 @@ export default function LetsMeet({ navigation }) {
 					navigation.replace("RMahremiyetPolitikasi");
 				}}
 			>
-				<Gradient style={{ borderRadius: 8, justifyContent: "center" }}>
+				<Gradient
+					style={{ borderRadius: 8, justifyContent: "center", width: "100%", height: "100%" }}
+				>
 					<Text style={commonStyles.buttonText}>E Hadi!</Text>
 				</Gradient>
 			</TouchableOpacity>

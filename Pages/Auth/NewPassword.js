@@ -3,27 +3,37 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import MaskedView from "@react-native-masked-view/masked-view";
-import commonStyles from "../../visualComponents/styles";
 import axios from "axios";
-import { url } from "../../connection";
+import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 
-export default function NewPassword({ navigation, route }) {
+import { GradientText } from "../../visualComponents/colors";
+import commonStyles from "../../visualComponents/styles";
+import { url } from "../../connection";
+import { AuthContext } from "../../nonVisualComponents/Context";
+
+export default function FirstPassword({ navigation, route }) {
 	const [password, setPassword] = React.useState("");
 	const [wrongInput, setWrongInput] = React.useState(false);
+	const [passwordShown, setPasswordShown] = React.useState(false);
 
 	const animRef = React.useRef(new Animated.Value(0)).current;
+	const { signIn } = React.useContext(AuthContext);
 
-	const HandleButton = () => {
+	const handleSubmit = async () => {
+		const { userID, email } = route.params;
+
 		if (password.length < 8) {
 			Alert.alert("Şifren en az 8 karakterli olmalı");
 			return;
 		}
 
+		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
+		const dataToBeSent = { password: encryptedPassword, UserId: userID }; //TODO: userID should be come from route.params.id
+
 		axios
-			.post(url + "/PasswordRegister", { password: password, UserId: userID })
-			.then((res) => {
-				console.log("Password Changed Successfully");
+			.post(url + "/PasswordRegister", dataToBeSent)
+			.then(() => {
+				console.log("Password Updated Successfully");
 				navigation.replace("Login");
 			})
 			.catch((error) => {
@@ -50,44 +60,14 @@ export default function NewPassword({ navigation, route }) {
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style={"dark"} />
-			<View style={commonStyles.Header}>
-				<TouchableOpacity style={{ left: 35 }}>
-					<Ionicons name="arrow-back-outline" size={32} color="#B6B6B6" />
-				</TouchableOpacity>
-			</View>
+			<View style={commonStyles.Header} />
 			<View style={commonStyles.innerContainer}>
-				<MaskedView
-					style={styles.maskedViewStyle}
-					maskElement={
-						<Text
-							style={{
-								fontWeight: "bold",
-								fontSize: 30,
-							}}
-						>
-							Hadi, yeni şifreni{"\n"}belirleyelim
-						</Text>
-					}
-				>
-					<LinearGradient
-						colors={["#4136F1", "#8743FF"]}
-						start={{ x: 0, y: 0 }}
-						end={{ x: 1, y: 1 }}
-						locations={[0, 1]}
-					>
-						<Text
-							style={{
-								opacity: 0,
-								fontWeight: "bold",
-								fontSize: 30,
-							}}
-						>
-							Hadi, yeni şifreni{"\n"}belirleyelim
-						</Text>
-					</LinearGradient>
-				</MaskedView>
+				<GradientText
+					text={"Hadi, yeni şifreni\nbelirleyelim"}
+					style={{ fontFamily: "NowBold", fontSize: 30, height: 66 }}
+				/>
 
-				<View style={{ position: "relative", marginTop: 10 }}>
+				<View style={{ position: "relative" }}>
 					<Text style={styles.text}>
 						Güvenliğin için en az 8 karakterli şifre{"\n"}oluşturmanı istiyoruz.
 					</Text>
@@ -119,8 +99,7 @@ export default function NewPassword({ navigation, route }) {
 						style={commonStyles.input}
 						onChangeText={setPassword}
 						value={password}
-						keyboardType="email-address"
-						// placeholder={"Üniversite Mail Adresin"}
+						secureTextEntry={!passwordShown}
 						onFocus={() => {
 							handleFocus(animRef);
 						}}
@@ -128,6 +107,18 @@ export default function NewPassword({ navigation, route }) {
 							if (password == "") handleBlur(animRef);
 						}}
 					/>
+					<TouchableOpacity
+						style={{ alignSelf: "flex-end", position: "absolute", right: 15 }}
+						onPress={() => {
+							setPasswordShown(!passwordShown);
+						}}
+					>
+						{passwordShown ? (
+							<Ionicons name="eye" size={27} color="#B6B6B6" />
+						) : (
+							<Ionicons name="eye-off" size={27} color="#B6B6B6" />
+						)}
+					</TouchableOpacity>
 				</View>
 				{wrongInput && (
 					<View style={{ marginTop: 8 }}>
@@ -139,7 +130,7 @@ export default function NewPassword({ navigation, route }) {
 				<TouchableOpacity
 					style={[commonStyles.button, { marginTop: 30 }]}
 					disabled={password == ""}
-					onPress={HandleButton}
+					onPress={handleSubmit}
 				>
 					{!(password == "") ? (
 						<LinearGradient

@@ -13,7 +13,7 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
-				<GradientText text={"Cinsiyetim"} style={{ fontSize: 30, fontWeight: "bold" }} />
+				<GradientText text={"Cinsiyetim"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
 			</View>
 
 			<TouchableOpacity
@@ -23,15 +23,25 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 1 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Kadın
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Kadın"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -43,15 +53,25 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 2 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Erkek
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Erkek"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -63,15 +83,25 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 3 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Non-Binary
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Non-Binary"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -83,15 +113,25 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 				}}
 			>
 				{value == 4 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Beyan Etmemeyi Tercih Ederim
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Beyan Etmemeyi Tercih Ederim"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>

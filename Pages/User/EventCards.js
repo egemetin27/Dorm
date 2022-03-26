@@ -248,7 +248,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 										style={{
 											color: colors.white,
 											fontSize: 24,
-											fontWeight: "bold",
+											fontFamily: "PoppinsSemiBold",
 											letterSpacing: 1.05,
 										}}
 									>
@@ -368,7 +368,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									}}
 								>
 									Yer{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{location}</Text>
+									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+										{location}
+									</Text>
 								</Text>
 								<Text
 									name={"Date"}
@@ -380,7 +382,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									}}
 								>
 									Tarih{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{date}</Text>
+									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+										{date}
+									</Text>
 								</Text>
 								<Text
 									name={"Time"}
@@ -392,7 +396,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									}}
 								>
 									Saat{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{time}</Text>
+									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+										{time}
+									</Text>
 								</Text>
 								<Text
 									name={"Genre"}
@@ -404,7 +410,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									}}
 								>
 									Tür{"\n"}
-									<Text style={{ fontWeight: "bold", fontSize: width * 0.055 }}>{genre}</Text>
+									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+										{genre}
+									</Text>
 								</Text>
 								<Text
 									name={"Seller"}
@@ -436,7 +444,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 														color: colors.light_gray,
 														textDecorationLine: "underline",
 														fontSize: width * 0.055,
-														fontWeight: "bold",
+														fontFamily: "PoppinsSemiBold",
 													}}
 												>
 													{seller}
@@ -555,7 +563,9 @@ export default function EventCards({ navigation, route }) {
 						}}
 					/>
 
-					<Text style={{ fontSize: 13, fontWeight: "bold", color: colors.cool_gray }}>Profil</Text>
+					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>
+						Profil
+					</Text>
 				</Pressable>
 				<Pressable
 					onPress={() => {
@@ -571,7 +581,7 @@ export default function EventCards({ navigation, route }) {
 							height: height / 27,
 						}}
 					/>
-					<Text style={{ fontSize: 13, fontWeight: "bold", color: colors.cool_gray }}>
+					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>
 						Ana Sayfa
 					</Text>
 				</Pressable>
@@ -589,7 +599,7 @@ export default function EventCards({ navigation, route }) {
 							height: height / 36,
 						}}
 					/>
-					<Text style={{ fontSize: 13, fontWeight: "bold", color: colors.cool_gray }}>
+					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>
 						Mesajlar
 					</Text>
 				</Pressable>

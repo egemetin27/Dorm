@@ -194,7 +194,9 @@ export default function Register({ navigation }) {
 							},
 						]}
 					>
-						<Gradient style={{ borderRadius: 7, alignItems: "center" }}></Gradient>
+						<Gradient
+							style={{ borderRadius: 7, alignItems: "center", width: "100%", height: "100%" }}
+						></Gradient>
 					</Animated.View>
 				</View>
 
@@ -227,7 +229,9 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }} />
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					/>
 				</View>
 				<View
 					style={[
@@ -238,11 +242,15 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }} />
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					/>
 				</View>
 
 				<Animated.View name={"EmailCard"} style={[styles.QuestionCard]}>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					>
 						<View
 							style={{
 								height: 90,
@@ -287,7 +295,9 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					>
 						<View
 							style={{
 								height: 90,
@@ -355,7 +365,9 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					>
 						<View
 							style={{
 								height: 90,
@@ -401,7 +413,9 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					>
 						<View
 							style={{
 								height: 90,
@@ -443,7 +457,9 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+					<Gradient
+						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
+					>
 						<View
 							style={{
 								height: 90,
@@ -537,7 +553,7 @@ const styles = StyleSheet.create({
 	QuestionCardText: {
 		fontSize: 22,
 		color: colors.light_gray,
-		fontWeight: "bold",
+		fontFamily: "PoppinsSemiBold",
 		textAlign: "center",
 	},
 	QuestionInput: {
@@ -592,7 +608,9 @@ style={[
    },
 ]}
 >
-<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+<Gradient style={{ borderRadius: 16, alignItems: "center", 
+						width: "100%",
+						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
       <Text style={styles.QuestionCardText}>E-Posta{"\n"}Adresim</Text>
    </View>
@@ -628,7 +646,9 @@ style={[
    },
 ]}
 >
-<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+<Gradient style={{ borderRadius: 16, alignItems: "center", 
+						width: "100%",
+						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
       <Text style={styles.QuestionCardText}>Üniversitem</Text>
    </View>
@@ -664,7 +684,9 @@ style={[
    },
 ]}
 >
-<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+<Gradient style={{ borderRadius: 16, alignItems: "center", 
+						width: "100%",
+						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
       <Text style={styles.QuestionCardText}>Bulunduğum{"\n"}Şehir</Text>
    </View>
@@ -690,7 +712,9 @@ style={[
    },
 ]}
 >
-<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+<Gradient style={{ borderRadius: 16, alignItems: "center", 
+						width: "100%",
+						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
       <Text style={styles.QuestionCardText}>Doğum{"\n"}Tarihim</Text>
    </View>
@@ -711,7 +735,9 @@ style={[
    },
 ]}
 >
-<Gradient style={{ borderRadius: 16, alignItems: "center" }}>
+<Gradient style={{ borderRadius: 16, alignItems: "center", 
+						width: "100%",
+						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
       <Text style={styles.QuestionCardText}>Merhaba!{"\n"}Benim adım</Text>
    </View>

@@ -332,7 +332,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 												style={{
 													color: colors.white,
 													fontSize: width * 0.06,
-													fontWeight: "bold",
+													fontFamily: "PoppinsSemiBold",
 													letterSpacing: 1.05,
 												}}
 											>
@@ -457,7 +457,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Cinsityet{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{gender}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{gender}</Text>
 										</Text>
 										<Text
 											name={"Religion"}
@@ -469,7 +469,9 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Dini İnanç{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{religion}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+												{religion}
+											</Text>
 										</Text>
 										<Text
 											name={"Sign"}
@@ -481,7 +483,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Burç{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{sign}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{sign}</Text>
 										</Text>
 										<Text
 											name={"Diet"}
@@ -493,7 +495,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Beslenme Tercihi{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{diet}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{diet}</Text>
 										</Text>
 										<Text
 											name={"Drink"}
@@ -505,7 +507,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Alkol Kullanımı{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{drink}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{drink}</Text>
 										</Text>
 										<Text
 											name={"Smoke"}
@@ -517,7 +519,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Sigara Kullanımı{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{smoke}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{smoke}</Text>
 										</Text>
 										<Text
 											name={"Hobbies"}
@@ -531,15 +533,18 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											İlgi Alanları{"\n"}
 											{hobbies.map((item, index) => {
 												return (
-													<Text key={index} style={{ fontWeight: "bold", fontSize: 22 }}>
+													<Text key={index} style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
 														{item.InterestName}
 														{hobbies.length > index + 1 ? (
-															<Text style={{ fontWeight: "bold", fontSize: 22 }}> | </Text>
+															<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+																{" "}
+																|{" "}
+															</Text>
 														) : null}
 													</Text>
 												);
 											})}
-											{/* <Text style={{ fontWeight: "bold", fontSize: 22 }}>{hobbies}</Text> */}
+											{/* <Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{hobbies}</Text> */}
 										</Text>
 										<Text
 											name={"About"}
@@ -551,7 +556,7 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 											}}
 										>
 											Hakkında{"\n"}
-											<Text style={{ fontWeight: "bold", fontSize: 22 }}>{about}</Text>
+											<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{about}</Text>
 										</Text>
 									</View>
 								</ScrollView>
@@ -735,7 +740,7 @@ export default function ProfileCards({ navigation, route }) {
 					<Text
 						style={{
 							fontSize: 13,
-							fontWeight: "bold",
+							fontFamily: "PoppinsSemiBold",
 							color: colors.cool_gray,
 						}}
 					>
@@ -759,7 +764,7 @@ export default function ProfileCards({ navigation, route }) {
 					<Text
 						style={{
 							fontSize: 13,
-							fontWeight: "bold",
+							fontFamily: "PoppinsSemiBold",
 							color: colors.cool_gray,
 						}}
 					>
@@ -783,7 +788,7 @@ export default function ProfileCards({ navigation, route }) {
 					<Text
 						style={{
 							fontSize: 13,
-							fontWeight: "bold",
+							fontFamily: "PoppinsSemiBold",
 							color: colors.cool_gray,
 						}}
 					>
@@ -860,12 +865,19 @@ export default function ProfileCards({ navigation, route }) {
 						onPress={handlePopupSubmit}
 						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
 					>
-						<Gradient style={{ justifyContent: "center", alignItems: "center" }}>
+						<Gradient
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%",
+								height: "100%",
+							}}
+						>
 							<Text
 								style={{
 									color: colors.white,
 									fontSize: 20,
-									fontWeight: "bold",
+									fontFamily: "PoppinsSemiBold",
 									letterSpacing: 1,
 								}}
 							>

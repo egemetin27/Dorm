@@ -72,7 +72,7 @@ export default function AfterRegister({ route, navigation }) {
 				>
 					<GradientText
 						text={"Kaydın tamam!"}
-						style={{ fontSize: 36, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 36, fontFamily: "NowBold", letterSpacing: 1.2 }}
 					/>
 					<Image
 						source={require("../../assets/RegisterationComplete.png")}

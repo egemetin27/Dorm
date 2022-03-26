@@ -12,6 +12,7 @@ import {
 	KeyboardAvoidingView,
 	FlatList,
 	Image,
+	ActivityIndicator,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -32,6 +33,7 @@ export default function Profile({ route, navigation }) {
 	const [progress, setProgress] = React.useState(0);
 	const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
 
+	const [isReady, setIsReady] = React.useState(false);
 	const [isEditable, setEditibility] = React.useState(false);
 	const [genderVisible, setGenderVisible] = React.useState(false);
 	const [signVisible, setSignVisible] = React.useState(false);
@@ -86,40 +88,44 @@ export default function Profile({ route, navigation }) {
 	const aboutRef = React.useRef(new Animated.Value(0)).current;
 
 	React.useEffect(async () => {
-		const dataStr = await SecureStore.getItemAsync("userData");
-		const data = JSON.parse(dataStr);
+		try {
+			const dataStr = await SecureStore.getItemAsync("userData");
+			const data = JSON.parse(dataStr);
 
-		setSesToken(data.sesToken);
-		setUserID(data.UserId);
-		setName(data.Name + " " + data.Surname);
-		setAge(getAge(data.Birth_date));
-		setSex(data.Gender == "null" ? "" : genderList[data.Gender]);
-		setSchool(data.School);
-		setMajor(data.Major == "null" ? "" : data.Major);
-		setReligion(data.Din == "null" ? "" : data.Din);
-		setSign(getChoice(data.Burc, signList));
-		setDiet(getChoice(data.Beslenme, dietList));
-		setDrink(getChoice(data.Alkol, smokeAndDrinkList));
-		setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
-		setAbout(data.About == "null" ? "" : data.About);
-		setPhotoList(data.Photo);
-		setHobbies(data.interest);
-		// setUserData({
-		// 	userID: data.UserId,
-		// 	name: data.Name + " " + data.Surname,
-		// 	major: data.Major,
-		// 	age: getAge(data.Birth_date),
-		// 	sex: GENDER_LIST[data.Gender],
-		// 	school: data.School,
-		// 	religion: data.Din,
-		// 	sign: data.Burc,
-		// 	diet: data.Beslenme,
-		// 	alcohol: data.Alkol,
-		// 	smoke: data.Sigara,
-		// 	hobbies: data.interest,
-		// 	about: data.About,
-		// 	PhotoList: data.Photo,
-		// });
+			setSesToken(data.sesToken);
+			setUserID(data.UserId);
+			setName(data.Name + " " + data.Surname);
+			setAge(getAge(data.Birth_date));
+			setSex(data.Gender == "null" ? "" : genderList[data.Gender]);
+			setSchool(data.School);
+			setMajor(data.Major == "null" ? "" : data.Major);
+			setReligion(data.Din == "null" ? "" : data.Din);
+			setSign(getChoice(data.Burc, signList));
+			setDiet(getChoice(data.Beslenme, dietList));
+			setDrink(getChoice(data.Alkol, smokeAndDrinkList));
+			setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
+			setAbout(data.About == "null" ? "" : data.About);
+			setPhotoList(data.Photo);
+			setHobbies(data.interest);
+			// setUserData({
+			// 	userID: data.UserId,
+			// 	name: data.Name + " " + data.Surname,
+			// 	major: data.Major,
+			// 	age: getAge(data.Birth_date),
+			// 	sex: GENDER_LIST[data.Gender],
+			// 	school: data.School,
+			// 	religion: data.Din,
+			// 	sign: data.Burc,
+			// 	diet: data.Beslenme,
+			// 	alcohol: data.Alkol,
+			// 	smoke: data.Sigara,
+			// 	hobbies: data.interest,
+			// 	about: data.About,
+			// 	PhotoList: data.Photo,
+			// });
+		} finally {
+			setIsReady(true);
+		}
 	}, []);
 
 	const handleSave = async () => {
@@ -180,6 +186,14 @@ export default function Profile({ route, navigation }) {
 		}).start();
 	};
 
+	if (!isReady)
+		return (
+			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
+				<StatusBar style="dark" />
+				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+			</View>
+		);
+
 	return (
 		<View style={[commonStyles.Container, { alignItems: "center" }]}>
 			<StatusBar style="dark" translucent={false} backgroundColor={"#F4F3F3"} />
@@ -207,7 +221,7 @@ export default function Profile({ route, navigation }) {
 						</TouchableOpacity>
 					) : (
 						<GradientText
-							style={{ fontSize: 30, fontWeight: "bold", letterSpacing: 1.2 }}
+							style={{ fontSize: 30, fontFamily: "NowBold", letterSpacing: 1.2 }}
 							text={"Profilim"}
 						/>
 					)}
@@ -271,7 +285,7 @@ export default function Profile({ route, navigation }) {
 				<View name={"Progress Bar Container"} style={styles.progressBarContainer}>
 					<View style={{ marginLeft: 20 }}>
 						<Text
-							style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 0.8, paddingBottom: 5 }}
+							style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 0.8, paddingBottom: 5 }}
 						>
 							Profilinin %{progress}'ı tamam!
 						</Text>
@@ -288,7 +302,7 @@ export default function Profile({ route, navigation }) {
 									},
 								]}
 							>
-								<Gradient style={{ borderRadius: 7, alignItems: "center" }}></Gradient>
+								<Gradient style={{ borderRadius: 7, alignItems: "center", width: "100%",height: "100%"}}></Gradient>
 							</Animated.View>
 						</View>
 					</View>
@@ -304,7 +318,7 @@ export default function Profile({ route, navigation }) {
 			)} */}
 			<ScrollView
 				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ width: width, paddingBottom: 30 }}
+				contentContainerStyle={{ width: width, paddingBottom: height / 12 }}
 				keyboardShouldPersistTaps="handled"
 			>
 				<KeyboardAvoidingView>
@@ -531,6 +545,8 @@ export default function Profile({ route, navigation }) {
 												style={{
 													justifyContent: "center",
 													alignItems: "center",
+													width: "100%",
+													height: "100%"
 												}}
 											>
 												<Text style={{ color: colors.white }}>Ankara</Text>
@@ -564,7 +580,9 @@ export default function Profile({ route, navigation }) {
 											<Gradient
 												style={{
 													justifyContent: "center",
-													alignItems: "center",
+													alignItems: "center", 
+													width: "100%",
+													height: "100%"
 												}}
 											>
 												<Text style={{ color: colors.white }}>İstanbul</Text>
@@ -598,7 +616,9 @@ export default function Profile({ route, navigation }) {
 											<Gradient
 												style={{
 													justifyContent: "center",
-													alignItems: "center",
+													alignItems: "center", 
+													width: "100%",
+													height: "100%"
 												}}
 											>
 												<Text style={{ color: colors.white }}>İzmir</Text>

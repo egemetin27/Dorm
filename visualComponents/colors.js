@@ -28,12 +28,12 @@ export const colors = {
 export const Gradient = (props) => {
 	return (
 		<LinearGradient
-			// colors={props.colors}
 			colors={props.colors || ["#4136F1", "#8743FF"]}
 			start={props.start || { x: 0, y: 0 }}
 			end={props.end || { x: 1, y: 1 }}
 			locations={props.locations || [0, 1]}
-			style={[{ height: "100%", width: "100%" }, props.style]}
+			style={props.style}
+			// style={[{ height: "100%", width: "100%" }, props.style]}
 		>
 			{props.children}
 		</LinearGradient>
@@ -45,17 +45,23 @@ export const GradientText = (props) => {
 	return (
 		<MaskedView
 			style={{ alignContent: "center" }}
-			maskElement={<Text style={[{ fontSize: 20 }, props.style]}>{props.text}</Text>}
+			maskElement={
+				<View
+					style={{
+						// flex: 1,
+						justifyContent: "center",
+					}}
+				>
+					<Text style={[{ fontSize: 20 }, props.style]}>{props.text}</Text>
+				</View>
+			}
 		>
-			<Gradient
-				style={{
-					height: (props.style?.height || props.style?.fontSize || 20) * 1.2,
-				}}
-			>
+			<Gradient>
 				<Text
 					style={[
 						{
 							opacity: 0,
+							fontSize: 20,
 						},
 						props.style,
 					]}

@@ -41,7 +41,12 @@ export default function Onboarding({ navigation }) {
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style={"light"} />
-			<Gradient>
+			<Gradient
+				style={{
+					width: "100%",
+					height: "100%",
+				}}
+			>
 				<View style={[commonStyles.Header, { justifyContent: "flex-end" }]}>
 					<TouchableOpacity style={{ right: 35, top: 2 }} onPress={navigate}>
 						<Text style={{ fontSize: 20, color: colors.white }}>Atla</Text>
@@ -160,33 +165,37 @@ export default function Onboarding({ navigation }) {
 					}
 				>
 					<MaskedView
-						style={{ alignContent: "center" }}
 						maskElement={
-							<Text
+							<View
 								style={{
-									letterSpacing: 0.75,
-									fontWeight: "bold",
-									fontSize: height * 0.025,
-									// fontSize: 20,
-									lineHeight: height * 0.025,
+									flex: 1,
+									justifyContent: "center",
 								}}
 							>
-								{counter != 2 ? "Sonraki" : "Başlayalım"}
-							</Text>
+								<Text
+									style={{
+										letterSpacing: 0.75,
+										fontFamily: "PoppinsSemiBold",
+										fontSize: height * 0.025,
+									}}
+								>
+									{counter != 2 ? "Sonraki" : "Başlayalım"}
+								</Text>
+							</View>
 						}
 					>
 						<Gradient
 							style={{
-								height: 18,
+								flex: 1,
+								width: "100%",
+								height: "100%",
 							}}
 						>
 							<Text
 								style={{
 									letterSpacing: 0.75,
-									opacity: 0,
-									fontWeight: "bold",
+									fontFamily: "PoppinsSemiBold",
 									fontSize: height * 0.025,
-									// fontSize: 20,
 								}}
 							>
 								{counter != 2 ? "Sonraki" : "Başlayalım"}
@@ -202,13 +211,12 @@ export default function Onboarding({ navigation }) {
 const styles = StyleSheet.create({
 	TextHeader: {
 		color: colors.white,
-		fontWeight: "bold",
-		fontSize: height * 0.05,
+		fontFamily: "PoppinsSemiBold",
+		fontSize: Math.min(height * 0.05, width * 0.085),
 	},
 	TextContent: {
 		marginTop: 5,
 		color: colors.white,
-		fontWeight: "200",
 		letterSpacing: 0.9,
 		fontSize: height * 0.02,
 	},

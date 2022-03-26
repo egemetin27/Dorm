@@ -31,7 +31,6 @@ export default function Verification({ navigation, route }) {
 			.then((res) => {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
 
-				console.log(res.data);
 				if (res.data?.Verification > 0) {
 					route.params?.changePass
 						? navigation.replace("NewPassword", { userID: UserId, email: email })
@@ -84,7 +83,9 @@ export default function Verification({ navigation, route }) {
 			<View style={commonStyles.innerContainer}>
 				<MaskedView
 					style={styles.maskedViewStyle}
-					maskElement={<Text style={{ fontWeight: "bold", fontSize: 30 }}>Doğrulama Kodun</Text>}
+					maskElement={
+						<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 30 }}>Doğrulama Kodun</Text>
+					}
 				>
 					<LinearGradient
 						colors={["#4136F1", "#8743FF"]}
@@ -95,7 +96,7 @@ export default function Verification({ navigation, route }) {
 						<Text
 							style={{
 								opacity: 0,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								fontSize: 30,
 							}}
 						>
@@ -105,7 +106,7 @@ export default function Verification({ navigation, route }) {
 				</MaskedView>
 
 				<View style={{ marginTop: 10 }}>
-					<Text style={[styles.text, { fontWeight: "bold" }]}>{email}</Text>
+					<Text style={[styles.text, { fontFamily: "PoppinsSemiBold" }]}>{email}</Text>
 					<Text style={styles.text}>
 						mail adresine gönderdiğimiz doğrulama{"\n"}kodunu bizimle paylaş
 					</Text>
@@ -245,7 +246,14 @@ export default function Verification({ navigation, route }) {
 					onPress={resendCode}
 					style={{ marginTop: 335, position: "absolute", alignSelf: "center" }}
 				>
-					<Text style={{ color: "#6B46D2", letterSpacing: 0.3, fontSize: 16, fontWeight: "bold" }}>
+					<Text
+						style={{
+							color: "#6B46D2",
+							letterSpacing: 0.3,
+							fontSize: 16,
+							fontFamily: "PoppinsSemiBold",
+						}}
+					>
 						Tekrar Gönder
 					</Text>
 				</TouchableOpacity>

@@ -20,36 +20,14 @@ import { colors, Gradient, GradientText } from "../visualComponents/colors";
 import { AnimatedModal } from "../visualComponents/customComponents";
 import { url } from "../connection";
 import { useSharedValue } from "react-native-reanimated";
+import { loadAsync } from "expo-font";
 
 const { height, width } = Dimensions.get("screen");
 
-export default function Hobbies() {
-	const [txt, setTxt] = React.useState("YAZI");
-	const arr = [
-		{ key: 1, choice: "Akrep" },
-		{ key: 2, choice: "Aslan" },
-		{ key: 3, choice: "Balık" },
-		{ key: 4, choice: "Başak" },
-		{ key: 5, choice: "Boğa" },
-		{ key: 6, choice: "İkizler" },
-		{ key: 7, choice: "Koç" },
-		{ key: 8, choice: "Kova" },
-		{ key: 9, choice: "Oğlak" },
-		{ key: 10, choice: "Terazi" },
-		{ key: 11, choice: "Yay" },
-		{ key: 12, choice: "Yengeç" },
-	];
-
-	const foo = (val, arr) => {
-		const idx = arr.findIndex((item) => {
-			return item.choice == val;
-		});
-		console.log(idx);
-	};
-
+export default function Temp() {
 	return (
-		<View
-			style={{ height: height, width: width, justifyContent: "center", alignItems: "center" }}
-		></View>
+		<View style={{ height: height, width: width, justifyContent: "center", alignItems: "center" }}>
+			<Text style={{ fontFamily: "Now", fontSize: 20 }}>Hi we are testing new fonts in here</Text>
+		</View>
 	);
 }

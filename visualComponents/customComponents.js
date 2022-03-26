@@ -74,7 +74,12 @@ export const Switch = ({ style, value, onValueChange }) => {
 					overflow: "hidden",
 				}}
 			>
-				<Gradient>
+				<Gradient
+					style={{
+						width: "100%",
+						height: "100%",
+					}}
+				>
 					<Animated.View
 						style={[
 							{

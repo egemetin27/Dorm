@@ -12,7 +12,7 @@ export default Interested = ({ value, setValue }) => {
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
-				<GradientText text={"İlgi duyduğum"} style={{ fontSize: 30, fontWeight: "bold" }} />
+				<GradientText text={"İlgi duyduğum"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
 			</View>
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
@@ -21,15 +21,25 @@ export default Interested = ({ value, setValue }) => {
 				}}
 			>
 				{value == 1 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Kadın
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Kadın"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -41,15 +51,25 @@ export default Interested = ({ value, setValue }) => {
 				}}
 			>
 				{value == 2 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Erkek
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Erkek"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
@@ -61,15 +81,25 @@ export default Interested = ({ value, setValue }) => {
 				}}
 			>
 				{value == 3 ? (
-					<Gradient style={{ borderRadius: 8, justifyContent: "center", alignItems: "center" }}>
-						<Text style={[commonStyles.buttonText, { fontWeight: "bold", fontSize: 18 }]}>
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+						>
 							Herkes
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
 						text={"Herkes"}
-						style={{ fontSize: 18, fontWeight: "bold", letterSpacing: 1.2 }}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>

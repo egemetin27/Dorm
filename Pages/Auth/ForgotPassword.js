@@ -61,7 +61,7 @@ export default function ForgotPassword({ navigation }) {
 					maskElement={
 						<Text
 							style={{
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								fontSize: 30,
 							}}
 						>
@@ -78,7 +78,7 @@ export default function ForgotPassword({ navigation }) {
 						<Text
 							style={{
 								opacity: 0,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								fontSize: 30,
 							}}
 						>
@@ -169,7 +169,12 @@ export default function ForgotPassword({ navigation }) {
 					</Text>
 					<TouchableOpacity style={{ left: 5 }}>
 						<Text
-							style={{ color: "#6B46D2", fontWeight: "bold", letterSpacing: 0.3, fontSize: 15 }}
+							style={{
+								color: "#6B46D2",
+								fontFamily: "PoppinsSemiBold",
+								letterSpacing: 0.3,
+								fontSize: 15,
+							}}
 						>
 							Bize Ulaş
 						</Text>

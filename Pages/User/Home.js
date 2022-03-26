@@ -122,7 +122,7 @@ const People = ({ person, openProfiles, index, length }) => {
 						color: colors.white,
 						fontSize: width * 0.045,
 						paddingHorizontal: 10,
-						fontWeight: "bold",
+						fontFamily: "PoppinsSemiBold",
 						letterSpacing: 1.05,
 					}}
 				> */}
@@ -139,7 +139,7 @@ const People = ({ person, openProfiles, index, length }) => {
 								width: "100%",
 								color: colors.white,
 								fontSize: width * 0.045,
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.05,
 							}}
 						>
@@ -150,7 +150,7 @@ const People = ({ person, openProfiles, index, length }) => {
 						style={{
 							color: colors.white,
 							fontSize: width * 0.045,
-							fontWeight: "bold",
+							fontFamily: "PoppinsSemiBold",
 							letterSpacing: 1.05,
 						}}
 					>
@@ -236,7 +236,9 @@ const Category = ({
 				},
 			]}
 		>
-			{selectedCategory == index && <Gradient style={{ position: "absolute" }} />}
+			{selectedCategory == index && (
+				<Gradient style={{ position: "absolute", width: "100%", height: "100%" }} />
+			)}
 
 			<Pressable
 				onPress={() => {
@@ -320,7 +322,7 @@ const Event = ({ event, openEvents, index, length }) => {
 						color: colors.white,
 						fontSize: width * 0.045,
 						paddingLeft: 10,
-						fontWeight: "bold",
+						fontFamily: "PoppinsSemiBold",
 						letterSpacing: 1.05,
 					}}
 				>
@@ -546,7 +548,7 @@ export default function MainPage({ navigation }) {
 						text={"Kişiler"}
 						style={{
 							fontSize: 30,
-							fontWeight: "bold",
+							fontFamily: "NowBold",
 							letterSpacing: 1.2,
 							marginLeft: 20,
 						}}
@@ -602,7 +604,7 @@ export default function MainPage({ navigation }) {
 						<Text
 							style={{
 								textAlign: "center",
-								fontWeight: "bold",
+								fontFamily: "PoppinsSemiBold",
 								fontSize: 30,
 								color: colors.gray,
 							}}
@@ -619,7 +621,7 @@ export default function MainPage({ navigation }) {
 						text={"Etkinlikler"}
 						style={{
 							fontSize: 30,
-							fontWeight: "bold",
+							fontFamily: "NowBold",
 							letterSpacing: 1.2,
 							marginLeft: 20,
 						}}

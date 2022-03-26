@@ -1,5 +1,14 @@
 import React from "react";
-import { Text, View, Image, Dimensions, Pressable, TouchableOpacity, Alert } from "react-native";
+import {
+	Text,
+	View,
+	Image,
+	Dimensions,
+	Pressable,
+	TouchableOpacity,
+	Alert,
+	ActivityIndicator,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
@@ -17,6 +26,7 @@ export default function PhotoUpload({ navigation, route }) {
 	const { userID, sesToken } = route.params;
 
 	const [photoList, setPhotoList] = React.useState([]);
+	const [isLoading, setIsLoading] = React.useState(false);
 
 	const pickImage = async () => {
 		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
@@ -69,6 +79,7 @@ export default function PhotoUpload({ navigation, route }) {
 				Alert.alert("Hata!", "En az bir fotoğraf yüklemelisin", [{ text: "Kontrol Edeyim" }]);
 				return;
 			}
+			setIsLoading(true);
 			const newList = await Promise.all(
 				photoList.map(async (item, index) => {
 					if (item?.photo ?? false) {
@@ -140,6 +151,8 @@ export default function PhotoUpload({ navigation, route }) {
 				});
 		} catch (err) {
 			console.log("ERROR SAVING: ", err);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -154,7 +167,7 @@ export default function PhotoUpload({ navigation, route }) {
 			<View style={{ paddingHorizontal: 30, marginTop: 20 }}>
 				<GradientText
 					text={"En güzel fotoğraflarım"}
-					style={{ fontSize: 30, fontWeight: "bold" }}
+					style={{ fontSize: 30, fontFamily: "NowBold" }}
 				/>
 				<Text
 					style={{
@@ -213,6 +226,20 @@ export default function PhotoUpload({ navigation, route }) {
 					)}
 				</ScrollView>
 			</View>
+			{isLoading && (
+				<View
+					style={[
+						commonStyles.Container,
+						{
+							position: "absolute",
+							justifyContent: "center",
+							backgroundColor: "rgba(128,128,128,0.5)",
+						},
+					]}
+				>
+					<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+				</View>
+			)}
 		</View>
 	);
 }

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated, Alert } 
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import Crypto, { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
+import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -69,7 +69,7 @@ export default function FirstPassword({ navigation, route }) {
 			<View style={commonStyles.innerContainer}>
 				<GradientText
 					text={"Gitmeden\nşifre belirleyebilir misin?"}
-					style={{ fontWeight: "bold", fontSize: 30, height: 66 }}
+					style={{ fontFamily: "NowBold", fontSize: 30, height: 66 }}
 				/>
 
 				<View style={{ position: "relative" }}>

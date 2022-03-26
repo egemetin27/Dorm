@@ -22,9 +22,6 @@ export default function Login({ navigation }) {
 	const animRef1 = React.useRef(new Animated.Value(0)).current;
 	const animRef2 = React.useRef(new Animated.Value(0)).current;
 
-	//prettier-ignore
-	let [fontsLoaded] = useFonts({ 'Poppins': require("../../assets/Fonts/Poppins/Poppins-Medium.ttf") });
-
 	const handleFocus = (ref) => {
 		Animated.timing(ref, {
 			useNativeDriver: false,
@@ -227,7 +224,7 @@ export default function Login({ navigation }) {
 							navigation.navigate("LetsMeet");
 						}}
 					>
-						<Text style={{ color: "#6B46D2", fontWeight: "bold" }}>dorm'a Katıl</Text>
+						<Text style={{ color: "#6B46D2", fontFamily: "PoppinsSemiBold" }}>dorm'a Katıl</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
