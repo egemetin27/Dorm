@@ -110,7 +110,7 @@ export default function MahremiyetPolitikasi({ navigation, route }) {
 					<Text style={styles.tcP}>
 						Hizmetlerimizi nasıl kullandığınız (örn. oturum açtığınız tarih ve saat, kullandığınız
 						özellikler, aramalar, tıklamalar ve size gösterilen sayfalar, yönlendiren web sayfasının
-						adresi, tıkladığınız reklamlar) ve diğer kullanıcılarla nasıl etkileşim kurduğunuz (örn.
+						adresi) ve diğer kullanıcılarla nasıl etkileşim kurduğunuz (örn.
 						bağlantı ve etkileşim kurduğunuz kullanıcılar, iletişiminizin saat ve tarihi, gönderip
 						aldığınız mesaj sayısı) gibi konularda hizmetlerimizdeki etkinliklerinize ilişkin
 						bilgiler toplarız.
@@ -121,8 +121,7 @@ export default function MahremiyetPolitikasi({ navigation, route }) {
 					</Text>
 					<Text style={styles.tcP}>
 						IP adresi, cihaz kimliği ve türü, cihaza özgü ve uygulama ayarları ve özellikleri,
-						uygulama çökmeleri, reklam kimlikleri (Google'ın AAID ve Apple'ın IDFA kimlikleri gibi
-						cihaz ayarlarınıza giderek sıfırlayabileceğiniz rastgele üretilmiş numaralar), tarayıcı
+						uygulama çökmeleri,tarayıcı
 						türü, sürümü ve dili, işletim sistemi, zaman dilimleri, tanımlama bilgileriyle
 						ilişkilendirilen tanıcılar, cihazınız veya tarayıcınızı benzersiz şekilde
 						tanımlayabilecek diğer teknolojiler (örn: IMEI/UDID ve MAC adresi) gibi yazılım ve
@@ -179,7 +178,7 @@ export default function MahremiyetPolitikasi({ navigation, route }) {
 					<Text style={styles.tcP}>
 						Hizmetlerimizi yürütmemizi ve iyileştirmemizi sağlamak için üçüncü taraflardan
 						yararlanırız. Bu üçüncü taraflar, veri barındırma ve bakım, analitik, müşteri
-						hizmetleri, pazarlama, reklam, ödeme işleme ve güvenlik faaliyetleri gibi çeşitli
+						hizmetleri, pazarlama, ödeme işleme ve güvenlik faaliyetleri gibi çeşitli
 						görevlerde bize destek olur.
 					</Text>
 					<Text style={styles.tcP}>

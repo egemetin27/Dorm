@@ -26,7 +26,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 	return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 };
 
-export default function RKullaniciSözlesmesi({ navigation }) {
+export default function RKullaniciSozlesmesi({ navigation }) {
 	const [state, setState] = React.useState(false);
 	return (
 		<View style={styles.container}>

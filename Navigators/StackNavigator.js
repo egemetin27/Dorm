@@ -25,7 +25,7 @@ import Verification from "../Pages/Auth/Verification";
 import LetsMeet from "../Pages/Auth/LetsMeet";
 import Register from "../Pages/Auth/Register";
 import RMahremiyetPolitikasi from "../Pages/Auth/RMahremiyetPolitikasi";
-import RKullaniciSözlesmesi from "../Pages/Auth/RKullaniciSözlesmesi";
+import RKullaniciSozlesmesi from "../Pages/Auth/RKullaniciSozlesmesi";
 import RToplulukKurallari from "../Pages/Auth/RToplulukKurallari";
 import FirstPassword from "../Pages/Auth/FirstPassword";
 import NewPassword from "../Pages/Auth/NewPassword";
@@ -46,7 +46,7 @@ import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
 import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi";
-import KullaniciSözlesmesi from "../Pages/KullaniciSözlesmesi";
+import KullaniciSozlesmesi from "../Pages/KullaniciSozlesmesi";
 import ToplulukKurallari from "../Pages/ToplulukKurallari";
 /////
 // COMPONENTS
@@ -72,6 +72,7 @@ function MainScreen({ route, navigation }) {
 			}}
 			initialRouteName={"AnaSayfa"}
 		>
+
 			<Tab.Screen
 				name="Profil"
 				component={Profile}
@@ -113,6 +114,7 @@ function MainScreen({ route, navigation }) {
 					),
 				}}
 			/>
+			
 			<Tab.Screen
 				name="AnaSayfa"
 				component={Home}
@@ -194,6 +196,9 @@ function MainScreen({ route, navigation }) {
 					),
 				}}
 			/>
+			
+			
+			
 		</Tab.Navigator>
 	);
 }
@@ -267,13 +272,13 @@ export default function StackNavigator() {
 				await SplashScreen.preventAutoHideAsync();
 
 				await loadAsync({
-					Now: require("../assets/fonts/now.otf"),
-					NowBold: require("../assets/fonts/now_bold.otf"),
-					Poppins: require("../assets/fonts/Poppins.ttf"),
-					PoppinsItalic: require("../assets/fonts/Poppins_Italic.ttf"),
-					PoppinsSemiBold: require("../assets/fonts/Poppins-SemiBold.ttf"),
-					PoppinsBold: require("../assets/fonts/Poppins_bold.ttf"),
-					PoppinsExtraBold: require("../assets/fonts/Poppins-ExtraBold.ttf"),
+					Now: require("../assets/Fonts/now.otf"),
+					NowBold: require("../assets/Fonts/now_bold.otf"),
+					Poppins: require("../assets/Fonts/Poppins.ttf"),
+					PoppinsItalic: require("../assets/Fonts/Poppins_Italic.ttf"),
+					PoppinsSemiBold: require("../assets/Fonts/Poppins-SemiBold.ttf"),
+					PoppinsBold: require("../assets/Fonts/Poppins_bold.ttf"),
+					PoppinsExtraBold: require("../assets/Fonts/Poppins-ExtraBold.ttf"),
 				});
 
 				setCustomText({ style: { fontFamily: "Poppins" } });
@@ -349,7 +354,7 @@ export default function StackNavigator() {
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 									<Stack.Screen name="Settings" component={Settings} />
 									<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi} />
-									<Stack.Screen name="KullaniciSözlesmesi" component={KullaniciSözlesmesi} />
+									<Stack.Screen name="KullaniciSozlesmesi" component={KullaniciSozlesmesi} />
 									<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />
 									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
@@ -366,7 +371,7 @@ export default function StackNavigator() {
 									<Stack.Screen name="LetsMeet" component={LetsMeet} />
 									<Stack.Screen name="Register" component={Register} />
 									<Stack.Screen name="RMahremiyetPolitikasi" component={RMahremiyetPolitikasi} />
-									<Stack.Screen name="RKullaniciSözlesmesi" component={RKullaniciSözlesmesi} />
+									<Stack.Screen name="RKullaniciSozlesmesi" component={RKullaniciSozlesmesi} />
 									<Stack.Screen name="RToplulukKurallari" component={RToplulukKurallari} />
 									<Stack.Screen name="Verification" component={Verification} />
 									<Stack.Screen name="FirstPassword" component={FirstPassword} />

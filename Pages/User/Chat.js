@@ -45,7 +45,7 @@ export default function Chat({ navigation, route }) {
 	);
 
 	const { otherUser, myUserID, chatID } = route.params;
-
+	
 	const fetchMsg = async () => {
 		try {
 			const chatMsgData = await API.graphql(
@@ -115,10 +115,9 @@ export default function Chat({ navigation, route }) {
 				.then((res) => {
 					//setPeopleList(res.data);
 					console.log(res.data);
-					if (res.data == []) {
-						console.log("there is no img");
-						alert("there is no img");
-					}
+					console.log(res.data[0].PhotoLink);
+					setImageUri(res.data[0].PhotoLink);
+					
 				})
 				.catch((err) => {
 					console.log(err);
@@ -129,6 +128,11 @@ export default function Chat({ navigation, route }) {
 	};
 
 	React.useEffect(async () => {
+		/*
+		console.log("+++++++++++++++++++++++++++");
+		console.log(otherUser);
+		console.log("+++++++++++++++++++++++++++");
+		*/
 		fetchNewMessages();
 		fetchMsg();
 		fetchImageUri();
@@ -138,10 +142,11 @@ export default function Chat({ navigation, route }) {
 		try {
 			const subscription = API.graphql(graphqlOperation(onCreateSentMsg)).subscribe({
 				next: (data) => {
+					/*
 					console.log("------------------------");
 					console.log(data.value.data.onCreateSentMsg);
 					console.log("------------------------");
-
+					*/
 					if (data.value.data.onCreateSentMsg.userChatMessagesId != chatID) {
 						console.log("Message is in another chat");
 						return;

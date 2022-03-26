@@ -57,7 +57,7 @@ const InputBox = (props) => {
 		    const userName = userData.Name;
             console.log(userName);
             console.log(message);
-            
+            console.log(props.otherUser.pushToken);
             let response = fetch ('https://exp.host/--/api/v2/push/send', {
                 method: 'POST',
                 headers: {
@@ -95,10 +95,12 @@ const InputBox = (props) => {
                 onPress = {() => {
                     
                     if (message != "") {
+                        
                         sendMessage();
                         updateChat();
                         setMessage("");
                         sendNotification();  
+                        
                     }
                     
                     

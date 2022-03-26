@@ -635,7 +635,7 @@ export default function Settings({ navigation, route }) {
 				<TouchableOpacity
 					style={styles.buttonContainer}
 					onPress={() => {
-						navigation.navigate("KullaniciSözlesmesi");
+						navigation.navigate("KullaniciSozlesmesi");
 					}}
 				>
 					<Text style={styles.buttonText}>Kullanıcı Sözleşmesi</Text>

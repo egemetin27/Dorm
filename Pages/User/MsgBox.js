@@ -17,7 +17,6 @@ const { height, width } = Dimensions.get("window");
 
 const MsgBox = (props) => {
 
-
   const rightSwipe = (progress, dragX) => {
 
     const scale = dragX.interpolate({
@@ -25,10 +24,7 @@ const MsgBox = (props) => {
       outputRange: [1, 0],
       extrapolate: 'clamp',
     });
-
     
-
-
     return (
         <View style = {{flexDirection: "row", borderRadius: 10, backgroundColor: "#F4F3F3"}}>
             <TouchableOpacity onPress={props.handleDelete} activeOpacity = {0.6}>
@@ -70,7 +66,7 @@ const MsgBox = (props) => {
                     <Image
                         style = {{resizeMode: "contain", width: "100%", height: "100%", borderRadius: 40}}
                         source = {{
-                            uri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg"
+                            uri: props.imgUri,
                         }}
                     />
                 </View>

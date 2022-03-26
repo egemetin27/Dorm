@@ -21,7 +21,7 @@ import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
 const { width, height } = Dimensions.get("window");
 
-export default function KullaniciSözlesmesi({ navigation, route }) {
+export default function KullaniciSozlesmesi({ navigation, route }) {
 	return (
 		<View style={styles.container}>
 			<StatusBar style={"dark"} translucent={false} backgroundColor={colors.white} />
@@ -274,13 +274,7 @@ export default function KullaniciSözlesmesi({ navigation, route }) {
 						çalışanlara karşı davranışınızın herhangi bir zamanda tehditkar, rahatsız edici veya
 						saldırgan olduğunu hissedersek, hesabınızı derhal sonlandırma hakkımızı saklı tutarız.
 					</Text>
-					<Text style={styles.tcP}>
-						dorm’un Hizmet'i kullanmanıza olanak sağlamasının karşılığında bizim, iştiraklerimizin
-						ve üçüncü taraf ortaklarımızın Hizmet'e reklam yerleştirebileceğini kabul etmektesiniz.
-						Hizmetimiz hakkında dorm’a tavsiyeler veya geri bildirim göndermekle dorm’un bu geri
-						bildirimleri size bedel ödemeden herhangi bir amaçla kullanabileceğini ve
-						paylaşabileceğini kabul etmektesiniz.
-					</Text>
+					
 					<Text style={styles.tcP}>
 						dorm’un kanunların gerektirdiği hallerde, tarafınızla yapılan anlaşmanın yerine
 						getirilmesi için veya aşağıdaki durumlarda olduğu gibi erişim, saklama veya ifşanın
