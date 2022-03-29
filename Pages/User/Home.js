@@ -66,7 +66,7 @@ const CategoryList = [
 	},
 ];
 
-const People = ({ person, openProfiles, index, length }) => {
+const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 	const {
 		Name: name,
 		Birth_Date: bDay,
@@ -79,7 +79,10 @@ const People = ({ person, openProfiles, index, length }) => {
 
 	return (
 		<Pressable
-			onPress={() => openProfiles(index)}
+			onPress={() => {
+				setIsAppReady(false);
+				openProfiles(index);
+			}}
 			style={[
 				commonStyles.photo,
 				{
@@ -271,12 +274,16 @@ const Category = ({
 		</View>
 	);
 };
-const Event = ({ event, openEvents, index, length }) => {
+const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
 
 	return (
 		<Pressable
-			onPress={() => openEvents(index)}
+			onPress={() => {
+				setIsAppReady(false);
+
+				openEvents(index);
+			}}
 			style={[
 				commonStyles.photo,
 				{
@@ -395,7 +402,7 @@ export default function MainPage({ navigation }) {
 	async function registerForPushNotificationAsync() {
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
-		let finalStatus = await existingStatus;
+		let finalStatus = existingStatus;
 		console.log(existingStatus);
 		console.log(finalStatus);
 		if (existingStatus != "granted") {
@@ -579,6 +586,7 @@ export default function MainPage({ navigation }) {
 							data={peopleList}
 							renderItem={({ item, index }) => (
 								<People
+									setIsAppReady={setIsAppReady}
 									index={index}
 									person={item}
 									length={peopleList.length}
@@ -653,6 +661,7 @@ export default function MainPage({ navigation }) {
 							data={shownEvents}
 							renderItem={({ item, index }) => (
 								<Event
+									setIsAppReady={setIsAppReady}
 									index={index}
 									event={item}
 									length={shownEvents.length}

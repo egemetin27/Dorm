@@ -326,15 +326,15 @@ export default function StackNavigator() {
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator
-							initialRouteName={
-								isLoggedIn
-									? tutorialShown
-										? "MainScreen"
-										: "Tutorial"
-									: introShown
-									? "WelcomePage"
-									: "Onboarding"
-							}
+						// initialRouteName={
+						// 	isLoggedIn
+						// 		? tutorialShown
+						// 			? "MainScreen"
+						// 			: "Tutorial"
+						// 		: introShown
+						// 		? "WelcomePage"
+						// 		: "Onboarding"
+						// }
 						>
 							{isLoggedIn ? (
 								// Screens for logged in users
@@ -360,8 +360,8 @@ export default function StackNavigator() {
 								// Screens for non-logged in users
 
 								<Stack.Group screenOptions={{ headerShown: false }}>
+									{!introShown && <Stack.Screen name="Onboarding" component={Onboarding} />}
 									<Stack.Screen name="WelcomePage" component={WelcomePage} />
-									<Stack.Screen name="Onboarding" component={Onboarding} />
 									<Stack.Screen name="Login" component={Login} />
 									<Stack.Screen name="LetsMeet" component={LetsMeet} />
 									<Stack.Screen name="Register" component={Register} />

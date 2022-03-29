@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 export const colors = {
+	backgroundColor: "#F4F3F3",
 	white: "#F8F8F8",
 	light_gray: "#ECECEC",
 	gray: "#B6B6B6",

@@ -16,23 +16,29 @@ export default function LetsMeet({ navigation }) {
 		<View
 			style={[commonStyles.Container, { paddingHorizontal: width * 0.1, justifyContent: "center" }]}
 		>
-			<StatusBar style={"dark"} />
-			<GradientText
-				text={"Hoş geldin\nTanışalım mı?"}
-				style={{ fontSize: height * 0.05, fontFamily: "NowBold", height: height * 0.12 }}
-			/>
+			<StatusBar style={"dark"} translucent={false} backgroundColor={"#F4F3F3"} />
+			<View style={{ width: "100%" }}>
+				<GradientText
+					text={"Hoş geldin\nTanışalım mı?"}
+					style={{
+						fontSize: height * 0.05,
+						fontFamily: "NowBold",
+						paddingBottom: height * 0.02,
+					}}
+				/>
 
-			<Text
-				style={{
-					color: "#525A64",
-					fontSize: height * 0.022,
-					lineHeight: height * 0.025,
-					letterSpacing: 0.4,
-				}}
-			>
-				Seni yakından tanımak için sana{"\n"}kartlar hazırladık. Böylece profilin{"\n"}ve kaydın
-				tamamlanmış olacak.
-			</Text>
+				<Text
+					style={{
+						color: "#525A64",
+						fontSize: height * 0.022,
+						lineHeight: height * 0.025,
+						letterSpacing: 0.4,
+					}}
+				>
+					Seni yakından tanımak için sana{"\n"}kartlar hazırladık. Böylece profilin{"\n"}ve kaydın
+					tamamlanmış olacak.
+				</Text>
+			</View>
 
 			<Image
 				source={require("../../assets/LetsMeetIcon.png")}

@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "./colors";
 
-const { width, height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("window");
 
 export default styles = StyleSheet.create({
 	Container: {
@@ -62,7 +62,7 @@ export default styles = StyleSheet.create({
 		position: "relative",
 		color: "#FFFFFF",
 		fontStyle: "normal",
-		fontWeight: "600",
+		fontFamily: "PoppinsSemiBold",
 		fontSize: height * 0.02,
 		textAlign: "center",
 		letterSpacing: 1.2,

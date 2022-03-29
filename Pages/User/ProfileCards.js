@@ -106,7 +106,6 @@ const Card = ({ card, index, backFace, setPopupVisible, numberOfSuperLikes, myID
 		})
 		.onEnd((event) => {
 			destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
-			// const destination = snapPoint(x.value, event.velocityX, SNAP_POINTS);
 			x.value = withSpring(destination.value);
 		})
 		.onFinalize(() => {
@@ -653,20 +652,18 @@ export default function ProfileCards({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" />
+			<StatusBar style="dark" translucent={false} backgroundColor="#F4F3F3" />
 			<View
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
-					flexDirection: "row",
-					height: height * 0.15,
+					maxHeight: height * 0.15,
 					width: width,
-					marginBottom: 20,
-					elevation: 10,
-					paddingHorizontal: 20,
+					flexDirection: "row",
 					justifyContent: "space-between",
+					paddingHorizontal: 20,
 					alignItems: "center",
-					paddingTop: height * 0.05,
+					elevation: 10,
 				}}
 			>
 				<TouchableOpacity
@@ -679,7 +676,7 @@ export default function ProfileCards({ navigation, route }) {
 				<Image
 					source={require("../../assets/dorm_text.png")}
 					resizeMode="center"
-					style={{ maxWidth: "30%", height: "40%" }}
+					style={{ width: "30%", maxHeight: "60%" }}
 				/>
 				<TouchableOpacity>
 					{/* TODO: open filtering modal here  */}
@@ -691,7 +688,14 @@ export default function ProfileCards({ navigation, route }) {
 					/>
 				</TouchableOpacity>
 			</View>
-			<View style={{ width: "100%", height: height * 0.7, alignItems: "center" }}>
+			<View
+				style={{
+					width: "100%",
+					height: height * 0.7,
+					alignItems: "center",
+					marginTop: height * 0.05,
+				}}
+			>
 				{peopleList.reverse().map((item, index) => (
 					<Card
 						key={index}
@@ -799,7 +803,7 @@ export default function ProfileCards({ navigation, route }) {
 			</View>
 
 			<AnimatedModal
-				visible={popupVisible}
+				visible={popupVisible.value}
 				dismiss={() => {
 					popupVisible.value = false;
 				}}

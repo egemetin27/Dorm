@@ -13,10 +13,12 @@ import { AuthContext } from "../../nonVisualComponents/Context";
 
 export default function FirstPassword({ navigation, route }) {
 	const [password, setPassword] = React.useState("");
+	const [password2, setPassword2] = React.useState("");
 	const [wrongInput, setWrongInput] = React.useState(false);
 	const [passwordShown, setPasswordShown] = React.useState(false);
 
 	const animRef = React.useRef(new Animated.Value(0)).current;
+	const animRef2 = React.useRef(new Animated.Value(0)).current;
 	const { signIn } = React.useContext(AuthContext);
 
 	const handleSubmit = async () => {
@@ -24,6 +26,10 @@ export default function FirstPassword({ navigation, route }) {
 
 		if (password.length < 8) {
 			Alert.alert("Şifren en az 8 karakterli olmalı");
+			return;
+		}
+		if (password != password2) {
+			Alert.alert("İki şifre aynı olmalı");
 			return;
 		}
 
@@ -35,11 +41,6 @@ export default function FirstPassword({ navigation, route }) {
 			.then(() => {
 				console.log("Password Updated Successfully");
 				signIn({ email: email, password: password, isNewUser: true });
-				// navigation.replace("AfterRegister", {
-				// 	userID: userID,
-				// 	email: email,
-				// 	password: password,
-				// });
 			})
 			.catch((error) => {
 				console.log({ error });
@@ -69,7 +70,7 @@ export default function FirstPassword({ navigation, route }) {
 			<View style={commonStyles.innerContainer}>
 				<GradientText
 					text={"Gitmeden\nşifre belirleyebilir misin?"}
-					style={{ fontFamily: "NowBold", fontSize: 30, height: 66 }}
+					style={{ fontFamily: "NowBold", fontSize: 30, paddingBottom: 20 }}
 				/>
 
 				<View style={{ position: "relative" }}>
@@ -124,6 +125,41 @@ export default function FirstPassword({ navigation, route }) {
 							<Ionicons name="eye-off" size={27} color="#B6B6B6" />
 						)}
 					</TouchableOpacity>
+				</View>
+				<View
+					style={[
+						commonStyles.inputContainer,
+						{ marginTop: 30 },
+						wrongInput ? commonStyles.InvalidInput : commonStyles.ValidInput,
+					]}
+				>
+					<Animated.Text
+						style={[
+							styles.placeHolder,
+							{
+								transform: [
+									{
+										translateY: animRef2.interpolate({ inputRange: [0, 1], outputRange: [0, -20] }),
+									},
+								],
+								fontSize: animRef2.interpolate({ inputRange: [0, 1], outputRange: [14, 11] }),
+							},
+						]}
+					>
+						Şifre Kontrolü
+					</Animated.Text>
+					<TextInput
+						style={commonStyles.input}
+						onChangeText={setPassword2}
+						value={password2}
+						secureTextEntry={!passwordShown}
+						onFocus={() => {
+							handleFocus(animRef2);
+						}}
+						onBlur={() => {
+							if (password2 == "") handleBlur(animRef2);
+						}}
+					/>
 				</View>
 				{wrongInput && (
 					<View style={{ marginTop: 8 }}>
