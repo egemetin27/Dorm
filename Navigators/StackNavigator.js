@@ -73,7 +73,7 @@ function MainScreen({ route, navigation }) {
 			initialRouteName={"AnaSayfa"}
 		>
 
-			<Tab.Screen
+<Tab.Screen
 				name="Profil"
 				component={Profile}
 				initialParams={{ photoList: pList }}
@@ -95,15 +95,12 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText
-									style={{ fontSize: height * 0.015, fontFamily: "PoppinsSemiBold" }}
-									text={"Profil"}
-								/>
+								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Profil"} />
 							) : (
 								<Text
 									style={{
-										fontSize: height * 0.015,
-										fontFamily: "PoppinsSemiBold",
+										fontSize: 13,
+										fontWeight: "bold",
 										color: colors.cool_gray,
 									}}
 								>
@@ -114,7 +111,6 @@ function MainScreen({ route, navigation }) {
 					),
 				}}
 			/>
-			
 			<Tab.Screen
 				name="AnaSayfa"
 				component={Home}
@@ -128,24 +124,20 @@ function MainScreen({ route, navigation }) {
 							}}
 						>
 							<Image
-								source={require("../assets/logoGradient.png")}
-								// source={require("../assets/TabBarIcons/anasayfa.png")}
+								source={require("../assets/TabBarIcons/anasayfa.png")}
 								resizeMode="contain"
 								style={{
 									tintColor: focused ? {} : colors.cool_gray,
-									height: height / 30,
+									height: height / 27,
 								}}
 							/>
 							{focused ? (
-								<GradientText
-									style={{ fontSize: height * 0.015, fontFamily: "PoppinsSemiBold" }}
-									text={"Ana Sayfa"}
-								/>
+								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Ana Sayfa"} />
 							) : (
 								<Text
 									style={{
-										fontSize: height * 0.015,
-										fontFamily: "PoppinsSemiBold",
+										fontSize: 13,
+										fontWeight: "bold",
 										color: colors.cool_gray,
 									}}
 								>
@@ -177,15 +169,12 @@ function MainScreen({ route, navigation }) {
 								}}
 							/>
 							{focused ? (
-								<GradientText
-									style={{ fontSize: height * 0.015, fontFamily: "PoppinsSemiBold" }}
-									text={"Mesajlar"}
-								/>
+								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Mesajlar"} />
 							) : (
 								<Text
 									style={{
-										fontSize: height * 0.015,
-										fontFamily: "PoppinsSemiBold",
+										fontSize: 13,
+										fontWeight: "bold",
 										color: colors.cool_gray,
 									}}
 								>
@@ -331,15 +320,15 @@ export default function StackNavigator() {
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator
-							initialRouteName={
-								isLoggedIn
-									? tutorialShown
-										? "MainScreen"
-										: "Tutorial"
-									: introShown
-									? "WelcomePage"
-									: "Onboarding"
-							}
+							//initialRouteName={
+							//	isLoggedIn
+							//		? tutorialShown
+							//			? "MainScreen"
+							//			: "Tutorial"
+							//		: introShown
+							//		? "WelcomePage"
+							//		: "Onboarding"
+							//}
 						>
 							{isLoggedIn ? (
 								// Screens for logged in users
@@ -365,8 +354,8 @@ export default function StackNavigator() {
 								// Screens for non-logged in users
 
 								<Stack.Group screenOptions={{ headerShown: false }}>
+									{!introShown && <Stack.Screen name="Onboarding" component={Onboarding} />}
 									<Stack.Screen name="WelcomePage" component={WelcomePage} />
-									<Stack.Screen name="Onboarding" component={Onboarding} />
 									<Stack.Screen name="Login" component={Login} />
 									<Stack.Screen name="LetsMeet" component={LetsMeet} />
 									<Stack.Screen name="Register" component={Register} />

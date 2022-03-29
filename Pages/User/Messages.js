@@ -53,32 +53,7 @@ export default function Messages({ route, navigation }) {
 		});
 	}; 
 
-	const fetchImageUri = async (userID) => {
-		try {
-			let abortController = new AbortController();
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const myToken = userData.sesToken;
-			await axios
-				.post(
-					url + "/getProfilePic",
-					{ UserId: userID },
-					{ headers: { "access-token": myToken } }
-				)
-				.then((res) => {
-					//setPeopleList(res.data);
-					console.log(res.data);
-					console.log(res.data[0].PhotoLink);
-					setImgUri(res.data[0].PhotoLink);
-					
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		} catch (e) {
-			console.log(e);
-		}
-	};
+	
 
 	const [chatRooms, setChatRooms] = useState([]);
 	const [myUserID, setmyUserID] = useState("");
@@ -311,27 +286,22 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 0 && item.lastMsg == null && item.firstUser.id == myUserID) {
-										fetchImageUri(item.secondUser.id);
 
 										return (
 											<NewMatchBox
-												fetchImageUri={() => fetchImageUri(item.secondUser.id)}
 												data={item.secondUser}
 												openChat={() => openChat(item.secondUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
 									if (item.mod == 0 && item.lastMsg == null && item.secondUser.id == myUserID) {
-										fetchImageUri(item.firstUser.id);
 
 										return (
 											<NewMatchBox
 												data={item.firstUser}
 												openChat={() => openChat(item.firstUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
@@ -348,7 +318,6 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 0 && item.lastMsg != null && item.firstUser.id == myUserID) {
-										fetchImageUri(item.secondUser.id);
 										return (
 											<MsgBox
 												data={item.secondUser}
@@ -357,22 +326,18 @@ export default function Messages({ route, navigation }) {
 												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.secondUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
 									if (item.mod == 0 && item.lastMsg != null && item.secondUser.id == myUserID) {
-										fetchImageUri(item.firstUser.id);
 										return (
 											<MsgBox
-												fetchImageUri={()=> fetchImageUri(item.firstUser.id)}
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
 												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.firstUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
@@ -390,26 +355,22 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 1 && item.lastMsg == null && item.firstUser.id == myUserID) {
-										fetchImageUri(item.secondUser.id);
 
 										return (
 											<NewMatchBox
 												data={item.secondUser}
 												openChat={() => openChat(item.secondUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
 									if (item.mod == 1 && item.lastMsg == null && item.secondUser.id == myUserID) {
-										fetchImageUri(item.firstUser.id);
 
 										return (
 											<NewMatchBox
 												data={item.firstUser}
 												openChat={() => openChat(item.firstUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
@@ -426,7 +387,6 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 1 && item.lastMsg != null && item.firstUser.id == myUserID) {
-										fetchImageUri(item.secondUser.id);
 
 										return (
 											<MsgBox
@@ -436,12 +396,10 @@ export default function Messages({ route, navigation }) {
 												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.secondUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}
 									if (item.mod == 1 && item.lastMsg != null && item.secondUser.id == myUserID) {
-										fetchImageUri(item.firstUser.id);
 
 										return (
 											<MsgBox
@@ -451,7 +409,6 @@ export default function Messages({ route, navigation }) {
 												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.firstUser, myUserID, item.id)}
 												userID={myUserID}
-												imgUri={imgUri}
 											/>
 										);
 									}

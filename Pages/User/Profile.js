@@ -58,23 +58,6 @@ export default function Profile({ route, navigation }) {
 	const [about, setAbout] = React.useState("");
 	const [PHOTO_LIST, setPhotoList] = React.useState("");
 
-	// const [userData, setUserData] = React.useState({
-	// 	userID: "",
-	// 	name: "",
-	// 	major: "",
-	// 	age: "",
-	// 	sex: "",
-	// 	school: "",
-	// 	religion: "",
-	// 	sign: "",
-	// 	diet: "",
-	// 	alcohol: "",
-	// 	smoke: "",
-	// 	hobbies: "",
-	// 	about: "",
-	// 	PhotoList: "",
-	// });
-
 	const [city, setCity] = React.useState([0, 1, 0]);
 
 	const nameRef = React.useRef(new Animated.Value(0)).current;
@@ -89,6 +72,7 @@ export default function Profile({ route, navigation }) {
 
 	React.useEffect(async () => {
 		try {
+			setIsReady(false);
 			const dataStr = await SecureStore.getItemAsync("userData");
 			const data = JSON.parse(dataStr);
 
@@ -896,8 +880,9 @@ export default function Profile({ route, navigation }) {
 
 						<Pressable
 							disabled={!isEditable}
-							onPress={() => {
+							onPress={async () => {
 								if (isEditable) {
+									await handleSave();
 									navigation.replace("Hobbies", {
 										hobbyList: hobbies,
 										userID: userID,

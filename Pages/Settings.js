@@ -456,10 +456,8 @@ export default function Settings({ navigation, route }) {
 				</TouchableOpacity>
 				<GradientText text={"Ayarlar"} style={{ fontSize: 32, fontFamily: "NowBold" }} />
 			</View>
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ width: width, paddingBottom: 40 }}
-			>
+			<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: width }}>
+
 				{/* <TouchableOpacity
 					style={styles.buttonContainer}
 					onPress={() => {

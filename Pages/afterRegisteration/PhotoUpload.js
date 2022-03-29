@@ -139,6 +139,8 @@ export default function PhotoUpload({ navigation, route }) {
 						...userData,
 						Photo: newList,
 					});
+					setIsLoading(false);
+
 					await SecureStore.setItemAsync("userData", storedValue);
 					navigation.replace("Hobbies", {
 						userID: userID,
@@ -151,7 +153,6 @@ export default function PhotoUpload({ navigation, route }) {
 				});
 		} catch (err) {
 			console.log("ERROR SAVING: ", err);
-		} finally {
 			setIsLoading(false);
 		}
 	};

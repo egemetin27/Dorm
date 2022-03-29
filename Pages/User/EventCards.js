@@ -145,7 +145,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 
 	return (
 		<View name={"cards"} style={{ width: "100%", justifyContent: "center", height: height * 0.76 }}>
-			<StatusBar style="dark" />
 			<GestureDetector gesture={tapHandler}>
 				<Animated.View style={{}}>
 					<Animated.View
@@ -511,15 +510,15 @@ export default function EventCards({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
+			<StatusBar style="dark" translucent={false} backgroundColor="#F4F3F3" />
 			<View
 				style={{
 					backgroundColor: "#F4F3F3",
-					height: height * 0.15,
+					maxHeight: height * 0.15,
 					width: width,
 					flexDirection: "row",
 					justifyContent: "space-between",
 					paddingHorizontal: 20,
-					paddingTop: height * 0.05,
 					alignItems: "center",
 					elevation: 10,
 				}}
@@ -534,7 +533,7 @@ export default function EventCards({ navigation, route }) {
 				<Image
 					source={require("../../assets/dorm_text.png")}
 					resizeMode="center"
-					style={{ maxWidth: "30%", height: "40%" }}
+					style={{ width: "30%", maxHeight: "60%" }}
 				/>
 				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
@@ -617,8 +616,9 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		height: height / 12,
 		width: "100%",
-		paddingBottom: height / 100,
+		paddingBottom: height / 120,
 		backgroundColor: colors.white,
 		flexDirection: "row",
+		elevation: 5,
 	},
 });

@@ -4,13 +4,13 @@ import { Text, View, TouchableOpacity, Image, Dimensions } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("screen");
 
 export default function WelcomePage({ navigation }) {
 	const [counter, counterChanger] = React.useState(0);
 
 	return (
-		<View style={commonStyles.Container}>
+		<View style={[commonStyles.Container, { height: height }]}>
 			<StatusBar style={"light"} />
 			<Gradient
 				style={{ justifyContent: "center", alignItems: "center", width: "100%", height: "100%" }}

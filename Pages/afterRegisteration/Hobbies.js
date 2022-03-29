@@ -8,6 +8,7 @@ import {
 	FlatList,
 	TouchableOpacity,
 	ActivityIndicator,
+	Alert,
 } from "react-native";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
@@ -130,8 +131,23 @@ export default function Hobbies({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" />
-			<View style={[commonStyles.Header, { paddingHorizontal: 30, justifyContent: "flex-end" }]}>
+			<StatusBar style="dark" translucent={false} backgroundColor="#F4F3F3" />
+			<View
+				style={{
+					justifyContent: "space-between",
+					alignItems: "center",
+					paddingVertical: height * 0.02,
+					flexDirection: "row",
+					width: "100%",
+					paddingHorizontal: width * 0.05,
+					backgroundColor: "#F4F3F3",
+					elevation: 10,
+					shadowColor: "rgb(0, 0, 0)",
+					shadowOffset: { width: 0, height: 10 },
+					shadowRadius: 20,
+				}}
+			>
+				<GradientText text={"İlgi Alanlarım"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
 				<TouchableOpacity onPress={handleSubmit}>
 					<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
 				</TouchableOpacity>
@@ -139,23 +155,8 @@ export default function Hobbies({ navigation, route }) {
 			<View
 				style={{
 					width: "100%",
-					overflow: "hidden",
-					paddingBottom: 10,
-					marginTop: 20,
 				}}
 			>
-				<View
-					style={{
-						width: "100%",
-						alignItems: "flex-start",
-						paddingHorizontal: 30,
-						paddingBottom: 10,
-						elevation: 10,
-						backgroundColor: "#F4F3F3",
-					}}
-				>
-					<GradientText text={"İlgi Alanlarım"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
-				</View>
 				<ScrollView
 					contentContainerStyle={{ paddingBottom: 150 }}
 					showsVerticalScrollIndicator={false}
@@ -336,6 +337,8 @@ const Item = ({ item, value, setValue }) => {
 			const tempArr = value;
 			tempArr.splice(tempArr.indexOf(item.key), 1);
 			setValue(tempArr);
+		} else {
+			Alert.alert("5'ten fazla ilgi alanı seçemezsin :/");
 		}
 	};
 
