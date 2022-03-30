@@ -13,8 +13,9 @@ import {
 	BackHandler,
 	ActivityIndicator,
 	Platform,
+	TextInput,
 } from "react-native";
-import { Octicons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { Octicons, MaterialCommunityIcons, Ionicons, Entypo } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
@@ -32,6 +33,8 @@ import { createMsgUser, updateMsgUser } from "../../src/graphql/mutations";
 import { Constants } from "@aws-amplify/core";
 import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
+import { CustomModal } from "../../visualComponents/customComponents";
+import { color } from "react-native-reanimated";
 
 const CategoryList = [
 	{
@@ -387,6 +390,11 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 };
 
 export default function MainPage({ navigation }) {
+
+
+	
+
+
 	const [isAppReady, setIsAppReady] = React.useState(false);
 	const [selectedCategory, setSelectedCategory] = React.useState(0);
 	const [eventList, setEventList] = React.useState([]);
@@ -398,6 +406,21 @@ export default function MainPage({ navigation }) {
 
 	//Filtre Modal
 	const [filtreModal, setFiltreModal] = React.useState(false);
+	const [minAge, setMinAge] = React.useState(18);
+	const [maxAge, setMaxAge] = React.useState(99);
+	const [filtreCinsiyet, setFiltreCinsiyet] = React.useState(-1);
+	const [filtreEgzersiz, setFiltreEgsersiz ] = React.useState(-1);
+	const [filtreUniversite, setFiltreUniversite ] = React.useState(-1);
+	const [filtreAlkol, setFiltreAlkol ] = React.useState(-1);
+	const [filtreSigara, setFiltreSigara ] = React.useState(-1);
+	const [filtreBurc, setFiltreBurc ] = React.useState(-1);
+	const [filtreDin, setFiltreDin ] = React.useState(-1);
+	const [filtreYemek, setFiltreYemek ] = React.useState(-1);
+
+
+
+
+
 
 	async function registerForPushNotificationAsync() {
 		let token;
@@ -559,7 +582,7 @@ export default function MainPage({ navigation }) {
 					<TouchableOpacity
 						style={{ marginRight: 20 }}
 						onPress={() => {
-							Alert.alert("Bu özellik tam sürümde eklenecek");
+							setFiltreModal(true);
 						}}
 					>
 						<Octicons
@@ -679,6 +702,878 @@ export default function MainPage({ navigation }) {
 					</View>
 				</View>
 			</ScrollView>
+
+			<CustomModal
+				visible={filtreModal}
+				dismiss={() => {
+					setFiltreModal(false);
+				}}
+			>
+				<View
+					style={{
+						maxHeight: height * 0.9,
+                        maxWidth: width* 0.84,
+						backgroundColor: colors.white,
+						borderRadius: 10,
+						alignItems: "center",
+						paddingHorizontal: 10,
+					}}
+				>
+					<View
+						style={{
+							width: "100%",
+							marginTop: 20,
+							maxHeight: height* 0.75,
+						}}
+					>
+                        <View
+                            style = {{
+                                flexDirection: "row",
+                                width: "100%",
+                                alignItems: "flex-start",
+								justifyContent: "space-around",
+                            }}
+                        >
+							<View>
+								<GradientText 
+									text={"Filtreme"}
+									style={{
+										fontSize: 22,
+										fontFamily: "NowBold",
+										letterSpacing: 1.2,
+										marginLeft:5,
+									}}
+								/>
+								<Text style={{color: colors.gray}}>
+									5 Filtre kullanma hakkın var
+								</Text>
+
+							</View>
+							<TouchableOpacity
+								onPress={() => {setFiltreModal(false);}}
+							>
+								<Entypo name = "cross" size = {24} color = "black" />
+							</TouchableOpacity>
+                        </View>
+						<View style={{
+							borderBottomColor: "black",
+							borderBottomWidth: 1,
+							marginTop: 5,
+							marginBottom: 10,
+						}}/>
+						<ScrollView
+							horizontal = {false}
+							style = {{marginHorizontal: 10}}
+						>
+							<GradientText 
+								text={"Yaş"}
+								style={styles.filtreCategory}
+							/>
+							<View style={{
+								paddingTop: 10,
+								justifyContent: "space-evenly",
+								alignContent: "center",
+								flexDirection: "row",
+								marginBottom: 10,
+
+							}}>
+								<Text>
+									Min:
+								</Text>
+								<TextInput
+          							style={{width: width * 0.2,}}
+									onChangeText={setMinAge}
+									textAlign = {"center"}
+          							placeholder="18"
+          							placeholderTextColor="#60605e"
+          							numeric
+          							keyboardType={'numeric'}
+        						/>
+								<Text>
+									Max:
+								</Text>
+								<TextInput
+          							style={{width: width * 0.2}}
+									onChangeText={setMaxAge}
+									textAlign = {"center"}
+          							placeholder="99"
+          							placeholderTextColor="#60605e"
+          							numeric
+          							keyboardType={'numeric'}
+        						/>
+								
+							</View>
+							
+							<GradientText 
+								text={"Cinsiyet"}
+								style={styles.filtreCategory}
+							/>
+							<ScrollView
+								horizontal = {true}
+							>
+								<Pressable
+									onPress={()=> {
+										filtreCinsiyet == 0 ? (
+											setFiltreCinsiyet(-1)
+										):(
+											setFiltreCinsiyet(0)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreCinsiyet != 0 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Kadın
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Kadın
+											</Text>
+
+
+										</Gradient>
+
+									)}
+
+								</Pressable>
+								<Pressable
+									onPress={()=> {
+										filtreCinsiyet == 1 ? (
+											setFiltreCinsiyet(-1)
+										):(
+											setFiltreCinsiyet(1)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreCinsiyet != 1 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Erkek
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Erkek
+											</Text>
+
+
+										</Gradient>
+
+									)}
+
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										filtreCinsiyet == 2 ? (
+											setFiltreCinsiyet(-1)
+										):(
+											setFiltreCinsiyet(2)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreCinsiyet != 2 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Non-Binary
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Non-Binary
+											</Text>
+
+
+										</Gradient>
+
+									)}
+
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										setFiltreCinsiyet(-1)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreCinsiyet != -1 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Hepsi
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Hepsi
+											</Text>
+
+
+										</Gradient>
+
+									)}
+								</Pressable>
+							</ScrollView>			
+							<GradientText 
+								text={"Egzersiz"}
+								style={styles.filtreCategory}
+							/>
+
+							<ScrollView
+								horizontal = {true}
+							>
+								<Pressable
+									onPress={()=> {
+										filtreEgzersiz == 0 ? (
+											setFiltreEgsersiz(-1)
+										):(
+											setFiltreEgsersiz(0)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreEgzersiz != 0 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Aktif
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Aktif
+											</Text>
+
+
+										</Gradient>
+
+									)}
+
+								</Pressable>
+								<Pressable
+									onPress={()=> {
+										filtreEgzersiz == 1 ? (
+											setFiltreEgsersiz(-1)
+										):(
+											setFiltreEgsersiz(1)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreEgzersiz != 1 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Bazen
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Bazen
+											</Text>
+
+
+										</Gradient>
+
+									)}
+
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										filtreEgzersiz == 2 ? (
+											setFiltreEgsersiz(-1)
+										):(
+											setFiltreEgsersiz(2)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreEgzersiz != 2 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Hiç
+											</Text>
+
+										</View>
+										
+
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Hiç
+											</Text>
+
+
+										</Gradient>
+
+									)}
+
+								</Pressable>
+							</ScrollView>
+
+
+							<GradientText 
+								text={"Üniversite"}
+								style={styles.filtreCategory}
+							/>
+							<GradientText 
+								text={"Alkol Kullanımı"}
+								style={styles.filtreCategory}
+							/>
+
+							<ScrollView
+								horizontal = {true}
+							>
+								<Pressable
+									onPress={()=> {
+										filtreAlkol == 0 ? (
+											setFiltreAlkol(-1)
+										):(
+											setFiltreAlkol(0)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreAlkol != 0 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Sıklıkla
+											</Text>
+										</View>
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Sıklıkla
+											</Text>
+										</Gradient>
+									)}
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										filtreAlkol == 1 ? (
+											setFiltreAlkol(-1)
+										):(
+											setFiltreAlkol(1)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreAlkol != 1 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Sosyal Olarak
+											</Text>
+										</View>
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Sosyal Olarak
+											</Text>
+										</Gradient>
+									)}
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										filtreAlkol == 2 ? (
+											setFiltreAlkol(-1)
+										):(
+											setFiltreAlkol(2)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreAlkol != 2 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Hiç
+											</Text>
+										</View>
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Hiç
+											</Text>
+										</Gradient>
+									)}
+								</Pressable>
+								
+							</ScrollView>
+
+							<GradientText 
+								text={"Sigara"}
+								style={styles.filtreCategory}
+							/>
+							<ScrollView
+								horizontal = {true}
+							>
+								<Pressable
+									onPress={()=> {
+										filtreSigara == 0 ? (
+											setFiltreSigara(-1)
+										):(
+											setFiltreSigara(0)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreSigara != 0 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Sıklıkla
+											</Text>
+										</View>
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Sıklıkla
+											</Text>
+										</Gradient>
+									)}
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										filtreSigara == 1 ? (
+											setFiltreSigara(-1)
+										):(
+											setFiltreSigara(1)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreSigara != 1 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Sosyal Olarak
+											</Text>
+										</View>
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Sosyal Olarak
+											</Text>
+										</Gradient>
+									)}
+								</Pressable>
+
+								<Pressable
+									onPress={()=> {
+										filtreSigara == 2 ? (
+											setFiltreSigara(-1)
+										):(
+											setFiltreSigara(2)
+										)
+									}}
+									style={{
+										backgroundColor: colors.white,
+										alignSelf: "flex-start",
+										marginLeft: 20,
+										minWidth: width/4,
+										height: width/8,
+										borderRadius: width/16,
+										overflow: "hidden",
+									}}
+								>
+									{filtreSigara != 2 ? (
+										<View
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style = {{color: colors.black}}>
+												Hiç
+											</Text>
+										</View>
+									): (
+										<Gradient
+											style={{
+												paddingHorizontalHorizontal: 10,
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Text style={{color: colors.white}}>
+												Hiç
+											</Text>
+										</Gradient>
+									)}
+								</Pressable>
+								
+							</ScrollView>
+
+							<GradientText 
+								text={"Burç"}
+								style={styles.filtreCategory}
+							/>
+							<GradientText 
+								text={"Din"}
+								style={styles.filtreCategory}
+							/>
+							<GradientText 
+								text={"Yeme Biçimi"}
+								style={styles.filtreCategory}
+							/>
+							<GradientText 
+								text={"İlgi Alanları"}
+								style={styles.filtreCategory}
+							/>
+
+							
+						</ScrollView>
+						<View style={{height:15}}>
+							
+						</View>
+					</View>
+					<TouchableOpacity
+						onPress={() => {
+							alert("filtreyi gönder");
+						}}
+						style={{
+							maxWidth: "90%",
+							height: "10%",
+							maxHeight: 60,
+							aspectRatio: 9 / 2,
+							borderRadius: 12,
+							overflow: "hidden",
+						}}
+					>
+						<Gradient
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+								Filtrele
+							</Text>
+						</Gradient>
+					</TouchableOpacity>		
+				</View>
+			</CustomModal>
 		</View>
 	);
 }
@@ -689,5 +1584,12 @@ const styles = StyleSheet.create({
 		height: "80%",
 		maxWidth: "50%",
 		resizeMode: "contain",
+	},
+	filtreCategory: {
+		fontSize: 22,
+		fontFamily: "NowBold",
+		letterSpacing: 1.2,
+		marginLeft: 10,
+		marginBottom: 10,
 	},
 });
