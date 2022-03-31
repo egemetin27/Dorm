@@ -614,9 +614,9 @@ const styles = StyleSheet.create({
 	tabBar: {
 		position: "absolute",
 		bottom: 0,
-		height: height / 12,
+		height: height * 0.08,
 		width: "100%",
-		paddingBottom: height / 120,
+		paddingBottom: height * 0.008,
 		backgroundColor: colors.white,
 		flexDirection: "row",
 		elevation: 5,

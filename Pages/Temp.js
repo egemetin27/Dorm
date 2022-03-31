@@ -25,9 +25,35 @@ import { loadAsync } from "expo-font";
 const { height, width } = Dimensions.get("screen");
 
 export default function Temp() {
+	const [str, setStr] = React.useState("");
+
+	const foo = () => {
+		const fullName = str.trim();
+
+		if (fullName.lastIndexOf(" ") == -1) {
+			console.log("ERROR");
+			return;
+		}
+
+		const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
+		const fName = fullName.slice(0, fullName.lastIndexOf(" "));
+
+		console.log(`fname: ${fName}\nlname: ${lName}`);
+	};
+
 	return (
 		<View style={{ height: height, width: width, justifyContent: "center", alignItems: "center" }}>
-			<Text style={{ fontFamily: "Now", fontSize: 20 }}>Hi we are testing new fonts in here</Text>
+			<TextInput
+				value={str}
+				onChangeText={setStr}
+				style={{ width: 300, height: 100, fontSize: 20, backgroundColor: "gray" }}
+			/>
+			<Pressable
+				style={{ width: 300, height: 100, backgroundColor: "black" }}
+				onPress={() => {
+					foo();
+				}}
+			/>
 		</View>
 	);
 }

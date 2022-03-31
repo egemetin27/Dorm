@@ -109,18 +109,18 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
-					height: "25%",
+					height: height * 0.08,
 					width: "100%",
 					position: "absolute",
-					bottom: 0,
 					justifyContent: "flex-end",
-					paddingBottom: width * 0.01,
+					paddingBottom: height * 0.005,
+					bottom: 0,
+					paddingHorizontal: width * 0.02,
 				}}
 			>
 				<View
 					style={{
 						flexDirection: "row",
-						paddingHorizontal: 10,
 					}}
 				>
 					<View style={{ flexShrink: 1 }}>
@@ -129,7 +129,8 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 							style={{
 								width: "100%",
 								color: colors.white,
-								fontSize: width * 0.045,
+								fontSize: height * 0.02,
+								lineHeight: height * 0.025,
 								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.05,
 							}}
@@ -140,7 +141,8 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 					<Text
 						style={{
 							color: colors.white,
-							fontSize: width * 0.045,
+							fontSize: height * 0.02,
+							lineHeight: height * 0.025,
 							fontFamily: "PoppinsSemiBold",
 							letterSpacing: 1.05,
 						}}
@@ -150,12 +152,13 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 					</Text>
 				</View>
 				<Text
+					numberOfLines={2}
 					style={{
+						paddingTop: height * 0.002,
 						color: colors.white,
-						fontSize: width * 0.035,
-						paddingLeft: 10,
 						fontFamily: "PoppinsItalic",
-						lineHeight: width * 0.04,
+						fontSize: height * 0.015,
+						lineHeight: height * 0.018,
 					}}
 				>
 					{university}
@@ -166,6 +169,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 		</Pressable>
 	);
 };
+
 const Category = ({
 	index,
 	userID,
@@ -274,6 +278,7 @@ const Category = ({
 		</View>
 	);
 };
+
 const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
 
@@ -281,7 +286,6 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 		<Pressable
 			onPress={() => {
 				setIsAppReady(false);
-
 				openEvents(index);
 			}}
 			style={[
@@ -305,77 +309,76 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
-					height: "25%",
+					height: height * 0.08,
 					width: "100%",
 					position: "absolute",
 					justifyContent: "flex-end",
-					paddingBottom: width * 0.01,
+					paddingBottom: height * 0.005,
 					bottom: 0,
+					paddingHorizontal: width * 0.02,
 				}}
 			>
 				<Text
 					numberOfLines={1}
 					style={{
 						color: colors.white,
-						fontSize: width * 0.045,
-						lineHeight: width * 0.05,
-						paddingLeft: 10,
+						fontSize: height * 0.02,
+						lineHeight: height * 0.025,
 						fontFamily: "PoppinsSemiBold",
 						letterSpacing: 1.05,
 					}}
 				>
 					{Description}
 				</Text>
-				<View name={"info"} style={{ width: "100%" }}>
-					<View
-						name={"date"}
+				<View
+					name={"date"}
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						justifyContent: "space-between",
+						paddingTop: height * 0.002,
+					}}
+				>
+					<Text
 						style={{
-							width: "100%",
-							flexDirection: "row",
-							justifyContent: "space-between",
-							paddingTop: width * 0.01,
+							color: colors.white,
+							fontSize: height * 0.015,
+							lineHeight: height * 0.018,
 						}}
 					>
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: width * 0.035,
-								lineHeight: width * 0.04,
-								paddingLeft: 10,
-							}}
-						>
-							{Date}
-						</Text>
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: width * 0.035,
-								lineHeight: width * 0.04,
-								paddingRight: 10,
-							}}
-						>
-							{StartTime}
-						</Text>
-					</View>
+						{Date}
+					</Text>
+					<Text
+						style={{
+							color: colors.white,
+							fontSize: height * 0.015,
+							lineHeight: height * 0.018,
+						}}
+					>
+						{StartTime}
+					</Text>
 				</View>
 				<View
 					name={"location"}
-					style={{ width: "100%", flexDirection: "row", alignItems: "center" }}
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						alignItems: "flex-end",
+						paddingTop: height * 0.002,
+					}}
 				>
 					<MaterialCommunityIcons
 						name="map-marker-radius"
-						size={15}
+						size={height * 0.018}
 						color={colors.white}
-						style={{ paddingLeft: 10 }}
+						style={{ paddingRight: width * 0.005 }}
 					/>
 					<Text
 						numberOfLines={1}
 						style={{
-							paddingTop: width * 0.01,
 							color: colors.white,
-							fontSize: width * 0.035,
-							lineHeight: width * 0.04,
-							paddingRight: 10,
+							fontSize: height * 0.015,
+							lineHeight: height * 0.018,
 						}}
 					>
 						{Location}
@@ -545,12 +548,12 @@ export default function MainPage({ navigation }) {
 			<ScrollView style={{ width: width }} showsVerticalScrollIndicator={false}>
 				<View
 					name={"PeopleHeader"}
-					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.02 }]}
+					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
 				>
 					<GradientText
 						text={"Kişiler"}
 						style={{
-							fontSize: 30,
+							fontSize: height * 0.035,
 							fontFamily: "NowBold",
 							letterSpacing: 1.2,
 							marginLeft: 20,
@@ -573,7 +576,7 @@ export default function MainPage({ navigation }) {
 				<View
 					name={"People"}
 					style={{
-						height: height / 3,
+						height: height * 0.33,
 						width: "100%",
 						justifyContent: "center",
 					}}
@@ -583,20 +586,21 @@ export default function MainPage({ navigation }) {
 							keyExtractor={(item) => item.UserId.toString()}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
-							data={peopleList}
+							data={peopleList.slice(0, 4)}
 							renderItem={({ item, index }) => (
 								<People
-									setIsAppReady={setIsAppReady}
 									index={index}
 									person={item}
-									length={peopleList.length}
+									setIsAppReady={setIsAppReady}
+									length={peopleList.slice(0, 4).length}
 									openProfiles={(idx) => {
-										var arr = new Array(...peopleList);
-										const element = arr[idx];
-										arr.splice(idx, 1);
-										arr.splice(0, 0, element);
-										navigation.navigate("ProfileCards", {
-											list: arr,
+										// var arr = new Array(...peopleList);
+										// const element = arr[idx];
+										// arr.splice(idx, 1);
+										// arr.splice(0, 0, element);
+										navigation.replace("ProfileCards", {
+											idx: idx,
+											list: peopleList,
 											myID: myID,
 											sesToken: sesToken,
 										});
@@ -619,12 +623,12 @@ export default function MainPage({ navigation }) {
 				</View>
 				<View
 					name={"EventHeader"}
-					style={[commonStyles.Header, { height: height * 0.05, marginTop: 5 }]}
+					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
 				>
 					<GradientText
 						text={"Etkinlikler"}
 						style={{
-							fontSize: 30,
+							fontSize: height * 0.035,
 							fontFamily: "NowBold",
 							letterSpacing: 1.2,
 							marginLeft: 20,
@@ -652,7 +656,7 @@ export default function MainPage({ navigation }) {
 							)}
 						/>
 					</View>
-					<View name={"Events"} style={{ width: "100%", height: height / 3 }}>
+					<View name={"Events"} style={{ width: "100%", height: height * 0.33 }}>
 						<FlatList
 							ref={eventsRef}
 							horizontal={true}
