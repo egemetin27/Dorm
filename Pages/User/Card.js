@@ -1,14 +1,5 @@
 import React from "react";
-import ReactNative, {
-	View,
-	Text,
-	Image,
-	StyleSheet,
-	Dimensions,
-	Pressable,
-	BackHandler,
-	ActivityIndicator,
-} from "react-native";
+import { View, Text, Image, Dimensions } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -22,23 +13,19 @@ import Animated, {
 	useAnimatedReaction,
 	useAnimatedStyle,
 	useSharedValue,
-	useDerivedValue,
 	withDelay,
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { StatusBar } from "expo-status-bar";
-import { snapPoint, ReText } from "react-native-redash";
+import { snapPoint } from "react-native-redash";
 import { Octicons, Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
-import { AnimatedModal } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
-import { ConsoleLogger } from "@aws-amplify/core";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
