@@ -51,6 +51,14 @@ export default function Register({ navigation }) {
 
 	const handleRegister = async () => {
 		const fullName = name.trim();
+
+		if (fullName.lastIndexOf(" ") == -1) {
+			Alert.alert("Hata!", "Adını ve soyadını yanlış girmiş olabilirsin", [
+				{ text: "Kontrol Edeyim" },
+			]);
+			return;
+		}
+
 		const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
 		const fName = fullName.slice(0, fullName.lastIndexOf(" "));
 

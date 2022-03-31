@@ -65,15 +65,14 @@ function MainScreen({ route, navigation }) {
 		<Tab.Navigator
 			backBehavior="initialRoute"
 			screenOptions={{
-				tabBarStyle: { height: height / 12, paddingBottom: height / 120 },
+				tabBarStyle: { height: height * 0.08, paddingBottom: height * 0.008 },
 				headerShown: false,
 				tabBarShowLabel: false,
 				tabBarHideOnKeyboard: true,
 			}}
 			initialRouteName={"AnaSayfa"}
 		>
-
-<Tab.Screen
+			<Tab.Screen
 				name="Profil"
 				component={Profile}
 				initialParams={{ photoList: pList }}
@@ -185,9 +184,6 @@ function MainScreen({ route, navigation }) {
 					),
 				}}
 			/>
-			
-			
-			
 		</Tab.Navigator>
 	);
 }
@@ -319,17 +315,7 @@ export default function StackNavigator() {
 				<StatusBar style={"auto"} />
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
-						<Stack.Navigator
-							//initialRouteName={
-							//	isLoggedIn
-							//		? tutorialShown
-							//			? "MainScreen"
-							//			: "Tutorial"
-							//		: introShown
-							//		? "WelcomePage"
-							//		: "Onboarding"
-							//}
-						>
+						<Stack.Navigator>
 							{isLoggedIn ? (
 								// Screens for logged in users
 								<Stack.Group

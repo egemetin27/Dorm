@@ -112,18 +112,18 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
-					height: "25%",
+					height: height * 0.08,
 					width: "100%",
 					position: "absolute",
-					bottom: 0,
 					justifyContent: "flex-end",
-					paddingBottom: width * 0.01,
+					paddingBottom: height * 0.005,
+					bottom: 0,
+					paddingHorizontal: width * 0.02,
 				}}
 			>
 				<View
 					style={{
 						flexDirection: "row",
-						paddingHorizontal: 10,
 					}}
 				>
 					<View style={{ flexShrink: 1 }}>
@@ -132,7 +132,8 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 							style={{
 								width: "100%",
 								color: colors.white,
-								fontSize: width * 0.045,
+								fontSize: height * 0.02,
+								lineHeight: height * 0.025,
 								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 1.05,
 							}}
@@ -143,7 +144,8 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 					<Text
 						style={{
 							color: colors.white,
-							fontSize: width * 0.045,
+							fontSize: height * 0.02,
+							lineHeight: height * 0.025,
 							fontFamily: "PoppinsSemiBold",
 							letterSpacing: 1.05,
 						}}
@@ -153,12 +155,13 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 					</Text>
 				</View>
 				<Text
+					numberOfLines={2}
 					style={{
+						paddingTop: height * 0.002,
 						color: colors.white,
-						fontSize: width * 0.035,
-						paddingLeft: 10,
 						fontFamily: "PoppinsItalic",
-						lineHeight: width * 0.04,
+						fontSize: height * 0.015,
+						lineHeight: height * 0.018,
 					}}
 				>
 					{university}
@@ -169,6 +172,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 		</Pressable>
 	);
 };
+
 const Category = ({
 	index,
 	userID,
@@ -284,7 +288,6 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 		<Pressable
 			onPress={() => {
 				setIsAppReady(false);
-
 				openEvents(index);
 			}}
 			style={[
@@ -308,77 +311,76 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
-					height: "25%",
+					height: height * 0.08,
 					width: "100%",
 					position: "absolute",
 					justifyContent: "flex-end",
-					paddingBottom: width * 0.01,
+					paddingBottom: height * 0.005,
 					bottom: 0,
+					paddingHorizontal: width * 0.02,
 				}}
 			>
 				<Text
 					numberOfLines={1}
 					style={{
 						color: colors.white,
-						fontSize: width * 0.045,
-						lineHeight: width * 0.05,
-						paddingLeft: 10,
+						fontSize: height * 0.02,
+						lineHeight: height * 0.025,
 						fontFamily: "PoppinsSemiBold",
 						letterSpacing: 1.05,
 					}}
 				>
 					{Description}
 				</Text>
-				<View name={"info"} style={{ width: "100%" }}>
-					<View
-						name={"date"}
+				<View
+					name={"date"}
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						justifyContent: "space-between",
+						paddingTop: height * 0.002,
+					}}
+				>
+					<Text
 						style={{
-							width: "100%",
-							flexDirection: "row",
-							justifyContent: "space-between",
-							paddingTop: width * 0.01,
+							color: colors.white,
+							fontSize: height * 0.015,
+							lineHeight: height * 0.018,
 						}}
 					>
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: width * 0.035,
-								lineHeight: width * 0.04,
-								paddingLeft: 10,
-							}}
-						>
-							{Date}
-						</Text>
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: width * 0.035,
-								lineHeight: width * 0.04,
-								paddingRight: 10,
-							}}
-						>
-							{StartTime}
-						</Text>
-					</View>
+						{Date}
+					</Text>
+					<Text
+						style={{
+							color: colors.white,
+							fontSize: height * 0.015,
+							lineHeight: height * 0.018,
+						}}
+					>
+						{StartTime}
+					</Text>
 				</View>
 				<View
 					name={"location"}
-					style={{ width: "100%", flexDirection: "row", alignItems: "center" }}
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						alignItems: "flex-end",
+						paddingTop: height * 0.002,
+					}}
 				>
 					<MaterialCommunityIcons
 						name="map-marker-radius"
-						size={15}
+						size={height * 0.018}
 						color={colors.white}
-						style={{ paddingLeft: 10 }}
+						style={{ paddingRight: width * 0.005 }}
 					/>
 					<Text
 						numberOfLines={1}
 						style={{
-							paddingTop: width * 0.01,
 							color: colors.white,
-							fontSize: width * 0.035,
-							lineHeight: width * 0.04,
-							paddingRight: 10,
+							fontSize: height * 0.015,
+							lineHeight: height * 0.018,
 						}}
 					>
 						{Location}
@@ -390,11 +392,6 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 };
 
 export default function MainPage({ navigation }) {
-
-
-	
-
-
 	const [isAppReady, setIsAppReady] = React.useState(false);
 	const [selectedCategory, setSelectedCategory] = React.useState(0);
 	const [eventList, setEventList] = React.useState([]);
@@ -409,18 +406,13 @@ export default function MainPage({ navigation }) {
 	const [minAge, setMinAge] = React.useState(18);
 	const [maxAge, setMaxAge] = React.useState(99);
 	const [filtreCinsiyet, setFiltreCinsiyet] = React.useState(-1);
-	const [filtreEgzersiz, setFiltreEgsersiz ] = React.useState(-1);
-	const [filtreUniversite, setFiltreUniversite ] = React.useState(-1);
-	const [filtreAlkol, setFiltreAlkol ] = React.useState(-1);
-	const [filtreSigara, setFiltreSigara ] = React.useState(-1);
-	const [filtreBurc, setFiltreBurc ] = React.useState(-1);
-	const [filtreDin, setFiltreDin ] = React.useState(-1);
-	const [filtreYemek, setFiltreYemek ] = React.useState(-1);
-
-
-
-
-
+	const [filtreEgzersiz, setFiltreEgsersiz] = React.useState(-1);
+	const [filtreUniversite, setFiltreUniversite] = React.useState(-1);
+	const [filtreAlkol, setFiltreAlkol] = React.useState(-1);
+	const [filtreSigara, setFiltreSigara] = React.useState(-1);
+	const [filtreBurc, setFiltreBurc] = React.useState(-1);
+	const [filtreDin, setFiltreDin] = React.useState(-1);
+	const [filtreYemek, setFiltreYemek] = React.useState(-1);
 
 	async function registerForPushNotificationAsync() {
 		let token;
@@ -568,12 +560,12 @@ export default function MainPage({ navigation }) {
 			<ScrollView style={{ width: width }} showsVerticalScrollIndicator={false}>
 				<View
 					name={"PeopleHeader"}
-					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.02 }]}
+					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
 				>
 					<GradientText
 						text={"Kişiler"}
 						style={{
-							fontSize: 30,
+							fontSize: height * 0.035,
 							fontFamily: "NowBold",
 							letterSpacing: 1.2,
 							marginLeft: 20,
@@ -596,7 +588,7 @@ export default function MainPage({ navigation }) {
 				<View
 					name={"People"}
 					style={{
-						height: height / 3,
+						height: height * 0.33,
 						width: "100%",
 						justifyContent: "center",
 					}}
@@ -606,20 +598,22 @@ export default function MainPage({ navigation }) {
 							keyExtractor={(item) => item.UserId.toString()}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
-							data={peopleList}
+							data={peopleList.slice(0, 4)}
 							renderItem={({ item, index }) => (
 								<People
 									setIsAppReady={setIsAppReady}
 									index={index}
 									person={item}
-									length={peopleList.length}
+									setIsAppReady={setIsAppReady}
+									length={peopleList.slice(0, 4).length}
 									openProfiles={(idx) => {
-										var arr = new Array(...peopleList);
-										const element = arr[idx];
-										arr.splice(idx, 1);
-										arr.splice(0, 0, element);
-										navigation.navigate("ProfileCards", {
-											list: arr,
+										// var arr = new Array(...peopleList);
+										// const element = arr[idx];
+										// arr.splice(idx, 1);
+										// arr.splice(0, 0, element);
+										navigation.replace("ProfileCards", {
+											idx: idx,
+											list: peopleList,
 											myID: myID,
 											sesToken: sesToken,
 										});
@@ -642,12 +636,12 @@ export default function MainPage({ navigation }) {
 				</View>
 				<View
 					name={"EventHeader"}
-					style={[commonStyles.Header, { height: height * 0.05, marginTop: 5 }]}
+					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
 				>
 					<GradientText
 						text={"Etkinlikler"}
 						style={{
-							fontSize: 30,
+							fontSize: height * 0.035,
 							fontFamily: "NowBold",
 							letterSpacing: 1.2,
 							marginLeft: 20,
@@ -675,7 +669,7 @@ export default function MainPage({ navigation }) {
 							)}
 						/>
 					</View>
-					<View name={"Events"} style={{ width: "100%", height: height / 3 }}>
+					<View name={"Events"} style={{ width: "100%", height: height * 0.33 }}>
 						<FlatList
 							ref={eventsRef}
 							horizontal={true}
@@ -712,7 +706,7 @@ export default function MainPage({ navigation }) {
 				<View
 					style={{
 						maxHeight: height * 0.9,
-                        maxWidth: width* 0.84,
+						maxWidth: width * 0.84,
 						backgroundColor: colors.white,
 						borderRadius: 10,
 						alignItems: "center",
@@ -723,109 +717,91 @@ export default function MainPage({ navigation }) {
 						style={{
 							width: "100%",
 							marginTop: 20,
-							maxHeight: height* 0.75,
+							maxHeight: height * 0.75,
 						}}
 					>
-                        <View
-                            style = {{
-                                flexDirection: "row",
-                                width: "100%",
-                                alignItems: "flex-start",
+						<View
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "flex-start",
 								justifyContent: "space-around",
-                            }}
-                        >
+							}}
+						>
 							<View>
-								<GradientText 
+								<GradientText
 									text={"Filtreme"}
 									style={{
 										fontSize: 22,
 										fontFamily: "NowBold",
 										letterSpacing: 1.2,
-										marginLeft:5,
+										marginLeft: 5,
 									}}
 								/>
-								<Text style={{color: colors.gray}}>
-									5 Filtre kullanma hakkın var
-								</Text>
-
+								<Text style={{ color: colors.gray }}>5 Filtre kullanma hakkın var</Text>
 							</View>
 							<TouchableOpacity
-								onPress={() => {setFiltreModal(false);}}
+								onPress={() => {
+									setFiltreModal(false);
+								}}
 							>
-								<Entypo name = "cross" size = {24} color = "black" />
+								<Entypo name="cross" size={24} color="black" />
 							</TouchableOpacity>
-                        </View>
-						<View style={{
-							borderBottomColor: "black",
-							borderBottomWidth: 1,
-							marginTop: 5,
-							marginBottom: 10,
-						}}/>
-						<ScrollView
-							horizontal = {false}
-							style = {{marginHorizontal: 10}}
-						>
-							<GradientText 
-								text={"Yaş"}
-								style={styles.filtreCategory}
-							/>
-							<View style={{
-								paddingTop: 10,
-								justifyContent: "space-evenly",
-								alignContent: "center",
-								flexDirection: "row",
+						</View>
+						<View
+							style={{
+								borderBottomColor: "black",
+								borderBottomWidth: 1,
+								marginTop: 5,
 								marginBottom: 10,
-
-							}}>
-								<Text>
-									Min:
-								</Text>
-								<TextInput
-          							style={{width: width * 0.2,}}
-									onChangeText={setMinAge}
-									textAlign = {"center"}
-          							placeholder="18"
-          							placeholderTextColor="#60605e"
-          							numeric
-          							keyboardType={'numeric'}
-        						/>
-								<Text>
-									Max:
-								</Text>
-								<TextInput
-          							style={{width: width * 0.2}}
-									onChangeText={setMaxAge}
-									textAlign = {"center"}
-          							placeholder="99"
-          							placeholderTextColor="#60605e"
-          							numeric
-          							keyboardType={'numeric'}
-        						/>
-								
-							</View>
-							
-							<GradientText 
-								text={"Cinsiyet"}
-								style={styles.filtreCategory}
-							/>
-							<ScrollView
-								horizontal = {true}
+							}}
+						/>
+						<ScrollView horizontal={false} style={{ marginHorizontal: 10 }}>
+							<GradientText text={"Yaş"} style={styles.filtreCategory} />
+							<View
+								style={{
+									paddingTop: 10,
+									justifyContent: "space-evenly",
+									alignContent: "center",
+									flexDirection: "row",
+									marginBottom: 10,
+								}}
 							>
+								<Text>Min:</Text>
+								<TextInput
+									style={{ width: width * 0.2 }}
+									onChangeText={setMinAge}
+									textAlign={"center"}
+									placeholder="18"
+									placeholderTextColor="#60605e"
+									numeric
+									keyboardType={"numeric"}
+								/>
+								<Text>Max:</Text>
+								<TextInput
+									style={{ width: width * 0.2 }}
+									onChangeText={setMaxAge}
+									textAlign={"center"}
+									placeholder="99"
+									placeholderTextColor="#60605e"
+									numeric
+									keyboardType={"numeric"}
+								/>
+							</View>
+
+							<GradientText text={"Cinsiyet"} style={styles.filtreCategory} />
+							<ScrollView horizontal={true}>
 								<Pressable
-									onPress={()=> {
-										filtreCinsiyet == 0 ? (
-											setFiltreCinsiyet(-1)
-										):(
-											setFiltreCinsiyet(0)
-										)
+									onPress={() => {
+										filtreCinsiyet == 0 ? setFiltreCinsiyet(-1) : setFiltreCinsiyet(0);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -839,14 +815,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Kadın
-											</Text>
-
+											<Text style={{ color: colors.black }}>Kadın</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -856,31 +827,21 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Kadın
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Kadın</Text>
 										</Gradient>
-
 									)}
-
 								</Pressable>
 								<Pressable
-									onPress={()=> {
-										filtreCinsiyet == 1 ? (
-											setFiltreCinsiyet(-1)
-										):(
-											setFiltreCinsiyet(1)
-										)
+									onPress={() => {
+										filtreCinsiyet == 1 ? setFiltreCinsiyet(-1) : setFiltreCinsiyet(1);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -894,14 +855,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Erkek
-											</Text>
-
+											<Text style={{ color: colors.black }}>Erkek</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -911,32 +867,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Erkek
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Erkek</Text>
 										</Gradient>
-
 									)}
-
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										filtreCinsiyet == 2 ? (
-											setFiltreCinsiyet(-1)
-										):(
-											setFiltreCinsiyet(2)
-										)
+									onPress={() => {
+										filtreCinsiyet == 2 ? setFiltreCinsiyet(-1) : setFiltreCinsiyet(2);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -950,14 +896,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Non-Binary
-											</Text>
-
+											<Text style={{ color: colors.black }}>Non-Binary</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -967,28 +908,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Non-Binary
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Non-Binary</Text>
 										</Gradient>
-
 									)}
-
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										setFiltreCinsiyet(-1)
+									onPress={() => {
+										setFiltreCinsiyet(-1);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1002,14 +937,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Hepsi
-											</Text>
-
+											<Text style={{ color: colors.black }}>Hepsi</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1019,39 +949,25 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Hepsi
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Hepsi</Text>
 										</Gradient>
-
 									)}
 								</Pressable>
-							</ScrollView>			
-							<GradientText 
-								text={"Egzersiz"}
-								style={styles.filtreCategory}
-							/>
+							</ScrollView>
+							<GradientText text={"Egzersiz"} style={styles.filtreCategory} />
 
-							<ScrollView
-								horizontal = {true}
-							>
+							<ScrollView horizontal={true}>
 								<Pressable
-									onPress={()=> {
-										filtreEgzersiz == 0 ? (
-											setFiltreEgsersiz(-1)
-										):(
-											setFiltreEgsersiz(0)
-										)
+									onPress={() => {
+										filtreEgzersiz == 0 ? setFiltreEgsersiz(-1) : setFiltreEgsersiz(0);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1065,14 +981,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Aktif
-											</Text>
-
+											<Text style={{ color: colors.black }}>Aktif</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1082,31 +993,21 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Aktif
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Aktif</Text>
 										</Gradient>
-
 									)}
-
 								</Pressable>
 								<Pressable
-									onPress={()=> {
-										filtreEgzersiz == 1 ? (
-											setFiltreEgsersiz(-1)
-										):(
-											setFiltreEgsersiz(1)
-										)
+									onPress={() => {
+										filtreEgzersiz == 1 ? setFiltreEgsersiz(-1) : setFiltreEgsersiz(1);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1120,14 +1021,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Bazen
-											</Text>
-
+											<Text style={{ color: colors.black }}>Bazen</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1137,32 +1033,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Bazen
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Bazen</Text>
 										</Gradient>
-
 									)}
-
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										filtreEgzersiz == 2 ? (
-											setFiltreEgsersiz(-1)
-										):(
-											setFiltreEgsersiz(2)
-										)
+									onPress={() => {
+										filtreEgzersiz == 2 ? setFiltreEgsersiz(-1) : setFiltreEgsersiz(2);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1176,14 +1062,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Hiç
-											</Text>
-
+											<Text style={{ color: colors.black }}>Hiç</Text>
 										</View>
-										
-
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1193,46 +1074,27 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Hiç
-											</Text>
-
-
+											<Text style={{ color: colors.white }}>Hiç</Text>
 										</Gradient>
-
 									)}
-
 								</Pressable>
 							</ScrollView>
 
+							<GradientText text={"Üniversite"} style={styles.filtreCategory} />
+							<GradientText text={"Alkol Kullanımı"} style={styles.filtreCategory} />
 
-							<GradientText 
-								text={"Üniversite"}
-								style={styles.filtreCategory}
-							/>
-							<GradientText 
-								text={"Alkol Kullanımı"}
-								style={styles.filtreCategory}
-							/>
-
-							<ScrollView
-								horizontal = {true}
-							>
+							<ScrollView horizontal={true}>
 								<Pressable
-									onPress={()=> {
-										filtreAlkol == 0 ? (
-											setFiltreAlkol(-1)
-										):(
-											setFiltreAlkol(0)
-										)
+									onPress={() => {
+										filtreAlkol == 0 ? setFiltreAlkol(-1) : setFiltreAlkol(0);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1246,11 +1108,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Sıklıkla
-											</Text>
+											<Text style={{ color: colors.black }}>Sıklıkla</Text>
 										</View>
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1260,28 +1120,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Sıklıkla
-											</Text>
+											<Text style={{ color: colors.white }}>Sıklıkla</Text>
 										</Gradient>
 									)}
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										filtreAlkol == 1 ? (
-											setFiltreAlkol(-1)
-										):(
-											setFiltreAlkol(1)
-										)
+									onPress={() => {
+										filtreAlkol == 1 ? setFiltreAlkol(-1) : setFiltreAlkol(1);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1295,11 +1149,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Sosyal Olarak
-											</Text>
+											<Text style={{ color: colors.black }}>Sosyal Olarak</Text>
 										</View>
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1309,28 +1161,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Sosyal Olarak
-											</Text>
+											<Text style={{ color: colors.white }}>Sosyal Olarak</Text>
 										</Gradient>
 									)}
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										filtreAlkol == 2 ? (
-											setFiltreAlkol(-1)
-										):(
-											setFiltreAlkol(2)
-										)
+									onPress={() => {
+										filtreAlkol == 2 ? setFiltreAlkol(-1) : setFiltreAlkol(2);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1344,11 +1190,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Hiç
-											</Text>
+											<Text style={{ color: colors.black }}>Hiç</Text>
 										</View>
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1358,37 +1202,25 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Hiç
-											</Text>
+											<Text style={{ color: colors.white }}>Hiç</Text>
 										</Gradient>
 									)}
 								</Pressable>
-								
 							</ScrollView>
 
-							<GradientText 
-								text={"Sigara"}
-								style={styles.filtreCategory}
-							/>
-							<ScrollView
-								horizontal = {true}
-							>
+							<GradientText text={"Sigara"} style={styles.filtreCategory} />
+							<ScrollView horizontal={true}>
 								<Pressable
-									onPress={()=> {
-										filtreSigara == 0 ? (
-											setFiltreSigara(-1)
-										):(
-											setFiltreSigara(0)
-										)
+									onPress={() => {
+										filtreSigara == 0 ? setFiltreSigara(-1) : setFiltreSigara(0);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1402,11 +1234,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Sıklıkla
-											</Text>
+											<Text style={{ color: colors.black }}>Sıklıkla</Text>
 										</View>
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1416,28 +1246,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Sıklıkla
-											</Text>
+											<Text style={{ color: colors.white }}>Sıklıkla</Text>
 										</Gradient>
 									)}
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										filtreSigara == 1 ? (
-											setFiltreSigara(-1)
-										):(
-											setFiltreSigara(1)
-										)
+									onPress={() => {
+										filtreSigara == 1 ? setFiltreSigara(-1) : setFiltreSigara(1);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1451,11 +1275,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Sosyal Olarak
-											</Text>
+											<Text style={{ color: colors.black }}>Sosyal Olarak</Text>
 										</View>
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1465,28 +1287,22 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Sosyal Olarak
-											</Text>
+											<Text style={{ color: colors.white }}>Sosyal Olarak</Text>
 										</Gradient>
 									)}
 								</Pressable>
 
 								<Pressable
-									onPress={()=> {
-										filtreSigara == 2 ? (
-											setFiltreSigara(-1)
-										):(
-											setFiltreSigara(2)
-										)
+									onPress={() => {
+										filtreSigara == 2 ? setFiltreSigara(-1) : setFiltreSigara(2);
 									}}
 									style={{
 										backgroundColor: colors.white,
 										alignSelf: "flex-start",
 										marginLeft: 20,
-										minWidth: width/4,
-										height: width/8,
-										borderRadius: width/16,
+										minWidth: width / 4,
+										height: width / 8,
+										borderRadius: width / 16,
 										overflow: "hidden",
 									}}
 								>
@@ -1500,11 +1316,9 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style = {{color: colors.black}}>
-												Hiç
-											</Text>
+											<Text style={{ color: colors.black }}>Hiç</Text>
 										</View>
-									): (
+									) : (
 										<Gradient
 											style={{
 												paddingHorizontalHorizontal: 10,
@@ -1514,37 +1328,18 @@ export default function MainPage({ navigation }) {
 												alignItems: "center",
 											}}
 										>
-											<Text style={{color: colors.white}}>
-												Hiç
-											</Text>
+											<Text style={{ color: colors.white }}>Hiç</Text>
 										</Gradient>
 									)}
 								</Pressable>
-								
 							</ScrollView>
 
-							<GradientText 
-								text={"Burç"}
-								style={styles.filtreCategory}
-							/>
-							<GradientText 
-								text={"Din"}
-								style={styles.filtreCategory}
-							/>
-							<GradientText 
-								text={"Yeme Biçimi"}
-								style={styles.filtreCategory}
-							/>
-							<GradientText 
-								text={"İlgi Alanları"}
-								style={styles.filtreCategory}
-							/>
-
-							
+							<GradientText text={"Burç"} style={styles.filtreCategory} />
+							<GradientText text={"Din"} style={styles.filtreCategory} />
+							<GradientText text={"Yeme Biçimi"} style={styles.filtreCategory} />
+							<GradientText text={"İlgi Alanları"} style={styles.filtreCategory} />
 						</ScrollView>
-						<View style={{height:15}}>
-							
-						</View>
+						<View style={{ height: 15 }}></View>
 					</View>
 					<TouchableOpacity
 						onPress={() => {
@@ -1571,7 +1366,7 @@ export default function MainPage({ navigation }) {
 								Filtrele
 							</Text>
 						</Gradient>
-					</TouchableOpacity>		
+					</TouchableOpacity>
 				</View>
 			</CustomModal>
 		</View>

@@ -11,7 +11,7 @@ export const getAge = (date) => {
 };
 
 export const getChoice = (str, arr) => {
-	if (str == "null" || str == "") return { key: 0, choice: "" };
+	if (str == "null" || str == "" || str == "undefined") return { key: 0, choice: "" };
 
 	const idx = arr.findIndex((item) => {
 		return item.choice == str;
