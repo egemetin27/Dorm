@@ -5,6 +5,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { API, graphqlOperation } from 'aws-amplify';
 import {createSentMsg, updateSentMsg, updateUserChat} from "../../src/graphql/mutations";
 import * as SecureStore from "expo-secure-store";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
+
 
 const InputBox = (props) => {
     const [message, setMessage] = React.useState("");
@@ -105,10 +108,31 @@ const InputBox = (props) => {
                     
                     
                 }}
-                style= {{backgroundColor: "blue", borderRadius: 45, width: 45, height: 45, justifyContent: "center", alignItems: "center"}}
+                style= {{ borderRadius: 45, width: 45, height: 45, justifyContent: "center", alignItems: "center"}}
             >
                
-                <Ionicons name = "send" size = {22} color = "white"/>
+                <MaskedView
+                    style={{ flex: 1, flexDirection: 'row', height: 30 }}
+                    maskElement={
+                        <View
+                        style={{
+                            backgroundColor: 'transparent',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <Ionicons
+                            name="send"
+                            size={30}
+                            color="white"
+                            style={styles.shadow}
+                            />
+                        </View>
+                    }>
+                    <LinearGradient
+                        colors={["#4136F1", "#8743FF"]}
+                        style={{ flex: 1 }}
+                    />
+                </MaskedView>
             </TouchableOpacity>
         </View>
     )
