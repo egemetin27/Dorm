@@ -151,6 +151,11 @@ export default function Chat({ navigation, route }) {
 		}
 	}, []);
 
+	const openProfile= async () => {
+		alert("Bu özellik ilerleyen güncellemelerde gelecektir.");
+
+	};
+
 	return (
 		<View style={styles.inner}>
 			<View name={"Header"} style={[styles.header]}>
@@ -178,11 +183,15 @@ export default function Chat({ navigation, route }) {
 						justifyContent: "space-between",
 					}}
 				>
-					<GradientText
-						text={otherUser.name}
-						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", paddingLeft: 0 }}
-					/>
-					<Text style={{ fontSize: 10, marginBottom: 10 }}>{"-"}</Text>
+					<TouchableOpacity
+						onPress={openProfile}
+					>
+						<GradientText
+							text={otherUser.name}
+							style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", paddingLeft: 0 }}
+						/>
+						<Text style={{ fontSize: 10, marginBottom: 10 }}>{"-"}</Text>
+					</TouchableOpacity>
 				</View>
 				<TouchableOpacity style={{ paddingBottom: 8 }} name={"reportButton"} onPress={() => {}}>
 					<Octicons name="report" size={32} color="#4A4A4A" />
