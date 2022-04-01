@@ -34,7 +34,7 @@ import { url } from "../../connection";
 
 import { API, graphqlOperation, Auth } from "aws-amplify";
 
-import { listUserChats, getMsgUser } from "../../src/graphql/queries";
+import { listUserChats, getMsgUser, chatByDate } from "../../src/graphql/queries";
 import {
 	onCreateUserChat,
 	onDeleteUserChat,
@@ -45,11 +45,13 @@ export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const deleteItem = (index) => {};
 	const [imgUri, setImgUri] = React.useState();
-	const openChat = async (userInfo, myUserID, chatID) => {
+
+	const openChat = async (userInfo, myUserID, chatID, imgUrl) => {
 		navigation.navigate("Chat", {
 			otherUser: userInfo,
 			myUserID: myUserID,
 			chatID: chatID,
+			imageUri: imgUrl,
 		});
 	}; 
 
@@ -67,15 +69,18 @@ export default function Messages({ route, navigation }) {
 
 			const userID = data.UserId.toString();
 
+
 			const msgBoxData = await API.graphql(
-				graphqlOperation(listUserChats, {
+				graphqlOperation(chatByDate, {
+					status: "Active",
+					sortDirection: "DESC",
 					filter: {
 						or: [{ userChatFirstUserId: { eq: userID } }, { userChatSecondUserId: { eq: userID } }],
 					},
 				})
 			);
-			//console.log(msgBoxData.data.listUserChats.items);
-			await setChatRooms(msgBoxData.data.listUserChats.items);
+			//console.log(msgBoxData.data.chatByDate.items);
+			await setChatRooms(msgBoxData.data.chatByDate.items);
 			//console.log(chatRooms);
 		} catch (error) {
 			console.log(error);
@@ -92,9 +97,12 @@ export default function Messages({ route, navigation }) {
 			const userName = data.Name;
 			const fetchUser = async () => {
 				const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
+				
 
 				const msgBoxData = await API.graphql(
-					graphqlOperation(listUserChats, {
+					graphqlOperation(chatByDate, {
+						status: "Active",
+						sortDirection: "DESC",
 						filter: {
 							or: [
 								{ userChatFirstUserId: { eq: userID } },
@@ -103,8 +111,8 @@ export default function Messages({ route, navigation }) {
 						},
 					})
 				);
-
-				await setChatRooms(msgBoxData.data.listUserChats.items);
+				//console.log(msgBoxData.data.chatByDate.items)
+				await setChatRooms(msgBoxData.data.chatByDate.items);
 				await setmyUserID(userID);
 				//console.log(chatRooms);
 			};

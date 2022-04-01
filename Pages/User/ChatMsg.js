@@ -23,42 +23,48 @@ const ChatMsg = (props) => {
 	return (
 		<View style={styles.container}>
 			{isMyMessage() ? (
-				<LinearGradient
-					colors={["#4136F1", "#8743FF"]}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 1, y: 1 }}
-					locations={[0, 1]}
-					style={{
-						borderRadius: 5,
-						borderBottomStartRadius: 0,
-						padding: 10,
-						marginLeft: 50,
-						marginRight: 0,
-						overflow: "hidden",
-					}}
-				>
-					<Text style={{ color: "white" }}>{props.data.text}</Text>
-					<Text style={{ alignSelf: "flex-end", color: "white" }}>
+				<View>
+					<LinearGradient
+						colors={["#4136F1", "#8743FF"]}
+						start={{ x: 0, y: 0 }}
+						end={{ x: 1, y: 1 }}
+						locations={[0, 1]}
+						style={{
+							borderRadius: 20,
+							borderBottomStartRadius: 0,
+							padding: 10,
+							marginLeft: 50,
+							marginRight: 0,
+							overflow: "hidden",
+						}}
+					>
+						<Text style={{ color: "white" }}>{props.data.text}</Text>
+						
+					</LinearGradient>
+					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 10 }}>
 						{moment(props.data.updatedAt).fromNow()}
 					</Text>
-				</LinearGradient>
+				</View>
 			) : (
-				<View
-					style={[
-						styles.messageBox,
-						{
-							marginLeft: 0,
-							marginRight: 50,
-							borderTopLeftRadius: 20,
-							borderTopRightRadius: 20,
-							borderBottomLeftRadius: 0,
-							borderBottomRightRadius: 20,
-						},
-					]}
-				>
-					<Text style={styles.name}>{props.data.sender.name}</Text>
-					<Text style={styles.message}>{props.data.text}</Text>
+				<View>
+					<View
+						style={[
+							styles.messageBox,
+							{
+								marginLeft: 0,
+								marginRight: 50,
+								borderTopLeftRadius: 20,
+								borderTopRightRadius: 20,
+								borderBottomLeftRadius: 0,
+								borderBottomRightRadius: 20,
+							},
+						]}
+					>
+						<Text style={styles.name}>{props.data.sender.name}</Text>
+						<Text style={styles.message}>{props.data.text}</Text>
+					</View>
 					<Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
+
 				</View>
 			)}
 		</View>
@@ -82,7 +88,8 @@ const styles = StyleSheet.create({
 	},
 	message: {},
 	time: {
-		alignSelf: "flex-end",
+		fontSize: 10,
+		alignSelf: "flex-start",
 		color: "grey",
 	},
 });

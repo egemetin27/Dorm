@@ -135,7 +135,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 								fontSize: height * 0.02,
 								lineHeight: height * 0.025,
 								fontFamily: "PoppinsSemiBold",
-								letterSpacing: 1.05,
+								//letterSpacing: 1.05,
 							}}
 						>
 							{name}
@@ -147,7 +147,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 							fontSize: height * 0.02,
 							lineHeight: height * 0.025,
 							fontFamily: "PoppinsSemiBold",
-							letterSpacing: 1.05,
+							//letterSpacing: 1.05,
 						}}
 					>
 						{" "}
@@ -327,7 +327,7 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 						fontSize: height * 0.02,
 						lineHeight: height * 0.025,
 						fontFamily: "PoppinsSemiBold",
-						letterSpacing: 1.05,
+						//letterSpacing: 1.05,
 					}}
 				>
 					{Description}
@@ -604,7 +604,6 @@ export default function MainPage({ navigation }) {
 									setIsAppReady={setIsAppReady}
 									index={index}
 									person={item}
-									setIsAppReady={setIsAppReady}
 									length={peopleList.slice(0, 4).length}
 									openProfiles={(idx) => {
 										// var arr = new Array(...peopleList);

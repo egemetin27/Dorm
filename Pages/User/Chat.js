@@ -40,9 +40,7 @@ import { decompose2d } from "react-native-redash";
 
 export default function Chat({ navigation, route }) {
 	const [chatMessages, setChatMessages] = useState([]);
-	const [imageUri, setImageUri] = useState(
-		"https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg"
-	);
+	const [imageUri, setImageUri] = useState();
 
 	const { otherUser, myUserID, chatID } = route.params;
 	
@@ -133,9 +131,11 @@ export default function Chat({ navigation, route }) {
 		console.log(otherUser);
 		console.log("+++++++++++++++++++++++++++");
 		*/
+		await fetchImageUri();
+
 		fetchNewMessages();
 		fetchMsg();
-		fetchImageUri();
+		console.log(route.params);
 	}, []);
 
 	React.useEffect(async () => {
