@@ -52,6 +52,7 @@ export default function Chat({ navigation, route }) {
 				graphqlOperation(msgByDate, {
 					status: "Active",
 					sortDirection: "DESC",
+					limit: 1000,
 					filter: {
 						userChatMessagesId: { eq: chatID },
 					},
