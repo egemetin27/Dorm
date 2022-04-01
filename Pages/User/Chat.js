@@ -44,18 +44,7 @@ export default function Chat({ navigation, route }) {
 
 	const { otherUser, myUserID, chatID } = route.params;
 	
-	const fetchMsg = async () => {
-		try {
-			const chatMsgData = await API.graphql(
-				graphqlOperation(msgByDate, {
-					status: "Active",
-					sortDirection: "DESC",
-				})
-			);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+
 
 	const fetchNewMessages = async () => {
 		try {
@@ -112,8 +101,8 @@ export default function Chat({ navigation, route }) {
 				)
 				.then((res) => {
 					//setPeopleList(res.data);
-					console.log(res.data);
-					console.log(res.data[0].PhotoLink);
+					//console.log(res.data);
+					//console.log(res.data[0].PhotoLink);
 					setImageUri(res.data[0].PhotoLink);
 					
 				})
@@ -134,8 +123,7 @@ export default function Chat({ navigation, route }) {
 		await fetchImageUri();
 
 		fetchNewMessages();
-		fetchMsg();
-		console.log(route.params);
+		//console.log(route.params);
 	}, []);
 
 	React.useEffect(async () => {
@@ -209,15 +197,6 @@ export default function Chat({ navigation, route }) {
 				data={chatMessages}
 				renderItem={({ item, index }) => {
 					return <ChatMsg data={item} myUserID={myUserID} />;
-
-					/*
-					if (item.mode == 0 && item.lastMsg == null && item.firstUser.id == myUserID) {
-						return <NewMatchBox data= {item.secondUser} openChat = {() => openChat(item.secondUser, myUserID, item.id)} userID = {myUserID}/>;
-					}
-					if (item.mode == 0 && item.lastMsg == null && item.secondUser.id == myUserID) {
-						return <NewMatchBox data= {item.firstUser} openChat = {() => openChat(item.firstUser, myUserID, item.id)} userID = {myUserID}/>;
-					}
-					*/
 				}}
 				inverted
 			/>

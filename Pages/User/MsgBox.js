@@ -14,11 +14,17 @@ import moment from "moment";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { url } from "../../connection";
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import {  Gradient, GradientText } from "../../visualComponents/colors";
+
+import { updateUserChat } from '../../src/graphql/mutations';
+import { CustomModal } from '../../visualComponents/customComponents';
 
 const { height, width } = Dimensions.get("window");
 
 const MsgBox = (props) => {
-  const [imageUri, setImageUri] = React.useState();
+  const [deleteChatModal, setDeleteChatModal] = React.useState(false);
+  const [imageUri, setImageUri] = React.useState("http://graph.facebook.com/{user-id}/picture?type=large");
   const [myID, setMyID] = React.useState();
 
   const fetchImageUri = async () => {
@@ -57,6 +63,21 @@ const MsgBox = (props) => {
 		await fetchImageUri();
 	}, []);
 
+
+  const deleteChat =() => {
+    console.log(props.chatID);
+    try {
+      API.graphql(
+        graphqlOperation(updateUserChat, {
+          input: { id: props.chatID, status: "Deactive"},
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
   const rightSwipe = (progress, dragX) => {
 
     const scale = dragX.interpolate({
@@ -67,13 +88,14 @@ const MsgBox = (props) => {
     
     return (
         <View style = {{flexDirection: "row", borderRadius: 10, backgroundColor: "#F4F3F3"}}>
-            <TouchableOpacity onPress={props.handleDelete} activeOpacity = {0.6}>
-                <View style={styles.deleteBox}>
-                    <Animated.Image style={{transform: [{scale: scale}]}} source = {require("../../assets/Union.png")}>
-                    </Animated.Image>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={props.handleDelete} activeOpacity = {0.6}>
+            <TouchableOpacity 
+              onPress={ () =>{
+                setDeleteChatModal(true);
+                console.log(deleteChatModal);
+                console.log(props.data.id);
+              }} 
+              activeOpacity = {0.6}
+            >
                 <View style={styles.deleteBox}>
                 <Animated.Image style={{transform: [{scale: scale}]}} source = {require("../../assets/trashCan.png")}>
                     </Animated.Image>
@@ -126,9 +148,111 @@ const MsgBox = (props) => {
                       }
                     </Text>
                 </View>
-               
-                
             </TouchableOpacity>
+
+
+            <CustomModal
+				      visible={deleteChatModal}
+				      dismiss={() => {
+					      setDeleteChatModal(false);
+				      }}
+			      >
+				      <View
+					      style={{
+                  maxWidth: width* 0.84,
+						      backgroundColor: colors.white,
+						      borderRadius: 10,
+						      alignItems: "center",
+						      paddingHorizontal: 36,
+					      }}
+				      >
+					      <TouchableOpacity
+						      onPress={() => {
+							      setDeleteChatModal(false);
+						      }}
+						      style={{
+							      position: "absolute",
+							      alignSelf: "flex-end",
+							      padding: 16,
+						      }}
+					      >
+						      <Text style = {{fontSize: 22, color: colors.medium_gray}}>İptal</Text>
+					      </TouchableOpacity>
+					      <View
+						      style={{
+							      width: "100%",
+							      marginTop: 20,
+						      }}
+					      >
+						      <View
+							      style={{
+								      flexDirection: "row",
+								      width: "100%",
+								      alignContent: "center",
+                      justifyContent: "center",
+								      marginVertical: 10,
+							      }}
+						      >
+                    <Image source={require("../../assets/biggerTrashCan.png")} />	
+						      </View>
+                  <View
+                    style = {{
+                      flexDirection: "row",
+                      width: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginVertical: 10,
+                    }}
+                  >
+                    <Text style = {{ color: colors.black, fontSize: 26, lineHeight: 36,fontFamily: "PoppinsSemiBold", fontWeight: "800"}}>
+                      Emin misin ?
+
+                    </Text>
+
+                  </View>
+						      <View
+                    style = {{
+                      flexDirection: "row",
+                      width: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginVertical: 10,
+                    }}
+                  >
+                    <Text style = {{ color: colors.dark_gray, fontSize: 13, fontFamily: "Poppins", fontWeight: "400", textAlign: "center"}}>
+                      Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.
+
+                    </Text>
+
+                </View>
+					    </View>
+              <TouchableOpacity
+					      onPress={deleteChat}
+					      style={{
+						      maxWidth: "90%",
+					      	height: "15%",
+						      maxHeight: 60,
+						      aspectRatio: 9 / 2,
+						      borderRadius: 12,
+						      overflow: "hidden",
+						      marginTop: 20,
+					      }}
+			      	>
+					      <Gradient
+						      style={{
+							      justifyContent: "center",
+							      alignItems: "center",
+							      width: "100%",
+							      height: "100%",
+						      }}
+					      >
+						      <Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+							      Eşleşmeyi Kaldır
+						      </Text>
+					      </Gradient>
+				      </TouchableOpacity>
+    		    </View>
+			    </CustomModal>
         </View>
     </Swipeable>
   );
@@ -147,6 +271,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   deleteBox: {
+    marginTop:5,
+    marginBottom:10,
+    borderRadius: 10,
     backgroundColor: colors.light_gray,
     justifyContent: 'center',
     alignItems: 'center',

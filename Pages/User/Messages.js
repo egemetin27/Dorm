@@ -43,7 +43,6 @@ import {
 
 export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
-	const deleteItem = (index) => {};
 	const [imgUri, setImgUri] = React.useState();
 
 	const openChat = async (userInfo, myUserID, chatID, imgUrl) => {
@@ -293,7 +292,7 @@ export default function Messages({ route, navigation }) {
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 0 && item.lastMsg == null && item.firstUser.id == myUserID) {
+									if (item.mod == 0 && item.lastMsg == null && item.firstUser.id == myUserID && item.status == "Active") {
 
 										return (
 											<NewMatchBox
@@ -303,7 +302,7 @@ export default function Messages({ route, navigation }) {
 											/>
 										);
 									}
-									if (item.mod == 0 && item.lastMsg == null && item.secondUser.id == myUserID) {
+									if (item.mod == 0 && item.lastMsg == null && item.secondUser.id == myUserID && item.status == "Active") {
 
 										return (
 											<NewMatchBox
@@ -325,27 +324,29 @@ export default function Messages({ route, navigation }) {
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 0 && item.lastMsg != null && item.firstUser.id == myUserID) {
+									if (item.mod == 0 && item.lastMsg != null && item.firstUser.id == myUserID && item.status == "Active") {
 										return (
 											<MsgBox
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.secondUser, myUserID, item.id)}
 												userID={myUserID}
+												chatID={item.id}
+
 											/>
 										);
 									}
-									if (item.mod == 0 && item.lastMsg != null && item.secondUser.id == myUserID) {
+									if (item.mod == 0 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
 										return (
 											<MsgBox
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.firstUser, myUserID, item.id)}
 												userID={myUserID}
+												chatID={item}
+
 											/>
 										);
 									}
@@ -362,7 +363,7 @@ export default function Messages({ route, navigation }) {
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 1 && item.lastMsg == null && item.firstUser.id == myUserID) {
+									if (item.mod == 1 && item.lastMsg == null && item.firstUser.id == myUserID && item.status == "Active") {
 
 										return (
 											<NewMatchBox
@@ -372,7 +373,7 @@ export default function Messages({ route, navigation }) {
 											/>
 										);
 									}
-									if (item.mod == 1 && item.lastMsg == null && item.secondUser.id == myUserID) {
+									if (item.mod == 1 && item.lastMsg == null && item.secondUser.id == myUserID && item.status == "Active") {
 
 										return (
 											<NewMatchBox
@@ -394,29 +395,29 @@ export default function Messages({ route, navigation }) {
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 1 && item.lastMsg != null && item.firstUser.id == myUserID) {
-
+									if (item.mod == 1 && item.lastMsg != null && item.firstUser.id == myUserID && item.status == "Active") {
 										return (
 											<MsgBox
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.secondUser, myUserID, item.id)}
 												userID={myUserID}
+												chatID={item}
 											/>
 										);
 									}
-									if (item.mod == 1 && item.lastMsg != null && item.secondUser.id == myUserID) {
+									if (item.mod == 1 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
 
 										return (
 											<MsgBox
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												handleDelete={() => deleteItem(index)}
 												openChat={() => openChat(item.firstUser, myUserID, item.id)}
 												userID={myUserID}
+												chatID={item}
+
 											/>
 										);
 									}
