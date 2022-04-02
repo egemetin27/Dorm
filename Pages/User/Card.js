@@ -29,6 +29,8 @@ import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
+import { API, graphqlOperation } from 'aws-amplify';
+import {getMsgUser} from "../../src/graphql/queries";
 
 export default Card = ({
 	card,
@@ -88,9 +90,41 @@ export default Card = ({
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
 
+	const sendNotification = async() =>{
+        try {
+			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
+			console.log("++++++++++++++++++++++++++");
+			console.log(userData.data);
+			console.log("++++++++++++++++++++++++++");
+			console.log(userData.data.getMsgUser.pushToken);
+			console.log("++++++++++++++++++++++++++");
+			console.log(userData.data.getMsgUser.id);
+			console.log("++++++++++++++++++++++++++");
+			
+
+            let response = fetch ('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: userData.data.getMsgUser.pushToken,
+                    sound: 'default',
+                    title: "Dorm",
+                    body: "Yeni bir eşleşmeniz var!",
+                })
+            });
+            
+        } catch (e) {
+            console.log(e);
+        }
+    }
+	
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
 		incrementIndex();
+		console.log(id);
 		await axios.post(
 			url + "/LikeDislike",
 			{
@@ -99,7 +133,20 @@ export default Card = ({
 				otherUser: id,
 			},
 			{ headers: { "access-token": sesToken } }
-		);
+		).then((res)=>{
+			console.log("******************");
+			console.log(res.data);
+			if (res.data == "match") {
+				console.log("send notification.");
+				sendNotification();
+				alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
+				
+			}
+			console.log("******************");
+
+		}).catch((error)=>{
+			//console.log(error);
+		});
 	};
 
 	const panHandler = Gesture.Pan()

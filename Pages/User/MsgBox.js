@@ -117,16 +117,17 @@ const MsgBox = (props) => {
                   alignItems: "stretch",
                   justifyContent: "space-evenly",
                   backgroundColor: colors.white,
-                  height: 60,
+                  height: height * 0.11,
                   width: width * 0.96,
                   borderRadius: 10,
                   marginLeft: width * 0.02,
                  marginRight: width * 0.02,
                  marginTop:5,    
             }}>
+              
                 <View style = {{width: "20%"}}>
                     <Image
-                        style = {{resizeMode: "contain", width: "100%", height: "100%", borderRadius: 40}}
+                        style = {{resizeMode: "cover", width: width*0.15, height: "100%", borderRadius: 15}}
                         source = {{
                             uri: imageUri,
                         }}
@@ -262,12 +263,12 @@ export default MsgBox;
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: height * 0.11,
     width: width,
     
     justifyContent: 'center',
-    marginBottom: 10,
-    marginTop: 5,
+    marginBottom: 3,
+    marginTop: 3,
     borderRadius: 10,
   },
   deleteBox: {

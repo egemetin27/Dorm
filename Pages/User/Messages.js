@@ -189,7 +189,7 @@ export default function Messages({ route, navigation }) {
 
 	
 	return (
-		<View style={{ width: width, height: height }}>
+		<View style={{ width: width, height: height}}>
 			<StatusBar style="dark" translucent={false} />
 			<View name={"Header"} style={[commonStyles.Header, { marginTop: height * 0.02 }]}>
 				<View style={{ marginLeft: 20 }}>
@@ -212,6 +212,7 @@ export default function Messages({ route, navigation }) {
 					flexDirection: "row",
 					justifyContent: "center",
 					marginTop: 10,
+					height: height* 0.051,
 				}}
 			>
 				<View style={{ flex: 1 }}>
@@ -282,13 +283,19 @@ export default function Messages({ route, navigation }) {
 				</View>
 			</View>
 
-			<View>
+			<View style={{
+					width: width,
+					height: height*0.5,
+				}}>
 				{chatMod[0] == 1 ? (
 					<View>
 						<View style={{ marginBottom: 10 }} />
 
-						<View>
+						<View >
 							<FlatList
+								style={{
+									width: width,
+								}}
 								horizontal={true}
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
@@ -317,11 +324,16 @@ export default function Messages({ route, navigation }) {
 							/>
 						</View>
 						<View style={{ marginBottom: 10 }} />
-						<View>
+						<View style={{
+							height: height*0.63,
+							flexGrow:1,
+						}}> 
 							<FlatList
+								horizontal= {false}
 								style={{
-									flexDirection: "row",
 									borderRadius: 8,
+									height: height * 0.63,
+									flexGrow: 1,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
@@ -360,6 +372,9 @@ export default function Messages({ route, navigation }) {
 						<View style={{ marginBottom: 10 }} />
 						<View>
 							<FlatList
+								style={{
+									width: width,
+								}}
 								horizontal={true}
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
@@ -393,6 +408,7 @@ export default function Messages({ route, navigation }) {
 								style={{
 									flexDirection: "row",
 									borderRadius: 8,
+									height: height * 0.5,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {

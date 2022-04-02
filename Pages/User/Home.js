@@ -425,7 +425,6 @@ export default function MainPage({ navigation }) {
 			finalStatus = status;
 		}
 		if (finalStatus != "granted") {
-			alert("Failed to get push token for notifications.");
 			return null;
 		}
 		token = (await Notifications.getExpoPushTokenAsync()).data;

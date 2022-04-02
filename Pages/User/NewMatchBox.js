@@ -56,7 +56,9 @@ const NewMatchBox = (props) => {
 		await fetchImageUri();
 	}, []);
     return (
-      <View>
+      <View style={{
+        padding: 2
+      }}>
         <TouchableOpacity
         onPress={props.openChat} 
         style = {{
@@ -68,7 +70,7 @@ const NewMatchBox = (props) => {
                 width: width * 0.15,
             }}>
           <Image
-            style = {{resizeMode: "contain", width: "100%", height: "100%", borderRadius: 30}}
+            style = {{resizeMode: "cover", width: width*0.15, height: "100%", borderRadius: 15}}
             source = {{
               uri: imageUri,
             }}

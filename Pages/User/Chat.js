@@ -105,6 +105,7 @@ export default function Chat({ navigation, route }) {
 					//console.log(res.data);
 					//console.log(res.data[0].PhotoLink);
 					setImageUri(res.data[0].PhotoLink);
+					console.log(res);
 					
 				})
 				.catch((err) => {
@@ -170,7 +171,7 @@ export default function Chat({ navigation, route }) {
 					<Feather name="chevron-left" size={36} color="#4A4A4A" />
 				</TouchableOpacity>
 				<Image
-					style={{ resizeMode: "contain", width: "10%", height: "60%", borderRadius: 40 }}
+					style={{ resizeMode: "cover", width: "12%", height: "65%", borderRadius: 15 }}
 					source={{
 						uri: imageUri,
 					}}

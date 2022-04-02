@@ -28,20 +28,20 @@ const ChatMsg = (props) => {
 						colors={["#4136F1", "#8743FF"]}
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
-						locations={[0, 1]}
 						style={{
-							borderRadius: 20,
+							borderRadius: 18,
 							borderBottomStartRadius: 0,
 							padding: 10,
 							marginLeft: 50,
 							marginRight: 0,
 							overflow: "hidden",
+							alignSelf: "flex-end",
 						}}
 					>
 						<Text style={{ color: "white", fontFamily: "Poppins"}}>{props.data.text}</Text>
 						
 					</LinearGradient>
-					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8 }}>
+					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8, marginRight: 8, }}>
 						{moment(props.data.updatedAt).fromNow()}
 					</Text>
 				</View>
@@ -57,6 +57,8 @@ const ChatMsg = (props) => {
 								borderTopRightRadius: 20,
 								borderBottomLeftRadius: 0,
 								borderBottomRightRadius: 20,
+								alignSelf: "flex-start",
+								padding: 10,
 							},
 						]}
 					>
