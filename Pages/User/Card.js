@@ -513,7 +513,7 @@ export default Card = ({
 													paddingVertical: 5,
 												}}
 											>
-												Cinsityet{"\n"}
+												Cinsiyet{"\n"}
 												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
 													{gender}
 												</Text>
