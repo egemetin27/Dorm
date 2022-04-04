@@ -57,20 +57,20 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 
 	const animatedCard = useAnimatedStyle(() => {
 		return {
-			transform: [{ rotateY: withTiming(`${interpolate(turn.value, [1, -1], [0, 180])}deg`) }],
+			transform: [{ rotateY: `${interpolate(turn.value, [1, -1], [0, 180])}deg` }],
 		};
 	});
 
 	const animatedBackFace = useAnimatedStyle(() => {
 		return {
-			transform: [{ rotateY: withTiming(`${interpolate(turn.value, [1, -1], [180, 360])}deg`) }],
+			transform: [{ rotateY: `${interpolate(turn.value, [1, -1], [180, 360])}deg` }],
 		};
 	});
 
 	const tapHandler = Gesture.Tap()
 		.numberOfTaps(2)
 		.onEnd(() => {
-			turn.value = -turn.value;
+			turn.value = withTiming(-turn.value);
 		});
 
 	const handleScroll = ({ nativeEvent }) => {
@@ -430,6 +430,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									<View style={{ alignContent: "center" }}>
 										<Pressable
 											onPress={async () => {
+												if (turn.value != -1) return;
 												await axios
 													.post(
 														url + "/eventLinkClick",

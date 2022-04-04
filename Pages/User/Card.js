@@ -106,7 +106,7 @@ export default Card = ({
 
 	const checkText = (text) => {
 		// return false if null
-		if (text == "null" || text.length == 0 || text == "undefined") return false;
+		if (text == "null" || text == null || text == "undefined" || text.length == 0) return false;
 		return true;
 	};
 
