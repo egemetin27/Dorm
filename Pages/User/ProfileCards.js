@@ -71,6 +71,9 @@ export default function ProfileCards({ navigation, route }) {
 			arr.splice(0, 0, element);
 			arr = arr.reverse();
 
+			const x = arr.slice(arr.length - 3 - indexOfFrontCard, arr.length - indexOfFrontCard);
+			console.log({ x });
+
 			setPeopleList(arr);
 		}
 
@@ -136,25 +139,22 @@ export default function ProfileCards({ navigation, route }) {
 					marginTop: height * 0.05,
 				}}
 			>
-				{peopleList
-					// .slice(peopleList.length - 3 - indexOfFrontCard, peopleList.length - indexOfFrontCard)
-					.map((item, index) => (
-						<Card
-							key={index}
-							// index={2 - index}
-							index={peopleList.length - index - 1}
-							card={item}
-							backFace={backFace}
-							setPopupVisible={(val) => (popupVisible.value = val)}
-							numberOfSuperLikes={numberOfSuperLikes}
-							myID={myID}
-							sesToken={sesToken}
-							indexOfFrontCard={indexOfFrontCard}
-							incrementIndex={() => {
-								setIndexOfFrontCard(indexOfFrontCard + 1);
-							}}
-						/>
-					))}
+				{peopleList.map((item, index) => (
+					<Card
+						key={index}
+						index={peopleList.length - index - 1}
+						card={item}
+						backFace={backFace}
+						setPopupVisible={(val) => (popupVisible.value = val)}
+						numberOfSuperLikes={numberOfSuperLikes}
+						myID={myID}
+						sesToken={sesToken}
+						indexOfFrontCard={indexOfFrontCard}
+						incrementIndex={() => {
+							setIndexOfFrontCard(indexOfFrontCard + 1);
+						}}
+					/>
+				))}
 			</View>
 
 			<View

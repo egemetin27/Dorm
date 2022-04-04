@@ -70,7 +70,7 @@ export default styles = StyleSheet.create({
 	photo: {
 		marginHorizontal: 15,
 		aspectRatio: 1 / 1.5,
-		backgroundColor: colors.white,
+		backgroundColor: colors.cool_gray,
 		borderRadius: 20,
 		alignItems: "center",
 		justifyContent: "center",

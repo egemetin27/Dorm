@@ -18,7 +18,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { snapPoint } from "react-native-redash";
-import { Octicons, Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import commonStyles from "../../visualComponents/styles";
@@ -49,8 +49,6 @@ export default Card = ({
 	const [likeFlag, setLikeFlag] = React.useState(false);
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
-	console.log(`name: ${card.Name}\nindex: ${index}\n`);
-
 	const {
 		About: about,
 		Alkol: drink,
@@ -67,26 +65,19 @@ export default Card = ({
 		photos: photoList,
 		Birth_Date: bDay,
 		interest: hobbies,
-	} = card ?? {
-		id: 0,
-		name: "name",
-		age: "age",
-		university: "university",
-		major: "major",
-		photoList: [],
-		gender: "gender",
-		religion: "religion",
-		sign: "sign",
-		diet: "diet",
-		drink: "drink",
-		smoke: "smoke",
-		hobbies: "hobbies",
-		about: "about",
-	};
+	} = card;
+
+	console.log(`name: ${fName}\nindex: ${index}\nindex of first card: ${indexOfFrontCard}\n\n`);
 
 	const name = fName + " " + sName;
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
+
+	const checkText = (text) => {
+		// return false if null
+		if (text == "null" || text.length == 0 || text == "undefined") return false;
+		return true;
+	};
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
@@ -200,6 +191,13 @@ export default Card = ({
 		};
 	});
 
+	const animatedPhotoProgress = (index) =>
+		useAnimatedStyle(() => {
+			return {
+				height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
+			};
+		});
+
 	const handleScroll = ({ nativeEvent }) => {
 		progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
 	};
@@ -244,31 +242,43 @@ export default Card = ({
 										animatedFrontFace,
 									]}
 								>
-									<ScrollView
-										scrollEventThrottle={16}
-										style={{ width: "100%" }}
-										pagingEnabled={true}
-										showsVerticalScrollIndicator={false}
-										onScroll={handleScroll}
-									>
-										{photoList.map((item, index) => {
-											// console.log("In Map: ", item);
-											return (
-												<Image
-													key={index}
-													source={{
-														uri: item?.PhotoLink ?? "AAA",
-													}}
-													style={{
-														height: width * 1.35,
-														resizeMode: "cover",
-														backgroundColor: colors.cool_gray,
-													}}
-												/>
-											);
-										})}
-									</ScrollView>
-
+									{photoList.length > 0 ? (
+										<ScrollView
+											scrollEventThrottle={16}
+											style={{ width: "100%" }}
+											pagingEnabled={true}
+											showsVerticalScrollIndicator={false}
+											onScroll={handleScroll}
+										>
+											{photoList.map((item, index) => {
+												// console.log("In Map: ", item);
+												return (
+													<Image
+														key={index}
+														source={{
+															uri: item?.PhotoLink ?? "AAA",
+														}}
+														style={{
+															height: width * 1.35,
+															resizeMode: "cover",
+															backgroundColor: colors.cool_gray,
+														}}
+													/>
+												);
+											})}
+										</ScrollView>
+									) : (
+										<View
+											style={{
+												width: "100%",
+												height: "100%",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Ionicons name="person" color="white" size={width * 0.5} />
+										</View>
+									)}
 									<View
 										style={{
 											position: "absolute",
@@ -289,17 +299,12 @@ export default Card = ({
 															borderRadius: 4,
 															backgroundColor: colors.white,
 														},
-														useAnimatedStyle(() => {
-															return {
-																height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
-															};
-														}),
+														animatedPhotoProgress(index),
 													]}
 												/>
 											);
 										})}
 									</View>
-
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity onPress={() => {}}>
 											<Image
@@ -312,7 +317,6 @@ export default Card = ({
 											/>
 										</TouchableOpacity>
 									</View>
-
 									<LinearGradient
 										colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
 										locations={[0, 0.1, 1]}
@@ -457,121 +461,148 @@ export default Card = ({
 												alignItems: "center",
 											}}
 										>
-											<Text
-												name={"Gender"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Cinsityet{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
-													{gender}
+											{checkText(gender) && (
+												<Text
+													name={"Gender"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													Cinsityet{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{gender}
+													</Text>
 												</Text>
-											</Text>
-											<Text
-												name={"Religion"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Dini İnanç{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+											)}
+											{checkText(religion) && (
+												<Text
+													name={"Religion"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
 													{religion}
+													Dini İnanç{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{religion}
+													</Text>
 												</Text>
-											</Text>
-											<Text
-												name={"Sign"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Burç{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{sign}</Text>
-											</Text>
-											<Text
-												name={"Diet"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Beslenme Tercihi{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{diet}</Text>
-											</Text>
-											<Text
-												name={"Drink"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Alkol Kullanımı{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{drink}</Text>
-											</Text>
-											<Text
-												name={"Smoke"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Sigara Kullanımı{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{smoke}</Text>
-											</Text>
-											<Text
-												name={"Hobbies"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												İlgi Alanları{"\n"}
-												{hobbies.map((item, index) => {
-													return (
-														<Text
-															key={index}
-															style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}
-														>
-															{item.InterestName}
-															{hobbies.length > index + 1 ? (
-																<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
-																	{" "}
-																	|{" "}
-																</Text>
-															) : null}
-														</Text>
-													);
-												})}
-											</Text>
-											<Text
-												name={"About"}
-												style={{
-													color: colors.light_gray,
-													fontSize: 18,
-													textAlign: "center",
-													paddingVertical: 5,
-												}}
-											>
-												Hakkında{"\n"}
-												<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>{about}</Text>
-											</Text>
+											)}
+											{checkText(sign) && (
+												<Text
+													name={"Sign"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													Burç{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{sign}
+													</Text>
+												</Text>
+											)}
+											{checkText(diet) && (
+												<Text
+													name={"Diet"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													Beslenme Tercihi{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{diet}
+													</Text>
+												</Text>
+											)}
+											{checkText(drink) && (
+												<Text
+													name={"Drink"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													Alkol Kullanımı{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{drink}
+													</Text>
+												</Text>
+											)}
+											{checkText(smoke) && (
+												<Text
+													name={"Smoke"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													Sigara Kullanımı{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{smoke}
+													</Text>
+												</Text>
+											)}
+											{checkText(hobbies) && (
+												<Text
+													name={"Hobbies"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													İlgi Alanları{"\n"}
+													{hobbies.map((item, index) => {
+														return (
+															<Text
+																key={index}
+																style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}
+															>
+																{item.InterestName}
+																{hobbies.length > index + 1 ? (
+																	<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+																		{" "}
+																		|{" "}
+																	</Text>
+																) : null}
+															</Text>
+														);
+													})}
+												</Text>
+											)}
+											{checkText(about) && (
+												<Text
+													name={"About"}
+													style={{
+														color: colors.light_gray,
+														fontSize: 18,
+														textAlign: "center",
+														paddingVertical: 5,
+													}}
+												>
+													Hakkında{"\n"}
+													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+														{about}
+													</Text>
+												</Text>
+											)}
 										</View>
 									</ScrollView>
 								</Animated.View>
@@ -676,11 +707,7 @@ export default Card = ({
 												backgroundColor: colors.white,
 												height: index == 0 ? 24 : 8,
 											},
-											useAnimatedStyle(() => {
-												return {
-													height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
-												};
-											}),
+											animatedPhotoProgress(index),
 										]}
 									/>
 								);

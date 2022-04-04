@@ -586,13 +586,13 @@ export default function MainPage({ navigation }) {
 							keyExtractor={(item) => item.UserId.toString()}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
-							data={peopleList.slice(0, 4)}
+							data={peopleList.slice(0, 5)}
 							renderItem={({ item, index }) => (
 								<People
 									index={index}
 									person={item}
 									setIsAppReady={setIsAppReady}
-									length={peopleList.slice(0, 4).length}
+									length={peopleList.slice(0, 5).length}
 									openProfiles={(idx) => {
 										// var arr = new Array(...peopleList);
 										// const element = arr[idx];
@@ -600,7 +600,7 @@ export default function MainPage({ navigation }) {
 										// arr.splice(0, 0, element);
 										navigation.replace("ProfileCards", {
 											idx: idx,
-											list: peopleList,
+											list: peopleList.slice(0, 10),
 											myID: myID,
 											sesToken: sesToken,
 										});
