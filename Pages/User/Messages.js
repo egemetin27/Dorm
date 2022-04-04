@@ -14,6 +14,7 @@ import {
 	FlatList,
 	Image,
 	Button,
+	BackHandler,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { Ionicons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
@@ -59,6 +60,15 @@ export default function Messages({ route, navigation }) {
 	const [chatRooms, setChatRooms] = useState([]);
 	const [myUserID, setmyUserID] = useState("");
 	const [otherUser, setotherUser] = useState([]);
+
+	React.useEffect(() => {
+		const backAction = () => {
+			navigation.replace("MainScreen", { screen: "AnaSayfa" });
+			return true;
+		};
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+		return () => backHandler.remove();
+	}, []);
 
 	const fetchNewUsers = async (myUserID) => {
 		try {

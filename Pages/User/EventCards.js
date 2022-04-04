@@ -132,6 +132,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 			.then((res) => {
 				if (res.data.length > 0) {
 					navigation.replace("ProfileCards", {
+						idx: 0,
 						list: res.data,
 						myID: myID,
 						sesToken: sesToken,
