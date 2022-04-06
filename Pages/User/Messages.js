@@ -283,10 +283,7 @@ export default function Messages({ route, navigation }) {
 				</View>
 			</View>
 
-			<View style={{
-					width: width,
-					height: height*0.5,
-				}}>
+			<View>
 				{chatMod[0] == 1 ? (
 					<View>
 						<View style={{ marginBottom: 10 }} />
@@ -324,15 +321,12 @@ export default function Messages({ route, navigation }) {
 							/>
 						</View>
 						<View style={{ marginBottom: 10 }} />
-						<View style={{
-							height: height*0.63,
-							flexGrow:1,
-						}}> 
+						<View> 
 							<FlatList
 								horizontal= {false}
 								style={{
 									borderRadius: 8,
-									height: height * 0.63,
+									height: height-35 - height*0.051 - height*0.11 - height*0.08-50,
 									flexGrow: 1,
 								}}
 								data={chatRooms}
@@ -406,9 +400,9 @@ export default function Messages({ route, navigation }) {
 						<View>
 							<FlatList
 								style={{
-									flexDirection: "row",
 									borderRadius: 8,
-									height: height * 0.5,
+									height: height-35 - height*0.051 - height*0.11 - height*0.08-50,
+									flexGrow: 1,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {

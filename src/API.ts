@@ -81,6 +81,8 @@ export type DeleteMsgUserInput = {
 export type CreateUserChatInput = {
   id?: string | null,
   lastMsg?: string | null,
+  lastMsgSender?: string | null,
+  unreadMsg?: number | null,
   mod: number,
   updatedAt?: string | null,
   createdAt?: string | null,
@@ -91,6 +93,8 @@ export type CreateUserChatInput = {
 
 export type ModelUserChatConditionInput = {
   lastMsg?: ModelStringInput | null,
+  lastMsgSender?: ModelStringInput | null,
+  unreadMsg?: ModelIntInput | null,
   mod?: ModelIntInput | null,
   updatedAt?: ModelStringInput | null,
   createdAt?: ModelStringInput | null,
@@ -136,6 +140,8 @@ export type UserChat = {
   firstUser?: MsgUser | null,
   secondUser?: MsgUser | null,
   lastMsg?: string | null,
+  lastMsgSender?: string | null,
+  unreadMsg?: number | null,
   messages?: ModelSentMsgConnection | null,
   mod: number,
   updatedAt: string,
@@ -168,6 +174,8 @@ export type SentMsg = {
 export type UpdateUserChatInput = {
   id: string,
   lastMsg?: string | null,
+  lastMsgSender?: string | null,
+  unreadMsg?: number | null,
   mod?: number | null,
   updatedAt?: string | null,
   createdAt?: string | null,
@@ -235,6 +243,8 @@ export type ModelMsgUserConnection = {
 export type ModelUserChatFilterInput = {
   id?: ModelIDInput | null,
   lastMsg?: ModelStringInput | null,
+  lastMsgSender?: ModelStringInput | null,
+  unreadMsg?: ModelIntInput | null,
   mod?: ModelIntInput | null,
   updatedAt?: ModelStringInput | null,
   createdAt?: ModelStringInput | null,
@@ -355,6 +365,8 @@ export type CreateUserChatMutation = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -405,6 +417,8 @@ export type UpdateUserChatMutation = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -455,6 +469,8 @@ export type DeleteUserChatMutation = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -508,6 +524,8 @@ export type CreateSentMsgMutation = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -566,6 +584,8 @@ export type UpdateSentMsgMutation = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -624,6 +644,8 @@ export type DeleteSentMsgMutation = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -714,6 +736,8 @@ export type GetUserChatQuery = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -767,6 +791,8 @@ export type ListUserChatsQuery = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -810,6 +836,8 @@ export type GetSentMsgQuery = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -855,6 +883,8 @@ export type ListSentMsgsQuery = {
         __typename: "UserChat",
         id: string,
         lastMsg?: string | null,
+        lastMsgSender?: string | null,
+        unreadMsg?: number | null,
         mod: number,
         updatedAt: string,
         createdAt: string,
@@ -914,6 +944,8 @@ export type ChatByDateQuery = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -948,6 +980,8 @@ export type MsgByDateQuery = {
         __typename: "UserChat",
         id: string,
         lastMsg?: string | null,
+        lastMsgSender?: string | null,
+        unreadMsg?: number | null,
         mod: number,
         updatedAt: string,
         createdAt: string,
@@ -1029,6 +1063,8 @@ export type OnCreateUserChatSubscription = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -1074,6 +1110,8 @@ export type OnUpdateUserChatSubscription = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -1119,6 +1157,8 @@ export type OnDeleteUserChatSubscription = {
       createdAt: string,
     } | null,
     lastMsg?: string | null,
+    lastMsgSender?: string | null,
+    unreadMsg?: number | null,
     messages?:  {
       __typename: "ModelSentMsgConnection",
       items:  Array< {
@@ -1167,6 +1207,8 @@ export type OnCreateSentMsgSubscription = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -1220,6 +1262,8 @@ export type OnUpdateSentMsgSubscription = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
@@ -1273,6 +1317,8 @@ export type OnDeleteSentMsgSubscription = {
         createdAt: string,
       } | null,
       lastMsg?: string | null,
+      lastMsgSender?: string | null,
+      unreadMsg?: number | null,
       messages?:  {
         __typename: "ModelSentMsgConnection",
         nextToken?: string | null,
