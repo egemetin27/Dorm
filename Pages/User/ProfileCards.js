@@ -70,10 +70,6 @@ export default function ProfileCards({ navigation, route }) {
 			arr.splice(idx, 1);
 			arr.splice(0, 0, element);
 			arr = arr.reverse();
-
-			const x = arr.slice(arr.length - 3 - indexOfFrontCard, arr.length - indexOfFrontCard);
-			console.log({ x });
-
 			setPeopleList(arr);
 		}
 

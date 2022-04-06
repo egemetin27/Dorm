@@ -345,7 +345,7 @@ export default function Profile({ route, navigation }) {
 										>
 											<Image
 												style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
-												resizeMode="contain"
+												resizeMode="cover"
 												source={{ uri: item.PhotoLink }}
 											/>
 										</Pressable>

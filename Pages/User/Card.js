@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, Dimensions } from "react-native";
+import ReactNative, { View, Text, Image, Dimensions } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -69,7 +69,7 @@ export default Card = ({
 		interest: hobbies,
 	} = card;
 
-	console.log(`name: ${fName}\nindex: ${index}\nindex of first card: ${indexOfFrontCard}\n\n`);
+	// console.log(`name: ${fName}\nindex: ${index}\nindex of first card: ${indexOfFrontCard}\n\n`);
 
 	const name = fName + " " + sName;
 	const gender = getGender(genderNo);
@@ -113,7 +113,6 @@ export default Card = ({
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
 		incrementIndex();
-		console.log(id);
 		await axios
 			.post(
 				url + "/LikeDislike",
@@ -159,17 +158,17 @@ export default Card = ({
 	const tapHandler = Gesture.Tap()
 		.numberOfTaps(2)
 		.onStart(() => {
-			turn.value = -turn.value;
+			turn.value = withTiming(-turn.value);
 			backFace.value = !backFace.value;
 		});
 
 	const animatedFrontFace = useAnimatedStyle(() => {
-		if (index != indexOfFrontCard) return {};
+		// if (index != indexOfFrontCard) return {};
 		// if (index != 0) return {};
 		return {
 			transform: [
 				{
-					rotateY: withTiming(`${interpolate(turn.value, [1, -1], [0, 180])}deg`),
+					rotateY: `${interpolate(turn.value, [1, -1], [0, 180])}deg`,
 				},
 			],
 		};
@@ -177,16 +176,17 @@ export default Card = ({
 
 	const animatedBackFace = useAnimatedStyle(() => {
 		return {
+			zIndex: turn.value == 1 ? -1 : 1,
 			transform: [
 				{
-					rotateY: withTiming(`${interpolate(turn.value, [1, -1], [180, 360])}deg`),
+					rotateY: `${interpolate(turn.value, [1, -1], [180, 360])}deg`,
 				},
 			],
 		};
 	});
 
 	const animatedSwipe = useAnimatedStyle(() => {
-		if (index != indexOfFrontCard) return {};
+		// if (index != indexOfFrontCard) return {};
 		// if (index != 0) return {};
 		return {
 			transform: [
@@ -200,7 +200,7 @@ export default Card = ({
 	});
 
 	const animatedLike = useAnimatedStyle(() => {
-		if (index != indexOfFrontCard) return {};
+		// if (index != indexOfFrontCard) return {};
 		// if (index != 0) return {};
 		return {
 			opacity: destination.value == SNAP_POINTS[1] ? withTiming(1) : withTiming(0),
@@ -219,7 +219,7 @@ export default Card = ({
 	});
 
 	const animatedDislike = useAnimatedStyle(() => {
-		if (index != indexOfFrontCard) return {};
+		// if (index != indexOfFrontCard) return {};
 		// if (index != 0) return {};
 		return {
 			opacity: destination.value == SNAP_POINTS[1] ? withTiming(1) : withTiming(0),
@@ -271,7 +271,7 @@ export default Card = ({
 	const composedGesture = Gesture.Race(tapHandler, panHandler);
 
 	return (
-		<View key={index} style={{ position: "absolute" }}>
+		<View key={index} style={{ position: "absolute", zIndex: index < indexOfFrontCard ? -1 : 1 }}>
 			{indexOfFrontCard == index ? (
 				<View name={"cards"} style={{ width: "100%", justifyContent: "center", zIndex: 1 }}>
 					<Animated.View style={[animatedSwipe]}>
@@ -296,16 +296,17 @@ export default Card = ({
 											showsVerticalScrollIndicator={false}
 											onScroll={handleScroll}
 										>
-											{photoList.map((item, index) => {
+											{photoList.map((item, idx) => {
 												// console.log("In Map: ", item);
 												return (
 													<Image
-														key={index}
+														key={idx}
 														source={{
 															uri: item?.PhotoLink ?? "AAA",
 														}}
 														style={{
 															height: width * 1.35,
+															maxHeight: height * 0.7,
 															resizeMode: "cover",
 															backgroundColor: colors.cool_gray,
 														}}
@@ -462,6 +463,7 @@ export default Card = ({
 										commonStyles.photo,
 										{
 											width: width * 0.9,
+											maxHeight: height * 0.7,
 											position: "absolute",
 											backfaceVisibility: "hidden",
 											backgroundColor: colors.cool_gray,
@@ -479,8 +481,9 @@ export default Card = ({
 										blurRadius={20}
 										style={{
 											position: "absolute",
-											width: width * 0.9,
 											aspectRatio: 1 / 1.5,
+											maxHeight: height * 0.7,
+											width: width * 0.9,
 											resizeMode: "cover",
 											transform: [{ rotateY: "180deg" }],
 										}}
@@ -494,7 +497,7 @@ export default Card = ({
 											backgroundColor: "rgba(0,0,0,0.25)",
 										}}
 									/>
-									<ScrollView
+									<ReactNative.ScrollView
 										showsVerticalScrollIndicator={false}
 										style={{
 											width: "80%",
@@ -533,7 +536,6 @@ export default Card = ({
 														paddingVertical: 5,
 													}}
 												>
-													{religion}
 													Dini İnanç{"\n"}
 													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
 														{religion}
@@ -650,7 +652,7 @@ export default Card = ({
 												</Text>
 											)}
 										</View>
-									</ScrollView>
+									</ReactNative.ScrollView>
 								</Animated.View>
 							</Animated.View>
 						</GestureDetector>
@@ -723,7 +725,8 @@ export default Card = ({
 						<Image
 							key={index}
 							source={{
-								uri: photoList[0]?.PhotoLink ?? "AAA",
+								// uri: photoList[0]?.PhotoLink,
+								uri: indexOfFrontCard + 1 == index ? photoList[0]?.PhotoLink ?? null : null,
 							}}
 							style={{
 								height: "100%",

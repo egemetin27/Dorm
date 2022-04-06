@@ -68,7 +68,7 @@ export default styles = StyleSheet.create({
 		letterSpacing: 1.2,
 	},
 	photo: {
-		marginHorizontal: 15,
+		// marginHorizontal: 15,
 		aspectRatio: 1 / 1.5,
 		backgroundColor: colors.cool_gray,
 		borderRadius: 20,
