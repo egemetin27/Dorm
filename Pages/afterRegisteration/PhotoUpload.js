@@ -37,7 +37,7 @@ export default function PhotoUpload({ navigation, route }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 1,
+				quality: 0.3,
 			});
 			if (!result.cancelled) {
 				handleAdd(result);
@@ -204,7 +204,7 @@ export default function PhotoUpload({ navigation, route }) {
 									<Image
 										source={{ uri: item.PhotoLink }}
 										style={{ height: "100%", width: "100%" }}
-										resizeMode="contain"
+										resizeMode="cover"
 									/>
 								</View>
 							</View>

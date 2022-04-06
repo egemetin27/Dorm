@@ -31,7 +31,7 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 		<View key={index} style={[styles.photo]}>
 			<Image
 				style={{ height: "100%", width: "100%" }}
-				resizeMode="contain"
+				resizeMode="cover"
 				source={{ uri: photo.PhotoLink }}
 			/>
 			<View
@@ -126,7 +126,7 @@ export default function ProfilePhotos({ route, navigation }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 1,
+				quality: 0.5,
 			});
 			if (!result.cancelled) {
 				handleAdd(result);

@@ -90,7 +90,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 				commonStyles.photo,
 				{
 					height: "95%",
-					backgroundColor: colors.cool_gray,
+					backgroundColor: colors.white,
 					marginHorizontal: 0,
 					marginLeft: 15,
 					marginRight: index + 1 == length ? 15 : 0,
@@ -268,9 +268,8 @@ const Category = ({
 				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center" }}>
 					<Text
 						numberOfLines={1}
-						adjustsFontSizeToFit={true}
 						style={{
-							fontSize: width * 0.035,
+							fontSize: height * 0.016,
 							color: selectedCategory == index ? colors.white : colors.cool_gray,
 						}}
 					>
@@ -555,7 +554,12 @@ export default function MainPage({ navigation }) {
 
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" translucent={false} backgroundColor={"#F4F3F3"} />
+			<StatusBar
+				style="dark"
+				translucent={false}
+				backgroundColor={"#F4F3F3"}
+				hidden={Platform.OS == "ios"}
+			/>
 			<ScrollView style={{ width: width }} showsVerticalScrollIndicator={false}>
 				<View
 					name={"PeopleHeader"}
@@ -611,7 +615,8 @@ export default function MainPage({ navigation }) {
 										// arr.splice(0, 0, element);
 										navigation.replace("ProfileCards", {
 											idx: idx,
-											list: peopleList.slice(0, 10),
+											list: peopleList,
+											// list: peopleList.slice(0, 10),
 											myID: myID,
 											sesToken: sesToken,
 										});
