@@ -13,6 +13,7 @@ import {
 	FlatList,
 	Image,
 	ActivityIndicator,
+	BackHandler,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -69,6 +70,15 @@ export default function Profile({ route, navigation }) {
 	const smokeRef = React.useRef(new Animated.Value(0)).current;
 	const hobbiesRef = React.useRef(new Animated.Value(0)).current;
 	const aboutRef = React.useRef(new Animated.Value(0)).current;
+
+	React.useEffect(() => {
+		const backAction = () => {
+			navigation.replace("MainScreen", { screen: "AnaSayfa" });
+			return true;
+		};
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+		return () => backHandler.remove();
+	}, []);
 
 	React.useEffect(async () => {
 		try {

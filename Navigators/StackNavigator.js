@@ -208,6 +208,7 @@ export default function StackNavigator() {
 				.post(url + "/Login", dataToBeSent)
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
+						console.log(res.data);
 						// If signed in
 						const photoList = res.data.Photo.map((item) => {
 							return {
