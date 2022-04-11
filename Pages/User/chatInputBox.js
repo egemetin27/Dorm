@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const InputBox = (props) => {
     const [message, setMessage] = React.useState("");
+    const [newNumber, setNewNumber] = React.useState(1);
 
     const sendMessage = async() =>{
         try {
@@ -43,6 +44,9 @@ const InputBox = (props) => {
                         input: {
                             id: props.chatID,
                             lastMsg: message,
+                            lastMsgSender: props.myUserID,
+                            unreadMsg: newNumber,
+
                         }
 
                     }
@@ -83,7 +87,6 @@ const InputBox = (props) => {
     return (
         <View style = {{flexDirection: "row", margin: 10, alignItems: "flex-end"}}>
             <View style = {{flexDirection: "row", backgroundColor: "white", padding: 10, marginRight: 10, borderRadius: 25, flex:1, alignItems: "flex-end"}}>
-                <FontAwesome5 name = "laugh-beam" size={24} color= "grey"/>
                 <TextInput style = {{flex: 1, marginHorizontal: 10, }} 
                     multiline
                     placeholder = {props.otherUser.name}
@@ -98,12 +101,16 @@ const InputBox = (props) => {
                 onPress = {() => {
                     
                     if (message != "") {
-                        
+                        if(props.lastMsgSender == props.myUserID)
+                        {
+                            console.log("I sent the last msg");
+                            setNewNumber(props.unreadMsg+1);
+                            console.log(newNumber);
+                        }
                         sendMessage();
                         updateChat();
                         setMessage("");
-                        sendNotification();  
-                        
+                        sendNotification();                        
                     }
                     
                     

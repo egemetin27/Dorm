@@ -19,6 +19,7 @@ import {  Gradient, GradientText } from "../../visualComponents/colors";
 
 import { updateUserChat } from '../../src/graphql/mutations';
 import { CustomModal } from '../../visualComponents/customComponents';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { height, width } = Dimensions.get("window");
 
@@ -72,6 +73,17 @@ const MsgBox = (props) => {
           input: { id: props.chatID, status: "Deactive"},
         })
       );
+      axios
+				.post(
+					url + "/unmatch",
+					{ UserId: props.userID,
+            unmatchId: props.chatID,
+          },
+					{ headers: { "access-token": myToken } }
+				)
+				.catch((err) => {
+					console.log(err);
+				});   
     } catch (error) {
       console.log(error);
     }
@@ -143,11 +155,37 @@ const MsgBox = (props) => {
                     </Text>
                 </View>
                 <View style = {{width: "25%", alignItems: "flex-end", marginRight: 5}}>
-                    <Text style = {{marginBottom: height*0.02, marginRight: 5, fontSize: 14}}>
-                      {
-                        moment(props.lastTime).format("DD/MM/YYYY")
+                    <View style={{ flexDirection: "column"}}>
+                      <Text style = {{marginBottom: height*0.02, marginRight: 5, fontSize: 14}}>
+                        {
+                          moment(props.lastTime).format("DD/MM/YYYY")
+                        }
+                      </Text>
+                      { props.lastMsgSender != props.userID && props.unreadMsg != 0 ?
+                        (
+                          <LinearGradient
+						                colors={["#4136F1", "#8743FF"]}
+                            start={{ x: 0, y: 0 }}
+						                end={{ x: 1, y: 1 }}
+						                style={{
+							                borderRadius: 10,
+							                borderBottomStartRadius: 0,
+							                padding: 5,
+							                marginRight: 0,
+							                overflow: "hidden",
+                              alignSelf: "center",
+						                }}
+                          >
+                            <Text style={{ color: "white", fontFamily: "Poppins"}}>{props.unreadMsg}</Text>
+                          </LinearGradient>
+                        ) 
+                        :
+                        (null)
                       }
-                    </Text>
+                      
+
+                    </View>
+                    
                 </View>
             </TouchableOpacity>
 

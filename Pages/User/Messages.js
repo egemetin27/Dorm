@@ -46,12 +46,13 @@ export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const [imgUri, setImgUri] = React.useState();
 
-	const openChat = async (userInfo, myUserID, chatID, imgUrl) => {
+	const openChat = async (userInfo, myUserID, chatID, unreadMsg, lastMsgSender) => {
 		navigation.navigate("Chat", {
 			otherUser: userInfo,
 			myUserID: myUserID,
 			chatID: chatID,
-			imageUri: imgUrl,
+			unreadMsg: unreadMsg,
+			lastMsgSender: lastMsgSender,
 		});
 	}; 
 
@@ -172,10 +173,9 @@ export default function Messages({ route, navigation }) {
 			const userID = data.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onUpdateUserChat)).subscribe({
 				next: (data) => {
-					console.log("---------------------------");
+					console.log("++++++++++++++++++++++++");
 					console.log(data.value.data.onUpdateUserChat.firstUser.id);
-					console.log("---------------------------");
-
+					console.log("++++++++++++++++++++++++");
 					if (
 						data.value.data.onUpdateUserChat.firstUser.id != userID &&
 						data.value.data.onUpdateUserChat.secondUser.id != userID
@@ -312,7 +312,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.secondUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -322,7 +322,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -347,23 +347,25 @@ export default function Messages({ route, navigation }) {
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 												chatID={item.id}
-
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
 									if (item.mod == 0 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
 										return (
 											<MsgBox
-												data={item.firstUser}
+												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
-												chatID={item}
-
+												chatID={item.id}
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
@@ -388,7 +390,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.secondUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -398,7 +400,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -422,9 +424,11 @@ export default function Messages({ route, navigation }) {
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
-												chatID={item}
+												chatID={item.id}
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
@@ -432,13 +436,14 @@ export default function Messages({ route, navigation }) {
 
 										return (
 											<MsgBox
-												data={item.firstUser}
+												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
-												chatID={item}
-
+												chatID={item.id}
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
