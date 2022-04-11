@@ -22,7 +22,6 @@ import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 const { height, width } = Dimensions.get("window");
 import { color } from "react-native-reanimated";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { msgData } from "../msgData";
 import MsgBox from "./MsgBox";
 import NewMatchBox from "./NewMatchBox";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,6 +44,7 @@ import {
 export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const [imgUri, setImgUri] = React.useState();
+	const [noMatch, setNoMatch] = React.useState(false);
 
 	const openChat = async (userInfo, myUserID, chatID, unreadMsg, lastMsgSender) => {
 		navigation.navigate("Chat", {
@@ -91,6 +91,7 @@ export default function Messages({ route, navigation }) {
 				})
 			);
 			//console.log(msgBoxData.data.chatByDate.items);
+			setNoMatch(false);
 			await setChatRooms(msgBoxData.data.chatByDate.items);
 			//console.log(chatRooms);
 		} catch (error) {
@@ -122,7 +123,11 @@ export default function Messages({ route, navigation }) {
 						},
 					})
 				);
-				//console.log(msgBoxData.data.chatByDate.items)
+				//console.log(msgBoxData.data.chatByDate.items.length);
+				if(msgBoxData.data.chatByDate.items.length == 0)
+				{
+					setNoMatch(true);
+				}
 				await setChatRooms(msgBoxData.data.chatByDate.items);
 				await setmyUserID(userID);
 				//console.log(chatRooms);
@@ -141,10 +146,11 @@ export default function Messages({ route, navigation }) {
 			const userID = data.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onCreateUserChat)).subscribe({
 				next: (data) => {
+					/*
 					console.log("---------------------------");
 					console.log(data.value.data.onCreateUserChat.firstUser.id);
 					console.log("---------------------------");
-
+					*/
 					if (
 						data.value.data.onCreateUserChat.firstUser.id != userID &&
 						data.value.data.onCreateUserChat.secondUser.id != userID
@@ -153,9 +159,10 @@ export default function Messages({ route, navigation }) {
 						return;
 					} else {
 						console.log("Message is in your chat");
+						fetchNewUsers();
+
 					}
 
-					fetchNewUsers();
 					// setMessages([newMessage, ...messages]);
 				},
 			});
@@ -173,9 +180,11 @@ export default function Messages({ route, navigation }) {
 			const userID = data.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onUpdateUserChat)).subscribe({
 				next: (data) => {
+					/*
 					console.log("++++++++++++++++++++++++");
 					console.log(data.value.data.onUpdateUserChat.firstUser.id);
 					console.log("++++++++++++++++++++++++");
+					*/
 					if (
 						data.value.data.onUpdateUserChat.firstUser.id != userID &&
 						data.value.data.onUpdateUserChat.secondUser.id != userID
@@ -294,6 +303,27 @@ export default function Messages({ route, navigation }) {
 			</View>
 
 			<View>
+				{noMatch == true ? 
+					(
+						<View>
+							<Text 
+								style={{
+									textAlign: "center",
+									fontSize: 12,
+									lineHeight: 15,
+									letterSpacing: 1,
+									paddingHorizontal: 15,
+								}}
+							>
+								Keşfetmeye Başla. Ana sayfaya giderek diğer kullanıcılarla eşleştiğinde buradan onlara mesaj atabileceksin. Sana mesaj atmak isteyen bir sürü kişi var, sadece senin kaydırmanı bekliyorlar. 
+							</Text>
+						</View>
+					) 
+					: 
+					(
+						null
+					)
+				}
 				{chatMod[0] == 1 ? (
 					<View>
 						<View style={{ marginBottom: 10 }} />
@@ -322,7 +352,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -358,10 +388,10 @@ export default function Messages({ route, navigation }) {
 									if (item.mod == 0 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
 										return (
 											<MsgBox
-												data={item.secondUser}
+												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 												chatID={item.id}
 												unreadMsg={item.unreadMsg}
@@ -436,10 +466,10 @@ export default function Messages({ route, navigation }) {
 
 										return (
 											<MsgBox
-												data={item.secondUser}
+												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 												chatID={item.id}
 												unreadMsg={item.unreadMsg}

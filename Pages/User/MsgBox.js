@@ -25,7 +25,7 @@ const { height, width } = Dimensions.get("window");
 
 const MsgBox = (props) => {
   const [deleteChatModal, setDeleteChatModal] = React.useState(false);
-  const [imageUri, setImageUri] = React.useState("http://graph.facebook.com/{user-id}/picture?type=large");
+  const [imageUri, setImageUri] = React.useState();
   const [myID, setMyID] = React.useState();
 
   const fetchImageUri = async () => {
@@ -43,7 +43,7 @@ const MsgBox = (props) => {
 				)
 				.then((res) => {
 					//setPeopleList(res.data);
-					console.log(res.data);
+					//console.log(res.data);
 					setImageUri(res.data[0].PhotoLink);
 					
 				})
@@ -176,7 +176,7 @@ const MsgBox = (props) => {
                               alignSelf: "center",
 						                }}
                           >
-                            <Text style={{ color: "white", fontFamily: "Poppins"}}>{props.unreadMsg}</Text>
+                            <Text style={{ color: "white", fontFamily: "Poppins"}}>+</Text>
                           </LinearGradient>
                         ) 
                         :

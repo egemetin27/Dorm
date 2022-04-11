@@ -59,11 +59,15 @@ export default function Chat({ navigation, route }) {
 					sortDirection: "DESC",
 					limit: 1000,
 					filter: {
-						userChatMessagesId: { eq: chatID },
+						userChatMessagesId: { eq: "chatID" },
 					},
 				})
 			);
 			await setChatMessages(chatMsgData.data.msgByDate.items);
+			if(chatMessages.length == 0)
+			{
+				alert("asdsd");
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -125,7 +129,7 @@ export default function Chat({ navigation, route }) {
 		await fetchImageUri();
 
 		fetchNewMessages();
-		console.log(lastMsgSender);
+		//console.log(lastMsgSender);
 		if(lastMsgSender != myUserID)
 		{
 			updateChat();
@@ -165,9 +169,11 @@ export default function Chat({ navigation, route }) {
 	};
 
 	const reportProfile = async() => {
+		/*
 		console.log(chosenReport);
 		console.log(myUserID);
 		console.log(otherUser.id);
+		*/
 		try {
 			await axios
 				.post(
