@@ -28,7 +28,6 @@ import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
 const { width, height } = Dimensions.get("window");
 
 import MsgBox from "./MsgBox";
-import { msgData } from "../msgData";
 import InputBox from "./chatInputBox";
 
 import { API, graphqlOperation, Auth } from "aws-amplify";
@@ -59,15 +58,12 @@ export default function Chat({ navigation, route }) {
 					sortDirection: "DESC",
 					limit: 1000,
 					filter: {
-						userChatMessagesId: { eq: "chatID" },
+						userChatMessagesId: { eq: chatID },
 					},
 				})
 			);
 			await setChatMessages(chatMsgData.data.msgByDate.items);
-			if(chatMessages.length == 0)
-			{
-				alert("asdsd");
-			}
+			
 		} catch (error) {
 			console.log(error);
 		}
@@ -128,7 +124,7 @@ export default function Chat({ navigation, route }) {
 		*/
 		await fetchImageUri();
 
-		fetchNewMessages();
+		await fetchNewMessages();
 		//console.log(lastMsgSender);
 		if(lastMsgSender != myUserID)
 		{
@@ -200,7 +196,16 @@ export default function Chat({ navigation, route }) {
 
 	return (
 		<View style={styles.inner}>
-			<View name={"Header"} style={[styles.header]}>
+			<View 
+				name={"Header"} 
+				style={[styles.header, {
+						position: "absolute",
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						zIndex: 1,
+					}]}>
 				<TouchableOpacity
 					style={{ width: "12%", paddingBottom: 5 }}
 					name={"backButton"}
@@ -244,6 +249,65 @@ export default function Chat({ navigation, route }) {
 					<Octicons name="report" size={32} color="#4A4A4A" />
 				</TouchableOpacity>
 			</View>
+			{chatMessages.length == 0 ? 
+			(
+				<View
+					style={{
+						position: "absolute",
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						justifyContent:"flex-end",
+						alignItems:"center",
+					}}
+				>
+					<Image
+						blurRadius={20}
+						style={{ 
+							resizeMode: "cover", 
+							width:width, 
+							height: height*0.85,
+
+						}}
+						source={{
+							uri: imageUri,
+						}}
+					/>
+					<View
+						style={{
+							position: "absolute",
+							top:0,
+							left:0,
+							right:0,
+							bottom:0,
+							justifyContent:"center",
+							alignItems:"center",
+						}}
+					>
+						<Text 
+							style={{
+								color: colors.white,
+								textAlign: "center",
+								fontSize: 14,
+								lineHeight: 15,
+								letterSpacing: 1,
+								paddingHorizontal: 50,
+							}}
+						>
+							Çekinme! O da senden mesaj bekliyor. Sohbeti başlatmak için bir şaka patlatabilir ya da klasiklerden giderek selam yazabilirsin.
+						</Text>
+					</View>
+				</View>
+			) 
+			
+			: 
+			
+			(
+				null
+			)
+			
+			}
 			<FlatList
 				style={{
 					flexDirection: "column",
