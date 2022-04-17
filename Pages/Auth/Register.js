@@ -147,13 +147,17 @@ export default function Register({ navigation }) {
 		setDate(currentDate);
 
 		let formattedDate =
+			currentDate.getFullYear()
+			+
+			"-" 
+			+
 			(currentDate.getMonth() + 1 < 10
 				? "0" + (currentDate.getMonth() + 1)
-				: currentDate.getMonth() + 1) +
-			"/" +
-			(currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()) +
-			"/" +
-			currentDate.getFullYear();
+				: currentDate.getMonth() + 1)
+			+
+			"-" 
+			+
+			(currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate());
 		setParsedDate(formattedDate);
 	};
 
