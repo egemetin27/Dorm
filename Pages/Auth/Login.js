@@ -49,11 +49,6 @@ export default function Login({ navigation }) {
 
 	const { signIn } = React.useContext(AuthContext);
 	const handleLogin = async () => {
-		// if (emailRegex.test(email)) {
-		// 	signIn({ email: email, password: password, isNewUser: false });
-		// } else {
-		// 	setWrongInput({ value: true, message: "E-posta adresi geçersiz!" });
-		// }
 		signIn({ email: email, password: password, isNewUser: false });
 	};
 

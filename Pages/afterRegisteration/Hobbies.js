@@ -129,8 +129,20 @@ export default function Hobbies({ navigation, route }) {
 		{ key: "🌲 Çevrecilik" },
 	];
 
-	// Aile sevgisi, Açık fikirlilik, Alçak gönüllülük, Romantiklik, Özgüven, Yaratıcılık, Empati, Zeka, Pozitiflik, Kendini tanımak, Espiri anlayışı, Sosyal farkındalık, Hayvanseverlik
-	const traits = [{ key: "Aile Sevgisi" }, { key: "Açık Fikirlilik" }, { key: "Alçak Gönüllülük" }];
+	const traits = [
+		{ key: "Aile Sevgisi" },
+		{ key: "Açık Fikirlilik" },
+		{ key: "Romantiklik" },
+		{ key: "Özgüven" },
+		{ key: "Yaratıcılık" },
+		{ key: "Empati" },
+		{ key: "Zeka" },
+		{ key: "Pozitiflik" },
+		{ key: "Kendini tanımak" },
+		{ key: "Espiri anlayışı" },
+		{ key: "Sosyal farkındalık" },
+		{ key: "Hayvanseverlik" },
+	];
 
 	return (
 		<View style={commonStyles.Container}>
