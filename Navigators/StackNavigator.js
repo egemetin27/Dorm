@@ -214,7 +214,7 @@ export default function StackNavigator() {
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
 						console.log(res.data);
-						if (res.data.onBoardingComplete == 0) {
+						if (navigation != null && res.data.onBoardingComplete == 0) {
 							navigation.replace("PhotoUpload", {
 								mail: email,
 								password: password,
