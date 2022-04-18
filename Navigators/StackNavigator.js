@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, Text, Image, Dimensions, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, NavigationContext } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -199,9 +199,10 @@ export default function StackNavigator() {
 	const [introShown, setIntroShown] = React.useState(); // is this the firs time the app is opened
 	const [tutorialShown, setTutorialShown] = React.useState(); // is the tutorial screen shown before
 	const [newUser, setNewUser] = React.useState(false);
+	// const navigation = React.useContext(NavigationContext);
 
 	const authContext = React.useMemo(() => ({
-		signIn: async ({ email, password, isNewUser }) => {
+		signIn: async ({ email, password, isNewUser, navigation = null }) => {
 			if (isNewUser) setNewUser(true);
 			else setNewUser(false);
 
@@ -213,6 +214,16 @@ export default function StackNavigator() {
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
 						console.log(res.data);
+						if (res.data.onBoardingComplete == 0) {
+							navigation.replace("PhotoUpload", {
+								mail: email,
+								password: password,
+								UserId: res.data.UserId,
+								sesToken: res.data.sesToken,
+							});
+							return;
+						}
+
 						// If signed in
 						const photoList = res.data.Photo.map((item) => {
 							return {

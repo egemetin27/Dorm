@@ -49,7 +49,7 @@ export default function Login({ navigation }) {
 
 	const { signIn } = React.useContext(AuthContext);
 	const handleLogin = async () => {
-		signIn({ email: email, password: password, isNewUser: false });
+		signIn({ email: email, password: password, isNewUser: false, navigation: navigation });
 	};
 
 	return (
