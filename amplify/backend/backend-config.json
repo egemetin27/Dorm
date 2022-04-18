@@ -9,13 +9,14 @@
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
               "apiKeyExpirationDays": 15,
-              "apiKeyExpirationDate": "2022-04-16T23:24:06.120Z",
+              "apiKeyExpirationDate": "2022-05-03T20:48:12.330Z",
               "description": "testAPI"
             }
           },
           "additionalAuthenticationProviders": []
         }
-      }
+      },
+      "dependsOn": []
     }
   }
 }
