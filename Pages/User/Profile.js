@@ -895,7 +895,7 @@ export default function Profile({ route, navigation }) {
 									await handleSave();
 									navigation.replace("Hobbies", {
 										hobbyList: hobbies,
-										userID: userID,
+										UserId: userID,
 										isNewUser: false,
 									});
 								}

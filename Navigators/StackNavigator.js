@@ -22,6 +22,7 @@ import WelcomePage from "../Pages/Auth/WelcomePage";
 import Login from "../Pages/Auth/Login";
 import ForgotPassword from "../Pages/Auth/ForgotPassword";
 import Verification from "../Pages/Auth/Verification";
+import Verification2 from "../Pages/Auth/Verification2";
 import LetsMeet from "../Pages/Auth/LetsMeet";
 import Register from "../Pages/Auth/Register";
 import RMahremiyetPolitikasi from "../Pages/Auth/RMahremiyetPolitikasi";
@@ -327,10 +328,7 @@ export default function StackNavigator() {
 									navigationKey={newUser ? "new" : "old"}
 								>
 									{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
-									{newUser && <Stack.Screen name="AfterRegister" component={AfterRegister} />}
 									<Stack.Screen name="MainScreen" component={MainScreen} />
-									<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
-									<Stack.Screen name="Hobbies" component={Hobbies} />
 									<Stack.Screen name="Settings" component={Settings} />
 									<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi} />
 									<Stack.Screen name="KullaniciSozlesmesi" component={KullaniciSozlesmesi} />
@@ -339,6 +337,7 @@ export default function StackNavigator() {
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 									<Stack.Screen name="ProfileCards" component={ProfileCards} />
 									<Stack.Screen name="EventCards" component={EventCards} />
+									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							) : (
 								// Screens for non-logged in users
@@ -353,9 +352,13 @@ export default function StackNavigator() {
 									<Stack.Screen name="RKullaniciSozlesmesi" component={RKullaniciSozlesmesi} />
 									<Stack.Screen name="RToplulukKurallari" component={RToplulukKurallari} />
 									<Stack.Screen name="Verification" component={Verification} />
+									<Stack.Screen name="Verification2" component={Verification2} />
 									<Stack.Screen name="FirstPassword" component={FirstPassword} />
 									<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 									<Stack.Screen name="NewPassword" component={NewPassword} />
+									<Stack.Screen name="AfterRegister" component={AfterRegister} />
+									<Stack.Screen name="PhotoUpload" component={PhotoUpload} />
+									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							)}
 						</Stack.Navigator>

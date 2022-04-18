@@ -17,9 +17,9 @@ export default function ForgotPassword({ navigation }) {
 
 	const HandleButton = () => {
 		axios
-			.post(url + "/SendVerification", { Mail: email })
+			.post(url + "/SendVerification", { Mail: email, isNewUser: false })
 			.then((res) => {
-				navigation.replace("Verification", { email: email, changePass: true });
+				navigation.replace("Verification2", { email: email });
 			})
 			.catch((error) => {
 				console.log({ error });

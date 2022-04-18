@@ -43,7 +43,7 @@ export default function Register({ navigation }) {
 	const [univListVisible, setUnivListVisible] = React.useState(false);
 	const [show, setShow] = React.useState(false);
 
-	const [counter, counterChanger] = React.useState(0);
+	const [counter, setCounter] = React.useState(0);
 
 	// const pickerRef = React.useRef().current;
 
@@ -81,21 +81,7 @@ export default function Register({ navigation }) {
 				school: university.choice,
 			};
 
-			axios
-				.post(url + "/register", profile)
-				.then(async (res) => {
-					await axios
-						.post(url + "/SendVerification", { Mail: trimmedMail })
-						.then(() => {
-							navigation.replace("Verification", { ...res.data, email: trimmedMail });
-						})
-						.catch((error) => {
-							console.log("verification error: ", error);
-						});
-				})
-				.catch((error) => {
-					console.log("register error: ", error);
-				});
+			navigation.replace("FirstPassword", { profile: profile });
 		} else {
 			if (getAge(parsedDate) < 18) {
 				Alert.alert("Hata!", "Yaşın 18'den küçük olamaz.", [{ text: "Kontrol Edeyim" }]);
@@ -119,7 +105,7 @@ export default function Register({ navigation }) {
 			toValue: counter + 1,
 			duration: 300,
 		}).start();
-		counterChanger(counter + 1);
+		setCounter(counter + 1);
 	};
 
 	const handleBackward = (ref) => {
@@ -134,7 +120,7 @@ export default function Register({ navigation }) {
 			toValue: counter - 1,
 			duration: 300,
 		}).start();
-		counterChanger(counter - 1);
+		setCounter(counter - 1);
 	};
 
 	const showDatePicker = () => {
@@ -147,16 +133,12 @@ export default function Register({ navigation }) {
 		setDate(currentDate);
 
 		let formattedDate =
-			currentDate.getFullYear()
-			+
-			"-" 
-			+
+			currentDate.getFullYear() +
+			"-" +
 			(currentDate.getMonth() + 1 < 10
 				? "0" + (currentDate.getMonth() + 1)
-				: currentDate.getMonth() + 1)
-			+
-			"-" 
-			+
+				: currentDate.getMonth() + 1) +
+			"-" +
 			(currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate());
 		setParsedDate(formattedDate);
 	};
@@ -188,7 +170,7 @@ export default function Register({ navigation }) {
 						<Text
 							style={[
 								{
-									fontSize: Math.min(12, width * 0.035),
+									fontSize: Math.min(16, width * 0.035),
 									color: "#B6B6B6",
 									textAlign: "left",
 									paddingLeft: width / 15,
@@ -282,7 +264,7 @@ export default function Register({ navigation }) {
 				>
 					<Text
 						style={{
-							fontSize: Math.min(12, width * 0.035),
+							fontSize: Math.min(16, width * 0.035),
 							color: "#B6B6B6",
 							textAlign: "right",
 							paddingRight: width / 15,
@@ -570,8 +552,8 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					Biz de kullanıcı adının ayca_22 olmasını isterdik{"\n"}ama burada gerçek ismine
-					ihtiyacımız var.
+					Biz de kullanıcı adının ayca_22 olmasını isterdik ama burada gerçek ismine ihtiyacımız
+					var.
 				</Animated.Text>
 				<Animated.Text
 					style={[

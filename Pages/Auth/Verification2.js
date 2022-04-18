@@ -5,13 +5,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import MaskedView from "@react-native-masked-view/masked-view";
-import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
 
 export default function Verification({ navigation, route }) {
-	const { dataToBeSent } = route?.params; //TODO: UserId also should be extracted from params
+	const { email } = route?.params; //TODO: UserId also should be extracted from params
 	const verification = React.useRef([-1, -1, -1, -1]);
 
 	const [wrongInput, setWrongInput] = React.useState(false);
@@ -22,15 +21,10 @@ export default function Verification({ navigation, route }) {
 	const input2 = React.createRef();
 	const input3 = React.createRef();
 
-	const handleSubmit = async () => {
+	const handleSubmit = () => {
 		const strCode = verification.current.toString().replace(/,/g, "");
 
-		const encryptedPassword = await digestStringAsync(
-			CryptoDigestAlgorithm.SHA256,
-			dataToBeSent.password
-		);
-
-		const ver = { Mail: dataToBeSent.mail, VerCode: strCode };
+		const ver = { Mail: email, VerCode: strCode };
 
 		axios
 			.post(url + "/CheckVerification", ver)
@@ -38,17 +32,7 @@ export default function Verification({ navigation, route }) {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
 
 				if (res.data?.Verification > 0) {
-					axios
-						.post(url + "/register", { ...dataToBeSent, password: encryptedPassword })
-						.then(async (res) => {
-							navigation.replace("PhotoUpload", {
-								...dataToBeSent,
-								...res.data,
-							});
-						})
-						.catch((error) => {
-							console.log("register error: ", error);
-						});
+					navigation.replace("NewPassword", { email: email });
 				} else {
 					setWrongInput(true);
 					input0.current.clear();
@@ -64,14 +48,14 @@ export default function Verification({ navigation, route }) {
 			.catch((error) => {
 				console.log({ error });
 			});
+
+		// navigation.replace("FirstPassword", { userID: UserId, email: email });
 	};
 
 	const resendCode = () => {
-		axios
-			.post(url + "/SendVerification", { Mail: dataToBeSent.mail, isNewUser: true })
-			.catch((error) => {
-				console.log({ error });
-			});
+		axios.post(url + "/SendVerification", { Mail: email, isNewUser: false }).catch((error) => {
+			console.log({ error });
+		});
 	};
 
 	const checkIfDone = () => {
@@ -120,7 +104,7 @@ export default function Verification({ navigation, route }) {
 				</MaskedView>
 
 				<View style={{ marginTop: 10 }}>
-					<Text style={[styles.text, { fontFamily: "PoppinsSemiBold" }]}>{dataToBeSent.mail}</Text>
+					<Text style={[styles.text, { fontFamily: "PoppinsSemiBold" }]}>{email}</Text>
 					<Text style={styles.text}>
 						mail adresine gönderdiğimiz doğrulama{"\n"}kodunu bizimle paylaş
 					</Text>

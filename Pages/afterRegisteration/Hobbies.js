@@ -16,7 +16,7 @@ import * as SecureStore from "expo-secure-store";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { url } from "../../connection";
-import { min } from "moment";
+import { AuthContext } from "../../nonVisualComponents/Context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -25,7 +25,9 @@ export default function Hobbies({ navigation, route }) {
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const { userID, isNewUser } = route.params;
+	const { UserId, isNewUser } = route.params;
+
+	const { signIn } = React.useContext(AuthContext);
 
 	const handleSubmit = async () => {
 		try {
@@ -37,12 +39,13 @@ export default function Hobbies({ navigation, route }) {
 				.post(
 					url + "/interests",
 					{
-						UserId: userID,
+						UserId: UserId,
 						hobbies: hobbies,
 					},
-					{ headers: { "access-token": data.sesToken } }
+					{ headers: { "access-token": route.params?.sesToken ?? data.sesToken } }
 				)
 				.then(async (res) => {
+					console.log(res);
 					const newHobbyList = hobbies.map((item) => {
 						return { InterestName: item };
 					});
@@ -52,7 +55,7 @@ export default function Hobbies({ navigation, route }) {
 					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
 					setIsLoading(false);
 					if (isNewUser) {
-						navigation.replace("MainScreen", { screen: "AnaSayfa" });
+						signIn({ email: route.params.mail, password: route.params.password, isNewUser: true });
 					} else {
 						navigation.replace("MainScreen", { screen: "Profil" });
 					}
@@ -83,7 +86,7 @@ export default function Hobbies({ navigation, route }) {
 		{ key: "🤼 Dövüş Sanatları" },
 	];
 
-	// Müzik, Dans, Fotoğrafçılık,  Plastik sanatlar, Makyaj, Vlogging, Yazı
+	// Fotoğrafçılık,  Plastik sanatlar, Makyaj, Vlogging, Yazı
 	const creativity = [
 		{ key: "🎸 Müzik" },
 		{ key: "💃 Dans" },
@@ -119,7 +122,7 @@ export default function Hobbies({ navigation, route }) {
 		{ key: "🪕 Country" },
 	];
 
-	// Feminist, LGBTQ+ destekçisi, Çevrecilik, Trans destekçisi, İnsan hakları
+	// Trans destekçisi, İnsan hakları
 	const activism = [
 		{ key: "💁🏻‍♀️ Feminist" },
 		{ key: "🏳️‍🌈 LGBTQ+ destekçisi" },
@@ -173,7 +176,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{sport.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -189,7 +192,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{creativity.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -205,7 +208,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{consumables.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -221,7 +224,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{movies.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -237,7 +240,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{reading.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -253,7 +256,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{music.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -269,7 +272,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{activism.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
@@ -285,7 +288,7 @@ export default function Hobbies({ navigation, route }) {
 						/>
 						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 							{traits.map((item, index) => {
-								return <Item value={hobbies} setValue={setHobbies} item={item} />;
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
 							})}
 						</View>
 					</View>
