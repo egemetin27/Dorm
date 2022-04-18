@@ -164,7 +164,19 @@ export default function Register({ navigation }) {
 	return (
 		<View>
 			<StatusBar style={"dark"} />
-			<View style={[commonStyles.Header, { marginTop: 80, justifyContent: "space-around" }]}>
+			<View
+				style={[
+					{
+						marginTop: height * 0.08,
+						position: "relative",
+						width: "100%",
+						flexDirection: "row",
+						justifyContent: "space-between",
+						alignItems: "center",
+						minHeight: 40,
+					},
+				]}
+			>
 				<TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
@@ -176,7 +188,7 @@ export default function Register({ navigation }) {
 						<Text
 							style={[
 								{
-									fontSize: 15,
+									fontSize: Math.min(12, width * 0.035),
 									color: "#B6B6B6",
 									textAlign: "left",
 									paddingLeft: width / 15,
@@ -188,7 +200,7 @@ export default function Register({ navigation }) {
 					) : (
 						<Ionicons
 							name="arrow-back-outline"
-							size={32}
+							size={35}
 							color="#B6B6B6"
 							style={{ paddingLeft: width / 15 }}
 						/>
@@ -270,7 +282,7 @@ export default function Register({ navigation }) {
 				>
 					<Text
 						style={{
-							fontSize: 15,
+							fontSize: Math.min(12, width * 0.035),
 							color: "#B6B6B6",
 							textAlign: "right",
 							paddingRight: width / 15,

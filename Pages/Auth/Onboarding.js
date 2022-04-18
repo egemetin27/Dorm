@@ -1,6 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	Image,
+	Dimensions,
+	SafeAreaView,
+} from "react-native";
 
 import Animated, {
 	useAnimatedStyle,
@@ -47,9 +55,9 @@ export default function Onboarding({ navigation }) {
 					height: "100%",
 				}}
 			>
-				<View style={[commonStyles.Header, { justifyContent: "flex-end" }]}>
+				<View style={{ alignSelf: "flex-end", marginTop: height * 0.05 }}>
 					<TouchableOpacity style={{ right: 35, top: 2 }} onPress={navigate}>
-						<Text style={{ fontSize: 20, color: colors.white }}>Atla</Text>
+						<Text style={{ fontSize: height * 0.03, color: colors.white }}>Atla</Text>
 					</TouchableOpacity>
 				</View>
 				<View
@@ -67,7 +75,7 @@ export default function Onboarding({ navigation }) {
 											width: 12,
 											borderRadius: 6,
 											backgroundColor: colors.white,
-											marginTop: width / 27,
+											marginTop: height * 0.015,
 										},
 
 										useAnimatedStyle(() => {
@@ -91,7 +99,9 @@ export default function Onboarding({ navigation }) {
 					</View>
 					<View
 						name={"text"}
-						style={{ marginLeft: width / 12, marginTop: width / 108 + (counter * width * 7) / 108 }}
+						style={{
+							marginLeft: width * 0.05,
+						}}
 					>
 						<Text style={styles.TextHeader}>{headerArr[counter]}</Text>
 						<Text style={styles.TextContent}>{contentArr[counter]}</Text>
@@ -100,11 +110,9 @@ export default function Onboarding({ navigation }) {
 				<View
 					name={"icon container"}
 					style={{
-						position: "absolute",
 						alignItems: "center",
 						width: "100%",
-						height: width / 1.2,
-						bottom: height / 4.5,
+						height: Math.min(height * 0.4, width * 0.8),
 					}}
 				>
 					<Image
@@ -112,7 +120,7 @@ export default function Onboarding({ navigation }) {
 						resizeMode="contain"
 						style={{
 							aspectRatio: 1,
-							width: width / 1.2,
+							width: width * 0.8,
 							maxHeight: height * 0.4,
 							position: "absolute",
 							opacity: counter == 0 ? 1 : 0,
@@ -124,7 +132,7 @@ export default function Onboarding({ navigation }) {
 						resizeMode="contain"
 						style={{
 							aspectRatio: 1,
-							width: width / 1.2,
+							width: width * 0.8,
 							maxHeight: height * 0.4,
 							position: "absolute",
 							opacity: counter == 1 ? 1 : 0,
@@ -136,7 +144,7 @@ export default function Onboarding({ navigation }) {
 						resizeMode="contain"
 						style={{
 							aspectRatio: 1,
-							width: width / 1.2,
+							width: width * 0.8,
 							maxHeight: height * 0.4,
 							position: "absolute",
 							opacity: counter == 2 ? 1 : 0,
@@ -219,20 +227,5 @@ const styles = StyleSheet.create({
 		color: colors.white,
 		letterSpacing: 0.9,
 		fontSize: height * 0.02,
-	},
-	Circle: {
-		marginTop: width / 27,
-		backgroundColor: "#FFFFFF",
-		opacity: 0.7,
-		height: width / 36,
-		width: width / 36,
-		borderRadius: width / 72,
-	},
-	Slider: {
-		height: (width * 5) / 54,
-		width: width / 36,
-		position: "absolute",
-		backgroundColor: colors.white,
-		borderRadius: width / 72,
 	},
 });

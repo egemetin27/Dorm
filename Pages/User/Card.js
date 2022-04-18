@@ -59,7 +59,7 @@ export default Card = ({
 		Din: religion,
 		Gender: genderNo,
 		Major: major,
-		Name: fName,
+		Name: name,
 		School: university,
 		Sigara: smoke,
 		Surname: sName,
@@ -71,7 +71,6 @@ export default Card = ({
 
 	// console.log(`name: ${fName}\nindex: ${index}\nindex of first card: ${indexOfFrontCard}\n\n`);
 
-	const name = fName + " " + sName;
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
 
@@ -391,7 +390,7 @@ export default Card = ({
 												<Text
 													style={{
 														color: colors.white,
-														fontSize: width * 0.06,
+														fontSize: Math.min(35, width * 0.06),
 														fontFamily: "PoppinsSemiBold",
 														letterSpacing: 1.05,
 													}}
@@ -402,9 +401,9 @@ export default Card = ({
 												<Text
 													style={{
 														color: colors.white,
-														fontSize: width * 0.045,
+														fontSize: Math.min(24, width * 0.045),
 														fontFamily: "PoppinsItalic",
-														lineHeight: width * 0.05,
+														lineHeight: Math.min(27, width * 0.05),
 													}}
 												>
 													{university}
@@ -457,6 +456,18 @@ export default Card = ({
 								</Animated.View>
 
 								{/* PART: backface */}
+								{/* <Animated.View
+									style={[
+										commonStyles.photo,
+										{
+											width: width * 0.9,
+											maxHeight: height * 0.7,
+											backfaceVisibility: "hidden",
+										},
+										animatedFrontFace,
+									]}
+								> */}
+
 								<Animated.View
 									name={"backface"}
 									style={[
@@ -482,8 +493,8 @@ export default Card = ({
 										style={{
 											position: "absolute",
 											aspectRatio: 1 / 1.5,
-											maxHeight: height * 0.7,
 											width: width * 0.9,
+											maxHeight: height * 0.7,
 											resizeMode: "cover",
 											transform: [{ rotateY: "180deg" }],
 										}}

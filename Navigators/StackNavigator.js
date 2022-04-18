@@ -83,6 +83,7 @@ function MainScreen({ route, navigation }) {
 								alignItems: "center",
 								justifyContent: "flex-end",
 								flex: 1,
+								width: width * 0.33,
 							}}
 						>
 							<Image
@@ -120,6 +121,7 @@ function MainScreen({ route, navigation }) {
 								alignItems: "center",
 								justifyContent: "flex-end",
 								flex: 1,
+								width: width * 0.33,
 							}}
 						>
 							<Image
@@ -157,6 +159,7 @@ function MainScreen({ route, navigation }) {
 								alignItems: "center",
 								justifyContent: "flex-end",
 								flex: 1,
+								width: width * 0.33,
 							}}
 						>
 							<Image
