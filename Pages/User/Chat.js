@@ -161,6 +161,32 @@ export default function Chat({ navigation, route }) {
 
 	const openProfile= async () => {
 		alert("Bu özellik ilerleyen güncellemelerde gelecektir.");
+		try {
+			let abortController = new AbortController();
+			const userDataStr = await SecureStore.getItemAsync("userData");
+			const userData = JSON.parse(userDataStr);
+			const myToken = userData.sesToken;
+			console.log(otherUser.id);
+			await axios
+				.post(
+					url + "/profileinfo",
+					//{ userId: otherUser.id },
+					{ userId: "5" },
+					{ headers: { "access-token": myToken } }
+				)
+				.then((res) => {
+					//setPeopleList(res.data);
+					console.log(res.data);
+					//console.log(res.data[0].PhotoLink);
+					//console.log(res);
+					
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} catch (error) {
+			console.log(error);
+		}
 
 	};
 

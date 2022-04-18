@@ -428,17 +428,6 @@ export default function MainPage({ navigation }) {
 	const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
 	const [filterHobi, setFilterHobi] = React.useState();
 
-
-	
-	const [filtreCinsiyet, setFiltreCinsiyet] = React.useState(-1);
-	const [filtreEgzersiz, setFiltreEgsersiz] = React.useState(-1);
-	const [filtreUniversite, setFiltreUniversite] = React.useState(-1);
-	const [filtreAlkol, setFiltreAlkol] = React.useState(-1);
-	const [filtreSigara, setFiltreSigara] = React.useState(-1);
-	const [filtreBurc, setFiltreBurc] = React.useState(-1);
-	const [filtreDin, setFiltreDin] = React.useState(-1);
-	const [filtreYemek, setFiltreYemek] = React.useState(-1);
-
 	async function registerForPushNotificationAsync() {
 		let token;
 		const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -485,6 +474,11 @@ export default function MainPage({ navigation }) {
 						Minyas: 18,
 						Maxyas: 99,
 						Cinsiyet: [1, 1, 1],
+						Egsersiz: [1, 1, 1],
+						Alkol: [1, 1, 1],
+						Sigara: [1, 1, 1],
+						Burc: [1,1,1,1,1,1,1,1,1,1,1,1],
+						Yemek: [1, 1, 1, 1, 1],
 					},
 					{ headers: { "access-token": myToken } }
 				)
