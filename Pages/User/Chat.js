@@ -165,16 +165,22 @@ export default function Chat({ navigation, route }) {
 	};
 
 	const reportProfile = async() => {
-		/*
+		
 		console.log(chosenReport);
 		console.log(myUserID);
 		console.log(otherUser.id);
-		*/
+		console.log(chatID);
+		let abortController = new AbortController();
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const myToken = userData.sesToken;
+		
 		try {
 			await axios
 				.post(
 					url + "/report",
-					{ 	UserId: myUserID,
+					{ 	
+						UserId: myUserID,
 						sikayetEdilen: otherUser.id,
 						sikayetKodu: chosenReport,
 						aciklama: "",					
@@ -184,14 +190,18 @@ export default function Chat({ navigation, route }) {
 				.catch((err) => {
 					console.log(err);
 				});
+				
 			API.graphql(
 				graphqlOperation(updateUserChat, {
 					input: { id: chatID, status: "Reported"},
 				})
 			);
+			navigation.goBack();
+			
 		} catch (error) {
 			console.log(error);
 		}
+		
 	};
 
 	return (
