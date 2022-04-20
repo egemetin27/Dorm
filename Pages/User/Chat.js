@@ -38,18 +38,25 @@ import { onCreateSentMsg } from "../../src/graphql/subscriptions";
 import ChatMsg from "./ChatMsg";
 import { decompose2d } from "react-native-redash";
 import { CustomModal } from "../../visualComponents/customComponents";
+import ChatProfile from "./ChatProfile";
 
 export default function Chat({ navigation, route }) {
 	const [chatMessages, setChatMessages] = useState([]);
 	const [imageUri, setImageUri] = useState();
 
+	const [cardData, setCardData] = React.useState(null);
+
 	const [reportText, changeReportText] = React.useState(null);
 
 	const { otherUser, myUserID, chatID, unreadMsg, lastMsgSender} = route.params;
 	
+	const [profilePage, setProfilePage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
 
+	const closeProfile = () => {
+		setProfilePage(false);
+	}
 	const fetchNewMessages = async () => {
 		try {
 			const chatMsgData = await API.graphql(
@@ -116,6 +123,36 @@ export default function Chat({ navigation, route }) {
         }
     }
 
+	const fetchProfile= async () => {
+		try {
+			let abortController = new AbortController();
+			const userDataStr = await SecureStore.getItemAsync("userData");
+			const userData = JSON.parse(userDataStr);
+			const myToken = userData.sesToken;
+			console.log(otherUser.id);
+			await axios
+				.post(
+					url + "/profileinfo",
+					{ userId: otherUser.id },
+					//{ userId: "5" },
+					{ headers: { "access-token": myToken } }
+				)
+				.then((res) => {
+					//setPeopleList(res.data);
+					setCardData(res.data);
+					//console.log(res.data[0].PhotoLink);
+					//console.log(res);
+					
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} catch (error) {
+			console.log(error);
+		}
+
+	};
+
 	React.useEffect(async () => {
 		/*
 		console.log("+++++++++++++++++++++++++++");
@@ -123,7 +160,7 @@ export default function Chat({ navigation, route }) {
 		console.log("+++++++++++++++++++++++++++");
 		*/
 		await fetchImageUri();
-
+		await fetchProfile();
 		await fetchNewMessages();
 		//console.log(lastMsgSender);
 		if(lastMsgSender != myUserID)
@@ -160,30 +197,9 @@ export default function Chat({ navigation, route }) {
 	}, []);
 
 	const openProfile= async () => {
-		alert("Bu özellik ilerleyen güncellemelerde gelecektir.");
 		try {
-			let abortController = new AbortController();
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const myToken = userData.sesToken;
-			console.log(otherUser.id);
-			await axios
-				.post(
-					url + "/profileinfo",
-					//{ userId: otherUser.id },
-					{ userId: "5" },
-					{ headers: { "access-token": myToken } }
-				)
-				.then((res) => {
-					//setPeopleList(res.data);
-					console.log(res.data);
-					//console.log(res.data[0].PhotoLink);
-					//console.log(res);
-					
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+			//console.log(cardData);
+			setProfilePage(true);
 		} catch (error) {
 			console.log(error);
 		}
@@ -358,6 +374,7 @@ export default function Chat({ navigation, route }) {
 			/>
 			<InputBox myUserID={myUserID} chatID={chatID} otherUser={otherUser} lastMsgSender={lastMsgSender} unreadMsg={unreadMsg}/>
 			{Platform.OS == "ios" ? <KeyboardSpacer /> : null}
+			{/* Report page custom modal */}
 			<CustomModal
 				visible= {reportPage}
 				dismiss={()=>{
@@ -638,6 +655,22 @@ export default function Chat({ navigation, route }) {
 					</View>
 				</View>
 			</CustomModal>
+			{/* Report page custom modal */}
+
+			{/* Profil page custom modal */}
+			<CustomModal
+				animationType = "fade"
+				visible= {profilePage}
+				onRequestClose= {() => {
+					setProfilePage(false);
+				}}
+				dismiss={()=>{
+					setProfilePage(false);
+				}}
+			>
+				<ChatProfile data = {cardData} close={closeProfile}/>
+			</CustomModal>
+			{/* Profil page custom modal */}
 		</View>
 	);
 }
