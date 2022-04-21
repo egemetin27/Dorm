@@ -1,5 +1,5 @@
 import React from "react";
-import ReactNative, { View, Text, Image, Dimensions } from "react-native";
+import ReactNative, { View, Text, Image, Dimensions, Modal } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -22,7 +22,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient } from "../../visualComponents/colors";
+import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
@@ -31,6 +31,8 @@ const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../../src/graphql/queries";
+import { CustomModal } from "../../visualComponents/customComponents";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default Card = ({
 	card,
@@ -42,6 +44,7 @@ export default Card = ({
 	sesToken,
 	indexOfFrontCard,
 	incrementIndex,
+	navigateFromCard,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -50,6 +53,10 @@ export default Card = ({
 
 	const [likeFlag, setLikeFlag] = React.useState(false);
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
+
+
+	const [matchPage, setMatchPage] = React.useState(false);
+	const [reportPage, setReportPage] = React.useState(false);
 
 	const {
 		About: about,
@@ -74,17 +81,14 @@ export default Card = ({
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
 
+	const goToMsg = async () => {
+		navigateFromCard();
+
+	};
+
 	const sendNotification = async () => {
 		try {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
-			console.log("++++++++++++++++++++++++++");
-			console.log(userData.data);
-			console.log("++++++++++++++++++++++++++");
-			console.log(userData.data.getMsgUser.pushToken);
-			console.log("++++++++++++++++++++++++++");
-			console.log(userData.data.getMsgUser.id);
-			console.log("++++++++++++++++++++++++++");
-
 			let response = fetch("https://exp.host/--/api/v2/push/send", {
 				method: "POST",
 				headers: {
@@ -111,7 +115,7 @@ export default Card = ({
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		incrementIndex();
+		const matchHappened = false;
 		await axios
 			.post(
 				url + "/LikeDislike",
@@ -123,18 +127,21 @@ export default Card = ({
 				{ headers: { "access-token": sesToken } }
 			)
 			.then((res) => {
-				console.log("******************");
-				console.log(res.data);
 				if (res.data == "match") {
+					matchHappened = true;
 					console.log("send notification.");
 					sendNotification();
 					alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
 				}
-				console.log("******************");
 			})
 			.catch((error) => {
 				//console.log(error);
 			});
+		if (matchHappened) {
+			setMatchPage(true);		
+		} else {
+			incrementIndex();			
+		}
 	};
 
 	const panHandler = Gesture.Pan()
@@ -352,7 +359,9 @@ export default Card = ({
 										})}
 									</View>
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
-										<TouchableOpacity onPress={() => {}}>
+										<TouchableOpacity onPress={() => {
+											setReportPage(true);
+										}}>
 											<Image
 												style={{
 													height: 25,
@@ -879,6 +888,155 @@ export default Card = ({
 					</View>
 				</View>
 			)}
+			
+			<Modal
+				visible={matchPage}
+				onRequestClose={() => {
+					setMatchPage(false);
+				}}
+				onDismiss = {() => {
+					setMatchPage(false);
+				}}
+			>
+				<View
+					style={{
+						height: height,
+						width: width,
+						top:0,
+						left:0,
+						right:0,
+						bottom: 0,
+						position: "absolute",
+						justifyContent: "center",
+						alignItems: "center",
+						alignContent: "center",
+					}}
+				>
+					<View
+						style={{
+							
+							height: height * 0.95,
+							width: width * 0.95,
+							backgroundColor: colors.white,
+						}}
+						
+					>
+						<GradientText 
+							style={{ 
+								fontSize: 26, 
+								fontWeight: "bold", 
+								textAlign: "center",
+								paddingVertical: height * 0.02,
+							}} 
+							text={"Hey! \n Eşleştiniz"}/>
+						<Text style={{ 
+							fontSize: 23,
+							fontFamily: "Poppins",
+							color: colors.medium_gray,
+							textAlign: "center",
+							paddingVertical: height * 0.02,
+						}}>
+							{name} {"&"} Sen
+						</Text>
+						<Image
+							source = {{
+								uri: photoList[0].PhotoLink,
+							}}
+							style={{
+								top: height*0.25,
+								left: width * 0.12,
+								borderRadius: 20,
+								position: "absolute",
+								aspectRatio: 1/1.5,
+								width: width * 0.4,
+								maxHeight: height * 0.7,
+								resizeMode: "cover",
+								transform: [{ rotateZ: "-18deg"}],
+								zIndex: 2,
+							}}
+						/>
+						<Image
+							source = {{
+								uri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg",
+							}}
+							style={{
+								top: height*0.30,
+								left: width * 0.4,
+								borderRadius: 20,
+								position: "absolute",
+								aspectRatio: 1/1.5,
+								width: width * 0.4,
+								maxHeight: height * 0.7,
+								resizeMode: "cover",
+								transform: [{ rotateZ: "23deg"}]
+
+							}}
+						/>
+						<Text 
+							style ={{
+								paddingTop: height * 0.425,
+								fontSize: 16,
+								fontFamily: "Poppins",
+								color: colors.medium_gray,
+								textAlign: "center",
+								paddingHorizontal: 5,
+							}}
+						>
+							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
+						</Text>
+						
+						<TouchableOpacity
+					      	onPress={() => {
+								setMatchPage(false);
+								incrementIndex();
+								//goToMsg();
+							}}
+					      	style={{
+								paddingTop: 10,
+						      	maxWidth: "100%",						      	
+						      	overflow: "hidden",
+								justifyContent: "center",
+								alignItems:"center",
+
+					      	}}
+			      		>
+					      	<Gradient
+						      	style={{
+							      	justifyContent: "center",
+							      	alignItems: "center",
+							      	width: "80%",
+									borderRadius: 12,
+
+						      	}}
+					      	>
+						      	<Text style={{ color: colors.white, fontSize: 18, fontFamily: "PoppinsSemiBold", padding: 10 }}>
+							    	Mesaj Gönder
+						      	</Text>
+					      	</Gradient>
+				      	</TouchableOpacity>
+						<TouchableOpacity
+							style = {{
+								paddingTop: 5,
+							}}
+							onPress = {() => {
+								incrementIndex();
+								setMatchPage(false);
+							}}
+						>
+							<GradientText style={{ 
+									fontSize: 18,
+									fontFamily: "Poppins",
+									fontWeight: "bold", 
+									textAlign: "center",
+									paddingVertical: height * 0.02,
+								}} 
+								text={"Daha sonra"}/>
+						</TouchableOpacity>
+
+					</View>
+				</View>
+
+			</Modal>
 		</View>
 	);
 };

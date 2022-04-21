@@ -13,6 +13,7 @@ import {
 	Keyboard,
 	TextInput,
 	FlatList,
+	Modal
 } from "react-native";
 import { Feather, Octicons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
@@ -130,6 +131,7 @@ export default function Chat({ navigation, route }) {
 			const userData = JSON.parse(userDataStr);
 			const myToken = userData.sesToken;
 			console.log(otherUser.id);
+			console.log(myToken);
 			await axios
 				.post(
 					url + "/profileinfo",
@@ -140,6 +142,7 @@ export default function Chat({ navigation, route }) {
 				.then((res) => {
 					//setPeopleList(res.data);
 					setCardData(res.data);
+
 					//console.log(res.data[0].PhotoLink);
 					//console.log(res);
 					
@@ -301,7 +304,7 @@ export default function Chat({ navigation, route }) {
 					<Octicons name="report" size={32} color="#4A4A4A" />
 				</TouchableOpacity>
 			</View>
-			{chatMessages.length == 0 ? 
+			{ lastMsgSender == "" && chatMessages.length == 0 ? 
 			(
 				<View
 					style={{
@@ -658,18 +661,30 @@ export default function Chat({ navigation, route }) {
 			{/* Report page custom modal */}
 
 			{/* Profil page custom modal */}
-			<CustomModal
-				animationType = "fade"
-				visible= {profilePage}
-				onRequestClose= {() => {
-					setProfilePage(false);
-				}}
-				dismiss={()=>{
-					setProfilePage(false);
-				}}
-			>
-				<ChatProfile data = {cardData} close={closeProfile}/>
-			</CustomModal>
+			{profilePage ?  
+				(
+					<View
+						style={{
+							position: "absolute",
+							zIndex: 3,
+							top:0,
+							left: 0,
+							right:0,
+							bottom: 0,
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<ChatProfile data = {cardData} close = {closeProfile}/>
+					</View>
+				)
+				:
+				(
+					null
+				)
+
+			}
+			
 			{/* Profil page custom modal */}
 		</View>
 	);

@@ -40,7 +40,7 @@ const ChatProfile = (props) => {
     const turn = useSharedValue(1);
     const backFace = useSharedValue(false);
     const [backfaceIndex, setBackfaceIndex] = React.useState(0);
-
+    
     const gender = getGender(props.data.Gender);
 	const age = getAge(props.data.Birth_Date);
 
@@ -108,7 +108,7 @@ const ChatProfile = (props) => {
     const composedGesture = Gesture.Race(tapHandler);
    
     return (
-        <TouchableWithoutFeedback >
+        <View >
             <View
                 name = {"card"}
                 style = {{
@@ -524,7 +524,7 @@ const ChatProfile = (props) => {
                 </GestureDetector>
 
             </View>
-        </TouchableWithoutFeedback>
+        </View>
     )
 }
 

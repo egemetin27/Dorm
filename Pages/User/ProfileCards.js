@@ -28,6 +28,10 @@ export default function ProfileCards({ navigation, route }) {
 	const [peopleList, setPeopleList] = React.useState([]);
 	const popupVisible = useSharedValue(false);
 	const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
+	
+	const navigateFromCard = () => {
+		navigation.replace("MainScreen", { screen: "Mesajlar" });
+	};
 
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
@@ -149,6 +153,7 @@ export default function ProfileCards({ navigation, route }) {
 						incrementIndex={() => {
 							setIndexOfFrontCard(indexOfFrontCard + 1);
 						}}
+						navigateFromCard = {() => {navigateFromCard();}}
 					/>
 				))}
 			</View>
