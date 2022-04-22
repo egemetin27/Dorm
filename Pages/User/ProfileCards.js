@@ -14,6 +14,9 @@ import { useSharedValue, useDerivedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
 import { Octicons, Feather } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
+import { url } from "../../connection";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
@@ -28,9 +31,50 @@ export default function ProfileCards({ navigation, route }) {
 	const [peopleList, setPeopleList] = React.useState([]);
 	const popupVisible = useSharedValue(false);
 	const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
+	
+	const [myProfilePicture, setMyProfilePicture] = React.useState();
+
+	React.useEffect( async () => {
+		try {
+			let abortController = new AbortController();
+			const userDataStr = await SecureStore.getItemAsync("userData");
+			const userData = JSON.parse(userDataStr);
+			const userID = userData.UserId.toString();
+			const myToken = userData.sesToken;
+
+			await axios
+				.post(
+					url + "/getProfilePic",
+					{ UserId: userID },
+					{ headers: { "access-token": myToken } }
+				)
+				.then((res) => {
+					//setPeopleList(res.data);
+					//console.log(res.data);
+					//console.log(res.data[0].PhotoLink);
+					setMyProfilePicture(res.data[0].PhotoLink);
+					
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+			
+		} catch (error) {
+			console.log(error);
+		}
+		
+
+
+	}, []);
+
+	const navigateFromCard = () => {
+		navigation.replace("MainScreen", { screen: "Mesajlar" });
+	};
 
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
+
+
 
 	const derivedText = useDerivedValue(
 		() =>
@@ -149,6 +193,8 @@ export default function ProfileCards({ navigation, route }) {
 						incrementIndex={() => {
 							setIndexOfFrontCard(indexOfFrontCard + 1);
 						}}
+						myProfilePicture = {myProfilePicture}
+						navigateFromCard = {() => {navigateFromCard();}}
 					/>
 				))}
 			</View>

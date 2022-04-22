@@ -456,6 +456,60 @@ export default function MainPage({ navigation }) {
 		return token;
 	}
 
+	const applyFilter = async () => {
+		let abortController = new AbortController();
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const userID = userData.UserId.toString();
+		const myToken = userData.sesToken;
+		setMyID(userID);
+		setSesToken(myToken);
+		/*
+		const [minAge, setMinAge] = React.useState(18);
+		const [maxAge, setMaxAge] = React.useState(99);
+		const [filterCinsiyet, setFilterCinsiyet] = React.useState([1,1,1]);
+		const [filterEgsersiz, setFilterEgsersiz] = React.useState([1,1,1]);
+		const [filterUniversite, setFilterUniversite] = React.useState();
+		const [filterAlkol, setFilterAlkol] = React.useState([1,1,1]);
+		const [filterSigara, setFilterSigara] = React.useState([1,1,1]);
+		const [filterBurc, setFilterBurc] = React.useState([1,1,1,1,1,1,1,1,1,1,1,1]);
+		const [filterDin, setFilterDin] = React.useState([1,1,1]);
+		const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
+		const [filterHobi, setFilterHobi] = React.useState();
+		*/
+		async function prepare() {
+			await axios
+				.post(
+					url + "/Swipelist",
+					{ 
+						UserId: userID,
+						Minyas: minAge,
+						Maxyas: maxAge,
+						Cinsiyet: filterCinsiyet,
+						Egsersiz: filterEgsersiz,
+						Alkol: filterAlkol,
+						Sigara: filterAlkol,
+						Burc: [1,1,1,1,1,1,1,1,1,1,1,1],
+						Yemek: filterYemek,
+					},
+					{ headers: { "access-token": myToken } }
+				)
+				.then((res) => {
+					console.log(res.data);
+					setPeopleList(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+
+		try {
+			await prepare();
+		} catch (err) {
+			console.log(err);
+		} 
+	};
+
 	React.useEffect(async () => {
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
@@ -500,10 +554,11 @@ export default function MainPage({ navigation }) {
 		}
 
 		const token = await registerForPushNotificationAsync();
+		/*
 		console.log("-----------------");
 		console.log(token);
 		console.log("-----------------");
-
+		*/
 		const userName = userData.Name;
 		async function fetchUser() {
 			const newUser = {
@@ -1971,7 +2026,8 @@ export default function MainPage({ navigation }) {
 					</View>
 					<TouchableOpacity
 						onPress={() => {
-							alert("filtreyi gönder");
+							applyFilter();
+							setFiltreModal(false);
 						}}
 						style={{
 							maxWidth: "90%",
