@@ -26,6 +26,7 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
+import * as SecureStore from "expo-secure-store";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
@@ -45,6 +46,7 @@ export default Card = ({
 	indexOfFrontCard,
 	incrementIndex,
 	navigateFromCard,
+	myProfilePicture,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -127,21 +129,23 @@ export default Card = ({
 				{ headers: { "access-token": sesToken } }
 			)
 			.then((res) => {
+				console.log(res.data);
 				if (res.data == "match") {
-					matchHappened = true;
 					console.log("send notification.");
 					sendNotification();
-					alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
+					//alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
+					setMatchPage(true);
+					matchHappened = true;
+					
+				}
+				else
+				{
+					incrementIndex();
 				}
 			})
 			.catch((error) => {
 				//console.log(error);
 			});
-		if (matchHappened) {
-			setMatchPage(true);		
-		} else {
-			incrementIndex();			
-		}
 	};
 
 	const panHandler = Gesture.Pan()
@@ -360,7 +364,9 @@ export default Card = ({
 									</View>
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity onPress={() => {
-											setReportPage(true);
+											//setReportPage(true);
+											setMatchPage(true);
+
 										}}>
 											<Image
 												style={{
@@ -957,7 +963,7 @@ export default Card = ({
 						/>
 						<Image
 							source = {{
-								uri: "https://m.media-amazon.com/images/M/MV5BMTg0MzkzMTQtNWRlZS00MGU2LTgwYTktMjkyNTZkZTAzNTQ3XkEyXkFqcGdeQXVyMTM1MTE1NDMx._V1_FMjpg_UY720_.jpg",
+								uri: myProfilePicture,
 							}}
 							style={{
 								top: height*0.30,
@@ -1018,9 +1024,9 @@ export default Card = ({
 							style = {{
 								paddingTop: 5,
 							}}
-							onPress = {() => {
+							onPress = { async () => {
+								await setMatchPage(false);
 								incrementIndex();
-								setMatchPage(false);
 							}}
 						>
 							<GradientText style={{ 
