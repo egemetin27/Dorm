@@ -126,11 +126,11 @@ function MainScreen({ route, navigation }) {
 							}}
 						>
 							<Image
-								source={require("../assets/TabBarIcons/anasayfa.png")}
+								source={require("../assets/logoGradient.png")}
 								resizeMode="contain"
 								style={{
 									tintColor: focused ? {} : colors.cool_gray,
-									height: height / 27,
+									height: height / 30,
 								}}
 							/>
 							{focused ? (
@@ -328,7 +328,7 @@ export default function StackNavigator() {
 	} else {
 		return (
 			<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-				<StatusBar style={"auto"} />
+				{/* <StatusBar style={"auto"} /> */}
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator>

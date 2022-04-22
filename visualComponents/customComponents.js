@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		height: height,
 		width: width,
-		backgroundColor: "rgba(0,0,0,0.4)",
+		backgroundColor: "rgba(0,0,0,0.6)",
 	},
 	pickerContainer: {
 		borderRadius: 20,

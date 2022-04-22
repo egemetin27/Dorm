@@ -310,12 +310,12 @@ export default function Profile({ route, navigation }) {
 					</TouchableOpacity>
 				</View>
 			)} */}
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ width: width, paddingBottom: height / 12 }}
-				keyboardShouldPersistTaps="handled"
-			>
-				<KeyboardAvoidingView>
+			<KeyboardAvoidingView behavior={"padding"}>
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					contentContainerStyle={{ width: width, paddingBottom: height / 12 }}
+					keyboardShouldPersistTaps="handled"
+				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
 						{PHOTO_LIST && PHOTO_LIST.length != 0 ? (
 							// TODO: styling should be implemented more resiliently
@@ -1031,8 +1031,8 @@ export default function Profile({ route, navigation }) {
 							/>
 						</View>
 					</View>
-				</KeyboardAvoidingView>
-			</ScrollView>
+				</ScrollView>
+			</KeyboardAvoidingView>
 
 			<CustomPicker
 				data={genderList}
