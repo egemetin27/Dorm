@@ -5,7 +5,6 @@ import ReactNative, {
 	Image,
 	StyleSheet,
 	Dimensions,
-	Pressable,
 	BackHandler,
 	ActivityIndicator,
 } from "react-native";
@@ -31,10 +30,10 @@ export default function ProfileCards({ navigation, route }) {
 	const [peopleList, setPeopleList] = React.useState([]);
 	const popupVisible = useSharedValue(false);
 	const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
-	
+
 	const [myProfilePicture, setMyProfilePicture] = React.useState();
 
-	React.useEffect( async () => {
+	React.useEffect(async () => {
 		try {
 			let abortController = new AbortController();
 			const userDataStr = await SecureStore.getItemAsync("userData");
@@ -43,28 +42,19 @@ export default function ProfileCards({ navigation, route }) {
 			const myToken = userData.sesToken;
 
 			await axios
-				.post(
-					url + "/getProfilePic",
-					{ UserId: userID },
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/getProfilePic", { UserId: userID }, { headers: { "access-token": myToken } })
 				.then((res) => {
 					//setPeopleList(res.data);
 					//console.log(res.data);
 					//console.log(res.data[0].PhotoLink);
 					setMyProfilePicture(res.data[0].PhotoLink);
-					
 				})
 				.catch((err) => {
 					console.log(err);
 				});
-			
 		} catch (error) {
 			console.log(error);
 		}
-		
-
-
 	}, []);
 
 	const navigateFromCard = () => {
@@ -73,8 +63,6 @@ export default function ProfileCards({ navigation, route }) {
 
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
-
-
 
 	const derivedText = useDerivedValue(
 		() =>
@@ -193,8 +181,10 @@ export default function ProfileCards({ navigation, route }) {
 						incrementIndex={() => {
 							setIndexOfFrontCard(indexOfFrontCard + 1);
 						}}
-						myProfilePicture = {myProfilePicture}
-						navigateFromCard = {() => {navigateFromCard();}}
+						myProfilePicture={myProfilePicture}
+						navigateFromCard={() => {
+							navigateFromCard();
+						}}
 					/>
 				))}
 			</View>
@@ -213,82 +203,6 @@ export default function ProfileCards({ navigation, route }) {
 						letterSpacing: 0.2,
 					}}
 				/>
-			</View>
-
-			<View name={"tab-Bar"} style={styles.tabBar}>
-				<Pressable
-					onPress={() => {
-						navigation.replace("MainScreen", { screen: "Profil" });
-					}}
-					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
-				>
-					<Image
-						source={require("../../assets/TabBarIcons/profile.png")}
-						resizeMode="contain"
-						style={{
-							tintColor: colors.cool_gray,
-							height: height / 36,
-						}}
-					/>
-
-					<Text
-						style={{
-							fontSize: 13,
-							fontFamily: "PoppinsSemiBold",
-							color: colors.cool_gray,
-						}}
-					>
-						Profil
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={() => {
-						navigation.replace("MainScreen", { screen: "AnaSayfa" });
-					}}
-					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
-				>
-					<Image
-						source={require("../../assets/logoGradient.png")}
-						resizeMode="contain"
-						style={{
-							tintColor: colors.cool_gray,
-							height: height / 30,
-						}}
-					/>
-					<Text
-						style={{
-							fontSize: 13,
-							fontFamily: "PoppinsSemiBold",
-							color: colors.cool_gray,
-						}}
-					>
-						Ana Sayfa
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={() => {
-						navigation.replace("MainScreen", { screen: "Mesajlar" });
-					}}
-					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
-				>
-					<Image
-						source={require("../../assets/TabBarIcons/messages.png")}
-						resizeMode="contain"
-						style={{
-							tintColor: colors.cool_gray,
-							height: height / 36,
-						}}
-					/>
-					<Text
-						style={{
-							fontSize: 13,
-							fontFamily: "PoppinsSemiBold",
-							color: colors.cool_gray,
-						}}
-					>
-						Mesajlar
-					</Text>
-				</Pressable>
 			</View>
 
 			<AnimatedModal

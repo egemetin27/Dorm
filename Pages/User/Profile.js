@@ -21,6 +21,7 @@ import { Ionicons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
@@ -30,6 +31,8 @@ import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisu
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
+	const tabBarHeight = useBottomTabBarHeight();
+
 	const [progressBarVisible, setVisibility] = React.useState(true);
 	const [progress, setProgress] = React.useState(0);
 	const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
@@ -313,7 +316,7 @@ export default function Profile({ route, navigation }) {
 			<KeyboardAvoidingView behavior={"padding"}>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
-					contentContainerStyle={{ width: width, paddingBottom: height / 12 }}
+					contentContainerStyle={{ width: width, paddingBottom: tabBarHeight * 2 }}
 					keyboardShouldPersistTaps="handled"
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
