@@ -139,15 +139,16 @@ export default function ProfileCards({ navigation, route }) {
 			>
 				<TouchableOpacity
 					onPress={() => {
-						navigation.replace("MainScreen", { screen: "AnaSayfa" });
+						navigation.replace("MainScreen", { screen: "AnaSayfa", props: { screen: "Home" } });
 					}}
 				>
 					<Feather name="chevron-left" size={30} color={colors.cool_gray} />
 				</TouchableOpacity>
 				<Image
 					source={require("../../assets/dorm_text.png")}
-					resizeMode="center"
-					style={{ width: "30%", maxHeight: "60%" }}
+					resizeMode="contain"
+					style={{ flex: 1, maxHeight: "60%" }}
+					// style={{ width: "30%", maxHeight: "60%" }}
 				/>
 				<TouchableOpacity>
 					{/* TODO: open filtering modal here  */}

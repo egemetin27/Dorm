@@ -371,8 +371,6 @@ export default function StackNavigator() {
 									<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />
 									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
-									{/* <Stack.Screen name="ProfileCards" component={ProfileCards} />
-									<Stack.Screen name="EventCards" component={EventCards} /> */}
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							) : (

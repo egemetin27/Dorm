@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -10,8 +10,10 @@ import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
 
+const { width, height } = Dimensions.get("screen");
+
 export default function Verification({ navigation, route }) {
-	const { dataToBeSent } = route?.params; //TODO: UserId also should be extracted from params
+	const { dataToBeSent } = route?.params ?? { dataToBeSent: { mail: "Testing" } }; //TODO: UserId also should be extracted from params
 	const verification = React.useRef([-1, -1, -1, -1]);
 
 	const [wrongInput, setWrongInput] = React.useState(false);
@@ -94,7 +96,7 @@ export default function Verification({ navigation, route }) {
 				</TouchableOpacity>
 			</View>
 
-			<View style={commonStyles.innerContainer}>
+			<View style={{ marginTop: height * 0.02, paddingHorizontal: width * 0.05 }}>
 				<MaskedView
 					style={styles.maskedViewStyle}
 					maskElement={
@@ -122,7 +124,7 @@ export default function Verification({ navigation, route }) {
 				<View style={{ marginTop: 10 }}>
 					<Text style={[styles.text, { fontFamily: "PoppinsSemiBold" }]}>{dataToBeSent.mail}</Text>
 					<Text style={styles.text}>
-						mail adresine gönderdiğimiz doğrulama{"\n"}kodunu bizimle paylaş
+						mail adresine gönderdiğimiz doğrulama kodunu bizimle paylaş
 					</Text>
 				</View>
 
@@ -232,7 +234,7 @@ export default function Verification({ navigation, route }) {
 				)}
 
 				<TouchableOpacity
-					style={[commonStyles.button, { position: "absolute", marginTop: 260 }]}
+					style={[commonStyles.button, { marginTop: 15 }]}
 					disabled={!isAllEntered}
 					onPress={handleSubmit}
 				>
@@ -256,15 +258,12 @@ export default function Verification({ navigation, route }) {
 						<Text style={commonStyles.buttonText}>Doğrula</Text>
 					)}
 				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={resendCode}
-					style={{ marginTop: 335, position: "absolute", alignSelf: "center" }}
-				>
+				<TouchableOpacity onPress={resendCode} style={{ alignSelf: "center", marginTop: 15 }}>
 					<Text
 						style={{
 							color: "#6B46D2",
 							letterSpacing: 0.3,
-							fontSize: 16,
+							fontSize: width * 0.04,
 							fontFamily: "PoppinsSemiBold",
 						}}
 					>
@@ -282,21 +281,23 @@ const styles = StyleSheet.create({
 		alignItems: "flex-start",
 	},
 	inputBox: {
-		width: 70,
-		height: 70,
+		width: "22.5%",
+		aspectRatio: 1,
 		backgroundColor: "#F8F8F8",
 		borderRadius: 8,
 		justifyContent: "center",
+		alignItems: "center",
 	},
 	input: {
-		width: 70,
-		height: 70,
-		fontSize: 30,
+		width: "80%",
+		height: "80%",
+		textAlign: "center",
+		fontSize: width * 0.075,
 		borderRadius: 8,
 	},
 	text: {
 		color: "#525A64",
-		fontSize: 18,
+		fontSize: width * 0.045,
 		alignContent: "flex-start",
 		letterSpacing: 0.3,
 	},
