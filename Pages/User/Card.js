@@ -66,6 +66,7 @@ export default Card = ({
 		//console.log(myUserID);
 		//console.log(otherUser.id);
 		//console.log(chatID);
+		setReportPage(false);
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
@@ -394,8 +395,8 @@ export default Card = ({
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
 											onPress={() => {
-												//setReportPage(true);
-												setMatchPage(true);
+												setReportPage(true);
+												//setMatchPage(true);
 											}}
 										>
 											<Image
@@ -820,7 +821,9 @@ export default Card = ({
 						</View>
 
 						<View style={{ position: "absolute", top: 20, right: 20 }}>
-							<TouchableOpacity onPress={() => {}}>
+							<TouchableOpacity onPress={() => {
+								setReportPage(true);
+							}}>
 								<Image
 									style={{
 										height: 25,
@@ -1094,7 +1097,6 @@ export default Card = ({
 						height: height *0.9,
 						backgroundColor: colors.white,
 						borderRadius: 10,
-						alignItems: "center",
 						paddingHorizontal: 36,
 					}}
 				>
@@ -1159,8 +1161,7 @@ export default Card = ({
 							}}
 							style={{
 								maxWidth: "100%",
-								maxHeight: "20%",
-								aspectRatio: 22/2,
+								
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1190,8 +1191,6 @@ export default Card = ({
 							}}
 							style={{
 								maxWidth: "100%",
-								maxHeight: "20%",
-								aspectRatio: 22/2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1220,8 +1219,7 @@ export default Card = ({
 							}}
 							style={{
 								maxWidth: "100%",
-								maxHeight: "20%",
-								aspectRatio: 22/2,
+								
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1250,8 +1248,7 @@ export default Card = ({
 							}}
 							style={{
 								maxWidth: "100%",
-								maxHeight: "20%",
-								aspectRatio: 22/2,
+								
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1280,8 +1277,7 @@ export default Card = ({
 							}}
 							style={{
 								maxWidth: "100%",
-								maxHeight: "20%",
-								aspectRatio: 22/2,
+								
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1309,8 +1305,7 @@ export default Card = ({
 							}}
 							style={{
 								maxWidth: "100%",
-								maxHeight: "20%",
-								aspectRatio: 22/2,
+								
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1338,8 +1333,7 @@ export default Card = ({
 					      	onPress={reportProfile}
 					      	style={{
 						      	maxWidth: "100%",
-					      		maxHeight: "20%",
-						      	aspectRatio: 22 / 2,
+					      		
 						      	borderRadius: 12,
 						      	overflow: "hidden",
 						      	marginTop: 20,
