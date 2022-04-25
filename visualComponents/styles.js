@@ -7,7 +7,7 @@ export default styles = StyleSheet.create({
 	Container: {
 		height: height,
 		width: width,
-		backgroundColor: "#F4F3F3",
+		backgroundColor: "#DADADA",
 		alignItems: "center",
 		zIndex: 0,
 	},

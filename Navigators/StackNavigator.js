@@ -208,7 +208,7 @@ export default function StackNavigator() {
 				.post(url + "/Login", dataToBeSent)
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
-						console.log(res.data);
+						console.log("if:", res.data);
 						// If signed in
 						const photoList = res.data.Photo.map((item) => {
 							return {
@@ -229,7 +229,7 @@ export default function StackNavigator() {
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
 					} else {
-						console.log(res.data);
+						console.log("else:", res.data);
 					}
 				})
 				.catch(async (error) => {
