@@ -489,7 +489,6 @@ export default function MainPage({ navigation }) {
 						Egsersiz: filterEgsersiz,
 						Alkol: filterAlkol,
 						Sigara: filterAlkol,
-						Burc: [1,1,1,1,1,1,1,1,1,1,1,1],
 						Yemek: filterYemek,
 					},
 					{ headers: { "access-token": myToken } }
@@ -531,7 +530,6 @@ export default function MainPage({ navigation }) {
 						Egsersiz: [1, 1, 1],
 						Alkol: [1, 1, 1],
 						Sigara: [1, 1, 1],
-						Burc: [1,1,1,1,1,1,1,1,1,1,1,1],
 						Yemek: [1, 1, 1, 1, 1],
 					},
 					{ headers: { "access-token": myToken } }

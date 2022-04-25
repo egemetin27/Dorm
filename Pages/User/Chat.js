@@ -15,7 +15,7 @@ import {
 	FlatList,
 	Modal
 } from "react-native";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { Feather, Octicons, MaterialIcons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
@@ -54,6 +54,38 @@ export default function Chat({ navigation, route }) {
 	const [profilePage, setProfilePage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
+
+
+	const [deleteChatModal, setDeleteChatModal] = React.useState(false);
+
+	const deleteChat = async () => {
+		console.log(chatID);
+		let abortController = new AbortController();
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const myToken = userData.sesToken;
+		try {
+			API.graphql(
+				graphqlOperation(updateUserChat, {
+					input: {id: chatID, status: "Deactive"},
+				})
+			);
+			axios
+				.post(
+					url + "/unmatch",
+					{
+						UserId: myUserID,
+					},
+					{ headers: { "access-token": myToken } }
+				)
+				.catch((error) =>{
+					console.log(error);
+				});
+			navigation.goBack();
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	const closeProfile = () => {
 		setProfilePage(false);
@@ -211,10 +243,10 @@ export default function Chat({ navigation, route }) {
 
 	const reportProfile = async() => {
 		
-		console.log(chosenReport);
-		console.log(myUserID);
-		console.log(otherUser.id);
-		console.log(chatID);
+		//console.log(chosenReport);
+		//console.log(myUserID);
+		//console.log(otherUser.id);
+		//console.log(chatID);
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
@@ -280,7 +312,7 @@ export default function Chat({ navigation, route }) {
 				<View
 					style={{
 						flexDirection: "column",
-						width: "55%",
+						width: "45%",
 						marginLeft: 10,
 						justifyContent: "space-between",
 					}}
@@ -299,9 +331,18 @@ export default function Chat({ navigation, route }) {
 					style={{ paddingBottom: 8 }} 
 					name={"reportButton"} 
 					onPress={() => {
+						setDeleteChatModal(true);
+					}}>
+					<MaterialIcons name="block" size={32} color="#4A4A4A" />
+				</TouchableOpacity>
+				<View style={{paddingHorizontal: "2%"}}/>
+				<TouchableOpacity 
+					style={{ paddingBottom: 8 }} 
+					name={"reportButton"} 
+					onPress={() => {
 						setReportPage(true);
 					}}>
-					<Octicons name="report" size={32} color="#4A4A4A" />
+					<MaterialIcons name="outlined-flag" size={32} color="#4A4A4A" />
 				</TouchableOpacity>
 			</View>
 			{ lastMsgSender == "" && chatMessages.length == 0 ? 
@@ -659,6 +700,109 @@ export default function Chat({ navigation, route }) {
 				</View>
 			</CustomModal>
 			{/* Report page custom modal */}
+			
+
+			{/* Unmatch page custom modal */}
+			<CustomModal
+				visible= {deleteChatModal}
+				dismiss={()=>{
+					setDeleteChatModal(false);
+				}}
+			>
+				<View
+					style={{
+						maxWidth: width* 0.84,
+						backgroundColor: colors.white,
+						borderRadius: 10,
+						alignItems: "center",
+						paddingHorizontal: 36,
+					}}
+				>
+					<TouchableOpacity
+						onPress={() => {
+							setDeleteChatModal(false);
+						}}
+						style={{
+							position: "absolute",
+							alignSelf: "flex-end",
+							padding:16,
+						}}
+					>
+						<Text style = {{fontSize: 22, color: colors.medium_gray}}>İptal</Text>
+					</TouchableOpacity>
+					<View
+						style={{
+							width: "100%",
+							marginTop: 20,
+						}}
+					>
+						<View
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignContent: "center",
+								justifyContent: "center",
+								marginVertical: 10,
+							}}
+						>
+							<Image source={require("../../assets/biggerTrashCan.png")} />
+						</View>
+						<View
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+								marginVertical: 10,
+							}}
+						>
+							<Text style = {{ color: colors.black, fontSize: 26, lineHeight: 36,fontFamily: "PoppinsSemiBold", fontWeight: "800"}}>
+                      			Emin misin ?
+
+                    		</Text>
+						</View>
+						<View
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+								marginVertical: 10,
+							}}
+						>
+							<Text style = {{ color: colors.dark_gray, fontSize: 13, fontFamily: "Poppins", fontWeight: "400", textAlign: "center"}}>
+                      			Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.
+                    		</Text>
+						</View>
+					</View>	
+					<TouchableOpacity
+						onPress={deleteChat}
+						style={{
+							maxWidth: "90%",
+							height: "15%",
+							maxHeight: 60,
+							aspectRatio: 9 / 2,
+							borderRadius: 12,
+							overflow: "hidden",
+							marginTop: 20,
+						}}
+					>
+						<Gradient
+						    style={{
+							    justifyContent: "center",
+							    alignItems: "center",
+							    width: "100%",
+							    height: "100%",
+						    }}
+					    >
+						    <Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+							    Eşleşmeyi Kaldır
+						    </Text>
+					    </Gradient>
+					</TouchableOpacity>				
+				</View>
+			</CustomModal>
+			{/* Unmatvh page custom modal */}
 
 			{/* Profil page custom modal */}
 			{profilePage ?  

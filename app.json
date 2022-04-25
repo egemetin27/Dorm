@@ -5,7 +5,7 @@
 		"version": "1.1.33",
 		"orientation": "portrait",
 		"icon": "./assets/logoGradient.png",
-		"owner": "dorm",
+		"owner": "berkeodaci",
 		"splash": {
 			"image": "./assets/splashscreen.png",
 			"resizeMode": "cover",
