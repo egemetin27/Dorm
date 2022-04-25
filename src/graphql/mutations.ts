@@ -66,6 +66,8 @@ export const createUserChat = /* GraphQL */ `
         createdAt
       }
       lastMsg
+      lastMsgSender
+      unreadMsg
       messages {
         items {
           id
@@ -110,6 +112,8 @@ export const updateUserChat = /* GraphQL */ `
         createdAt
       }
       lastMsg
+      lastMsgSender
+      unreadMsg
       messages {
         items {
           id
@@ -154,6 +158,8 @@ export const deleteUserChat = /* GraphQL */ `
         createdAt
       }
       lastMsg
+      lastMsgSender
+      unreadMsg
       messages {
         items {
           id
@@ -200,6 +206,8 @@ export const createSentMsg = /* GraphQL */ `
           createdAt
         }
         lastMsg
+        lastMsgSender
+        unreadMsg
         messages {
           nextToken
         }
@@ -251,6 +259,8 @@ export const updateSentMsg = /* GraphQL */ `
           createdAt
         }
         lastMsg
+        lastMsgSender
+        unreadMsg
         messages {
           nextToken
         }
@@ -302,6 +312,8 @@ export const deleteSentMsg = /* GraphQL */ `
           createdAt
         }
         lastMsg
+        lastMsgSender
+        unreadMsg
         messages {
           nextToken
         }

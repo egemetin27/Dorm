@@ -9,6 +9,7 @@ import {
 	FlatList,
 	TouchableOpacity,
 	Text,
+	TouchableHighlight,
 } from "react-native";
 import Animated, {
 	useSharedValue,
@@ -17,7 +18,6 @@ import Animated, {
 	interpolate,
 	withTiming,
 } from "react-native-reanimated";
-import { StatusBar } from "expo-status-bar";
 
 import { Gradient, colors } from "./colors";
 
@@ -144,7 +144,9 @@ export const CustomPicker = ({ style, visible, setVisible, data, setChoice }) =>
 								setVisible(false);
 							}}
 						>
-							<Text style={{ fontSize: width / 22, textAlign: "center" }}>{item.choice}</Text>
+							<Text style={{ fontSize: Math.min(width / 22, height * 0.025), textAlign: "center" }}>
+								{item.choice}
+							</Text>
 						</TouchableOpacity>
 					)}
 				/>
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		height: height,
 		width: width,
-		backgroundColor: "rgba(0,0,0,0.4)",
+		backgroundColor: "rgba(0,0,0,0.6)",
 	},
 	pickerContainer: {
 		borderRadius: 20,

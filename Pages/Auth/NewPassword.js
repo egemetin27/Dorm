@@ -9,7 +9,6 @@ import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
-import { AuthContext } from "../../nonVisualComponents/Context";
 
 export default function FirstPassword({ navigation, route }) {
 	const [password, setPassword] = React.useState("");
@@ -19,10 +18,9 @@ export default function FirstPassword({ navigation, route }) {
 
 	const animRef = React.useRef(new Animated.Value(0)).current;
 	const animRef2 = React.useRef(new Animated.Value(0)).current;
-	const { signIn } = React.useContext(AuthContext);
 
 	const handleSubmit = async () => {
-		const { userID, email } = route.params;
+		const { email } = route.params;
 
 		if (password.length < 8) {
 			Alert.alert("Şifren en az 8 karakterli olmalı");
@@ -34,11 +32,13 @@ export default function FirstPassword({ navigation, route }) {
 		}
 
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
-		const dataToBeSent = { password: encryptedPassword, UserId: userID }; //TODO: userID should be come from route.params.id
+
+		const dataToBeSent = { password: encryptedPassword, mail: email }; //TODO: userID should be come from route.params.id
 
 		axios
 			.post(url + "/PasswordRegister", dataToBeSent)
-			.then(() => {
+			.then((res) => {
+				console.log(res.data);
 				console.log("Password Updated Successfully");
 				navigation.replace("Login");
 			})

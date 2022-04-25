@@ -9,6 +9,7 @@ import {
 	Text,
 	ActivityIndicator,
 	BackHandler,
+	Alert,
 } from "react-native";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -83,6 +84,12 @@ export default function ProfilePhotos({ route, navigation }) {
 
 	const handleDelete = async () => {
 		//TODO: delete "toBeDeleted"
+
+		if (PHOTO_LIST.length == 1) {
+			Alert.alert("En az bir fotoğrafın kalmalı!!");
+			return;
+		}
+
 		const filtered = [];
 		for (const item of PHOTO_LIST) {
 			if (item.Photo_Order != toBeDeleted.Photo_Order) {

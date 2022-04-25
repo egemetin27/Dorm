@@ -50,6 +50,8 @@ export const getUserChat = /* GraphQL */ `
         createdAt
       }
       lastMsg
+      lastMsgSender
+      unreadMsg
       messages {
         items {
           id
@@ -96,6 +98,8 @@ export const listUserChats = /* GraphQL */ `
           createdAt
         }
         lastMsg
+        lastMsgSender
+        unreadMsg
         messages {
           nextToken
         }
@@ -131,6 +135,8 @@ export const getSentMsg = /* GraphQL */ `
           createdAt
         }
         lastMsg
+        lastMsgSender
+        unreadMsg
         messages {
           nextToken
         }
@@ -170,6 +176,8 @@ export const listSentMsgs = /* GraphQL */ `
         chat {
           id
           lastMsg
+          lastMsgSender
+          unreadMsg
           mod
           updatedAt
           createdAt
@@ -230,6 +238,8 @@ export const chatByDate = /* GraphQL */ `
           createdAt
         }
         lastMsg
+        lastMsgSender
+        unreadMsg
         messages {
           nextToken
         }
@@ -266,6 +276,8 @@ export const msgByDate = /* GraphQL */ `
         chat {
           id
           lastMsg
+          lastMsgSender
+          unreadMsg
           mod
           updatedAt
           createdAt

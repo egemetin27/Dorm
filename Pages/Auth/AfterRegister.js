@@ -28,14 +28,13 @@ export default function AfterRegister({ route, navigation }) {
 	const genderSwitch = useSharedValue(false);
 	const orientationSwitch = useSharedValue(false);
 
+	const { profile } = route.params;
+
 	const handleSubmit = async () => {
 		// TODO: send the choices to database
 
-		const dataStr = await SecureStore.getItemAsync("userData");
-		const data = JSON.parse(dataStr);
-
 		const choices = {
-			UserId: data.UserId,
+			UserId: profile.UserId,
 			gender: gender - 1,
 			expectation: expectation - 1,
 			InterestedSex: interested - 1,
@@ -45,12 +44,9 @@ export default function AfterRegister({ route, navigation }) {
 		};
 
 		await axios
-			.post(url + "/AfterRegister", choices, { headers: { "access-token": data.sesToken } })
+			.post(url + "/AfterRegister", choices, { headers: { "access-token": profile.sesToken } })
 			.then((res) => {
-				navigation.replace("PhotoUpload", {
-					userID: data.UserId,
-					sesToken: data.sesToken,
-				});
+				navigation.replace("Hobbies", { ...profile, isNewUser: true });
 			})
 			.catch((error) => {
 				console.log({ error });

@@ -43,7 +43,7 @@ export default function Register({ navigation }) {
 	const [univListVisible, setUnivListVisible] = React.useState(false);
 	const [show, setShow] = React.useState(false);
 
-	const [counter, counterChanger] = React.useState(0);
+	const [counter, setCounter] = React.useState(0);
 
 	// const pickerRef = React.useRef().current;
 
@@ -81,21 +81,7 @@ export default function Register({ navigation }) {
 				school: university.choice,
 			};
 
-			axios
-				.post(url + "/register", profile)
-				.then(async (res) => {
-					await axios
-						.post(url + "/SendVerification", { Mail: trimmedMail })
-						.then(() => {
-							navigation.replace("Verification", { ...res.data, email: trimmedMail });
-						})
-						.catch((error) => {
-							console.log("verification error: ", error);
-						});
-				})
-				.catch((error) => {
-					console.log("register error: ", error);
-				});
+			navigation.replace("FirstPassword", { profile: profile });
 		} else {
 			if (getAge(parsedDate) < 18) {
 				Alert.alert("Hata!", "Yaşın 18'den küçük olamaz.", [{ text: "Kontrol Edeyim" }]);
@@ -119,7 +105,7 @@ export default function Register({ navigation }) {
 			toValue: counter + 1,
 			duration: 300,
 		}).start();
-		counterChanger(counter + 1);
+		setCounter(counter + 1);
 	};
 
 	const handleBackward = (ref) => {
@@ -134,7 +120,7 @@ export default function Register({ navigation }) {
 			toValue: counter - 1,
 			duration: 300,
 		}).start();
-		counterChanger(counter - 1);
+		setCounter(counter - 1);
 	};
 
 	const showDatePicker = () => {
@@ -147,23 +133,36 @@ export default function Register({ navigation }) {
 		setDate(currentDate);
 
 		let formattedDate =
+			currentDate.getFullYear() +
+			"-" +
 			(currentDate.getMonth() + 1 < 10
 				? "0" + (currentDate.getMonth() + 1)
 				: currentDate.getMonth() + 1) +
-			"/" +
-			(currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()) +
-			"/" +
-			currentDate.getFullYear();
+			"-" +
+			(currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate());
 		setParsedDate(formattedDate);
 	};
 
 	return (
 		<View>
 			<StatusBar style={"dark"} />
-			<View style={[commonStyles.Header, { marginTop: 80, justifyContent: "space-around" }]}>
+			<View
+				style={[
+					{
+						marginTop: height * 0.08,
+						position: "relative",
+						width: "100%",
+						flexDirection: "row",
+						justifyContent: "space-between",
+						alignItems: "center",
+						minHeight: 40,
+					},
+				]}
+			>
 				<TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
+						
 						counter > 0 ? handleBackward(refList[counter - 1]) : navigation.replace("WelcomePage");
 					}}
 				>
@@ -171,7 +170,7 @@ export default function Register({ navigation }) {
 						<Text
 							style={[
 								{
-									fontSize: 15,
+									fontSize: Math.min(16, width * 0.035),
 									color: "#B6B6B6",
 									textAlign: "left",
 									paddingLeft: width / 15,
@@ -183,7 +182,7 @@ export default function Register({ navigation }) {
 					) : (
 						<Ionicons
 							name="arrow-back-outline"
-							size={32}
+							size={35}
 							color="#B6B6B6"
 							style={{ paddingLeft: width / 15 }}
 						/>
@@ -211,12 +210,61 @@ export default function Register({ navigation }) {
 				<TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
-						counter < 4 ? handleForward(refList[counter]) : handleRegister();
+						if (counter == 0) {
+							const fullName = name.trim();
+							const fName = fullName.slice(0, fullName.lastIndexOf(" "));
+							const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
+							console.log(fName);
+							console.log(lName);
+							if(fName == "" || lName == "")
+							{
+								Alert.alert("Hata!", "Adını ve soyadını yanlış girmiş olabilirsin", [
+									{ text: "Kontrol Edeyim" },
+								]);
+							}
+							else
+							{
+								handleForward(refList[counter]);
+							}
+
+						} else if (counter == 1) {
+							if (getAge(parsedDate) >= 18) {
+								handleForward(refList[counter]);
+							} else {
+								Alert.alert("Hata!", "Legal olmadıkça giremezsin!", [
+									{ text: "Kontrol Edeyim" },
+								]);
+							}
+
+						} else if (counter == 2) {
+							handleForward(refList[counter]);
+						} else if (counter == 3) {
+							if (university == "") {
+								Alert.alert("Hata!", "Lütfen okuduğunuz üniversiteyi seçin!", [
+									{ text: "Kontrol Edeyim" },
+								]);
+
+							} else {
+								handleForward(refList[counter]);
+							}
+						} else if (counter == 4) {
+							const trimmedMail = email.trim();
+							if (emailRegex.test(trimmedMail)) {
+								handleRegister();
+							} else {
+								Alert.alert("Hata!", "Lütfen girmiş olduğunuz üniversiteyi kontrol ediniz!", [
+									{ text: "Kontrol Edeyim" },
+								]);
+							}
+
+						}
+
+						//counter < 4 ? handleForward(refList[counter]) : handleRegister();
 					}}
 				>
 					<Text
 						style={{
-							fontSize: 15,
+							fontSize: Math.min(16, width * 0.035),
 							color: "#B6B6B6",
 							textAlign: "right",
 							paddingRight: width / 15,
@@ -504,8 +552,8 @@ export default function Register({ navigation }) {
 						},
 					]}
 				>
-					Biz de kullanıcı adının ayca_22 olmasını isterdik{"\n"}ama burada gerçek ismine
-					ihtiyacımız var.
+					Biz de kullanıcı adının ayca_22 olmasını isterdik ama burada gerçek ismine ihtiyacımız
+					var.
 				</Animated.Text>
 				<Animated.Text
 					style={[

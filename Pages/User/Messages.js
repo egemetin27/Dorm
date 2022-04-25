@@ -22,7 +22,6 @@ import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 const { height, width } = Dimensions.get("window");
 import { color } from "react-native-reanimated";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { msgData } from "../msgData";
 import MsgBox from "./MsgBox";
 import NewMatchBox from "./NewMatchBox";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,13 +44,15 @@ import {
 export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const [imgUri, setImgUri] = React.useState();
+	const [noMatch, setNoMatch] = React.useState(false);
 
-	const openChat = async (userInfo, myUserID, chatID, imgUrl) => {
+	const openChat = async (userInfo, myUserID, chatID, unreadMsg, lastMsgSender) => {
 		navigation.navigate("Chat", {
 			otherUser: userInfo,
 			myUserID: myUserID,
 			chatID: chatID,
-			imageUri: imgUrl,
+			unreadMsg: unreadMsg,
+			lastMsgSender: lastMsgSender,
 		});
 	}; 
 
@@ -90,6 +91,7 @@ export default function Messages({ route, navigation }) {
 				})
 			);
 			//console.log(msgBoxData.data.chatByDate.items);
+			setNoMatch(false);
 			await setChatRooms(msgBoxData.data.chatByDate.items);
 			//console.log(chatRooms);
 		} catch (error) {
@@ -121,7 +123,11 @@ export default function Messages({ route, navigation }) {
 						},
 					})
 				);
-				//console.log(msgBoxData.data.chatByDate.items)
+				//console.log(msgBoxData.data.chatByDate.items.length);
+				if(msgBoxData.data.chatByDate.items.length == 0)
+				{
+					setNoMatch(true);
+				}
 				await setChatRooms(msgBoxData.data.chatByDate.items);
 				await setmyUserID(userID);
 				//console.log(chatRooms);
@@ -140,10 +146,11 @@ export default function Messages({ route, navigation }) {
 			const userID = data.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onCreateUserChat)).subscribe({
 				next: (data) => {
+					/*
 					console.log("---------------------------");
 					console.log(data.value.data.onCreateUserChat.firstUser.id);
 					console.log("---------------------------");
-
+					*/
 					if (
 						data.value.data.onCreateUserChat.firstUser.id != userID &&
 						data.value.data.onCreateUserChat.secondUser.id != userID
@@ -152,9 +159,10 @@ export default function Messages({ route, navigation }) {
 						return;
 					} else {
 						console.log("Message is in your chat");
+						fetchNewUsers();
+
 					}
 
-					fetchNewUsers();
 					// setMessages([newMessage, ...messages]);
 				},
 			});
@@ -172,10 +180,11 @@ export default function Messages({ route, navigation }) {
 			const userID = data.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onUpdateUserChat)).subscribe({
 				next: (data) => {
-					console.log("---------------------------");
+					/*
+					console.log("++++++++++++++++++++++++");
 					console.log(data.value.data.onUpdateUserChat.firstUser.id);
-					console.log("---------------------------");
-
+					console.log("++++++++++++++++++++++++");
+					*/
 					if (
 						data.value.data.onUpdateUserChat.firstUser.id != userID &&
 						data.value.data.onUpdateUserChat.secondUser.id != userID
@@ -293,10 +302,28 @@ export default function Messages({ route, navigation }) {
 				</View>
 			</View>
 
-			<View style={{
-					width: width,
-					height: height*0.5,
-				}}>
+			<View>
+				{noMatch == true ? 
+					(
+						<View>
+							<Text 
+								style={{
+									textAlign: "center",
+									fontSize: 12,
+									lineHeight: 15,
+									letterSpacing: 1,
+									paddingHorizontal: 15,
+								}}
+							>
+								Keşfetmeye Başla. Ana sayfaya giderek diğer kullanıcılarla eşleştiğinde buradan onlara mesaj atabileceksin. Sana mesaj atmak isteyen bir sürü kişi var, sadece senin kaydırmanı bekliyorlar. 
+							</Text>
+						</View>
+					) 
+					: 
+					(
+						null
+					)
+				}
 				{chatMod[0] == 1 ? (
 					<View>
 						<View style={{ marginBottom: 10 }} />
@@ -315,7 +342,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.secondUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -325,7 +352,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -334,15 +361,12 @@ export default function Messages({ route, navigation }) {
 							/>
 						</View>
 						<View style={{ marginBottom: 10 }} />
-						<View style={{
-							height: height*0.63,
-							flexGrow:1,
-						}}> 
+						<View> 
 							<FlatList
 								horizontal= {false}
 								style={{
 									borderRadius: 8,
-									height: height * 0.63,
+									height: height-35 - height*0.051 - height*0.11 - height*0.08-50,
 									flexGrow: 1,
 								}}
 								data={chatRooms}
@@ -353,10 +377,11 @@ export default function Messages({ route, navigation }) {
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 												chatID={item.id}
-
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
@@ -366,10 +391,11 @@ export default function Messages({ route, navigation }) {
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
-												chatID={item}
-
+												chatID={item.id}
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
@@ -394,7 +420,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.secondUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -404,7 +430,7 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
@@ -416,9 +442,9 @@ export default function Messages({ route, navigation }) {
 						<View>
 							<FlatList
 								style={{
-									flexDirection: "row",
 									borderRadius: 8,
-									height: height * 0.5,
+									height: height-35 - height*0.051 - height*0.11 - height*0.08-50,
+									flexGrow: 1,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
@@ -428,9 +454,11 @@ export default function Messages({ route, navigation }) {
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id)}
+												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
-												chatID={item}
+												chatID={item.id}
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}
@@ -441,10 +469,11 @@ export default function Messages({ route, navigation }) {
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.firstUser, myUserID, item.id)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
-												chatID={item}
-
+												chatID={item.id}
+												unreadMsg={item.unreadMsg}
+												lastMsgSender={item.lastMsgSender}
 											/>
 										);
 									}

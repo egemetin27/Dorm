@@ -14,10 +14,12 @@ import {
 	ActivityIndicator,
 	Platform,
 	TextInput,
+	SafeAreaView,
 } from "react-native";
-import { Octicons, MaterialCommunityIcons, Ionicons, Entypo } from "@expo/vector-icons";
+import { Octicons, MaterialCommunityIcons, Ionicons, Entypo, Feather } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
+
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -35,6 +37,7 @@ import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { color } from "react-native-reanimated";
+
 
 const CategoryList = [
 	{
@@ -401,17 +404,29 @@ export default function MainPage({ navigation }) {
 	const eventsRef = React.useRef();
 
 	//Filtre Modal
+	const[toggleYas, setToggleYas] = React.useState(false);
+	const[toggleCinsiyet, setToggleCinsiyet ] = React.useState(false);
+	const[toggleEgsersiz, setToggleEgsersiz ] = React.useState(false);
+	const[toggleUniversite, setToggleUniversite ] = React.useState(false);
+	const[toggleAlkol, setToggleAlkol ] = React.useState(false);
+	const[toggleSigara, setToggleSigara ] = React.useState(false);
+	const[toggleBurc, setToggleBurc ] = React.useState(false);
+	const[toggleDin, setToggleDin ] = React.useState(false);
+	const[toggleYemek, setToggleYemek ] = React.useState(false);
+	const[toggleHobi, setToggleHobi ] = React.useState(false);
+
 	const [filtreModal, setFiltreModal] = React.useState(false);
 	const [minAge, setMinAge] = React.useState(18);
 	const [maxAge, setMaxAge] = React.useState(99);
-	const [filtreCinsiyet, setFiltreCinsiyet] = React.useState(-1);
-	const [filtreEgzersiz, setFiltreEgsersiz] = React.useState(-1);
-	const [filtreUniversite, setFiltreUniversite] = React.useState(-1);
-	const [filtreAlkol, setFiltreAlkol] = React.useState(-1);
-	const [filtreSigara, setFiltreSigara] = React.useState(-1);
-	const [filtreBurc, setFiltreBurc] = React.useState(-1);
-	const [filtreDin, setFiltreDin] = React.useState(-1);
-	const [filtreYemek, setFiltreYemek] = React.useState(-1);
+	const [filterCinsiyet, setFilterCinsiyet] = React.useState([1,1,1]);
+	const [filterEgsersiz, setFilterEgsersiz] = React.useState([1,1,1]);
+	const [filterUniversite, setFilterUniversite] = React.useState();
+	const [filterAlkol, setFilterAlkol] = React.useState([1,1,1]);
+	const [filterSigara, setFilterSigara] = React.useState([1,1,1]);
+	const [filterBurc, setFilterBurc] = React.useState([1,1,1,1,1,1,1,1,1,1,1,1]);
+	const [filterDin, setFilterDin] = React.useState([1,1,1]);
+	const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
+	const [filterHobi, setFilterHobi] = React.useState();
 
 	async function registerForPushNotificationAsync() {
 		let token;
@@ -441,6 +456,59 @@ export default function MainPage({ navigation }) {
 		return token;
 	}
 
+	const applyFilter = async () => {
+		let abortController = new AbortController();
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const userID = userData.UserId.toString();
+		const myToken = userData.sesToken;
+		setMyID(userID);
+		setSesToken(myToken);
+		/*
+		const [minAge, setMinAge] = React.useState(18);
+		const [maxAge, setMaxAge] = React.useState(99);
+		const [filterCinsiyet, setFilterCinsiyet] = React.useState([1,1,1]);
+		const [filterEgsersiz, setFilterEgsersiz] = React.useState([1,1,1]);
+		const [filterUniversite, setFilterUniversite] = React.useState();
+		const [filterAlkol, setFilterAlkol] = React.useState([1,1,1]);
+		const [filterSigara, setFilterSigara] = React.useState([1,1,1]);
+		const [filterBurc, setFilterBurc] = React.useState([1,1,1,1,1,1,1,1,1,1,1,1]);
+		const [filterDin, setFilterDin] = React.useState([1,1,1]);
+		const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
+		const [filterHobi, setFilterHobi] = React.useState();
+		*/
+		async function prepare() {
+			await axios
+				.post(
+					url + "/Swipelist",
+					{ 
+						UserId: userID,
+						Minyas: minAge,
+						Maxyas: maxAge,
+						Cinsiyet: filterCinsiyet,
+						Egsersiz: filterEgsersiz,
+						Alkol: filterAlkol,
+						Sigara: filterAlkol,
+						Yemek: filterYemek,
+					},
+					{ headers: { "access-token": myToken } }
+				)
+				.then((res) => {
+					console.log(res.data);
+					setPeopleList(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+
+		try {
+			await prepare();
+		} catch (err) {
+			console.log(err);
+		} 
+	};
+
 	React.useEffect(async () => {
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
@@ -452,7 +520,20 @@ export default function MainPage({ navigation }) {
 
 		async function prepare() {
 			await axios
-				.post(url + "/Swipelist", { UserId: userID }, { headers: { "access-token": myToken } })
+				.post(
+					url + "/Swipelist",
+					{ 
+						UserId: userID,
+						Minyas: 18,
+						Maxyas: 99,
+						Cinsiyet: [1, 1, 1],
+						Egsersiz: [1, 1, 1],
+						Alkol: [1, 1, 1],
+						Sigara: [1, 1, 1],
+						Yemek: [1, 1, 1, 1, 1],
+					},
+					{ headers: { "access-token": myToken } }
+				)
 				.then((res) => {
 					setPeopleList(res.data);
 				})
@@ -471,10 +552,11 @@ export default function MainPage({ navigation }) {
 		}
 
 		const token = await registerForPushNotificationAsync();
+		/*
 		console.log("-----------------");
 		console.log(token);
 		console.log("-----------------");
-
+		*/
 		const userName = userData.Name;
 		async function fetchUser() {
 			const newUser = {
@@ -558,147 +640,145 @@ export default function MainPage({ navigation }) {
 				style="dark"
 				translucent={false}
 				backgroundColor={"#F4F3F3"}
-				hidden={Platform.OS == "ios"}
+				// hidden={Platform.OS == "ios"}
 			/>
-			<ScrollView style={{ width: width }} showsVerticalScrollIndicator={false}>
-				<View
-					name={"PeopleHeader"}
-					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
-				>
-					<GradientText
-						text={"Kişiler"}
-						style={{
-							fontSize: height * 0.035,
-							fontFamily: "NowBold",
-							letterSpacing: 1.2,
-							marginLeft: 20,
-						}}
-					/>
-					<TouchableOpacity
-						style={{ marginRight: 20 }}
-						onPress={() => {
-							setFiltreModal(true);
-						}}
-					>
-						<Octicons
-							style={{ transform: [{ rotate: "-90deg" }] }}
-							name="settings"
-							size={30}
-							color={colors.cool_gray}
-						/>
-					</TouchableOpacity>
-				</View>
-				<View
-					name={"People"}
+			<View
+				name={"PeopleHeader"}
+				style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+			>
+				<GradientText
+					text={"Kişiler"}
 					style={{
-						height: height * 0.33,
-						width: "100%",
-						justifyContent: "center",
+						fontSize: height * 0.035,
+						fontFamily: "NowBold",
+						letterSpacing: 1.2,
+						marginLeft: 20,
+					}}
+				/>
+				<TouchableOpacity
+					style={{ marginRight: 20 }}
+					onPress={() => {
+						setFiltreModal(true);
 					}}
 				>
-					{peopleList.length > 0 ? (
-						<FlatList
-							keyExtractor={(item) => item.UserId.toString()}
-							horizontal={true}
-							showsHorizontalScrollIndicator={false}
-							data={peopleList.slice(0, 5)}
-							renderItem={({ item, index }) => (
-								<People
-									setIsAppReady={setIsAppReady}
-									index={index}
-									person={item}
-									length={peopleList.slice(0, 5).length}
-									openProfiles={(idx) => {
-										// var arr = new Array(...peopleList);
-										// const element = arr[idx];
-										// arr.splice(idx, 1);
-										// arr.splice(0, 0, element);
-										navigation.replace("ProfileCards", {
-											idx: idx,
-											list: peopleList,
-											// list: peopleList.slice(0, 10),
-											myID: myID,
-											sesToken: sesToken,
-										});
-									}}
-								/>
-							)}
-						/>
-					) : (
-						<Text
-							style={{
-								textAlign: "center",
-								fontFamily: "PoppinsSemiBold",
-								fontSize: 30,
-								color: colors.gray,
-							}}
-						>
-							Eşleşecek Kimse Yok :{"(("}
-						</Text>
-					)}
-				</View>
-				<View
-					name={"EventHeader"}
-					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
-				>
-					<GradientText
-						text={"Etkinlikler"}
+					<Octicons
+						style={{ transform: [{ rotate: "-90deg" }] }}
+						name="settings"
+						size={30}
+						color={colors.cool_gray}
+					/>
+				</TouchableOpacity>
+			</View>
+			<View
+				name={"People"}
+				style={{
+					height: height * 0.33,
+					width: "100%",
+					justifyContent: "center",
+				}}
+			>
+				{peopleList.length > 0 ? (
+					<FlatList
+						keyExtractor={(item) => item.UserId.toString()}
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+						data={peopleList.slice(0, 5)}
+						renderItem={({ item, index }) => (
+							<People
+								setIsAppReady={setIsAppReady}
+								index={index}
+								person={item}
+								length={peopleList.slice(0, 5).length}
+								openProfiles={(idx) => {
+									// var arr = new Array(...peopleList);
+									// const element = arr[idx];
+									// arr.splice(idx, 1);
+									// arr.splice(0, 0, element);
+									navigation.replace("ProfileCards", {
+										idx: idx,
+										list: peopleList,
+										// list: peopleList.slice(0, 10),
+										myID: myID,
+										sesToken: sesToken,
+									});
+								}}
+							/>
+						)}
+					/>
+				) : (
+					<Text
 						style={{
-							fontSize: height * 0.035,
-							fontFamily: "NowBold",
-							letterSpacing: 1.2,
-							marginLeft: 20,
+							textAlign: "center",
+							fontFamily: "PoppinsSemiBold",
+							fontSize: 30,
+							color: colors.gray,
 						}}
+					>
+						Eşleşecek Kimse Yok :{"(("}
+					</Text>
+				)}
+			</View>
+			<View
+				name={"EventHeader"}
+				style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+			>
+				<GradientText
+					text={"Etkinlikler"}
+					style={{
+						fontSize: height * 0.035,
+						fontFamily: "NowBold",
+						letterSpacing: 1.2,
+						marginLeft: 20,
+					}}
+				/>
+			</View>
+
+			<View name={"EventsContainer"} style={{ width: "100%" }}>
+				<View name={"Categories"} style={{ width: "100%", height: height * 0.12 }}>
+					<FlatList
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+						data={CategoryList}
+						renderItem={({ item, index }) => (
+							<Category
+								index={index}
+								userID={myID}
+								selectedCategory={selectedCategory}
+								setSelectedCategory={setSelectedCategory}
+								setShownEvents={setShownEvents}
+								eventList={eventList}
+							>
+								{item}
+							</Category>
+						)}
 					/>
 				</View>
-
-				<View name={"EventsContainer"} style={{ width: "100%" }}>
-					<View name={"Categories"} style={{ width: "100%", height: height * 0.12 }}>
-						<FlatList
-							horizontal={true}
-							showsHorizontalScrollIndicator={false}
-							data={CategoryList}
-							renderItem={({ item, index }) => (
-								<Category
-									index={index}
-									userID={myID}
-									selectedCategory={selectedCategory}
-									setSelectedCategory={setSelectedCategory}
-									setShownEvents={setShownEvents}
-									eventList={eventList}
-								>
-									{item}
-								</Category>
-							)}
-						/>
-					</View>
-					<View name={"Events"} style={{ width: "100%", height: height * 0.33 }}>
-						<FlatList
-							ref={eventsRef}
-							horizontal={true}
-							showsHorizontalScrollIndicator={false}
-							keyExtractor={(item) => item.EventId.toString()}
-							data={shownEvents}
-							renderItem={({ item, index }) => (
-								<Event
-									setIsAppReady={setIsAppReady}
-									index={index}
-									event={item}
-									length={shownEvents.length}
-									openEvents={(idx) => {
-										navigation.navigate("EventCards", {
-											idx: idx,
-											list: shownEvents,
-											myID: myID,
-											sesToken: sesToken,
-										});
-									}}
-								/>
-							)}
-						/>
-					</View>
+				<View name={"Events"} style={{ width: "100%", height: height * 0.33 }}>
+					<FlatList
+						ref={eventsRef}
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+						keyExtractor={(item) => item.EventId.toString()}
+						data={shownEvents}
+						renderItem={({ item, index }) => (
+							<Event
+								setIsAppReady={setIsAppReady}
+								index={index}
+								event={item}
+								length={shownEvents.length}
+								openEvents={(idx) => {
+									navigation.navigate("EventCards", {
+										idx: idx,
+										list: shownEvents,
+										myID: myID,
+										sesToken: sesToken,
+									});
+								}}
+							/>
+						)}
+					/>
 				</View>
-			</ScrollView>
+			</View>
 
 			<CustomModal
 				visible={filtreModal}
@@ -753,600 +833,1199 @@ export default function MainPage({ navigation }) {
 						</View>
 						<View
 							style={{
-								borderBottomColor: "black",
-								borderBottomWidth: 1,
 								marginTop: 5,
 								marginBottom: 10,
 							}}
 						/>
 						<ScrollView horizontal={false} style={{ marginHorizontal: 10 }}>
-							<GradientText text={"Yaş"} style={styles.filtreCategory} />
-							<View
-								style={{
-									paddingTop: 10,
-									justifyContent: "space-evenly",
-									alignContent: "center",
-									flexDirection: "row",
-									marginBottom: 10,
+							{/* Filtre Yas toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleYas(!toggleYas);
 								}}
 							>
-								<Text>Min:</Text>
-								<TextInput
-									style={{ width: width * 0.2 }}
-									onChangeText={setMinAge}
-									textAlign={"center"}
-									placeholder="18"
-									placeholderTextColor="#60605e"
-									numeric
-									keyboardType={"numeric"}
-								/>
-								<Text>Max:</Text>
-								<TextInput
-									style={{ width: width * 0.2 }}
-									onChangeText={setMaxAge}
-									textAlign={"center"}
-									placeholder="99"
-									placeholderTextColor="#60605e"
-									numeric
-									keyboardType={"numeric"}
-								/>
-							</View>
-
-							<GradientText text={"Cinsiyet"} style={styles.filtreCategory} />
-							<ScrollView horizontal={true}>
-								<Pressable
-									onPress={() => {
-										filtreCinsiyet == 0 ? setFiltreCinsiyet(-1) : setFiltreCinsiyet(0);
-									}}
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreCinsiyet != 0 ? (
+									<Text style={styles.filtreCategory}>
+										Yaş
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleYas ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleYas ? 
+									(
 										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
+											style= {{
+												paddingTop:10,
+												justifyContent: "space-evenly",
+												alignContent: "center",
+												flexDirection: "row",
+												marginBottom: 10,
 											}}
 										>
-											<Text style={{ color: colors.black }}>Kadın</Text>
+											<Text>Min:</Text>
+											<TextInput
+												style={{ width: width * 0.2 }}
+												onChangeText={setMinAge}
+												textAlign={"center"}
+												placeholder="18"
+												placeholderTextColor="#60605e"
+												numeric
+												keyboardType={"numeric"}
+											/>
+											<Text>Max:</Text>
+											<TextInput
+												style={{ width: width * 0.2 }}
+												onChangeText={setMaxAge}
+												textAlign={"center"}
+												placeholder="99"
+												placeholderTextColor="#60605e"
+												numeric
+												keyboardType={"numeric"}
+											/>
+									
 										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Kadın</Text>
-										</Gradient>
-									)}
-								</Pressable>
-								<Pressable
-									onPress={() => {
-										filtreCinsiyet == 1 ? setFiltreCinsiyet(-1) : setFiltreCinsiyet(1);
-									}}
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Yas toggle */}
+
+							{/* Filtre Cinsiyet toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleCinsiyet(!toggleCinsiyet);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreCinsiyet != 1 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Erkek</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Erkek</Text>
-										</Gradient>
-									)}
-								</Pressable>
+									<Text style={styles.filtreCategory}>
+										Cinsiyet
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleCinsiyet ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleCinsiyet ? 
+									(
+										<ScrollView horizontal = {true}>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterCinsiyet[0] == 1) {
+														setFilterCinsiyet([0, filterCinsiyet[1], filterCinsiyet[2]]);
+													} else {
+														setFilterCinsiyet([1, filterCinsiyet[1], filterCinsiyet[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterCinsiyet[0] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Kadın
+															</Text>
 
-								<Pressable
-									onPress={() => {
-										filtreCinsiyet == 2 ? setFiltreCinsiyet(-1) : setFiltreCinsiyet(2);
-									}}
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Kadın
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+
+											<TouchableOpacity
+												onPress={() => {
+													if (filterCinsiyet[1] == 1) {
+														setFilterCinsiyet([filterCinsiyet[0], 0, filterCinsiyet[2]]);
+													} else {
+														setFilterCinsiyet([filterCinsiyet[0], 1, filterCinsiyet[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterCinsiyet[1] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Erkek
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Erkek
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterCinsiyet[2] == 1) {
+														setFilterCinsiyet([filterCinsiyet[0], filterCinsiyet[1], 0]);
+													} else {
+														setFilterCinsiyet([filterCinsiyet[0], filterCinsiyet[1], 1]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterCinsiyet[2] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Non-Binary
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Non-Binary
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+										</ScrollView>
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Cinsiyet toggle */}
+							{/* Filtre Egzersiz toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleEgsersiz(!toggleEgsersiz);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreCinsiyet != 2 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Non-Binary</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Non-Binary</Text>
-										</Gradient>
-									)}
-								</Pressable>
+									<Text style={styles.filtreCategory}>
+										Egzersiz
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleEgsersiz ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleEgsersiz ? 
+									(
+										<ScrollView horizontal = {true}>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterEgsersiz[0] == 1) {
+														setFilterEgsersiz([0, filterEgsersiz[1], filterEgsersiz[2]]);
+													} else {
+														setFilterEgsersiz([1, filterEgsersiz[1], filterEgsersiz[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterEgsersiz[0] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Aktif
+															</Text>
 
-								<Pressable
-									onPress={() => {
-										setFiltreCinsiyet(-1);
-									}}
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Aktif
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+
+											<TouchableOpacity
+												onPress={() => {
+													if (filterEgsersiz[1] == 1) {
+														setFilterEgsersiz([filterEgsersiz[0], 0, filterEgsersiz[2]]);
+													} else {
+														setFilterEgsersiz([filterEgsersiz[0], 1, filterEgsersiz[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterEgsersiz[1] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Bazen
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Bazen
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterCinsiyet[2] == 1) {
+														setFilterEgsersiz([filterEgsersiz[0], filterEgsersiz[1], 0]);
+													} else {
+														setFilterEgsersiz([filterEgsersiz[0], filterEgsersiz[1], 1]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterEgsersiz[2] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Hiç
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Hiç
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+										</ScrollView>
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Egzersiz toggle */}
+
+							{/* Filtre Üniversite toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleUniversite(!toggleUniversite);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreCinsiyet != -1 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Hepsi</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Hepsi</Text>
-										</Gradient>
-									)}
-								</Pressable>
-							</ScrollView>
-							<GradientText text={"Egzersiz"} style={styles.filtreCategory} />
+									<Text style={styles.filtreCategory}>
+										Üniversite
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleUniversite ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleUniversite ? 
+									(
+										null
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Üniversite toggle */}
 
-							<ScrollView horizontal={true}>
-								<Pressable
-									onPress={() => {
-										filtreEgzersiz == 0 ? setFiltreEgsersiz(-1) : setFiltreEgsersiz(0);
-									}}
+							{/* Filtre Alkol Kullanımı toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleAlkol(!toggleAlkol);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreEgzersiz != 0 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Aktif</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Aktif</Text>
-										</Gradient>
-									)}
-								</Pressable>
-								<Pressable
-									onPress={() => {
-										filtreEgzersiz == 1 ? setFiltreEgsersiz(-1) : setFiltreEgsersiz(1);
-									}}
+									<Text style={styles.filtreCategory}>
+										Alkol Kullanımı
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleAlkol ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleAlkol ? 
+									(
+										<ScrollView horizontal = {true}>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterAlkol[0] == 1) {
+														setFilterAlkol([0, filterAlkol[1], filterAlkol[2]]);
+													} else {
+														setFilterAlkol([1, filterAlkol[1], filterAlkol[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterAlkol[0] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Sıklıkla
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Sıklıkla
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+
+											<TouchableOpacity
+												onPress={() => {
+													if (filterAlkol[1] == 1) {
+														setFilterAlkol([filterAlkol[0], 0, filterAlkol[2]]);
+													} else {
+														setFilterAlkol([filterAlkol[0], 1, filterAlkol[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterAlkol[1] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Sosyal Olarak
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Sosyal Olarak
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterCinsiyet[2] == 1) {
+														setFilterAlkol([filterAlkol[0], filterAlkol[1], 0]);
+													} else {
+														setFilterAlkol([filterAlkol[0], filterAlkol[1], 1]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterAlkol[2] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Hiç
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Hiç
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+										</ScrollView>
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Alkol Kullanımı toggle */}
+
+							{/* Filtre Sigara toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleSigara(!toggleSigara);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreEgzersiz != 1 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Bazen</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Bazen</Text>
-										</Gradient>
-									)}
-								</Pressable>
+									<Text style={styles.filtreCategory}>
+										Sigara
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleSigara ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleSigara ? 
+									(
+										<ScrollView horizontal = {true}>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterSigara[0] == 1) {
+														setFilterSigara([0, filterSigara[1], filterSigara[2]]);
+													} else {
+														setFilterSigara([1, filterSigara[1], filterSigara[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterSigara[0] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Sıklıkla
+															</Text>
 
-								<Pressable
-									onPress={() => {
-										filtreEgzersiz == 2 ? setFiltreEgsersiz(-1) : setFiltreEgsersiz(2);
-									}}
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Sıklıkla
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+
+											<TouchableOpacity
+												onPress={() => {
+													if (filterSigara[1] == 1) {
+														setFilterSigara([filterSigara[0], 0, filterSigara[2]]);
+													} else {
+														setFilterSigara([filterSigara[0], 1, filterSigara[2]]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterSigara[1] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Sosyal Olarak
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Sosyal Olarak
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterCinsiyet[2] == 1) {
+														setFilterSigara([filterSigara[0], filterSigara[1], 0]);
+													} else {
+														setFilterSigara([filterSigara[0], filterSigara[1], 1]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterSigara[2] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Hiç
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Hiç
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+										</ScrollView>
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Sigara toggle */}
+
+							{/* Filtre Burç toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleBurc(!toggleBurc);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreEgzersiz != 2 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Hiç</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Hiç</Text>
-										</Gradient>
-									)}
-								</Pressable>
-							</ScrollView>
+									<Text style={styles.filtreCategory}>
+										Burç
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleBurc ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleBurc ? 
+									(
+										null
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Burç toggle */}
 
-							<GradientText text={"Üniversite"} style={styles.filtreCategory} />
-							<GradientText text={"Alkol Kullanımı"} style={styles.filtreCategory} />
-
-							<ScrollView horizontal={true}>
-								<Pressable
-									onPress={() => {
-										filtreAlkol == 0 ? setFiltreAlkol(-1) : setFiltreAlkol(0);
-									}}
+							{/* Filtre Din toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleDin(!toggleDin);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreAlkol != 0 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Sıklıkla</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Sıklıkla</Text>
-										</Gradient>
-									)}
-								</Pressable>
+									<Text style={styles.filtreCategory}>
+										Din
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleDin ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleDin ? 
+									(
+										null
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Din toggle */}
 
-								<Pressable
-									onPress={() => {
-										filtreAlkol == 1 ? setFiltreAlkol(-1) : setFiltreAlkol(1);
-									}}
+							{/* Filtre Yeme Biçimi toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleYemek(!toggleYemek);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreAlkol != 1 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Sosyal Olarak</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Sosyal Olarak</Text>
-										</Gradient>
-									)}
-								</Pressable>
+									<Text style={styles.filtreCategory}>
+										Yeme Biçimi
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleYemek ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleYemek ? 
+									(
+										<ScrollView horizontal = {true}>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterYemek[0] == 1) {
+														setFilterYemek([0, filterYemek[1], filterYemek[2], filterYemek[3], filterYemek[4] ]);
+													} else {
+														setFilterYemek([1, filterYemek[1], filterYemek[2], filterYemek[3], filterYemek[4] ]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterYemek[0] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Vejetaryen
+															</Text>
 
-								<Pressable
-									onPress={() => {
-										filtreAlkol == 2 ? setFiltreAlkol(-1) : setFiltreAlkol(2);
-									}}
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Vejetaryen
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterYemek[1] == 1) {
+														setFilterYemek([filterYemek[0], 0, filterYemek[2], filterYemek[3], filterYemek[4] ]);
+													} else {
+														setFilterYemek([filterYemek[0], 1, filterYemek[2], filterYemek[3], filterYemek[4] ]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterYemek[1] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Vegan
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Vegan
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterYemek[2] == 1) {
+														setFilterYemek([filterYemek[0], filterYemek[1], 0, filterYemek[3], filterYemek[4] ]);
+													} else {
+														setFilterYemek([filterYemek[0], filterYemek[1], 1, filterYemek[3], filterYemek[4] ]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterYemek[2] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Pesketaryen
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Pesketaryen
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterYemek[3] == 1) {
+														setFilterYemek([filterYemek[0], filterYemek[1], filterYemek[2], 0, filterYemek[4] ]);
+													} else {
+														setFilterYemek([filterYemek[0], filterYemek[1], filterYemek[2], 1, filterYemek[4] ]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterYemek[3] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Glutensiz
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Glutensiz
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+											<TouchableOpacity
+												onPress={() => {
+													if (filterYemek[4] == 1) {
+														setFilterYemek([filterYemek[0], filterYemek[1], filterYemek[2], filterYemek[3], 0 ]);
+													} else {
+														setFilterYemek([filterYemek[0], filterYemek[1], filterYemek[2], filterYemek[3], 1 ]);
+													}
+												}}
+												style={styles.filtreButton}
+											>
+												{ filterYemek[4] != 1 ? 
+													(
+														<View
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.black
+																}} 
+															>
+																Hepsi
+															</Text>
+
+														</View>
+													) 
+													: 
+													(
+														<Gradient
+															style = {styles.filtreView}
+														>
+															<Text 
+																style = {{
+																	fontFamily: "Poppins",
+																	color: colors.white,
+																}} 
+															>
+																Hepsi
+															</Text>
+														</Gradient>
+													)
+												}												
+											</TouchableOpacity>
+
+										</ScrollView>
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre Yeme Biçimi toggle */}
+
+							{/* Filtre İlgi Alanları toggle */}
+							<TouchableOpacity
+								onPress={() => {
+									setToggleHobi(!toggleHobi);
+								}}
+							>
+								<View
 									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
 									}}
 								>
-									{filtreAlkol != 2 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Hiç</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Hiç</Text>
-										</Gradient>
-									)}
-								</Pressable>
-							</ScrollView>
+									<Text style={styles.filtreCategory}>
+										İlgi Alanları
+									</Text>
+									<View style={{margin: 10}} />
+									{
+										toggleHobi ? 
+										(
+											<Feather name="chevron-up" size={20} color="#4A4A4A" />
+										) 
+										: 
+										(
+											<Feather name="chevron-down" size={20} color="#4A4A4A" />
+										)
+									}
+								</View>
+								{
+									toggleHobi ? 
+									(
+										null
+									)
+									:
+									(
+										null
+									)
+								}
+							</TouchableOpacity>
+							{/* Filtre İlgi Alanları toggle */}
 
-							<GradientText text={"Sigara"} style={styles.filtreCategory} />
-							<ScrollView horizontal={true}>
-								<Pressable
-									onPress={() => {
-										filtreSigara == 0 ? setFiltreSigara(-1) : setFiltreSigara(0);
-									}}
-									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
-									}}
-								>
-									{filtreSigara != 0 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Sıklıkla</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Sıklıkla</Text>
-										</Gradient>
-									)}
-								</Pressable>
-
-								<Pressable
-									onPress={() => {
-										filtreSigara == 1 ? setFiltreSigara(-1) : setFiltreSigara(1);
-									}}
-									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
-									}}
-								>
-									{filtreSigara != 1 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Sosyal Olarak</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Sosyal Olarak</Text>
-										</Gradient>
-									)}
-								</Pressable>
-
-								<Pressable
-									onPress={() => {
-										filtreSigara == 2 ? setFiltreSigara(-1) : setFiltreSigara(2);
-									}}
-									style={{
-										backgroundColor: colors.white,
-										alignSelf: "flex-start",
-										marginLeft: 20,
-										minWidth: width / 4,
-										height: width / 8,
-										borderRadius: width / 16,
-										overflow: "hidden",
-									}}
-								>
-									{filtreSigara != 2 ? (
-										<View
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.black }}>Hiç</Text>
-										</View>
-									) : (
-										<Gradient
-											style={{
-												paddingHorizontalHorizontal: 10,
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											<Text style={{ color: colors.white }}>Hiç</Text>
-										</Gradient>
-									)}
-								</Pressable>
-							</ScrollView>
-
-							<GradientText text={"Burç"} style={styles.filtreCategory} />
-							<GradientText text={"Din"} style={styles.filtreCategory} />
-							<GradientText text={"Yeme Biçimi"} style={styles.filtreCategory} />
-							<GradientText text={"İlgi Alanları"} style={styles.filtreCategory} />
+							
 						</ScrollView>
 						<View style={{ height: 15 }}></View>
 					</View>
 					<TouchableOpacity
 						onPress={() => {
-							alert("filtreyi gönder");
+							applyFilter();
+							setFiltreModal(false);
 						}}
 						style={{
 							maxWidth: "90%",
@@ -1384,10 +2063,28 @@ const styles = StyleSheet.create({
 		resizeMode: "contain",
 	},
 	filtreCategory: {
-		fontSize: 22,
-		fontFamily: "NowBold",
-		letterSpacing: 1.2,
+		fontSize: 20,
+		fontFamily: "Poppins",
+		color: colors.dark_gray,
+		lineHeight: 30,
 		marginLeft: 10,
 		marginBottom: 10,
+	},
+	filtreButton: {
+		backgroundColor: colors.white,
+		alignSelf: "flex-start",
+		marginLeft: 20,
+		minWidth: width/4,
+		height: width /8,
+		borderRadius: width/16,
+		overflow: "hidden",
+	},
+	filtreView: {
+		paddingHorizontal: 10,
+		width: "100%",
+		height: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+
 	},
 });

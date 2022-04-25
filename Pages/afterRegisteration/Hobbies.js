@@ -5,7 +5,6 @@ import {
 	Dimensions,
 	Pressable,
 	ScrollView,
-	FlatList,
 	TouchableOpacity,
 	ActivityIndicator,
 	Alert,
@@ -17,6 +16,7 @@ import * as SecureStore from "expo-secure-store";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { url } from "../../connection";
+import { AuthContext } from "../../nonVisualComponents/Context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -25,7 +25,9 @@ export default function Hobbies({ navigation, route }) {
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const { userID, isNewUser } = route.params;
+	const { UserId, isNewUser } = route.params;
+
+	const { signIn } = React.useContext(AuthContext);
 
 	const handleSubmit = async () => {
 		try {
@@ -37,12 +39,13 @@ export default function Hobbies({ navigation, route }) {
 				.post(
 					url + "/interests",
 					{
-						UserId: userID,
+						UserId: UserId,
 						hobbies: hobbies,
 					},
-					{ headers: { "access-token": data.sesToken } }
+					{ headers: { "access-token": route.params?.sesToken ?? data.sesToken } }
 				)
 				.then(async (res) => {
+					console.log(res);
 					const newHobbyList = hobbies.map((item) => {
 						return { InterestName: item };
 					});
@@ -52,7 +55,7 @@ export default function Hobbies({ navigation, route }) {
 					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
 					setIsLoading(false);
 					if (isNewUser) {
-						navigation.replace("MainScreen", { screen: "AnaSayfa" });
+						signIn({ email: route.params.mail, password: route.params.password, isNewUser: true });
 					} else {
 						navigation.replace("MainScreen", { screen: "Profil" });
 					}
@@ -83,7 +86,7 @@ export default function Hobbies({ navigation, route }) {
 		{ key: "🤼 Dövüş Sanatları" },
 	];
 
-	// Müzik, Dans, Fotoğrafçılık,  Plastik sanatlar, Makyaj, Vlogging, Yazı
+	// Fotoğrafçılık,  Plastik sanatlar, Makyaj, Vlogging, Yazı
 	const creativity = [
 		{ key: "🎸 Müzik" },
 		{ key: "💃 Dans" },
@@ -119,15 +122,27 @@ export default function Hobbies({ navigation, route }) {
 		{ key: "🪕 Country" },
 	];
 
-	// Feminist, LGBTQ+ destekçisi, Çevrecilik, Trans destekçisi, İnsan hakları
+	// Trans destekçisi, İnsan hakları
 	const activism = [
 		{ key: "💁🏻‍♀️ Feminist" },
 		{ key: "🏳️‍🌈 LGBTQ+ destekçisi" },
 		{ key: "🌲 Çevrecilik" },
 	];
 
-	// Aile sevgisi, Açık fikirlilik, Alçak gönüllülük, Romantiklik, Özgüven, Yaratıcılık, Empati, Zeka, Pozitiflik, Kendini tanımak, Espiri anlayışı, Sosyal farkındalık, Hayvanseverlik
-	const traits = [{ key: "Aile Sevgisi" }, { key: "Açık Fikirlilik" }, { key: "Alçak Gönüllülük" }];
+	const traits = [
+		{ key: "Aile Sevgisi" },
+		{ key: "Açık Fikirlilik" },
+		{ key: "Romantiklik" },
+		{ key: "Özgüven" },
+		{ key: "Yaratıcılık" },
+		{ key: "Empati" },
+		{ key: "Zeka" },
+		{ key: "Pozitiflik" },
+		{ key: "Kendini tanımak" },
+		{ key: "Espiri anlayışı" },
+		{ key: "Sosyal farkındalık" },
+		{ key: "Hayvanseverlik" },
+	];
 
 	return (
 		<View style={commonStyles.Container}>
@@ -158,7 +173,7 @@ export default function Hobbies({ navigation, route }) {
 				}}
 			>
 				<ScrollView
-					contentContainerStyle={{ paddingBottom: 150 }}
+					contentContainerStyle={{ paddingBottom: height * 0.15 }}
 					showsVerticalScrollIndicator={false}
 				>
 					<View style={{ marginTop: 30 }}>
@@ -171,13 +186,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={sport}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{sport.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -189,13 +202,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={creativity}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{creativity.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -207,13 +218,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={consumables}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{consumables.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -225,13 +234,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={movies}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{movies.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -243,13 +250,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={reading}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{reading.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -261,13 +266,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={music}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{music.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -279,13 +282,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={activism}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{activism.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 					<View style={{ marginTop: 30 }}>
 						<GradientText
@@ -297,13 +298,11 @@ export default function Hobbies({ navigation, route }) {
 								marginLeft: 20,
 							}}
 						/>
-						<FlatList
-							style={{ marginTop: 10 }}
-							showsHorizontalScrollIndicator={false}
-							data={traits}
-							renderItem={({ item }) => <Item value={hobbies} setValue={setHobbies} item={item} />}
-							horizontal={true}
-						/>
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{traits.map((item, index) => {
+								return <Item key={index} value={hobbies} setValue={setHobbies} item={item} />;
+							})}
+						</View>
 					</View>
 				</ScrollView>
 			</View>
@@ -350,38 +349,49 @@ const Item = ({ item, value, setValue }) => {
 			style={{
 				backgroundColor: colors.white,
 				alignSelf: "flex-start",
-				marginLeft: 20,
-				minWidth: width / 4,
-				height: width / 8,
+				// minWidth: width / 5,
+				height: Math.min(width * 0.1, height * 0.05),
 				borderRadius: width / 16,
 				overflow: "hidden",
+				marginLeft: 15,
+				marginVertical: 3,
 			}}
 		>
-			{activity ? (
-				<Gradient
-					style={{
-						paddingHorizontal: 10,
-						justifyContent: "center",
-						alignItems: "center",
-						width: "100%",
-						height: "100%",
-					}}
-				>
-					<Text style={{ color: colors.white }}>{item.key}</Text>
-				</Gradient>
-			) : (
-				<View
-					style={{
-						paddingHorizontal: 10,
-						width: "100%",
-						height: "100%",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<Text style={{ color: colors.black }}>{item.key}</Text>
-				</View>
-			)}
+			<View>
+				{activity ? (
+					<Gradient
+						style={{
+							paddingHorizontal: 10,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={{ color: colors.white, fontSize: Math.min(height * 0.016, width * 0.035) }}
+						>
+							{item.key}
+						</Text>
+					</Gradient>
+				) : (
+					<View
+						style={{
+							paddingHorizontal: 10,
+							width: "100%",
+							height: "100%",
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					>
+						<Text
+							style={{ color: colors.black, fontSize: Math.min(height * 0.016, width * 0.035) }}
+						>
+							{item.key}
+						</Text>
+					</View>
+				)}
+			</View>
 		</Pressable>
 	);
 };

@@ -588,11 +588,11 @@ export default function Settings({ navigation, route }) {
 				<TouchableOpacity style={{ paddingBottom: 16 }}>
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>Bize Ulaş</Text>
-						<Feather name="chevron-right" size={20} color="#4A4A4A" />
+						<Feather name="chevron-down" size={20} color="#4A4A4A" />
 					</View>
 					<Text style={{ paddingHorizontal: 20, color: colors.medium_gray }}>
 						İlişki tavsiyesi, yanlış giden bir şeyler ya da sadece selam vermek… İstediğin her şey
-						için bize ulaşabilirsin!
+						için bize ulaşabilirsin!  {"\n"} <Text style={{color: "blue"}}>noreply@meetdorm.com (Geçici mail adresi)</Text>
 					</Text>
 				</TouchableOpacity>
 

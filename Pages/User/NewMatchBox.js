@@ -34,8 +34,8 @@ const NewMatchBox = (props) => {
 				)
 				.then((res) => {
 					//setPeopleList(res.data);
-					console.log(res.data);
-					console.log(res.data[0].PhotoLink);
+					//console.log(res.data);
+					//console.log(res.data[0].PhotoLink);
 					setImageUri(res.data[0].PhotoLink);
 					
 				})

@@ -1,5 +1,5 @@
 import React from "react";
-import ReactNative, { View, Text, Image, Dimensions } from "react-native";
+import ReactNative, { View, Text, Image, Dimensions, Modal } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -22,15 +22,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient } from "../../visualComponents/colors";
+import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
+import * as SecureStore from "expo-secure-store";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../../src/graphql/queries";
+import { CustomModal } from "../../visualComponents/customComponents";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default Card = ({
 	card,
@@ -42,6 +45,8 @@ export default Card = ({
 	sesToken,
 	indexOfFrontCard,
 	incrementIndex,
+	navigateFromCard,
+	myProfilePicture,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -51,6 +56,44 @@ export default Card = ({
 	const [likeFlag, setLikeFlag] = React.useState(false);
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
+	const [matchPage, setMatchPage] = React.useState(false);
+	const [reportPage, setReportPage] = React.useState(false);
+	const [chosenReport, setChosenReport] = React.useState(0);
+
+	const reportProfile = async() => {
+		
+		//console.log(chosenReport);
+		//console.log(myUserID);
+		//console.log(otherUser.id);
+		//console.log(chatID);
+		setReportPage(false);
+		let abortController = new AbortController();
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const userID = userData.UserId.toString();
+		const myToken = userData.sesToken;
+		try {
+			await axios
+				.post(
+					url + "/report",
+					{ 	
+						UserId: userID,
+						sikayetEdilen: id,
+						sikayetKodu: chosenReport,
+						aciklama: "",					
+					},
+					{ headers: { "access-token": myToken } }
+				)
+				.catch((err) => {
+					console.log(err);
+				});
+			incrementIndex();			
+		} catch (error) {
+			console.log(error);
+		}
+		
+	};
+
 	const {
 		About: about,
 		Alkol: drink,
@@ -59,7 +102,7 @@ export default Card = ({
 		Din: religion,
 		Gender: genderNo,
 		Major: major,
-		Name: fName,
+		Name: name,
 		School: university,
 		Sigara: smoke,
 		Surname: sName,
@@ -71,21 +114,16 @@ export default Card = ({
 
 	// console.log(`name: ${fName}\nindex: ${index}\nindex of first card: ${indexOfFrontCard}\n\n`);
 
-	const name = fName + " " + sName;
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
+
+	const goToMsg = async () => {
+		navigateFromCard();
+	};
 
 	const sendNotification = async () => {
 		try {
 			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
-			console.log("++++++++++++++++++++++++++");
-			console.log(userData.data);
-			console.log("++++++++++++++++++++++++++");
-			console.log(userData.data.getMsgUser.pushToken);
-			console.log("++++++++++++++++++++++++++");
-			console.log(userData.data.getMsgUser.id);
-			console.log("++++++++++++++++++++++++++");
-
 			let response = fetch("https://exp.host/--/api/v2/push/send", {
 				method: "POST",
 				headers: {
@@ -112,7 +150,7 @@ export default Card = ({
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		incrementIndex();
+		const matchHappened = false;
 		await axios
 			.post(
 				url + "/LikeDislike",
@@ -124,14 +162,16 @@ export default Card = ({
 				{ headers: { "access-token": sesToken } }
 			)
 			.then((res) => {
-				console.log("******************");
 				console.log(res.data);
 				if (res.data == "match") {
 					console.log("send notification.");
 					sendNotification();
-					alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
+					//alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
+					setMatchPage(true);
+					matchHappened = true;
+				} else {
+					incrementIndex();
 				}
-				console.log("******************");
 			})
 			.catch((error) => {
 				//console.log(error);
@@ -353,7 +393,12 @@ export default Card = ({
 										})}
 									</View>
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
-										<TouchableOpacity onPress={() => {}}>
+										<TouchableOpacity
+											onPress={() => {
+												setReportPage(true);
+												//setMatchPage(true);
+											}}
+										>
 											<Image
 												style={{
 													height: 25,
@@ -391,7 +436,7 @@ export default Card = ({
 												<Text
 													style={{
 														color: colors.white,
-														fontSize: width * 0.06,
+														fontSize: Math.min(35, width * 0.06),
 														fontFamily: "PoppinsSemiBold",
 														letterSpacing: 1.05,
 													}}
@@ -402,9 +447,9 @@ export default Card = ({
 												<Text
 													style={{
 														color: colors.white,
-														fontSize: width * 0.045,
+														fontSize: Math.min(24, width * 0.045),
 														fontFamily: "PoppinsItalic",
-														lineHeight: width * 0.05,
+														lineHeight: Math.min(27, width * 0.05),
 													}}
 												>
 													{university}
@@ -457,6 +502,18 @@ export default Card = ({
 								</Animated.View>
 
 								{/* PART: backface */}
+								{/* <Animated.View
+									style={[
+										commonStyles.photo,
+										{
+											width: width * 0.9,
+											maxHeight: height * 0.7,
+											backfaceVisibility: "hidden",
+										},
+										animatedFrontFace,
+									]}
+								> */}
+
 								<Animated.View
 									name={"backface"}
 									style={[
@@ -482,8 +539,8 @@ export default Card = ({
 										style={{
 											position: "absolute",
 											aspectRatio: 1 / 1.5,
-											maxHeight: height * 0.7,
 											width: width * 0.9,
+											maxHeight: height * 0.7,
 											resizeMode: "cover",
 											transform: [{ rotateY: "180deg" }],
 										}}
@@ -520,7 +577,7 @@ export default Card = ({
 														paddingVertical: 5,
 													}}
 												>
-													Cinsityet{"\n"}
+													Cinsiyet{"\n"}
 													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
 														{gender}
 													</Text>
@@ -764,7 +821,9 @@ export default Card = ({
 						</View>
 
 						<View style={{ position: "absolute", top: 20, right: 20 }}>
-							<TouchableOpacity onPress={() => {}}>
+							<TouchableOpacity onPress={() => {
+								setReportPage(true);
+							}}>
 								<Image
 									style={{
 										height: 25,
@@ -868,6 +927,437 @@ export default Card = ({
 					</View>
 				</View>
 			)}
+			{/* Match Page Modal */}			
+			<CustomModal
+				visible={matchPage}
+				onRequestClose={() => {
+					setMatchPage(false);
+				}}
+				onDismiss={() => {
+					setMatchPage(false);
+				}}
+			>
+				<View
+					style={{
+						height: height,
+						width: width,
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						position: "absolute",
+						justifyContent: "center",
+						alignItems: "center",
+						alignContent: "center",
+					}}
+				>
+					<View
+						style={{
+							height: height * 0.95,
+							width: width * 0.95,
+							backgroundColor: colors.white,
+						}}
+					>
+						<GradientText
+							style={{
+								fontSize: 26,
+								fontWeight: "bold",
+								textAlign: "center",
+								paddingVertical: height * 0.02,
+							}}
+							text={"Hey! \n Eşleştiniz"}
+						/>
+						<Text
+							style={{
+								fontSize: 23,
+								fontFamily: "Poppins",
+								color: colors.medium_gray,
+								textAlign: "center",
+								paddingVertical: height * 0.02,
+							}}
+						>
+							{name} {"&"} Sen
+						</Text>
+						<Image
+							source={{
+								uri: photoList[0].PhotoLink,
+							}}
+							style={{
+								top: height * 0.25,
+								left: width * 0.12,
+								borderRadius: 20,
+								position: "absolute",
+								aspectRatio: 1 / 1.5,
+								width: width * 0.4,
+								maxHeight: height * 0.7,
+								resizeMode: "cover",
+								transform: [{ rotateZ: "-18deg" }],
+								zIndex: 2,
+							}}
+						/>
+						<Image
+							source={{
+								uri: myProfilePicture,
+							}}
+							style={{
+								top: height * 0.3,
+								left: width * 0.4,
+								borderRadius: 20,
+								position: "absolute",
+								aspectRatio: 1 / 1.5,
+								width: width * 0.4,
+								maxHeight: height * 0.7,
+								resizeMode: "cover",
+								transform: [{ rotateZ: "23deg" }],
+							}}
+						/>
+						<Text
+							style={{
+								paddingTop: height * 0.425,
+								fontSize: 16,
+								fontFamily: "Poppins",
+								color: colors.medium_gray,
+								textAlign: "center",
+								paddingHorizontal: 5,
+							}}
+						>
+							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
+						</Text>
+
+						<TouchableOpacity
+							onPress={() => {
+								setMatchPage(false);
+								incrementIndex();
+								//goToMsg();
+							}}
+							style={{
+								paddingTop: 10,
+								maxWidth: "100%",
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Gradient
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									width: "80%",
+									borderRadius: 12,
+								}}
+							>
+								<Text
+									style={{
+										color: colors.white,
+										fontSize: 18,
+										fontFamily: "PoppinsSemiBold",
+										padding: 10,
+									}}
+								>
+									Mesaj Gönder
+								</Text>
+							</Gradient>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={{
+								paddingTop: 5,
+							}}
+							onPress={async () => {
+								await setMatchPage(false);
+								incrementIndex();
+							}}
+						>
+							<GradientText
+								style={{
+									fontSize: 18,
+									fontFamily: "Poppins",
+									fontWeight: "bold",
+									textAlign: "center",
+									paddingVertical: height * 0.02,
+								}}
+								text={"Daha sonra"}
+							/>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</CustomModal>
+			{/* Match Page Modal */}	
+
+
+			{/* Report Page Modal */}
+			<CustomModal
+				visible= {reportPage}
+				dismiss={()=>{
+					setReportPage(false);
+				}}
+			>
+				<View
+					style={{
+						maxWidth: width* 0.9,
+						height: height *0.9,
+						backgroundColor: colors.white,
+						borderRadius: 10,
+						paddingHorizontal: 36,
+					}}
+				>
+					<TouchableOpacity
+						onPress={() => {
+							setReportPage(false);
+						}}
+						style={{
+							position: "absolute",
+							alignSelf: "flex-end",
+							padding: 16,
+						}}
+					>
+					    <Text style = {{fontSize: 22, color: colors.medium_gray}}>İptal</Text>
+					</TouchableOpacity>
+					<View
+						style={{
+							width:"100%",
+							marginTop:20,
+						}}
+					>
+						<View
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignContent: "center",
+                      			justifyContent: "center",      
+								marginVertical: 10,
+							}}
+						>
+                    		<Image source={require("../../assets/report.png")} />	
+						</View>
+						<View
+                    		style = {{
+                      		flexDirection: "row",
+                      		width: "100%",
+                      		alignItems: "center",
+                      		justifyContent: "center",
+                      		marginVertical: 5,
+                    		}}
+                  		>
+                    		<Text style = {{ color: colors.black, fontSize: 20, lineHeight: 24,fontFamily: "PoppinsSemiBold", fontWeight: "500"}}>
+                      			Bildirmek istiyor musun ?
+                    		</Text>
+                  		</View>
+						<View
+                    		style = {{
+                      		flexDirection: "row",
+                      		width: "100%",
+                      		alignItems: "center",
+                      		justifyContent: "center",
+                      		marginVertical: 10,
+                    		}}
+                  		>
+                    		<Text style = {{ color: colors.dark_gray, fontSize: 13, fontFamily: "Poppins", fontWeight: "400", textAlign: "center"}}>
+                      			{name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz. 
+                    		</Text>
+                		</View>
+						<TouchableOpacity
+							onPress={()=> {
+								chosenReport==1 ? setChosenReport(0) :setChosenReport(1);
+							}}
+							style={{
+								maxWidth: "100%",
+								
+								borderRadius: 12,
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+								borderColor: colors.black,
+								borderWidth: 1,
+								marginBottom: 10,
+
+							}}
+						>
+							{chosenReport == 1 ? (
+								
+								<GradientText
+									text={"Sahte Profil/Spam"}
+									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
+								/>
+							):(
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+									Sahte Profil/Spam
+								</Text>
+							)}
+							
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={()=> {
+								chosenReport==2 ? setChosenReport(0) :setChosenReport(2);
+							}}
+							style={{
+								maxWidth: "100%",
+								borderRadius: 12,
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+								borderColor: colors.black,
+								borderWidth: 1,
+								marginBottom: 10,
+
+							}}
+						>
+							{chosenReport == 2 ? (
+								
+								<GradientText
+									text={"Uygunsuz Mesaj"}
+									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
+								/>
+							):(
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+									Uygunsuz Mesaj
+								</Text>
+							)}
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={()=> {
+								chosenReport==3 ? setChosenReport(0) :setChosenReport(3);
+							}}
+							style={{
+								maxWidth: "100%",
+								
+								borderRadius: 12,
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+								borderColor: colors.black,
+								borderWidth: 1,
+								marginBottom: 10,
+
+							}}
+						>
+							{chosenReport == 3 ? (
+								
+								<GradientText
+									text={"Uygunsuz Fotoğraf"}
+									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
+								/>
+							):(
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+									Uygunsuz Fotoğraf
+								</Text>
+							)}
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={()=> {
+								chosenReport==4 ? setChosenReport(0) :setChosenReport(4);
+							}}
+							style={{
+								maxWidth: "100%",
+								
+								borderRadius: 12,
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+								borderColor: colors.black,
+								borderWidth: 1,
+								marginBottom: 10,
+
+							}}
+						>
+							{chosenReport == 4 ? (
+								
+								<GradientText
+									text={"Uygunsuz Biyografi"}
+									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
+								/>
+							):(
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+									Uygunsuz Biyografi
+								</Text>
+							)}
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={()=> {
+								chosenReport==5 ? setChosenReport(0) :setChosenReport(5);
+							}}
+							style={{
+								maxWidth: "100%",
+								
+								borderRadius: 12,
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+								borderColor: colors.black,
+								borderWidth: 1,
+								marginBottom: 10,
+							}}
+						>
+							{chosenReport == 5 ? (
+								
+								<GradientText
+									text={"Reşit olmayan kullanıcı"}
+									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
+								/>
+							):(
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+									Reşit Olmayan Kullanıcı
+								</Text>
+							)}
+						</TouchableOpacity>
+						<TouchableOpacity
+							onPress={()=> {
+								chosenReport==6 ? setChosenReport(0) :setChosenReport(6);
+							}}
+							style={{
+								maxWidth: "100%",
+								
+								borderRadius: 12,
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+								borderColor: colors.black,
+								borderWidth: 1,
+								marginBottom: 10,
+
+							}}
+						>
+							{chosenReport == 6 ? (
+								
+								<GradientText
+									text={"Diğer"}
+									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
+								/>
+							):(
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+									Diğer
+								</Text>
+							)}
+						</TouchableOpacity>
+						
+						<TouchableOpacity
+					      	onPress={reportProfile}
+					      	style={{
+						      	maxWidth: "100%",
+					      		
+						      	borderRadius: 12,
+						      	overflow: "hidden",
+						      	marginTop: 20,
+								justifyContent: "center",
+								alignItems:"center",
+					      	}}
+			      		>
+					      	<Gradient
+						      	style={{
+							      	justifyContent: "center",
+							      	alignItems: "center",
+							      	width: "100%",
+						      	}}
+					      	>
+						      	<Text style={{ color: colors.white, fontSize: 22, fontFamily: "PoppinsSemiBold", padding: 10 }}>
+							    	Bildir
+						      	</Text>
+					      	</Gradient>
+				      	</TouchableOpacity>
+					</View>
+				</View>
+			</CustomModal>		
+			{/* Report Page Modal */}			
+
 		</View>
 	);
 };

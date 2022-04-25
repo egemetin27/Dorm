@@ -1,6 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	TextInput,
+	Animated,
+	Dimensions,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import commonStyles from "../../visualComponents/styles";
@@ -9,6 +17,7 @@ import { useFonts } from "@expo-google-fonts/inter";
 import { AuthContext } from "../../nonVisualComponents/Context";
 
 const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
+const { width, height } = Dimensions.get("window");
 
 export default function Login({ navigation }) {
 	const [email, onChangeEmail] = React.useState("");
@@ -40,12 +49,7 @@ export default function Login({ navigation }) {
 
 	const { signIn } = React.useContext(AuthContext);
 	const handleLogin = async () => {
-		// if (emailRegex.test(email)) {
-		// 	signIn({ email: email, password: password, isNewUser: false });
-		// } else {
-		// 	setWrongInput({ value: true, message: "E-posta adresi geçersiz!" });
-		// }
-		signIn({ email: email, password: password, isNewUser: false });
+		signIn({ email: email, password: password, isNewUser: false, navigation: navigation });
 	};
 
 	return (
@@ -76,13 +80,13 @@ export default function Login({ navigation }) {
 									{
 										translateY: animRef1.interpolate({
 											inputRange: [0, 1],
-											outputRange: [0, -20],
+											outputRange: [0, -width * 0.045],
 										}),
 									},
 								],
 								fontSize: animRef1.interpolate({
 									inputRange: [0, 1],
-									outputRange: [14, 11],
+									outputRange: [width * 0.035, width * 0.023],
 								}),
 							},
 						]}
@@ -119,13 +123,13 @@ export default function Login({ navigation }) {
 									{
 										translateY: animRef2.interpolate({
 											inputRange: [0, 1],
-											outputRange: [0, -20],
+											outputRange: [0, -width * 0.045],
 										}),
 									},
 								],
 								fontSize: animRef2.interpolate({
 									inputRange: [0, 1],
-									outputRange: [14, 11],
+									outputRange: [width * 0.035, width * 0.023],
 								}),
 							},
 						]}
@@ -166,7 +170,7 @@ export default function Login({ navigation }) {
 				)}
 
 				<TouchableOpacity
-					style={{ position: "relative", left: 2, marginTop: 12 }}
+					style={{ left: 2, marginTop: 12 }}
 					onPress={() => {
 						navigation.navigate("ForgotPassword");
 					}}
@@ -184,7 +188,7 @@ export default function Login({ navigation }) {
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					style={[commonStyles.button, { position: "absolute", marginTop: 210 }]}
+					style={[commonStyles.button, { marginTop: 30 }]}
 					disabled={email == "" || password == ""}
 					onPress={handleLogin}
 				>
@@ -211,9 +215,8 @@ export default function Login({ navigation }) {
 
 				<View
 					style={{
-						position: "absolute",
 						alignSelf: "center",
-						marginTop: 290,
+						marginTop: 15,
 						flexDirection: "row",
 					}}
 				>

@@ -23,7 +23,7 @@ import { url } from "../../connection";
 const { width, height } = Dimensions.get("screen");
 
 export default function PhotoUpload({ navigation, route }) {
-	const { userID, sesToken } = route.params;
+	const { UserId, sesToken } = route.params;
 
 	const [photoList, setPhotoList] = React.useState([]);
 	const [isLoading, setIsLoading] = React.useState(false);
@@ -124,7 +124,7 @@ export default function PhotoUpload({ navigation, route }) {
 				.post(
 					url + "/addPhotoLink",
 					{
-						UserId: userID,
+						UserId: UserId,
 						userPhoto: 1,
 						photos: newList,
 					},
@@ -133,19 +133,14 @@ export default function PhotoUpload({ navigation, route }) {
 				.then(async (res) => {
 					// setPhotoList(newList);
 
-					const dataStr = await SecureStore.getItemAsync("userData");
-					const userData = JSON.parse(dataStr);
 					const storedValue = JSON.stringify({
-						...userData,
 						Photo: newList,
 					});
 					setIsLoading(false);
 
 					await SecureStore.setItemAsync("userData", storedValue);
-					navigation.replace("Hobbies", {
-						userID: userID,
-						hobbyList: [],
-						isNewUSer: true,
+					navigation.replace("AfterRegister", {
+						profile: route.params,
 					});
 				})
 				.catch((err) => {
@@ -198,6 +193,7 @@ export default function PhotoUpload({ navigation, route }) {
 										{
 											width: width * 0.8,
 											maxHeight: "90%",
+											marginHorizontal: 20,
 										},
 									]}
 								>
