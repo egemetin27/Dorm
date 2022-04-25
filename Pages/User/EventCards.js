@@ -549,65 +549,6 @@ export default function EventCards({ navigation, route }) {
 					<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
 				)}
 			/>
-
-			{/* PART: TabBar */}
-			<View name={"tab-Bar"} style={styles.tabBar}>
-				<Pressable
-					onPress={() => {
-						navigation.replace("MainScreen", { screen: "Profil" });
-					}}
-					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
-				>
-					<Image
-						source={require("../../assets/TabBarIcons/profile.png")}
-						resizeMode="contain"
-						style={{
-							tintColor: colors.cool_gray,
-							height: height / 36,
-						}}
-					/>
-
-					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>
-						Profil
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={() => {
-						navigation.replace("MainScreen", { screen: "AnaSayfa" });
-					}}
-					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
-				>
-					<Image
-						source={require("../../assets/logoGradient.png")}
-						resizeMode="contain"
-						style={{
-							tintColor: colors.cool_gray,
-							height: height / 30,
-						}}
-					/>
-					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>
-						Ana Sayfa
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={() => {
-						navigation.replace("MainScreen", { screen: "Mesajlar" });
-					}}
-					style={{ alignItems: "center", justifyContent: "flex-end", flex: 1 }}
-				>
-					<Image
-						source={require("../../assets/TabBarIcons/messages.png")}
-						resizeMode="contain"
-						style={{
-							tintColor: colors.cool_gray,
-							height: height / 36,
-						}}
-					/>
-					<Text style={{ fontSize: 13, fontFamily: "PoppinsSemiBold", color: colors.cool_gray }}>
-						Mesajlar
-					</Text>
-				</Pressable>
-			</View>
 		</View>
 	);
 }

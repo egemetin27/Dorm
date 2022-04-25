@@ -56,7 +56,6 @@ export default Card = ({
 	const [likeFlag, setLikeFlag] = React.useState(false);
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
-
 	const [matchPage, setMatchPage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
@@ -119,7 +118,6 @@ export default Card = ({
 
 	const goToMsg = async () => {
 		navigateFromCard();
-
 	};
 
 	const sendNotification = async () => {
@@ -170,10 +168,7 @@ export default Card = ({
 					//alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
 					setMatchPage(true);
 					matchHappened = true;
-					
-				}
-				else
-				{
+				} else {
 					incrementIndex();
 				}
 			})
@@ -397,11 +392,12 @@ export default Card = ({
 										})}
 									</View>
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
-										<TouchableOpacity onPress={() => {
-											//setReportPage(true);
-											setMatchPage(true);
-
-										}}>
+										<TouchableOpacity
+											onPress={() => {
+												//setReportPage(true);
+												setMatchPage(true);
+											}}
+										>
 											<Image
 												style={{
 													height: 25,
@@ -934,7 +930,7 @@ export default Card = ({
 				onRequestClose={() => {
 					setMatchPage(false);
 				}}
-				onDismiss = {() => {
+				onDismiss={() => {
 					setMatchPage(false);
 				}}
 			>
@@ -942,9 +938,9 @@ export default Card = ({
 					style={{
 						height: height,
 						width: width,
-						top:0,
-						left:0,
-						right:0,
+						top: 0,
+						left: 0,
+						right: 0,
 						bottom: 0,
 						position: "absolute",
 						justifyContent: "center",
@@ -954,66 +950,66 @@ export default Card = ({
 				>
 					<View
 						style={{
-							
 							height: height * 0.95,
 							width: width * 0.95,
 							backgroundColor: colors.white,
 						}}
-						
 					>
-						<GradientText 
-							style={{ 
-								fontSize: 26, 
-								fontWeight: "bold", 
+						<GradientText
+							style={{
+								fontSize: 26,
+								fontWeight: "bold",
 								textAlign: "center",
 								paddingVertical: height * 0.02,
-							}} 
-							text={"Hey! \n Eşleştiniz"}/>
-						<Text style={{ 
-							fontSize: 23,
-							fontFamily: "Poppins",
-							color: colors.medium_gray,
-							textAlign: "center",
-							paddingVertical: height * 0.02,
-						}}>
+							}}
+							text={"Hey! \n Eşleştiniz"}
+						/>
+						<Text
+							style={{
+								fontSize: 23,
+								fontFamily: "Poppins",
+								color: colors.medium_gray,
+								textAlign: "center",
+								paddingVertical: height * 0.02,
+							}}
+						>
 							{name} {"&"} Sen
 						</Text>
 						<Image
-							source = {{
+							source={{
 								uri: photoList[0].PhotoLink,
 							}}
 							style={{
-								top: height*0.25,
+								top: height * 0.25,
 								left: width * 0.12,
 								borderRadius: 20,
 								position: "absolute",
-								aspectRatio: 1/1.5,
+								aspectRatio: 1 / 1.5,
 								width: width * 0.4,
 								maxHeight: height * 0.7,
 								resizeMode: "cover",
-								transform: [{ rotateZ: "-18deg"}],
+								transform: [{ rotateZ: "-18deg" }],
 								zIndex: 2,
 							}}
 						/>
 						<Image
-							source = {{
+							source={{
 								uri: myProfilePicture,
 							}}
 							style={{
-								top: height*0.30,
+								top: height * 0.3,
 								left: width * 0.4,
 								borderRadius: 20,
 								position: "absolute",
-								aspectRatio: 1/1.5,
+								aspectRatio: 1 / 1.5,
 								width: width * 0.4,
 								maxHeight: height * 0.7,
 								resizeMode: "cover",
-								transform: [{ rotateZ: "23deg"}]
-
+								transform: [{ rotateZ: "23deg" }],
 							}}
 						/>
-						<Text 
-							style ={{
+						<Text
+							style={{
 								paddingTop: height * 0.425,
 								fontSize: 16,
 								fontFamily: "Poppins",
@@ -1024,55 +1020,61 @@ export default Card = ({
 						>
 							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 						</Text>
-						
+
 						<TouchableOpacity
-					      	onPress={() => {
+							onPress={() => {
 								setMatchPage(false);
 								incrementIndex();
 								//goToMsg();
 							}}
-					      	style={{
+							style={{
 								paddingTop: 10,
-						      	maxWidth: "100%",						      	
-						      	overflow: "hidden",
+								maxWidth: "100%",
+								overflow: "hidden",
 								justifyContent: "center",
-								alignItems:"center",
-
-					      	}}
-			      		>
-					      	<Gradient
-						      	style={{
-							      	justifyContent: "center",
-							      	alignItems: "center",
-							      	width: "80%",
+								alignItems: "center",
+							}}
+						>
+							<Gradient
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									width: "80%",
 									borderRadius: 12,
-
-						      	}}
-					      	>
-						      	<Text style={{ color: colors.white, fontSize: 18, fontFamily: "PoppinsSemiBold", padding: 10 }}>
-							    	Mesaj Gönder
-						      	</Text>
-					      	</Gradient>
-				      	</TouchableOpacity>
+								}}
+							>
+								<Text
+									style={{
+										color: colors.white,
+										fontSize: 18,
+										fontFamily: "PoppinsSemiBold",
+										padding: 10,
+									}}
+								>
+									Mesaj Gönder
+								</Text>
+							</Gradient>
+						</TouchableOpacity>
 						<TouchableOpacity
-							style = {{
+							style={{
 								paddingTop: 5,
 							}}
-							onPress = { async () => {
+							onPress={async () => {
 								await setMatchPage(false);
 								incrementIndex();
 							}}
 						>
-							<GradientText style={{ 
+							<GradientText
+								style={{
 									fontSize: 18,
 									fontFamily: "Poppins",
-									fontWeight: "bold", 
+									fontWeight: "bold",
 									textAlign: "center",
 									paddingVertical: height * 0.02,
-								}} 
-								text={"Daha sonra"}/>
+								}}
+								text={"Daha sonra"}
+							/>
 						</TouchableOpacity>
-
 					</View>
 				</View>
 			</CustomModal>

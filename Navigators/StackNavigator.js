@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Image, Dimensions, Alert } from "react-native";
+import { View, Text, Image, Dimensions, Alert, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer, NavigationContext } from "@react-navigation/native";
@@ -53,6 +53,18 @@ import ToplulukKurallari from "../Pages/ToplulukKurallari";
 // COMPONENTS
 import { AuthContext } from "../nonVisualComponents/Context";
 /////
+const HomeStack = createNativeStackNavigator();
+
+function HomeStackScreen(route, navigation) {
+	return (
+		<HomeStack.Navigator screenOptions={{ headerShown: false }}>
+			<HomeStack.Screen name="Home" component={Home} />
+			<HomeStack.Screen name="ProfileCards" component={ProfileCards} />
+			<HomeStack.Screen name="EventCards" component={EventCards} />
+		</HomeStack.Navigator>
+	);
+}
+
 function MainScreen({ route, navigation }) {
 	const { width, height } = Dimensions.get("window");
 	const Tab = createBottomTabNavigator();
@@ -66,11 +78,12 @@ function MainScreen({ route, navigation }) {
 		<Tab.Navigator
 			backBehavior="initialRoute"
 			screenOptions={{
-				tabBarStyle: { height: height * 0.08, paddingBottom: height * 0.008 },
+				tabBarStyle: { height: height * 0.08, paddingBottom: height * 0.008, position: "relative" },
 				headerShown: false,
 				tabBarShowLabel: false,
 				tabBarHideOnKeyboard: true,
 			}}
+			detachInactiveScreens={true}
 			initialRouteName={"AnaSayfa"}
 		>
 			<Tab.Screen
@@ -114,8 +127,19 @@ function MainScreen({ route, navigation }) {
 			/>
 			<Tab.Screen
 				name="AnaSayfa"
-				component={Home}
+				component={HomeStackScreen}
 				options={{
+					tabBarButton: (props) => (
+						<Pressable
+							{...props}
+							onPress={() => {
+								navigation.navigate("MainScreen", {
+									screen: "AnaSayfa",
+									params: { screen: "Home" },
+								});
+							}}
+						></Pressable>
+					),
 					tabBarIcon: ({ focused }) => (
 						<View
 							style={{
@@ -192,8 +216,9 @@ function MainScreen({ route, navigation }) {
 	);
 }
 
+const Stack = createNativeStackNavigator();
+
 export default function StackNavigator() {
-	const Stack = createNativeStackNavigator();
 	const [appIsReady, setAppIsReady] = React.useState(false); // is the background fetching done
 	const [isLoggedIn, setIsLoggedIn] = React.useState(false); // is the user logged in or not
 	const [introShown, setIntroShown] = React.useState(); // is this the firs time the app is opened
@@ -213,7 +238,6 @@ export default function StackNavigator() {
 				.post(url + "/Login", dataToBeSent)
 				.then(async (res) => {
 					if (res.data.authentication == "true") {
-						console.log(res.data);
 						if (navigation != null && res.data.onBoardingComplete == 0) {
 							navigation.replace("PhotoUpload", {
 								mail: email,
@@ -347,13 +371,10 @@ export default function StackNavigator() {
 									<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />
 									<Stack.Screen name="Chat" component={Chat} />
 									<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
-									<Stack.Screen name="ProfileCards" component={ProfileCards} />
-									<Stack.Screen name="EventCards" component={EventCards} />
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							) : (
 								// Screens for non-logged in users
-
 								<Stack.Group screenOptions={{ headerShown: false }}>
 									{!introShown && <Stack.Screen name="Onboarding" component={Onboarding} />}
 									<Stack.Screen name="WelcomePage" component={WelcomePage} />
