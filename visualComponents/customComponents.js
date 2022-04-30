@@ -14,7 +14,6 @@ import {
 import Animated, {
 	useSharedValue,
 	useAnimatedStyle,
-	interpolateColor,
 	interpolate,
 	withTiming,
 } from "react-native-reanimated";
@@ -40,13 +39,14 @@ export const CustomModal = (props) => {
 };
 
 export const Switch = ({ style, value, onValueChange }) => {
-	const val = useSharedValue(value ? 1 : -1);
+	// const val = useSharedValue(value ? 1 : -1);
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
 			transform: [
 				{
-					translateX: interpolate(val.value, [-1, 1], [0, style?.height || 30]),
+					translateX: withTiming(interpolate(value, [-1, 1], [0, style?.height || 30])),
+					// translateX: interpolate(val.value, [-1, 1], [0, style?.height || 30]),
 				},
 			],
 		};
@@ -54,15 +54,15 @@ export const Switch = ({ style, value, onValueChange }) => {
 
 	const colorAnimation = useAnimatedStyle(() => {
 		return {
-			backgroundColor: interpolateColor(val.value, [-1, 1], ["#DADADA", "transparent"]),
+			backgroundColor: value == -1 ? "#DADADA" : "#00000000",
 		};
 	});
 
 	return (
 		<Pressable
 			onPress={() => {
-				onValueChange(val.value == 1 ? false : true); // if val is initially equal to 1, then set value to false; else, set it to true
-				val.value = withTiming(-val.value);
+				onValueChange(value == 1 ? false : true); // if val is initially equal to 1, then set value to false; else, set it to true
+				// val.value = withTiming(-val.value);
 			}}
 			style={style}
 		>
@@ -171,6 +171,65 @@ export const AnimatedModal = (props) => {
 			</TouchableWithoutFeedback>
 			<View style={styles.modalContent}>{props.children}</View>
 		</Animated.View>
+	);
+};
+
+export const CustomRadio = (props) => {
+	const { horizontal = false, list = [], index, setIndex } = props;
+	return (
+		<View style={{ flexDirection: horizontal ? "row" : "column", flexWrap: "wrap" }}>
+			{list.map((item, idx) => {
+				return (
+					<Pressable
+						key={idx}
+						onPress={() => {
+							setIndex(idx);
+						}}
+						style={[
+							{
+								marginHorizontal: Math.min(width * 0.03, 10),
+							},
+							props.style,
+						]}
+					>
+						{index == idx ? (
+							<Gradient
+								style={[
+									{
+										paddingVertical: 5,
+										paddingHorizontal: 20,
+										justifyContent: "center",
+										alignItems: "center",
+										elevation: 3,
+									},
+									props.listItemStyle,
+								]}
+							>
+								<Text style={{ color: colors.white, fontSize: Math.min(width * 0.04, 20) }}>
+									{item}
+								</Text>
+							</Gradient>
+						) : (
+							<View
+								style={[
+									{
+										paddingVertical: 5,
+										paddingHorizontal: 20,
+										backgroundColor: colors.white,
+										justifyContent: "center",
+										alignItems: "center",
+										elevation: 3,
+									},
+									props.listItemStyle,
+								]}
+							>
+								<Text style={{ fontSize: Math.min(width * 0.04, 20) }}>{item}</Text>
+							</View>
+						)}
+					</Pressable>
+				);
+			})}
+		</View>
 	);
 };
 

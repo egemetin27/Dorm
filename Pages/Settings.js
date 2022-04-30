@@ -10,14 +10,13 @@ import {
 	Image,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import Animated from "react-native-reanimated";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
-import { CustomModal, Switch } from "../visualComponents/customComponents";
+import { CustomModal, Switch, CustomRadio } from "../visualComponents/customComponents";
 import { url } from "../connection";
 
 import { AuthContext } from "../nonVisualComponents/Context";
@@ -356,6 +355,7 @@ export default function Settings({ navigation, route }) {
 	const { signOut } = React.useContext(AuthContext);
 
 	// SWITCHES
+	const [friendMode, setFriendMode] = React.useState(false);
 	const [invisibility, setInvisibility] = React.useState(invis);
 	const [campusGhost, setCampusGhost] = React.useState(ghost);
 	const [schoolLover, setSchoolLover] = React.useState(onlyCampus);
@@ -397,6 +397,10 @@ export default function Settings({ navigation, route }) {
 
 	const handleCampusGhost = (value) => {
 		setCampusGhost(value);
+		if (schoolLover) {
+			handleSchoolLover(false);
+		}
+
 		axios
 			.post(
 				url + "/BlockCampus",
@@ -404,7 +408,6 @@ export default function Settings({ navigation, route }) {
 				{ headers: { "access-token": sesToken } }
 			) // There is a typo (not Change but Chage) TODO: make userID variable
 			.then(async (res) => {
-				console.log(res.data);
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, BlockCampus: value ? "1" : "0" };
@@ -418,6 +421,10 @@ export default function Settings({ navigation, route }) {
 
 	const handleSchoolLover = (value) => {
 		setSchoolLover(value);
+		if (campusGhost) {
+			handleCampusGhost(false);
+		}
+
 		axios
 			.post(
 				url + "/OnlyCampus",
@@ -435,9 +442,11 @@ export default function Settings({ navigation, route }) {
 				console.log("Only Campus Error: ", error);
 			});
 	};
+
 	const handleEmail = (value) => {
 		setEmail(value);
 	};
+
 	const handlePushNotifications = (value) => {
 		setPushNotifications(value);
 	};
@@ -478,11 +487,26 @@ export default function Settings({ navigation, route }) {
 						Eşleşme Ayarları
 					</Text>
 				</View>
+				<View style={{ width: "100%", alignItems: "center" }}>
+					<CustomRadio
+						horizontal={true}
+						list={["Flört Modu", "Arkadaşlık Modu"]}
+						listItemStyle={{
+							width: width * 0.4,
+							aspectRatio: 3 / 1,
+							borderRadius: (width * 0.4) / 3,
+						}}
+						index={friendMode ? 1 : 0}
+						setIndex={(index) => {
+							setFriendMode(index == 1 ? true : false);
+						}}
+					/>
+				</View>
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				{/* <TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Eşleşme Modu</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 
 				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Filtreleme</Text>
@@ -498,7 +522,7 @@ export default function Settings({ navigation, route }) {
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>Görünmezlik</Text>
 						<Switch
-							value={invisibility}
+							value={invisibility ? 1 : -1}
 							onValueChange={(value) => {
 								handleInvisibility(value);
 							}}
@@ -514,7 +538,7 @@ export default function Settings({ navigation, route }) {
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>Kampüs Hayaleti</Text>
 						<Switch
-							value={campusGhost}
+							value={campusGhost ? 1 : -1}
 							onValueChange={(value) => {
 								handleCampusGhost(value);
 							}}
@@ -530,7 +554,7 @@ export default function Settings({ navigation, route }) {
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>Canım Okulum</Text>
 						<Switch
-							value={schoolLover}
+							value={schoolLover ? 1 : -1}
 							onValueChange={(value) => {
 								handleSchoolLover(value);
 							}}
@@ -552,7 +576,7 @@ export default function Settings({ navigation, route }) {
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>E-Posta</Text>
 						<Switch
-							value={email}
+							value={email ? 1 : -1}
 							onValueChange={(value) => {
 								handleEmail(value);
 							}}
@@ -567,7 +591,7 @@ export default function Settings({ navigation, route }) {
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>Anlık Bildirimler</Text>
 						<Switch
-							value={pushNotifications}
+							value={pushNotifications ? 1 : -1}
 							onValueChange={(value) => {
 								handlePushNotifications(value);
 							}}
@@ -592,7 +616,8 @@ export default function Settings({ navigation, route }) {
 					</View>
 					<Text style={{ paddingHorizontal: 20, color: colors.medium_gray }}>
 						İlişki tavsiyesi, yanlış giden bir şeyler ya da sadece selam vermek… İstediğin her şey
-						için bize ulaşabilirsin!  {"\n"} <Text style={{color: "blue"}}>noreply@meetdorm.com (Geçici mail adresi)</Text>
+						için bize ulaşabilirsin! {"\n"}{" "}
+						<Text style={{ color: "blue" }}>noreply@meetdorm.com (Geçici mail adresi)</Text>
 					</Text>
 				</TouchableOpacity>
 

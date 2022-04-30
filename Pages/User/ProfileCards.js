@@ -85,7 +85,13 @@ export default function ProfileCards({ navigation, route }) {
 	const second = 51; // TODO: get this data from database
 
 	React.useEffect(() => {
+		const { fromEvent = false } = route.params;
 		const backAction = () => {
+			if (fromEvent) {
+				navigation.goBack();
+				return true;
+			}
+
 			navigation.replace("MainScreen", { screen: "AnaSayfa" });
 			return true;
 		};
