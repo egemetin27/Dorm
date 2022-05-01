@@ -131,11 +131,12 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 			)
 			.then((res) => {
 				if (res.data.length > 0) {
-					navigation.replace("ProfileCards", {
+					navigation.push("ProfileCards", {
 						idx: 0,
 						list: res.data,
 						myID: myID,
 						sesToken: sesToken,
+						fromEvent: true,
 					});
 				} else {
 					Alert.alert("Etkinliği Beğenen Kimse Yok :/");

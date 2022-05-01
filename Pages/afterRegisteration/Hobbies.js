@@ -53,11 +53,11 @@ export default function Hobbies({ navigation, route }) {
 					const newData = { ...data, interest: newHobbyList };
 
 					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
-					setIsLoading(false);
 					if (isNewUser) {
 						signIn({ email: route.params.mail, password: route.params.password, isNewUser: true });
 					} else {
 						navigation.replace("MainScreen", { screen: "Profil" });
+						// navigation.goBack();
 					}
 				})
 				.catch((err) => {
@@ -355,6 +355,7 @@ const Item = ({ item, value, setValue }) => {
 				overflow: "hidden",
 				marginLeft: 15,
 				marginVertical: 3,
+				elevation: 4,
 			}}
 		>
 			<View>
@@ -382,6 +383,7 @@ const Item = ({ item, value, setValue }) => {
 							height: "100%",
 							justifyContent: "center",
 							alignItems: "center",
+							// backgroundColor: colors.light_gray,
 						}}
 					>
 						<Text

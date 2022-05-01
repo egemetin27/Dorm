@@ -192,7 +192,7 @@ export default function Profile({ route, navigation }) {
 		);
 
 	return (
-		<View style={[commonStyles.Container, { alignItems: "center" }]}>
+		<View style={[commonStyles.Container, { alignItems: "center", backgroundColor: "#F4F3F3" }]}>
 			<StatusBar style="dark" translucent={false} backgroundColor={"#F4F3F3"} />
 			<View
 				style={{
@@ -895,8 +895,8 @@ export default function Profile({ route, navigation }) {
 							disabled={!isEditable}
 							onPress={async () => {
 								if (isEditable) {
-									await handleSave();
-									navigation.replace("Hobbies", {
+									handleSave();
+									navigation.push("Hobbies", {
 										hobbyList: hobbies,
 										UserId: userID,
 										isNewUser: false,
@@ -1134,6 +1134,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		alignItems: "center",
 		justifyContent: "center",
+		backgroundColor: colors.cool_gray,
 	},
 	input: {
 		textAlignVertical: "bottom",

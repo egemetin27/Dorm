@@ -1,13 +1,15 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "./colors";
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("screen");
 
 export default styles = StyleSheet.create({
 	Container: {
 		height: height,
 		width: width,
 		backgroundColor: "#F4F3F3",
+		// backgroundColor: "#F8F8F8",
+		// backgroundColor: "#DADADA",
 		alignItems: "center",
 		zIndex: 0,
 	},

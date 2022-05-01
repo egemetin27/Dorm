@@ -5,6 +5,7 @@ import {
 	GestureDetector,
 	Gesture,
 	TouchableOpacity,
+	FlatList,
 } from "react-native-gesture-handler";
 import Animated, {
 	Extrapolate,
@@ -60,8 +61,7 @@ export default Card = ({
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
 
-	const reportProfile = async() => {
-		
+	const reportProfile = async () => {
 		//console.log(chosenReport);
 		//console.log(myUserID);
 		//console.log(otherUser.id);
@@ -76,22 +76,21 @@ export default Card = ({
 			await axios
 				.post(
 					url + "/report",
-					{ 	
+					{
 						UserId: userID,
 						sikayetEdilen: id,
 						sikayetKodu: chosenReport,
-						aciklama: "",					
+						aciklama: "",
 					},
 					{ headers: { "access-token": myToken } }
 				)
 				.catch((err) => {
 					console.log(err);
 				});
-			incrementIndex();			
+			incrementIndex();
 		} catch (error) {
 			console.log(error);
 		}
-		
 	};
 
 	const {
@@ -123,20 +122,20 @@ export default Card = ({
 
 	const sendNotification = async () => {
 		try {
-			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
-			let response = fetch("https://exp.host/--/api/v2/push/send", {
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					to: userData.data.getMsgUser.pushToken,
-					sound: "default",
-					title: "Dorm",
-					body: "Yeni bir eşleşmeniz var!",
-				}),
-			});
+			// const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
+			// let response = fetch("https://exp.host/--/api/v2/push/send", {
+			// 	method: "POST",
+			// 	headers: {
+			// 		Accept: "application/json",
+			// 		"Content-Type": "application/json",
+			// 	},
+			// 	body: JSON.stringify({
+			// 		to: userData.data.getMsgUser.pushToken,
+			// 		sound: "default",
+			// 		title: "Dorm",
+			// 		body: "Yeni bir eşleşmeniz var!",
+			// 	}),
+			// });
 		} catch (e) {
 			console.log(e);
 		}
@@ -165,39 +164,43 @@ export default Card = ({
 				if (res.data == "match") {
 					console.log("send notification.");
 					sendNotification();
-					//alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
 					setMatchPage(true);
 				} else {
 					incrementIndex();
 				}
 			})
 			.catch((error) => {
-				//console.log(error);
+				console.log(error);
 			});
 	};
 
-	const panHandler = Gesture.Pan()
-		.onUpdate((event) => {
-			x.value = event.translationX;
-		})
-		.onEnd((event) => {
-			destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
-			x.value = withSpring(destination.value);
-		})
-		.onFinalize(() => {
-			// TODO: decrease the daily number of likes by one if the value is greater than 0 and send the LIKED/DISLIKED data to backend
-			destination.value > 0
-				? runOnJS(onSwipe)(0)
-				: destination.value < 0
-				? runOnJS(onSwipe)(2)
-				: null;
-		});
+	const panHandler =
+		indexOfFrontCard == index
+			? Gesture.Pan()
+					.onUpdate((event) => {
+						x.value = event.translationX;
+					})
+					.onEnd((event) => {
+						destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
+						x.value = withSpring(destination.value);
+					})
+					.onFinalize(() => {
+						// TODO: decrease the daily number of likes by one if the value is greater than 0 and send the LIKED/DISLIKED data to backend
+						destination.value > 0
+							? runOnJS(onSwipe)(0)
+							: destination.value < 0
+							? runOnJS(onSwipe)(2)
+							: null;
+					})
+			: Gesture.Pan();
 
 	const tapHandler = Gesture.Tap()
 		.numberOfTaps(2)
 		.onStart(() => {
-			turn.value = withTiming(-turn.value);
-			backFace.value = !backFace.value;
+			if (indexOfFrontCard == index) {
+				turn.value = withTiming(-turn.value);
+				backFace.value = !backFace.value;
+			}
 		});
 
 	const animatedFrontFace = useAnimatedStyle(() => {
@@ -310,7 +313,7 @@ export default Card = ({
 
 	return (
 		<View key={index} style={{ position: "absolute", zIndex: index < indexOfFrontCard ? -1 : 1 }}>
-			{indexOfFrontCard == index ? (
+			{indexOfFrontCard == index || indexOfFrontCard == index - 1 ? ( // front or the 2nd card
 				<View name={"cards"} style={{ width: "100%", justifyContent: "center", zIndex: 1 }}>
 					<Animated.View style={[animatedSwipe]}>
 						<GestureDetector gesture={composedGesture}>
@@ -327,31 +330,35 @@ export default Card = ({
 									]}
 								>
 									{photoList.length > 0 ? (
-										<ScrollView
-											scrollEventThrottle={16}
-											style={{ width: "100%" }}
+										<FlatList
+											data={photoList}
+											keyExtractor={(item) => {
+												return item.Photo_Order;
+											}}
+											renderItem={({ item }) => {
+												return (
+													<View>
+														<Image
+															// key={item.index}
+															source={{
+																uri: item?.PhotoLink ?? "AAA",
+															}}
+															style={{
+																aspectRatio: 1 / 1.5,
+																height: width * 1.35,
+																maxHeight: height * 0.7,
+																resizeMode: "cover",
+																backgroundColor: colors.cool_gray,
+															}}
+														/>
+													</View>
+												);
+											}}
 											pagingEnabled={true}
 											showsVerticalScrollIndicator={false}
 											onScroll={handleScroll}
-										>
-											{photoList.map((item, idx) => {
-												// console.log("In Map: ", item);
-												return (
-													<Image
-														key={idx}
-														source={{
-															uri: item?.PhotoLink ?? "AAA",
-														}}
-														style={{
-															height: width * 1.35,
-															maxHeight: height * 0.7,
-															resizeMode: "cover",
-															backgroundColor: colors.cool_gray,
-														}}
-													/>
-												);
-											})}
-										</ScrollView>
+											initialNumToRender={2}
+										/>
 									) : (
 										<View
 											style={{
@@ -819,9 +826,11 @@ export default Card = ({
 						</View>
 
 						<View style={{ position: "absolute", top: 20, right: 20 }}>
-							<TouchableOpacity onPress={() => {
-								setReportPage(true);
-							}}>
+							<TouchableOpacity
+								onPress={() => {
+									setReportPage(true);
+								}}
+							>
 								<Image
 									style={{
 										height: 25,
@@ -925,7 +934,7 @@ export default Card = ({
 					</View>
 				</View>
 			)}
-			{/* Match Page Modal */}			
+			{/* Match Page Modal */}
 			<CustomModal
 				visible={matchPage}
 				onRequestClose={() => {
@@ -1079,20 +1088,19 @@ export default Card = ({
 					</View>
 				</View>
 			</CustomModal>
-			{/* Match Page Modal */}	
-
+			{/* Match Page Modal */}
 
 			{/* Report Page Modal */}
 			<CustomModal
-				visible= {reportPage}
-				dismiss={()=>{
+				visible={reportPage}
+				dismiss={() => {
 					setReportPage(false);
 				}}
 			>
 				<View
 					style={{
-						maxWidth: width* 0.9,
-						height: height *0.9,
+						maxWidth: width * 0.9,
+						height: height * 0.9,
 						backgroundColor: colors.white,
 						borderRadius: 10,
 						paddingHorizontal: 36,
@@ -1108,12 +1116,12 @@ export default Card = ({
 							padding: 16,
 						}}
 					>
-					    <Text style = {{fontSize: 22, color: colors.medium_gray}}>İptal</Text>
+						<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
 					</TouchableOpacity>
 					<View
 						style={{
-							width:"100%",
-							marginTop:20,
+							width: "100%",
+							marginTop: 20,
 						}}
 					>
 						<View
@@ -1121,45 +1129,61 @@ export default Card = ({
 								flexDirection: "row",
 								width: "100%",
 								alignContent: "center",
-                      			justifyContent: "center",      
+								justifyContent: "center",
 								marginVertical: 10,
 							}}
 						>
-                    		<Image source={require("../../assets/report.png")} />	
+							<Image source={require("../../assets/report.png")} />
 						</View>
 						<View
-                    		style = {{
-                      		flexDirection: "row",
-                      		width: "100%",
-                      		alignItems: "center",
-                      		justifyContent: "center",
-                      		marginVertical: 5,
-                    		}}
-                  		>
-                    		<Text style = {{ color: colors.black, fontSize: 20, lineHeight: 24,fontFamily: "PoppinsSemiBold", fontWeight: "500"}}>
-                      			Bildirmek istiyor musun ?
-                    		</Text>
-                  		</View>
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+								marginVertical: 5,
+							}}
+						>
+							<Text
+								style={{
+									color: colors.black,
+									fontSize: 20,
+									lineHeight: 24,
+									fontFamily: "PoppinsSemiBold",
+									fontWeight: "500",
+								}}
+							>
+								Bildirmek istiyor musun ?
+							</Text>
+						</View>
 						<View
-                    		style = {{
-                      		flexDirection: "row",
-                      		width: "100%",
-                      		alignItems: "center",
-                      		justifyContent: "center",
-                      		marginVertical: 10,
-                    		}}
-                  		>
-                    		<Text style = {{ color: colors.dark_gray, fontSize: 13, fontFamily: "Poppins", fontWeight: "400", textAlign: "center"}}>
-                      			{name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz. 
-                    		</Text>
-                		</View>
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+								marginVertical: 10,
+							}}
+						>
+							<Text
+								style={{
+									color: colors.dark_gray,
+									fontSize: 13,
+									fontFamily: "Poppins",
+									fontWeight: "400",
+									textAlign: "center",
+								}}
+							>
+								{name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz.
+							</Text>
+						</View>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==1 ? setChosenReport(0) :setChosenReport(1);
+							onPress={() => {
+								chosenReport == 1 ? setChosenReport(0) : setChosenReport(1);
 							}}
 							style={{
 								maxWidth: "100%",
-								
+
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1167,25 +1191,22 @@ export default Card = ({
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 1 ? (
-								
 								<GradientText
 									text={"Sahte Profil/Spam"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Sahte Profil/Spam
 								</Text>
 							)}
-							
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==2 ? setChosenReport(0) :setChosenReport(2);
+							onPress={() => {
+								chosenReport == 2 ? setChosenReport(0) : setChosenReport(2);
 							}}
 							style={{
 								maxWidth: "100%",
@@ -1196,28 +1217,24 @@ export default Card = ({
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 2 ? (
-								
 								<GradientText
 									text={"Uygunsuz Mesaj"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
-									Uygunsuz Mesaj
-								</Text>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Uygunsuz Mesaj</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==3 ? setChosenReport(0) :setChosenReport(3);
+							onPress={() => {
+								chosenReport == 3 ? setChosenReport(0) : setChosenReport(3);
 							}}
 							style={{
 								maxWidth: "100%",
-								
+
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1225,28 +1242,26 @@ export default Card = ({
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 3 ? (
-								
 								<GradientText
 									text={"Uygunsuz Fotoğraf"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Uygunsuz Fotoğraf
 								</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==4 ? setChosenReport(0) :setChosenReport(4);
+							onPress={() => {
+								chosenReport == 4 ? setChosenReport(0) : setChosenReport(4);
 							}}
 							style={{
 								maxWidth: "100%",
-								
+
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1254,28 +1269,26 @@ export default Card = ({
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 4 ? (
-								
 								<GradientText
 									text={"Uygunsuz Biyografi"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Uygunsuz Biyografi
 								</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==5 ? setChosenReport(0) :setChosenReport(5);
+							onPress={() => {
+								chosenReport == 5 ? setChosenReport(0) : setChosenReport(5);
 							}}
 							style={{
 								maxWidth: "100%",
-								
+
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1286,24 +1299,23 @@ export default Card = ({
 							}}
 						>
 							{chosenReport == 5 ? (
-								
 								<GradientText
 									text={"Reşit olmayan kullanıcı"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Reşit Olmayan Kullanıcı
 								</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==6 ? setChosenReport(0) :setChosenReport(6);
+							onPress={() => {
+								chosenReport == 6 ? setChosenReport(0) : setChosenReport(6);
 							}}
 							style={{
 								maxWidth: "100%",
-								
+
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -1311,51 +1323,53 @@ export default Card = ({
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 6 ? (
-								
 								<GradientText
 									text={"Diğer"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
-									Diğer
-								</Text>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Diğer</Text>
 							)}
 						</TouchableOpacity>
-						
+
 						<TouchableOpacity
-					      	onPress={reportProfile}
-					      	style={{
-						      	maxWidth: "100%",
-					      		
-						      	borderRadius: 12,
-						      	overflow: "hidden",
-						      	marginTop: 20,
+							onPress={reportProfile}
+							style={{
+								maxWidth: "100%",
+
+								borderRadius: 12,
+								overflow: "hidden",
+								marginTop: 20,
 								justifyContent: "center",
-								alignItems:"center",
-					      	}}
-			      		>
-					      	<Gradient
-						      	style={{
-							      	justifyContent: "center",
-							      	alignItems: "center",
-							      	width: "100%",
-						      	}}
-					      	>
-						      	<Text style={{ color: colors.white, fontSize: 22, fontFamily: "PoppinsSemiBold", padding: 10 }}>
-							    	Bildir
-						      	</Text>
-					      	</Gradient>
-				      	</TouchableOpacity>
+								alignItems: "center",
+							}}
+						>
+							<Gradient
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									width: "100%",
+								}}
+							>
+								<Text
+									style={{
+										color: colors.white,
+										fontSize: 22,
+										fontFamily: "PoppinsSemiBold",
+										padding: 10,
+									}}
+								>
+									Bildir
+								</Text>
+							</Gradient>
+						</TouchableOpacity>
 					</View>
 				</View>
-			</CustomModal>		
-			{/* Report Page Modal */}			
-
+			</CustomModal>
+			{/* Report Page Modal */}
 		</View>
 	);
 };
