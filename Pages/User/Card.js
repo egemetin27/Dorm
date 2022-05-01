@@ -150,7 +150,6 @@ export default Card = ({
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		const matchHappened = false;
 		await axios
 			.post(
 				url + "/LikeDislike",
@@ -168,7 +167,6 @@ export default Card = ({
 					sendNotification();
 					//alert("Bu kişi ile eşleştiniz! (bu sayfa yapım aşamasında)");
 					setMatchPage(true);
-					matchHappened = true;
 				} else {
 					incrementIndex();
 				}
