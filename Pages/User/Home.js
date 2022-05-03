@@ -709,11 +709,11 @@ export default function MainPage({ navigation }) {
 						style={{
 							textAlign: "center",
 							fontFamily: "PoppinsSemiBold",
-							fontSize: 30,
+							fontSize: 17,
 							color: colors.gray,
 						}}
 					>
-						Eşleşecek Kimse Yok :{"(("}
+						Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma{"\n"} En kısa zamanda tekrar uğramayı unutma!
 					</Text>
 				)}
 			</View>
