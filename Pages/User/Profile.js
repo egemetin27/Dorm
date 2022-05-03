@@ -97,10 +97,19 @@ export default function Profile({ route, navigation }) {
 			setSchool(data.School);
 			setMajor(data.Major == "null" ? "" : data.Major);
 			setReligion(data.Din == "null" ? "" : data.Din);
+
+			setSign(data.Burc == "null" ? "" : signList[data.Burc])
+			setDiet(data.Beslenme == "null" ? "" : dietList[data.Beslenme])
+			setDrink(data.Alkol == "null" ? "" : drinkList[data.Alkol])
+			setSmoke(data.Sigara == "null" ? "" : smokeList[data.Sigara])
+
+			/*
 			setSign(getChoice(data.Burc, signList));
 			setDiet(getChoice(data.Beslenme, dietList));
 			setDrink(getChoice(data.Alkol, smokeAndDrinkList));
 			setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
+			*/
+
 			setAbout(data.About == "null" ? "" : data.About);
 			setPhotoList(data.Photo);
 			setHobbies(data.interest);
@@ -136,10 +145,10 @@ export default function Profile({ route, navigation }) {
 			Gender: sex.key,
 			Major: major,
 			Din: religion,
-			Burc: sign.choice,
-			Beslenme: diet.choice,
-			Alkol: drink.choice,
-			Sigara: smoke.choice,
+			Burc: sign.key,
+			Beslenme: diet.key,
+			Alkol: drink.key,
+			Sigara: smoke.key,
 			About: about,
 		};
 

@@ -156,6 +156,7 @@ export default Card = ({
 					isLike: val,
 					userSwiped: myID,
 					otherUser: id,
+					matchMode: "0",
 				},
 				{ headers: { "access-token": sesToken } }
 			)
