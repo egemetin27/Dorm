@@ -6,6 +6,7 @@ export const genderList = [
 ];
 
 export const univList = [
+	{ key: 0, choice: "" },
 	{ key: 1, choice: "Acıbadem Üniversitesi" },
 	{ key: 2, choice: "Bahçeşehir Üniversitesi" },
 	{ key: 3, choice: "Bilgi Üniversitesi" },
@@ -20,6 +21,7 @@ export const univList = [
 ];
 
 export const religionList = [
+	{ key: 0, choice: "" },
 	{ key: 1, choice: "Müslüman" },
 	{ key: 1, choice: "Hristiyan" },
 	{ key: 1, choice: "Yahudi" },
@@ -29,6 +31,7 @@ export const religionList = [
 ];
 
 export const signList = [
+	{ key: 0, choice: "" },
 	{ key: 1, choice: "Akrep" },
 	{ key: 2, choice: "Aslan" },
 	{ key: 3, choice: "Balık" },
@@ -44,6 +47,7 @@ export const signList = [
 ];
 
 export const dietList = [
+	{ key: 0, choice: "" },
 	{ key: 1, choice: "Her şeyi yerim" },
 	{ key: 2, choice: "Vejetaryen" },
 	{ key: 3, choice: "Vegan" },
@@ -53,6 +57,7 @@ export const dietList = [
 ];
 
 export const smokeAndDrinkList = [
+	{ key: 0, choice: "" },
 	{ key: 1, choice: "Sık sık" },
 	{ key: 2, choice: "Sosyal ortamlarda" },
 	{ key: 3, choice: "Arada sırada" },

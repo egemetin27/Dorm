@@ -98,10 +98,10 @@ export default function Profile({ route, navigation }) {
 			setMajor(data.Major == "null" ? "" : data.Major);
 			setReligion(data.Din == "null" ? "" : data.Din);
 
-			setSign(data.Burc == "null" ? "" : signList[data.Burc])
-			setDiet(data.Beslenme == "null" ? "" : dietList[data.Beslenme])
-			setDrink(data.Alkol == "null" ? "" : smokeAndDrinkList[data.Alkol])
-			setSmoke(data.Sigara == "null" ? "" : smokeAndDrinkList[data.Sigara])
+			setSign(data.Burc == "null" ? signList[0] : signList[data.Burc])
+			setDiet(data.Beslenme == "null" ? dietList[0] : dietList[data.Beslenme])
+			setDrink(data.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Alkol])
+			setSmoke(data.Sigara == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Sigara])
 
 			/*
 			setSign(getChoice(data.Burc, signList));
