@@ -100,8 +100,8 @@ export default function Profile({ route, navigation }) {
 
 			setSign(data.Burc == "null" ? "" : signList[data.Burc])
 			setDiet(data.Beslenme == "null" ? "" : dietList[data.Beslenme])
-			setDrink(data.Alkol == "null" ? "" : drinkList[data.Alkol])
-			setSmoke(data.Sigara == "null" ? "" : smokeList[data.Sigara])
+			setDrink(data.Alkol == "null" ? "" : smokeAndDrinkList[data.Alkol])
+			setSmoke(data.Sigara == "null" ? "" : smokeAndDrinkList[data.Sigara])
 
 			/*
 			setSign(getChoice(data.Burc, signList));
