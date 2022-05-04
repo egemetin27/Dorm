@@ -154,36 +154,38 @@ const MsgBox = (props) => {
                       {props.lastMsg}
                     </Text>
                 </View>
+                { props.lastMsgSender != props.userID && props.unreadMsg != 0 ?
+                  (
+                    <LinearGradient
+                      colors={["#4136F1", "#8743FF"]}
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 1}}
+                      style={{
+                        position:"absolute",
+                        borderColor: colors.white,
+                        borderWidth: 3,
+                        left: width*0.11,
+                        height: height * 0.05,
+                        width: width *0.05,
+                        borderRadius:10,
+                        borderBottomStartRadius:0,
+                        padding:5,
+                        marginRight:0,
+                        overflow: "hidden",
+                        alignSelf:"center",
+                      }}
+                    />
+                  )
+                  :
+                  (null)
+                }
                 <View style = {{width: "25%", alignItems: "flex-end", marginRight: 5}}>
                     <View style={{ flexDirection: "column"}}>
-                      <Text style = {{marginBottom: height*0.02, marginRight: 5, fontSize: 14}}>
+                      <Text style = {{marginBottom: height*0.02, marginRight: 5, fontSize: 12}}>
                         {
                           moment(props.lastTime).format("DD/MM/YYYY")
                         }
                       </Text>
-                      { props.lastMsgSender != props.userID && props.unreadMsg != 0 ?
-                        (
-                          <LinearGradient
-						                colors={["#4136F1", "#8743FF"]}
-                            start={{ x: 0, y: 0 }}
-						                end={{ x: 1, y: 1 }}
-						                style={{
-							                borderRadius: 10,
-							                borderBottomStartRadius: 0,
-							                padding: 5,
-							                marginRight: 0,
-							                overflow: "hidden",
-                              alignSelf: "center",
-						                }}
-                          >
-                            <Text style={{ color: "white", fontFamily: "Poppins"}}>+</Text>
-                          </LinearGradient>
-                        ) 
-                        :
-                        (null)
-                      }
-                      
-
                     </View>
                     
                 </View>

@@ -1,17 +1,31 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions, View } from "react-native";
 import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
 
 Amplify.configure(awsmobile);
 
+const { width, height } = Dimensions.get("window");
+
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { red } from "react-native-redash";
+import { colors } from "./visualComponents/colors";
 
 export default function App() {
-	return <Stack />;
+	return <View 
+		style={{
+			flex:1,
+			backgroundColor: "#F4F3F3",
+		}}
+		>
+			<SafeAreaView style ={{flex: 1}}>
+				<Stack />
+			</SafeAreaView>
+		</View>
 	// return <Temp route={{ params: {} }} />;
 }
 

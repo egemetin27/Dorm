@@ -303,7 +303,7 @@ export default function Chat({ navigation, route }) {
 					<Feather name="chevron-left" size={36} color="#4A4A4A" />
 				</TouchableOpacity>
 				<Image
-					style={{ resizeMode: "cover", width: "12%", height: "65%", borderRadius: 15 }}
+					style={{ resizeMode: "cover", width: "15%", height: "80%", borderRadius: 15 }}
 					source={{
 						uri: imageUri,
 					}}
@@ -324,11 +324,11 @@ export default function Chat({ navigation, route }) {
 							text={otherUser.name}
 							style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", paddingLeft: 0 }}
 						/>
-						<Text style={{ fontSize: 10, marginBottom: 10 }}>{"-"}</Text>
+						<Text style={{ fontSize: 10, marginBottom: 10, color: colors.white }}>{"-"}</Text>
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity 
-					style={{ paddingBottom: 8 }} 
+					style={{ paddingBottom: 16 }} 
 					name={"reportButton"} 
 					onPress={() => {
 						setDeleteChatModal(true);
@@ -337,7 +337,7 @@ export default function Chat({ navigation, route }) {
 				</TouchableOpacity>
 				<View style={{paddingHorizontal: "2%"}}/>
 				<TouchableOpacity 
-					style={{ paddingBottom: 8 }} 
+					style={{ paddingBottom: 16 }} 
 					name={"reportButton"} 
 					onPress={() => {
 						setReportPage(true);
@@ -807,20 +807,42 @@ export default function Chat({ navigation, route }) {
 			{/* Profil page custom modal */}
 			{profilePage ?  
 				(
-					<View
+					<View 
 						style={{
-							position: "absolute",
-							zIndex: 3,
-							top:0,
-							left: 0,
-							right:0,
-							bottom: 0,
-							alignItems: "center",
-							justifyContent: "center",
+							position:"absolute",
+							height: height,
+							width: width,
+							zIndex: 2,
 						}}
 					>
-						<ChatProfile data = {cardData} close = {closeProfile}/>
+						<View
+							style={{
+								position: "absolute",
+								height: height,
+								width: width,
+								zIndex: 3,
+								backgroundColor: colors.dark_gray,
+								opacity: 0.5,
+							}}
+						/>
+
+						<View
+							style={{
+								position: "absolute",
+								zIndex: 4,
+								top:0,
+								left: 0,
+								right:0,
+								bottom: height *0.06,
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<ChatProfile data = {cardData} close = {closeProfile}/>
+						</View>
+
 					</View>
+					
 				)
 				:
 				(

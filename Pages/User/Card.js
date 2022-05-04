@@ -27,6 +27,7 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
+import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 import * as SecureStore from "expo-secure-store";
 
 const { width, height } = Dimensions.get("window");
@@ -617,7 +618,7 @@ export default Card = ({
 												>
 													Burç{"\n"}
 													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
-														{sign}
+														{signList[sign].choice}
 													</Text>
 												</Text>
 											)}
@@ -633,7 +634,7 @@ export default Card = ({
 												>
 													Beslenme Tercihi{"\n"}
 													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
-														{diet}
+														{dietList[diet].choice}
 													</Text>
 												</Text>
 											)}
@@ -649,7 +650,7 @@ export default Card = ({
 												>
 													Alkol Kullanımı{"\n"}
 													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
-														{drink}
+														{smokeAndDrinkList[drink].choice}
 													</Text>
 												</Text>
 											)}
@@ -665,7 +666,7 @@ export default Card = ({
 												>
 													Sigara Kullanımı{"\n"}
 													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
-														{smoke}
+														{smokeAndDrinkList[smoke].choice}
 													</Text>
 												</Text>
 											)}
@@ -1092,6 +1093,7 @@ export default Card = ({
 			{/* Match Page Modal */}
 
 			{/* Report Page Modal */}
+			
 			<CustomModal
 				visible={reportPage}
 				dismiss={() => {
@@ -1107,18 +1109,6 @@ export default Card = ({
 						paddingHorizontal: 36,
 					}}
 				>
-					<TouchableOpacity
-						onPress={() => {
-							setReportPage(false);
-						}}
-						style={{
-							position: "absolute",
-							alignSelf: "flex-end",
-							padding: 16,
-						}}
-					>
-						<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
-					</TouchableOpacity>
 					<View
 						style={{
 							width: "100%",
@@ -1134,7 +1124,26 @@ export default Card = ({
 								marginVertical: 10,
 							}}
 						>
-							<Image source={require("../../assets/report.png")} />
+							<Image style={{left: width*0.1,alignSelf: "center"}} source={require("../../assets/report.png")} />
+							<View
+								style={{
+									left: width*0.2,
+								}}
+							>
+								<TouchableOpacity
+									onPress={() => {
+										setReportPage(false);
+									}}
+									style={{
+										alignSelf: "flex-end",
+										padding: 16,
+										zIndex: 5,
+									}}
+								>
+									<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
+								</TouchableOpacity>
+							</View>
+							
 						</View>
 						<View
 							style={{

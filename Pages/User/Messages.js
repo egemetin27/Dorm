@@ -45,6 +45,7 @@ export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const [imgUri, setImgUri] = React.useState();
 	const [noMatch, setNoMatch] = React.useState(false);
+	const [msgBoxHeight, setMsgBoxHeight ] = React.useState(0);
 
 	const openChat = async (userInfo, myUserID, chatID, unreadMsg, lastMsgSender) => {
 		navigation.navigate("Chat", {
@@ -261,6 +262,7 @@ export default function Messages({ route, navigation }) {
 							style={{ alignItems: "center", justifyContent: "center" }}
 							onPress={() => {
 								setChatMod([1, 0]);
+								setMsgBoxHeight(0);
 							}}
 						>
 							<Text style={{ fontSize: 20, color: colors.cool_gray }}>Flört Modu</Text>
@@ -294,6 +296,7 @@ export default function Messages({ route, navigation }) {
 							style={{ alignItems: "center", justifyContent: "center" }}
 							onPress={() => {
 								setChatMod([0, 1]);
+								setMsgBoxHeight(0);
 							}}
 						>
 							<Text style={{ fontSize: 20, color: colors.cool_gray }}>Arkadaş Modu</Text>
@@ -305,7 +308,9 @@ export default function Messages({ route, navigation }) {
 			<View>
 				{noMatch == true ? 
 					(
-						<View>
+						<View style = {{
+							paddingTop: "5%"
+						}}>
 							<Text 
 								style={{
 									textAlign: "center",
@@ -327,8 +332,8 @@ export default function Messages({ route, navigation }) {
 				{chatMod[0] == 1 ? (
 					<View>
 						<View style={{ marginBottom: 10 }} />
-
 						<View >
+							
 							<FlatList
 								style={{
 									width: width,
@@ -338,6 +343,7 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 0 && item.lastMsg == null && item.firstUser.id == myUserID && item.status == "Active") {
+										setMsgBoxHeight(height*0.11);
 
 										return (
 											<NewMatchBox
@@ -348,6 +354,7 @@ export default function Messages({ route, navigation }) {
 										);
 									}
 									if (item.mod == 0 && item.lastMsg == null && item.secondUser.id == myUserID && item.status == "Active") {
+										setMsgBoxHeight(height*0.11);
 
 										return (
 											<NewMatchBox
@@ -359,6 +366,7 @@ export default function Messages({ route, navigation }) {
 									}
 								}}
 							/>
+							
 						</View>
 						<View style={{ marginBottom: 10 }} />
 						<View> 
@@ -366,12 +374,13 @@ export default function Messages({ route, navigation }) {
 								horizontal= {false}
 								style={{
 									borderRadius: 8,
-									height: height-35 - height*0.051 - height*0.11 - height*0.08-50,
+									height: height-35 - height*0.051 - msgBoxHeight - height*0.08-50,
 									flexGrow: 1,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 0 && item.lastMsg != null && item.firstUser.id == myUserID && item.status == "Active") {
+										console.log(msgBoxHeight);
 										return (
 											<MsgBox
 												data={item.secondUser}
@@ -416,6 +425,7 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 1 && item.lastMsg == null && item.firstUser.id == myUserID && item.status == "Active") {
+										setMsgBoxHeight(height*0.11);
 
 										return (
 											<NewMatchBox
@@ -426,6 +436,7 @@ export default function Messages({ route, navigation }) {
 										);
 									}
 									if (item.mod == 1 && item.lastMsg == null && item.secondUser.id == myUserID && item.status == "Active") {
+										setMsgBoxHeight(height*0.11);
 
 										return (
 											<NewMatchBox
@@ -443,7 +454,7 @@ export default function Messages({ route, navigation }) {
 							<FlatList
 								style={{
 									borderRadius: 8,
-									height: height-35 - height*0.051 - height*0.11 - height*0.08-50,
+									height: height-35 - height*0.051 - msgBoxHeight - height*0.08-50,
 									flexGrow: 1,
 								}}
 								data={chatRooms}

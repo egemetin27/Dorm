@@ -27,6 +27,7 @@ import { colors, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
+import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
@@ -386,7 +387,7 @@ const ChatProfile = (props) => {
                                                 fontSize: 22,
                                             }}
                                         >
-                                            {props.data.Burc}
+                                            {signList[props.data.Burc].choice}
                                         </Text>
                                     </Text>     
                                     )}
@@ -407,7 +408,7 @@ const ChatProfile = (props) => {
                                                 fontSize: 22,
                                             }}
                                         >
-                                            {props.data.Beslenme}
+                                            {dietList[props.data.Beslenme].choice}
                                         </Text>
                                     </Text>     
                                     )}
@@ -428,7 +429,7 @@ const ChatProfile = (props) => {
                                                 fontSize: 22,
                                             }}
                                         >
-                                            {props.data.Alkol}
+                                            {smokeAndDrinkList[props.data.Alkol].choice}
                                         </Text>
                                     </Text>     
                                     )}
@@ -449,7 +450,7 @@ const ChatProfile = (props) => {
                                                 fontSize: 22,
                                             }}
                                         >
-                                            {props.data.Sigara}
+                                            {smokeAndDrinkList[props.data.Sigara].choice}
                                         </Text>
                                     </Text>     
                                     )}
