@@ -99,7 +99,6 @@ const InputBox = (props) => {
             <TouchableOpacity 
                 name = {"sendMsgButton"}
                 onPress = {() => {
-                    
                     if (message != "") {
                         if(props.lastMsgSender == props.myUserID)
                         {
@@ -112,8 +111,6 @@ const InputBox = (props) => {
                         setMessage("");
                         sendNotification();                        
                     }
-                    
-                    
                 }}
                 style= {{ borderRadius: 45, width: 45, height: 45, justifyContent: "center", alignItems: "center"}}
             >
