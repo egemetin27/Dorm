@@ -404,19 +404,27 @@ export default function Chat({ navigation, route }) {
 			)
 			
 			}
-			<FlatList
+			<View
 				style={{
-					flexDirection: "column",
-					borderRadius: 8,
-					height: height * 0.75,
+					height: height - 100,
+					paddingTop: 105,
 				}}
-				data={chatMessages}
-				renderItem={({ item, index }) => {
-					return <ChatMsg data={item} myUserID={myUserID} />;
-				}}
-				inverted
-			/>
-			<InputBox myUserID={myUserID} chatID={chatID} otherUser={otherUser} lastMsgSender={lastMsgSender} unreadMsg={unreadMsg}/>
+			>
+				<FlatList
+					style={{
+						flexDirection: "column",
+						borderRadius: 8,
+					}}
+					data={chatMessages}
+					renderItem={({ item, index }) => {
+						return <ChatMsg data={item} myUserID={myUserID} />;
+					}}
+					inverted
+				/>
+			</View>
+			<View>
+				<InputBox myUserID={myUserID} chatID={chatID} otherUser={otherUser} lastMsgSender={lastMsgSender} unreadMsg={unreadMsg}/>
+			</View>
 			{Platform.OS == "ios" ? <KeyboardSpacer /> : null}
 			{/* Report page custom modal */}
 			<CustomModal
