@@ -154,8 +154,7 @@ const MsgBox = (props) => {
                       {props.lastMsg}
                     </Text>
                 </View>
-                { true ? 
-                //props.lastMsgSender != props.userID && props.unreadMsg != 0 ?
+                { props.lastMsgSender != props.userID && props.unreadMsg != 0 ?
                   (
                     <LinearGradient
                       colors={["#4136F1", "#8743FF"]}
@@ -164,7 +163,7 @@ const MsgBox = (props) => {
                       style={{
                         position:"absolute",
                         borderColor: colors.white,
-                        borderWidth: 3,
+                        borderWidth: 2,
                         left: width*0.11,
                         height: height * 0.04,
                         width: width *0.04,
