@@ -430,7 +430,7 @@ export default function ProfileCards({ navigation, route }) {
 						<TouchableOpacity
 							onPress={() => {
 								setMatchPage(false);
-								incrementIndex();
+								//incrementIndex();
 								//goToMsg();
 							}}
 							style={{
@@ -467,7 +467,7 @@ export default function ProfileCards({ navigation, route }) {
 							}}
 							onPress={async () => {
 								await setMatchPage(false);
-								incrementIndex();
+								//incrementIndex();
 							}}
 						>
 							<GradientText
