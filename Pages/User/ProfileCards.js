@@ -18,8 +18,8 @@ import axios from "axios";
 import { url } from "../../connection";
 
 import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient } from "../../visualComponents/colors";
-import { AnimatedModal } from "../../visualComponents/customComponents";
+import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+import { AnimatedModal, CustomModal } from "../../visualComponents/customComponents";
 import Card from "./Card";
 
 const { width, height } = Dimensions.get("window");
@@ -57,10 +57,34 @@ export default function ProfileCards({ navigation, route }) {
 		}
 	}, []);
 
+	const [matchPage, setMatchPage] = React.useState(false);
+	const [reportPage, setReportPage] = React.useState(false);
+	const [chosenReport, setChosenReport] = React.useState(0);
+
+
+	const [name, setName] = React.useState("");
+	const [firstImg, setFirstImg ] = React.useState("");
+	const [secondImg, setSecondImg] = React.useState("");
+
+	const showMatchScreen = (otherName, otherPicture, myPicture) => {
+		setMatchPage(true);
+		setName(otherName);
+		setFirstImg(otherPicture);
+		setSecondImg(myPicture);
+		//console.log(otherName);
+		//console.log(otherPicture);
+		//console.log(myPicture);
+	};
+
+	const showReportPage = () => {
+		setReportPage(true);
+	};
+
 	const navigateFromCard = () => {
 		navigation.replace("MainScreen", { screen: "Mesajlar" });
 	};
 
+	
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
 
@@ -192,6 +216,9 @@ export default function ProfileCards({ navigation, route }) {
 						navigateFromCard={() => {
 							navigateFromCard();
 						}}
+						showMatchScreen={(otherName, otherPicture, myPicture)=>{
+							showMatchScreen(otherName, otherPicture, myPicture);
+						}}
 					/>
 				))}
 			</View>
@@ -302,7 +329,164 @@ export default function ProfileCards({ navigation, route }) {
 					</ReactNative.TouchableOpacity>
 				</View>
 			</AnimatedModal>
+
+			{/*Match Page Modal */}
+			<CustomModal
+				visible={matchPage}
+				onRequestClose={() => {
+					setMatchPage(false);
+				}}
+				onDismiss={() => {
+					setMatchPage(false);
+				}}
+			>
+				<View
+					style={{
+						height: height,
+						width: width,
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						position: "absolute",
+						justifyContent: "center",
+						alignItems: "center",
+						alignContent: "center",
+					}}
+				>
+					<View
+						style={{
+							height: height * 0.95,
+							width: width * 0.95,
+							backgroundColor: colors.white,
+						}}
+					>
+						<GradientText
+							style={{
+								fontSize: 26,
+								fontWeight: "bold",
+								textAlign: "center",
+								paddingVertical: height * 0.02,
+							}}
+							text={"Hey! \n Eşleştiniz"}
+						/>
+						<Text
+							style={{
+								fontSize: 23,
+								fontFamily: "Poppins",
+								color: colors.medium_gray,
+								textAlign: "center",
+								paddingVertical: height * 0.02,
+							}}
+						>
+							{name} {"&"} Sen
+						</Text>
+						<Image
+							source={{
+								uri: firstImg,
+							}}
+							style={{
+								top: height * 0.25,
+								left: width * 0.12,
+								borderRadius: 20,
+								position: "absolute",
+								aspectRatio: 1 / 1.5,
+								width: width * 0.4,
+								maxHeight: height * 0.7,
+								resizeMode: "cover",
+								transform: [{ rotateZ: "-18deg" }],
+								zIndex: 2,
+							}}
+						/>
+						<Image
+							source={{
+								uri: secondImg,
+							}}
+							style={{
+								top: height * 0.3,
+								left: width * 0.4,
+								borderRadius: 20,
+								position: "absolute",
+								aspectRatio: 1 / 1.5,
+								width: width * 0.4,
+								maxHeight: height * 0.7,
+								resizeMode: "cover",
+								transform: [{ rotateZ: "23deg" }],
+							}}
+						/>
+						<Text
+							style={{
+								paddingTop: height * 0.425,
+								fontSize: 16,
+								fontFamily: "Poppins",
+								color: colors.medium_gray,
+								textAlign: "center",
+								paddingHorizontal: 5,
+							}}
+						>
+							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
+						</Text>
+
+						<TouchableOpacity
+							onPress={() => {
+								setMatchPage(false);
+								incrementIndex();
+								//goToMsg();
+							}}
+							style={{
+								paddingTop: 10,
+								maxWidth: "100%",
+								overflow: "hidden",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Gradient
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									width: "80%",
+									borderRadius: 12,
+								}}
+							>
+								<Text
+									style={{
+										color: colors.white,
+										fontSize: 18,
+										fontFamily: "PoppinsSemiBold",
+										padding: 10,
+									}}
+								>
+									Mesaj Gönder
+								</Text>
+							</Gradient>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={{
+								paddingTop: 5,
+							}}
+							onPress={async () => {
+								await setMatchPage(false);
+								incrementIndex();
+							}}
+						>
+							<GradientText
+								style={{
+									fontSize: 18,
+									fontFamily: "Poppins",
+									fontWeight: "bold",
+									textAlign: "center",
+									paddingVertical: height * 0.02,
+								}}
+								text={"Daha sonra"}
+							/>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</CustomModal>
+			{/* Match Page Modal */}
 		</View>
+		
 	);
 }
 

@@ -16,16 +16,9 @@ import { red } from "react-native-redash";
 import { colors } from "./visualComponents/colors";
 
 export default function App() {
-	return <View 
-		style={{
-			flex:1,
-			backgroundColor: "#F4F3F3",
-		}}
-		>
-			<SafeAreaView style ={{flex: 1}}>
-				<Stack />
-			</SafeAreaView>
-		</View>
+	return <SafeAreaView style ={{flex: 1}}>
+			<Stack />
+		</SafeAreaView>
 	// return <Temp route={{ params: {} }} />;
 }
 

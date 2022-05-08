@@ -48,6 +48,7 @@ export default Card = ({
 	indexOfFrontCard,
 	incrementIndex,
 	navigateFromCard,
+	showMatchScreen,
 	myProfilePicture,
 }) => {
 	const progress = useSharedValue(0);
@@ -402,7 +403,8 @@ export default Card = ({
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
 											onPress={() => {
-												setReportPage(true);
+												showMatchScreen(name, photoList[0].PhotoLink, myProfilePicture );
+												//setReportPage(true);
 												//setMatchPage(true);
 											}}
 										>

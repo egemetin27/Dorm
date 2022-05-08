@@ -59,6 +59,7 @@ const ChatMsg = (props) => {
 								borderBottomRightRadius: 20,
 								alignSelf: "flex-start",
 								padding: 10,
+								backgroundColor: colors.white,
 							},
 						]}
 					>
