@@ -13,6 +13,7 @@ import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 import { loadAsync } from "expo-font";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors, GradientText } from "../visualComponents/colors";
 
@@ -66,6 +67,7 @@ function HomeStackScreen(route, navigation) {
 }
 
 function MainScreen({ route, navigation }) {
+	const insets = useSafeAreaInsets();
 	const { width, height } = Dimensions.get("window");
 	const Tab = createBottomTabNavigator();
 	const [pList, setPList] = React.useState(route.params?.photoList || null); //Photo list
@@ -75,144 +77,150 @@ function MainScreen({ route, navigation }) {
 	}, [route]);
 
 	return (
-		<Tab.Navigator
-			backBehavior="initialRoute"
-			screenOptions={{
-				tabBarStyle: { height: height * 0.08, paddingBottom: height * 0.008, position: "relative" },
-				headerShown: false,
-				tabBarShowLabel: false,
-				tabBarHideOnKeyboard: true,
-			}}
-			detachInactiveScreens={true}
-			initialRouteName={"AnaSayfa"}
-		>
-			<Tab.Screen
-				name="Profil"
-				component={Profile}
-				initialParams={{ photoList: pList }}
-				options={{
-					tabBarIcon: ({ focused }) => (
-						<View
-							style={{
-								alignItems: "center",
-								justifyContent: "flex-end",
-								flex: 1,
-								width: width * 0.33,
-							}}
-						>
-							<Image
-								source={require("../assets/TabBarIcons/profile.png")}
-								resizeMode="contain"
+		<View style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}>
+			<Tab.Navigator
+				backBehavior="initialRoute"
+				screenOptions={{
+					tabBarStyle: {
+						height: height * 0.08,
+						paddingBottom: height * 0.008,
+						position: "relative",
+					},
+					headerShown: false,
+					tabBarShowLabel: false,
+					tabBarHideOnKeyboard: true,
+				}}
+				detachInactiveScreens={true}
+				initialRouteName={"AnaSayfa"}
+			>
+				<Tab.Screen
+					name="Profil"
+					component={Profile}
+					initialParams={{ photoList: pList }}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<View
 								style={{
-									tintColor: focused ? {} : colors.cool_gray,
-									height: height / 36,
+									alignItems: "center",
+									justifyContent: "flex-end",
+									flex: 1,
+									width: width * 0.33,
+								}}
+							>
+								<Image
+									source={require("../assets/TabBarIcons/profile.png")}
+									resizeMode="contain"
+									style={{
+										tintColor: focused ? {} : colors.cool_gray,
+										height: height / 36,
+									}}
+								/>
+								{focused ? (
+									<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Profil"} />
+								) : (
+									<Text
+										style={{
+											fontSize: 13,
+											fontWeight: "bold",
+											color: colors.cool_gray,
+										}}
+									>
+										Profil
+									</Text>
+								)}
+							</View>
+						),
+					}}
+				/>
+				<Tab.Screen
+					name="AnaSayfa"
+					component={HomeStackScreen}
+					options={{
+						tabBarButton: (props) => (
+							<Pressable
+								{...props}
+								onPress={() => {
+									navigation.navigate("MainScreen", {
+										screen: "AnaSayfa",
+										params: { screen: "Home" },
+									});
 								}}
 							/>
-							{focused ? (
-								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Profil"} />
-							) : (
-								<Text
-									style={{
-										fontSize: 13,
-										fontWeight: "bold",
-										color: colors.cool_gray,
-									}}
-								>
-									Profil
-								</Text>
-							)}
-						</View>
-					),
-				}}
-			/>
-			<Tab.Screen
-				name="AnaSayfa"
-				component={HomeStackScreen}
-				options={{
-					tabBarButton: (props) => (
-						<Pressable
-							{...props}
-							onPress={() => {
-								navigation.navigate("MainScreen", {
-									screen: "AnaSayfa",
-									params: { screen: "Home" },
-								});
-							}}
-						></Pressable>
-					),
-					tabBarIcon: ({ focused }) => (
-						<View
-							style={{
-								alignItems: "center",
-								justifyContent: "flex-end",
-								flex: 1,
-								width: width * 0.33,
-							}}
-						>
-							<Image
-								source={require("../assets/logoGradient.png")}
-								resizeMode="contain"
+						),
+						tabBarIcon: ({ focused }) => (
+							<View
 								style={{
-									tintColor: focused ? {} : colors.cool_gray,
-									height: height / 30,
+									alignItems: "center",
+									justifyContent: "flex-end",
+									flex: 1,
+									width: width * 0.33,
 								}}
-							/>
-							{focused ? (
-								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Ana Sayfa"} />
-							) : (
-								<Text
+							>
+								<Image
+									source={require("../assets/logoGradient.png")}
+									resizeMode="contain"
 									style={{
-										fontSize: 13,
-										fontWeight: "bold",
-										color: colors.cool_gray,
+										tintColor: focused ? {} : colors.cool_gray,
+										height: height / 30,
 									}}
-								>
-									Ana Sayfa
-								</Text>
-							)}
-						</View>
-					),
-				}}
-			/>
-			<Tab.Screen
-				name="Mesajlar"
-				component={Messages}
-				options={{
-					tabBarIcon: ({ focused }) => (
-						<View
-							style={{
-								alignItems: "center",
-								justifyContent: "flex-end",
-								flex: 1,
-								width: width * 0.33,
-							}}
-						>
-							<Image
-								source={require("../assets/TabBarIcons/messages.png")}
-								resizeMode="contain"
+								/>
+								{focused ? (
+									<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Ana Sayfa"} />
+								) : (
+									<Text
+										style={{
+											fontSize: 13,
+											fontWeight: "bold",
+											color: colors.cool_gray,
+										}}
+									>
+										Ana Sayfa
+									</Text>
+								)}
+							</View>
+						),
+					}}
+				/>
+				<Tab.Screen
+					name="Mesajlar"
+					component={Messages}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<View
 								style={{
-									tintColor: focused ? {} : colors.cool_gray,
-									height: height / 36,
+									alignItems: "center",
+									justifyContent: "flex-end",
+									flex: 1,
+									width: width * 0.33,
 								}}
-							/>
-							{focused ? (
-								<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Mesajlar"} />
-							) : (
-								<Text
+							>
+								<Image
+									source={require("../assets/TabBarIcons/messages.png")}
+									resizeMode="contain"
 									style={{
-										fontSize: 13,
-										fontWeight: "bold",
-										color: colors.cool_gray,
+										tintColor: focused ? {} : colors.cool_gray,
+										height: height / 36,
 									}}
-								>
-									Mesajlar
-								</Text>
-							)}
-						</View>
-					),
-				}}
-			/>
-		</Tab.Navigator>
+								/>
+								{focused ? (
+									<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Mesajlar"} />
+								) : (
+									<Text
+										style={{
+											fontSize: 13,
+											fontWeight: "bold",
+											color: colors.cool_gray,
+										}}
+									>
+										Mesajlar
+									</Text>
+								)}
+							</View>
+						),
+					}}
+				/>
+			</Tab.Navigator>
+		</View>
 	);
 }
 
@@ -273,6 +281,7 @@ export default function StackNavigator() {
 					}
 				})
 				.catch(async (error) => {
+					console.log("catch: ", error);
 					Alert.alert("Hata", error?.response?.data, [{ text: "Kontrol Edeyim" }]);
 					await SecureStore.deleteItemAsync("userData");
 					await AsyncStorage.removeItem("isLoggedIn");
@@ -352,7 +361,7 @@ export default function StackNavigator() {
 		return <StatusBar stlye={"light"} />;
 	} else {
 		return (
-			<GestureHandlerRootView style={{ flex: 1, }} onLayout={onLayoutRootView}>
+			<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
 				{/* <StatusBar style={"auto"} /> */}
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>

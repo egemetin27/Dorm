@@ -50,6 +50,8 @@ export default Card = ({
 	navigateFromCard,
 	showMatchScreen,
 	myProfilePicture,
+	showLikeEndedModal,
+	likeEnded,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -64,10 +66,6 @@ export default Card = ({
 	const [chosenReport, setChosenReport] = React.useState(0);
 
 	const reportProfile = async () => {
-		//console.log(chosenReport);
-		//console.log(myUserID);
-		//console.log(otherUser.id);
-		//console.log(chatID);
 		setReportPage(false);
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
@@ -113,8 +111,6 @@ export default Card = ({
 		interest: hobbies,
 	} = card;
 
-	// console.log(`name: ${fName}\nindex: ${index}\nindex of first card: ${indexOfFrontCard}\n\n`);
-
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
 
@@ -145,36 +141,57 @@ export default Card = ({
 
 	const checkText = (text) => {
 		// return false if null
-		if (text == "null" || text == null || text == "undefined" || text.length == 0) return false;
+		if (text == "null" || text == null || text == "undefined" || text.length == 0 || text == 0)
+			return false;
 		return true;
 	};
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		await axios
-			.post(
-				url + "/LikeDislike",
-				{
-					isLike: val,
-					userSwiped: myID,
-					otherUser: id,
-					matchMode: "0",
-				},
-				{ headers: { "access-token": sesToken } }
-			)
-			.then((res) => {
-				console.log(res.data);
-				if (res.data == "match") {
-					console.log("send notification.");
-					sendNotification();
-					setMatchPage(true);
-				} else {
-					incrementIndex();
-				}
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		if (likeEnded.value == false || val == 2) {
+			await axios
+				.post(
+					url + "/LikeDislike",
+					{
+						isLike: val,
+						userSwiped: myID,
+						otherUser: id,
+						matchMode: "0",
+					},
+					{ headers: { "access-token": sesToken } }
+				)
+				.then((res) => {
+					console.log(res.data);
+					if (res.data.LikeCount == 0) {
+						likeEnded.value = true;
+					}
+					if (res.data.message == "Match") {
+						console.log("send notification.");
+						incrementIndex();
+						sendNotification();
+						setMatchPage(true);
+					} else {
+						incrementIndex();
+					}
+				})
+				.catch((error) => {
+					if (error.response) {
+						if (error.response.status == 408) {
+							likeEnded.value = true;
+							console.log("swipe count ended response");
+							x.value = withSpring(0);
+							showLikeEndedModal();
+						}
+					} else if (error.request) {
+						console.log("request error: ", error.request);
+					} else {
+						console.log("error: ", error.message);
+					}
+				});
+		} else {
+			x.value = withSpring(0);
+			showLikeEndedModal();
+		}
 	};
 
 	const panHandler =
@@ -403,7 +420,7 @@ export default Card = ({
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
 											onPress={() => {
-												showMatchScreen(name, photoList[0].PhotoLink, myProfilePicture );
+												showMatchScreen(name, photoList[0].PhotoLink, myProfilePicture);
 												//setReportPage(true);
 												//setMatchPage(true);
 											}}
@@ -1035,7 +1052,7 @@ export default Card = ({
 							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 						</Text>
 
-						<TouchableOpacity
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								setMatchPage(false);
 								incrementIndex();
@@ -1068,8 +1085,8 @@ export default Card = ({
 									Mesaj Gönder
 								</Text>
 							</Gradient>
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							style={{
 								paddingTop: 5,
 							}}
@@ -1088,14 +1105,14 @@ export default Card = ({
 								}}
 								text={"Daha sonra"}
 							/>
-						</TouchableOpacity>
+						</ReactNative.TouchableOpacity>
 					</View>
 				</View>
 			</CustomModal>
 			{/* Match Page Modal */}
 
 			{/* Report Page Modal */}
-			
+
 			<CustomModal
 				visible={reportPage}
 				dismiss={() => {
@@ -1126,10 +1143,13 @@ export default Card = ({
 								marginVertical: 10,
 							}}
 						>
-							<Image style={{left: width*0.1,alignSelf: "center"}} source={require("../../assets/report.png")} />
+							<Image
+								style={{ left: width * 0.1, alignSelf: "center" }}
+								source={require("../../assets/report.png")}
+							/>
 							<View
 								style={{
-									left: width*0.2,
+									left: width * 0.2,
 								}}
 							>
 								<TouchableOpacity
@@ -1145,7 +1165,6 @@ export default Card = ({
 									<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
 								</TouchableOpacity>
 							</View>
-							
 						</View>
 						<View
 							style={{

@@ -16,7 +16,7 @@ import {
 	TextInput,
 	SafeAreaView,
 } from "react-native";
-import { Octicons, MaterialCommunityIcons, Ionicons, Entypo, Feather } from "@expo/vector-icons";
+import { Octicons, MaterialCommunityIcons, Entypo, Feather } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
@@ -634,7 +634,7 @@ export default function MainPage({ navigation }) {
 	}
 
 	return (
-		<View style={commonStyles.Container}>
+		<View style={[commonStyles.Container, { justifyContent: "space-between" }]}>
 			<StatusBar
 				style="dark"
 				translucent={false}
@@ -648,7 +648,7 @@ export default function MainPage({ navigation }) {
 				<GradientText
 					text={"Kişiler"}
 					style={{
-						fontSize: height * 0.035,
+						fontSize: Math.min(height * 0.035, 32),
 						fontFamily: "NowBold",
 						letterSpacing: 1.2,
 						marginLeft: 20,
@@ -663,7 +663,7 @@ export default function MainPage({ navigation }) {
 					<Octicons
 						style={{ transform: [{ rotate: "-90deg" }] }}
 						name="settings"
-						size={30}
+						size={Math.min(height * 0.035, 30)}
 						color={colors.cool_gray}
 					/>
 				</TouchableOpacity>
@@ -671,7 +671,7 @@ export default function MainPage({ navigation }) {
 			<View
 				name={"People"}
 				style={{
-					height: height * 0.33,
+					height: "35%",
 					width: "100%",
 					justifyContent: "center",
 				}}
@@ -705,16 +705,19 @@ export default function MainPage({ navigation }) {
 						)}
 					/>
 				) : (
-					<Text
-						style={{
-							textAlign: "center",
-							fontFamily: "PoppinsSemiBold",
-							fontSize: 17,
-							color: colors.gray,
-						}}
-					>
-						Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma{"\n"} En kısa zamanda tekrar uğramayı unutma!
-					</Text>
+					<View style={{ paddingHorizontal: width * 0.075 }}>
+						<Text
+							style={{
+								textAlign: "center",
+								fontFamily: "PoppinsSemiBold",
+								fontSize: Math.min(width * 0.042, 20),
+								color: colors.gray,
+							}}
+						>
+							Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa
+							zamanda tekrar uğramayı unutma!
+						</Text>
+					</View>
 				)}
 			</View>
 			<View
@@ -724,7 +727,7 @@ export default function MainPage({ navigation }) {
 				<GradientText
 					text={"Etkinlikler"}
 					style={{
-						fontSize: height * 0.035,
+						fontSize: Math.min(height * 0.035, 32),
 						fontFamily: "NowBold",
 						letterSpacing: 1.2,
 						marginLeft: 20,
@@ -732,51 +735,49 @@ export default function MainPage({ navigation }) {
 				/>
 			</View>
 
-			<View name={"EventsContainer"} style={{ width: "100%" }}>
-				<View name={"Categories"} style={{ width: "100%", height: height * 0.12 }}>
-					<FlatList
-						horizontal={true}
-						showsHorizontalScrollIndicator={false}
-						data={CategoryList}
-						renderItem={({ item, index }) => (
-							<Category
-								index={index}
-								userID={myID}
-								selectedCategory={selectedCategory}
-								setSelectedCategory={setSelectedCategory}
-								setShownEvents={setShownEvents}
-								eventList={eventList}
-							>
-								{item}
-							</Category>
-						)}
-					/>
-				</View>
-				<View name={"Events"} style={{ width: "100%", height: height * 0.33 }}>
-					<FlatList
-						ref={eventsRef}
-						horizontal={true}
-						showsHorizontalScrollIndicator={false}
-						keyExtractor={(item) => item.EventId.toString()}
-						data={shownEvents}
-						renderItem={({ item, index }) => (
-							<Event
-								setIsAppReady={setIsAppReady}
-								index={index}
-								event={item}
-								length={shownEvents.length}
-								openEvents={(idx) => {
-									navigation.navigate("EventCards", {
-										idx: idx,
-										list: shownEvents,
-										myID: myID,
-										sesToken: sesToken,
-									});
-								}}
-							/>
-						)}
-					/>
-				</View>
+			<View name={"Categories"} style={{ width: "100%", height: height * 0.12 }}>
+				<FlatList
+					horizontal={true}
+					showsHorizontalScrollIndicator={false}
+					data={CategoryList}
+					renderItem={({ item, index }) => (
+						<Category
+							index={index}
+							userID={myID}
+							selectedCategory={selectedCategory}
+							setSelectedCategory={setSelectedCategory}
+							setShownEvents={setShownEvents}
+							eventList={eventList}
+						>
+							{item}
+						</Category>
+					)}
+				/>
+			</View>
+			<View name={"Events"} style={{ width: "100%", height: "35%" }}>
+				<FlatList
+					ref={eventsRef}
+					horizontal={true}
+					showsHorizontalScrollIndicator={false}
+					keyExtractor={(item) => item.EventId.toString()}
+					data={shownEvents}
+					renderItem={({ item, index }) => (
+						<Event
+							setIsAppReady={setIsAppReady}
+							index={index}
+							event={item}
+							length={shownEvents.length}
+							openEvents={(idx) => {
+								navigation.navigate("EventCards", {
+									idx: idx,
+									list: shownEvents,
+									myID: myID,
+									sesToken: sesToken,
+								});
+							}}
+						/>
+					)}
+				/>
 			</View>
 
 			<CustomModal

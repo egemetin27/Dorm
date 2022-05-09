@@ -11,14 +11,14 @@ const { width, height } = Dimensions.get("window");
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { red } from "react-native-redash";
-import { colors } from "./visualComponents/colors";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
-	return <SafeAreaView style ={{flex: 1}}>
+	return (
+		<SafeAreaProvider>
 			<Stack />
-		</SafeAreaView>
+		</SafeAreaProvider>
+	);
 	// return <Temp route={{ params: {} }} />;
 }
 

@@ -28,8 +28,9 @@ export default function ProfileCards({ navigation, route }) {
 	const [isLoading, setIsLoading] = React.useState(true);
 	// const [peopleList, setPeopleList] = React.useState(route.params.list);
 	const [peopleList, setPeopleList] = React.useState([]);
-	const popupVisible = useSharedValue(false);
+	const superLikeEndedPopup = useSharedValue(false);
 	const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
+	const [likeEndedModal, setLikeEndedModal] = React.useState(false);
 
 	const [myProfilePicture, setMyProfilePicture] = React.useState();
 
@@ -61,13 +62,13 @@ export default function ProfileCards({ navigation, route }) {
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
 
-
 	const [name, setName] = React.useState("");
-	const [firstImg, setFirstImg ] = React.useState("");
+	const [firstImg, setFirstImg] = React.useState("");
 	const [secondImg, setSecondImg] = React.useState("");
 
 	const showMatchScreen = (otherName, otherPicture, myPicture) => {
 		setMatchPage(true);
+		// matchPopup.value = true;
 		setName(otherName);
 		setFirstImg(otherPicture);
 		setSecondImg(myPicture);
@@ -84,9 +85,9 @@ export default function ProfileCards({ navigation, route }) {
 		navigation.replace("MainScreen", { screen: "Mesajlar" });
 	};
 
-	
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
+	const likeEnded = useSharedValue(false);
 
 	const derivedText = useDerivedValue(
 		() =>
@@ -100,8 +101,8 @@ export default function ProfileCards({ navigation, route }) {
 	// const peopleList = route.params.list;
 	const { myID, sesToken } = route.params;
 
-	function handlePopupSubmit() {
-		console.log("super like popup submit...");
+	function likeEndedModalSubmit() {
+		console.log("like ended modal submit...");
 	}
 
 	const hour = 15;
@@ -204,7 +205,7 @@ export default function ProfileCards({ navigation, route }) {
 						index={peopleList.length - index - 1}
 						card={item}
 						backFace={backFace}
-						setPopupVisible={(val) => (popupVisible.value = val)}
+						setPopupVisible={(val) => (superLikeEndedPopup.value = val)}
 						numberOfSuperLikes={numberOfSuperLikes}
 						myID={myID}
 						sesToken={sesToken}
@@ -216,8 +217,12 @@ export default function ProfileCards({ navigation, route }) {
 						navigateFromCard={() => {
 							navigateFromCard();
 						}}
-						showMatchScreen={(otherName, otherPicture, myPicture)=>{
+						showMatchScreen={(otherName, otherPicture, myPicture) => {
 							showMatchScreen(otherName, otherPicture, myPicture);
+						}}
+						likeEnded={likeEnded}
+						showLikeEndedModal={() => {
+							setLikeEndedModal(true);
 						}}
 					/>
 				))}
@@ -239,10 +244,10 @@ export default function ProfileCards({ navigation, route }) {
 				/>
 			</View>
 
-			<AnimatedModal
-				visible={popupVisible.value}
+			{/* <AnimatedModal
+				visible={superLikeEndedPopup.value}
 				dismiss={() => {
-					popupVisible.value = false;
+					superLikeEndedPopup.value = false;
 				}}
 				// style={{ position: "absolute" }}
 			>
@@ -260,7 +265,7 @@ export default function ProfileCards({ navigation, route }) {
 				>
 					<ReactNative.TouchableOpacity
 						onPress={() => {
-							popupVisible.value = false;
+							superLikeEndedPopup.value = false;
 						}}
 						style={{ position: "absolute", top: 15, right: 20 }}
 					>
@@ -328,15 +333,13 @@ export default function ProfileCards({ navigation, route }) {
 						</Gradient>
 					</ReactNative.TouchableOpacity>
 				</View>
-			</AnimatedModal>
+			</AnimatedModal> */}
 
 			{/*Match Page Modal */}
 			<CustomModal
 				visible={matchPage}
-				onRequestClose={() => {
-					setMatchPage(false);
-				}}
-				onDismiss={() => {
+				dismiss={() => {
+					// matchPopup.value = false;
 					setMatchPage(false);
 				}}
 			>
@@ -427,11 +430,11 @@ export default function ProfileCards({ navigation, route }) {
 							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 						</Text>
 
-						<TouchableOpacity
-							onPress={() => {
+						<ReactNative.TouchableOpacity
+							onPress={async () => {
 								setMatchPage(false);
-								//incrementIndex();
-								//goToMsg();
+								setIndexOfFrontCard(indexOfFrontCard + 1);
+								navigation.replace("MainScreen", { screen: "Mesajlar" });
 							}}
 							style={{
 								paddingTop: 10,
@@ -460,13 +463,14 @@ export default function ProfileCards({ navigation, route }) {
 									Mesaj Gönder
 								</Text>
 							</Gradient>
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							style={{
 								paddingTop: 5,
 							}}
 							onPress={async () => {
 								await setMatchPage(false);
+								// matchPopup.value = false;
 								//incrementIndex();
 							}}
 						>
@@ -480,13 +484,103 @@ export default function ProfileCards({ navigation, route }) {
 								}}
 								text={"Daha sonra"}
 							/>
-						</TouchableOpacity>
+						</ReactNative.TouchableOpacity>
 					</View>
 				</View>
 			</CustomModal>
 			{/* Match Page Modal */}
+
+			<CustomModal
+				visible={likeEndedModal}
+				dismiss={() => {
+					setLikeEndedModal(true);
+				}}
+			>
+				<View
+					style={{
+						width: width * 0.8,
+						aspectRatio: 1,
+						maxHeight: height * 0.5,
+						backgroundColor: "white",
+						borderRadius: 10,
+						alignItems: "center",
+						paddingVertical: 30,
+						paddingHorizontal: 40,
+					}}
+				>
+					{/* <ReactNative.TouchableOpacity
+						onPress={() => {
+							setLikeEndedModal(false);
+						}}
+						style={{ position: "absolute", top: 15, right: 20 }}
+					>
+						<Text
+							style={{
+								color: colors.medium_gray,
+								fontSize: 16,
+								fontWeight: "600",
+								letterSpacing: 0.5,
+							}}
+						>
+							Kapat
+						</Text>
+					</ReactNative.TouchableOpacity> */}
+					<Image
+						source={require("../../assets/superLikeFinished.png")}
+						style={{ height: "24%" }}
+						resizeMode={"contain"}
+					/>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.medium_gray,
+							fontSize: 16,
+						}}
+					>
+						Beğenme hakların bitti!{"\n"} Ama korkma gün içinde tekrar yenilecek
+					</Text>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.cool_gray,
+							fontSize: 16,
+						}}
+					>
+						Beğenme hakkın için kalan süre:{"\n"}
+						<Feather name="clock" size={16} color={colors.cool_gray} />
+						{hour} saat {minute} dakika {second} saniye
+					</Text>
+					<ReactNative.TouchableOpacity
+						onPress={() => {
+							setLikeEndedModal(false);
+						}}
+						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
+					>
+						<Gradient
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<Text
+								style={{
+									color: colors.white,
+									fontSize: 20,
+									fontFamily: "PoppinsSemiBold",
+									letterSpacing: 1,
+								}}
+							>
+								Devam Et
+							</Text>
+						</Gradient>
+					</ReactNative.TouchableOpacity>
+				</View>
+			</CustomModal>
 		</View>
-		
 	);
 }
 

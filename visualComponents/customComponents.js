@@ -156,10 +156,11 @@ export const CustomPicker = ({ style, visible, setVisible, data, setChoice }) =>
 };
 
 export const AnimatedModal = (props) => {
-	const { visible } = props;
+	const { visible, dismiss } = props;
 	const animStyle = useAnimatedStyle(() => {
 		return {
-			zIndex: withTiming(visible.value ? 2 : -1),
+			zIndex: withTiming(visible.value ? 5 : -1),
+			elevation: withTiming(visible.value ? 20 : 0),
 			opacity: withTiming(visible.value ? 1 : 0),
 		};
 	});
