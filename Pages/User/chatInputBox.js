@@ -19,7 +19,7 @@ const InputBox = (props) => {
 					input: {
 						userChatMessagesId: props.chatID,
 						sentMsgSenderId: props.myUserID,
-						text: message,
+						text: message.trim(),
 						status: "Active",
 					},
 				})
@@ -73,22 +73,25 @@ const InputBox = (props) => {
 	};
 
 	return (
-		<View style={{ flexDirection: "row", margin: 10, alignItems: "flex-end" }}>
+		<View
+			style={{
+				flexDirection: "row",
+				// alignItems: "flex-end",
+			}}
+		>
 			<View
 				style={{
-					flexDirection: "row",
+					flex: 1,
 					backgroundColor: "white",
 					padding: 10,
 					marginRight: 10,
 					borderRadius: 25,
-					flex: 1,
-					alignItems: "flex-end",
 				}}
 			>
 				<TextInput
 					style={{ flex: 1, marginHorizontal: 10 }}
 					multiline
-					placeholder={"Mesajın"}
+					placeholder={"Mesajın..."}
 					value={message}
 					onChangeText={setMessage}
 				/>
@@ -117,11 +120,16 @@ const InputBox = (props) => {
 				}}
 			>
 				<MaskedView
-					style={{ flex: 1, flexDirection: "row", height: 30 }}
+					style={{
+						// width: "100%",
+						// height: "100%",
+						alignContent: "center",
+						flex: 1,
+						flexDirection: "row",
+					}}
 					maskElement={
 						<View
 							style={{
-								backgroundColor: "transparent",
 								justifyContent: "center",
 								alignItems: "center",
 							}}

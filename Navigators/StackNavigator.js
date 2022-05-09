@@ -140,10 +140,20 @@ function MainScreen({ route, navigation }) {
 							<Pressable
 								{...props}
 								onPress={() => {
-									navigation.navigate("MainScreen", {
-										screen: "AnaSayfa",
-										params: { screen: "Home" },
-									});
+									if (
+										props?.accessibilityState?.selected &&
+										props?.children?.props?.children[0].props?.route.state
+									) {
+										navigation.replace("MainScreen", {
+											screen: "AnaSayfa",
+											params: { screen: "Home" },
+										});
+									} else if (!props?.accessibilityState?.selected) {
+										navigation.replace("MainScreen", {
+											screen: "AnaSayfa",
+											params: { screen: "Home" },
+										});
+									}
 								}}
 							/>
 						),

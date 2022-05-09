@@ -225,13 +225,21 @@ const Category = ({
 			style={[
 				commonStyles.photo,
 				{
-					height: "70%",
+					height: "80%",
 					borderRadius: 15,
 					aspectRatio: 1 / 1,
 					marginHorizontal: 0,
-					marginLeft: 15,
-					marginRight: index + 1 == CategoryList.length ? 15 : 0,
-					backgroundColor: selectedCategory == index ? "transparent" : colors.white,
+					marginLeft: Math.min(20, width * 0.03),
+					marginRight: index + 1 == CategoryList.length ? Math.min(20, width * 0.03) : 0,
+					backgroundColor: colors.white,
+					shadowColor: "#000",
+					shadowOffset: {
+						width: 0,
+						height: 2,
+					},
+					shadowOpacity: 0.23,
+					shadowRadius: 2.62,
+					elevation: 4,
 				},
 			]}
 		>
@@ -624,6 +632,7 @@ export default function MainPage({ navigation }) {
 	});
 
 	if (!isAppReady) {
+		console.log("");
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
 				<StatusBar style="dark" />
@@ -735,7 +744,7 @@ export default function MainPage({ navigation }) {
 				/>
 			</View>
 
-			<View name={"Categories"} style={{ width: "100%", height: height * 0.12 }}>
+			<View name={"Categories"} style={{ width: "100%", height: "12%" }}>
 				<FlatList
 					horizontal={true}
 					showsHorizontalScrollIndicator={false}

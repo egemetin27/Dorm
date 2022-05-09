@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions, View } from "react-native";
 import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 Amplify.configure(awsmobile);
 
@@ -19,7 +20,11 @@ export default function App() {
 			<Stack />
 		</SafeAreaProvider>
 	);
-	// return <Temp route={{ params: {} }} />;
+	// return (
+	// 	<GestureHandlerRootView style={{ flex: 1 }}>
+	// 		<Temp />
+	// 	</GestureHandlerRootView>
+	// );
 }
 
 const styles = StyleSheet.create({

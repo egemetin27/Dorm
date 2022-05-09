@@ -167,12 +167,10 @@ export default Card = ({
 					}
 					if (res.data.message == "Match") {
 						console.log("send notification.");
-						incrementIndex();
 						sendNotification();
 						setMatchPage(true);
-					} else {
-						incrementIndex();
 					}
+					incrementIndex();
 				})
 				.catch((error) => {
 					if (error.response) {
@@ -342,14 +340,13 @@ export default Card = ({
 									style={[
 										commonStyles.photo,
 										{
-											width: width * 0.9,
-											maxHeight: height * 0.7,
+											height: Math.min(width * 1.35, height * 0.7),
 											backfaceVisibility: "hidden",
 										},
 										animatedFrontFace,
 									]}
 								>
-									{photoList.length > 0 ? (
+									{photoList?.length > 0 ? (
 										<FlatList
 											data={photoList}
 											keyExtractor={(item) => {
@@ -365,8 +362,7 @@ export default Card = ({
 															}}
 															style={{
 																aspectRatio: 1 / 1.5,
-																height: width * 1.35,
-																maxHeight: height * 0.7,
+																height: Math.min(height * 0.7, width * 1.35),
 																resizeMode: "cover",
 																backgroundColor: colors.cool_gray,
 															}}
@@ -397,10 +393,10 @@ export default Card = ({
 											left: 20,
 											top: 20,
 											justifyContent: "space-between",
-											minHeight: photoList.length * 10 + 16,
+											minHeight: photoList?.length * 10 + 16,
 										}}
 									>
-										{photoList.map((_, index) => {
+										{photoList?.map((_, index) => {
 											return (
 												<Animated.View
 													key={index}
@@ -420,7 +416,7 @@ export default Card = ({
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
 											onPress={() => {
-												showMatchScreen(name, photoList[0].PhotoLink, myProfilePicture);
+												showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 												//setReportPage(true);
 												//setMatchPage(true);
 											}}
@@ -528,25 +524,13 @@ export default Card = ({
 								</Animated.View>
 
 								{/* PART: backface */}
-								{/* <Animated.View
-									style={[
-										commonStyles.photo,
-										{
-											width: width * 0.9,
-											maxHeight: height * 0.7,
-											backfaceVisibility: "hidden",
-										},
-										animatedFrontFace,
-									]}
-								> */}
 
 								<Animated.View
 									name={"backface"}
 									style={[
 										commonStyles.photo,
 										{
-											width: width * 0.9,
-											maxHeight: height * 0.7,
+											height: Math.min(width * 1.35, height * 0.7),
 											position: "absolute",
 											backfaceVisibility: "hidden",
 											backgroundColor: colors.cool_gray,
@@ -557,8 +541,8 @@ export default Card = ({
 									<Image
 										source={{
 											uri:
-												photoList.length > 0
-													? photoList[backfaceIndex].PhotoLink
+												photoList?.length > 0
+													? photoList[backfaceIndex]?.PhotoLink
 													: "Nothing to see here",
 										}}
 										blurRadius={20}
@@ -824,7 +808,7 @@ export default Card = ({
 								left: 20,
 								top: 20,
 								justifyContent: "space-between",
-								minHeight: photoList.length * 10 + 16,
+								minHeight: photoList?.length * 10 + 16,
 							}}
 						>
 							{photoList.map((_, index) => {
@@ -1055,7 +1039,6 @@ export default Card = ({
 						<ReactNative.TouchableOpacity
 							onPress={() => {
 								setMatchPage(false);
-								incrementIndex();
 								//goToMsg();
 							}}
 							style={{
@@ -1092,7 +1075,6 @@ export default Card = ({
 							}}
 							onPress={async () => {
 								await setMatchPage(false);
-								incrementIndex();
 							}}
 						>
 							<GradientText

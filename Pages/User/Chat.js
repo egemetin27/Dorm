@@ -225,6 +225,7 @@ export default function Chat({ navigation, route }) {
 	const openProfile = async () => {
 		try {
 			//console.log(cardData);
+			Keyboard.dismiss();
 			setProfilePage(true);
 		} catch (error) {
 			console.log(error);
@@ -338,6 +339,7 @@ export default function Chat({ navigation, route }) {
 				<View
 					style={{
 						position: "relative",
+						flex: 1,
 						// top: 0,
 						// left: 0,
 						// right: 0,
@@ -361,7 +363,7 @@ export default function Chat({ navigation, route }) {
 						style={{
 							position: "absolute",
 							width: width,
-							top: "35%",
+							top: "40%",
 							// justifyContent: "center",
 							// alignItems: "center",
 						}}
@@ -380,35 +382,59 @@ export default function Chat({ navigation, route }) {
 							da klasiklerden giderek selam yazabilirsin.
 						</Text>
 					</View>
+					<View
+						style={{
+							position: "absolute",
+							width: width,
+							bottom: 20,
+							paddingHorizontal: 10,
+						}}
+					>
+						<InputBox
+							myUserID={myUserID}
+							chatID={chatID}
+							otherUser={otherUser}
+							lastMsgSender={lastMsgSender}
+							unreadMsg={unreadMsg}
+						/>
+					</View>
 				</View>
-			) : null}
-			<View
-				style={{
-					height: height - 100,
-					paddingTop: 105,
-				}}
-			>
-				<FlatList
-					style={{
-						flexDirection: "column",
-						borderRadius: 8,
-					}}
-					data={chatMessages}
-					renderItem={({ item, index }) => {
-						return <ChatMsg data={item} myUserID={myUserID} />;
-					}}
-					inverted
-				/>
-			</View>
-			<View style={{ position: "absolute", bottom: 10, width: width }}>
-				<InputBox
-					myUserID={myUserID}
-					chatID={chatID}
-					otherUser={otherUser}
-					lastMsgSender={lastMsgSender}
-					unreadMsg={unreadMsg}
-				/>
-			</View>
+			) : (
+				<View style={{ flex: 1 }}>
+					<View
+						style={{
+							width: width,
+							flex: 1,
+						}}
+					>
+						<FlatList
+							showsVerticalScrollIndicator={false}
+							contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 20 }}
+							data={chatMessages}
+							renderItem={({ item, index }) => {
+								return <ChatMsg data={item} myUserID={myUserID} />;
+							}}
+							inverted
+						/>
+					</View>
+					<View
+						style={{
+							position: "relative",
+							width: width,
+							paddingVertical: 20,
+							paddingHorizontal: 10,
+						}}
+					>
+						<InputBox
+							myUserID={myUserID}
+							chatID={chatID}
+							otherUser={otherUser}
+							lastMsgSender={lastMsgSender}
+							unreadMsg={unreadMsg}
+						/>
+					</View>
+				</View>
+			)}
 			{Platform.OS == "ios" ? <KeyboardSpacer /> : null}
 			{/* Report page custom modal */}
 			<CustomModal
@@ -869,7 +895,7 @@ const styles = StyleSheet.create({
 		elevation: 20,
 		flexDirection: "row",
 		alignItems: "flex-end",
-		paddingLeft: 10,
+		paddingHorizontal: 10,
 		paddingBottom: 10,
 	},
 	buttonContainer: {
