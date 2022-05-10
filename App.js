@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions, View } from "react-native";
 import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 Amplify.configure(awsmobile);
 
@@ -11,16 +12,19 @@ const { width, height } = Dimensions.get("window");
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { red } from "react-native-redash";
-import { colors } from "./visualComponents/colors";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
-
-	return <SafeAreaProvider style ={{flex: 1}}>
+	return (
+		<SafeAreaProvider>
 			<Stack />
 		</SafeAreaProvider>
-	// return <Temp route={{ params: {} }} />;
+	);
+	// return (
+	// 	<GestureHandlerRootView style={{ flex: 1 }}>
+	// 		<Temp />
+	// 	</GestureHandlerRootView>
+	// );
 }
 
 const styles = StyleSheet.create({

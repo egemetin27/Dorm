@@ -13,6 +13,7 @@ import { Feather } from "@expo/vector-icons";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
@@ -348,14 +349,16 @@ export default function Settings({ navigation, route }) {
 		invisibility: invis,
 		campusGhost: ghost,
 		schoolLover: onlyCampus,
+		isFriendMode,
 		userID,
 		sesToken,
 	} = route.params || { invisibility: true, campusGhost: true, schoolLover: true };
 
 	const { signOut } = React.useContext(AuthContext);
+	const insets = useSafeAreaInsets();
 
 	// SWITCHES
-	const [friendMode, setFriendMode] = React.useState(false);
+	const [friendMode, setFriendMode] = React.useState(isFriendMode);
 	const [invisibility, setInvisibility] = React.useState(invis);
 	const [campusGhost, setCampusGhost] = React.useState(ghost);
 	const [schoolLover, setSchoolLover] = React.useState(onlyCampus);
@@ -443,6 +446,31 @@ export default function Settings({ navigation, route }) {
 			});
 	};
 
+	const handleMatchModeChange = (index) => {
+		if ((friendMode && index == 1) || (!friendMode && index == 0)) {
+			return;
+		}
+		setFriendMode(index == 1 ? true : false);
+
+		axios
+			.post(
+				url + "/matchMode",
+				{ userId: userID, matchMode: index.toString() },
+				{ headers: { "access-token": sesToken } }
+			) // There is a typo (not Change but Chage) TODO: make userID variable
+			.then(async (res) => {
+				console.log(res.data);
+				let userStr = await SecureStore.getItemAsync("userData");
+				const user = JSON.parse(userStr);
+				const newUser = { ...user, matchMode: index };
+				userStr = JSON.stringify(newUser);
+				SecureStore.setItemAsync("userData", userStr);
+			})
+			.catch((error) => {
+				console.log("Match Mode Error: ", error);
+			});
+	};
+
 	const handleEmail = (value) => {
 		setEmail(value);
 	};
@@ -452,8 +480,8 @@ export default function Settings({ navigation, route }) {
 	};
 
 	return (
-		<View style={[commonStyles.Container]}>
-			<StatusBar style="dark" translucent={false} backgroundColor={colors.white} />
+		<View style={[commonStyles.Container, { marginTop: insets.top, marginBottom: insets.bottom }]}>
+			<StatusBar style="dark" backgroundColor={colors.white} />
 			<View name={"Header"} style={styles.header}>
 				<TouchableOpacity
 					name={"backButton"}
@@ -465,7 +493,10 @@ export default function Settings({ navigation, route }) {
 				</TouchableOpacity>
 				<GradientText text={"Ayarlar"} style={{ fontSize: 32, fontFamily: "NowBold" }} />
 			</View>
-			<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: width }}>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ width: width, paddingBottom: 50 }}
+			>
 				{/* <TouchableOpacity
 					style={styles.buttonContainer}
 					onPress={() => {
@@ -494,11 +525,11 @@ export default function Settings({ navigation, route }) {
 						listItemStyle={{
 							width: width * 0.4,
 							aspectRatio: 3 / 1,
-							borderRadius: (width * 0.4) / 3,
+							borderRadius: (width * 0.4) / 6,
 						}}
 						index={friendMode ? 1 : 0}
 						setIndex={(index) => {
-							setFriendMode(index == 1 ? true : false);
+							handleMatchModeChange(index);
 						}}
 					/>
 				</View>

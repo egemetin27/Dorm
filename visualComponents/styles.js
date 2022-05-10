@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get("screen");
 
 export default styles = StyleSheet.create({
 	Container: {
-		height: height,
+		height: "100%",
 		width: width,
 		backgroundColor: "#F4F3F3",
 		// backgroundColor: "#F8F8F8",
@@ -70,7 +70,6 @@ export default styles = StyleSheet.create({
 		letterSpacing: 1.2,
 	},
 	photo: {
-		// marginHorizontal: 15,
 		aspectRatio: 1 / 1.5,
 		backgroundColor: colors.cool_gray,
 		borderRadius: 20,
@@ -78,10 +77,14 @@ export default styles = StyleSheet.create({
 		justifyContent: "center",
 		alignSelf: "center",
 		overflow: "hidden",
-		shadowColor: "rgba(58, 41, 106, 0.2)",
-		shadowOffset: { width: 0, height: 10 },
-		shadowRadius: 20,
 		alignSelf: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
 		elevation: 5,
 	},
 });

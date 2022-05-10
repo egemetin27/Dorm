@@ -1,5 +1,5 @@
 import React from "react";
-import {
+import ReactNative, {
 	View,
 	Text,
 	Image,
@@ -15,6 +15,7 @@ import {
 	TouchableOpacity,
 	GestureDetector,
 	Gesture,
+	RectButton,
 } from "react-native-gesture-handler";
 import Animated, {
 	interpolate,
@@ -63,6 +64,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 
 	const animatedBackFace = useAnimatedStyle(() => {
 		return {
+			zIndex: turn.value == -1 ? 1 : -1,
 			transform: [{ rotateY: `${interpolate(turn.value, [1, -1], [180, 360])}deg` }],
 		};
 	});
@@ -145,14 +147,16 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 			.catch((err) => console.log(err));
 	};
 
+	const likeButton = React.createRef();
+
 	return (
 		<View name={"cards"} style={{ width: "100%", justifyContent: "center", height: height * 0.76 }}>
-			<GestureDetector gesture={tapHandler}>
-				<Animated.View style={{}}>
+			<GestureDetector gesture={tapHandler} waitFor={likeButton}>
+				<Animated.View>
 					<Animated.View
 						style={[
 							commonStyles.photo,
-							{ width: width * 0.9, backfaceVisibility: "hidden" },
+							{ height: Math.min(width * 1.35, height * 0.7), backfaceVisibility: "hidden" },
 							animatedCard,
 						]}
 					>
@@ -171,9 +175,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 											uri: item ?? "AAA",
 										}}
 										style={{
-											height: width * 1.35,
+											height: Math.min(height * 0.7, width * 1.35),
 											resizeMode: "cover",
-											backgroundColor: "red",
+											backgroundColor: colors.cool_gray,
 										}}
 									/>
 								);
@@ -242,15 +246,18 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								style={{
 									width: "100%",
 									height: "100%",
-									justifyContent: "center",
+									alignItems: "center",
+									justifyContent: "space-between",
+									flexDirection: "row",
+									paddingHorizontal: "5%",
 								}}
 							>
-								<View style={{ position: "absolute", left: 20 }}>
+								<View style={{ flex: 1, paddingRight: "5%" }}>
 									<Text
+										numberOfLines={1}
 										style={{
 											color: colors.white,
-											fontSize: width * 0.057,
-											lineHeight: width * 0.062,
+											fontSize: Math.min(24, width * 0.048),
 											fontFamily: "PoppinsSemiBold",
 											letterSpacing: 1.05,
 										}}
@@ -260,9 +267,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									<Text
 										style={{
 											color: colors.white,
-											fontSize: width * 0.045,
+											fontSize: Math.min(18, width * 0.036),
 											fontFamily: "PoppinsItalic",
-											lineHeight: width * 0.06,
 										}}
 									>
 										{date}
@@ -270,18 +276,16 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 										{time}
 									</Text>
 								</View>
-
-								<View
-									style={{
-										position: "absolute",
-										right: 20,
-										backgroundColor: colors.white,
-										height: 60,
-										aspectRatio: 1 / 1,
-										borderRadius: 30,
-									}}
-								>
-									<TouchableOpacity onPress={handleFavorited}>
+								{/* <View style={{ zIndex: 5 }}> */}
+								<TouchableOpacity onPress={handleFavorited}>
+									<View
+										style={{
+											backgroundColor: colors.white,
+											height: Math.max(Math.min(width * 0.1, height * 0.08), 60),
+											aspectRatio: 1 / 1,
+											borderRadius: Math.max(Math.min(width * 0.1, height * 0.08), 60) / 2,
+										}}
+									>
 										<View
 											style={{
 												width: "100%",
@@ -293,8 +297,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 											{favFlag ? (
 												<Image
 													style={{
-														width: 40,
-														height: 40,
+														aspectRatio: 1,
+														height: (Math.max(Math.min(width * 0.1, height * 0.08), 60) * 2) / 3,
 														resizeMode: "contain",
 														marginBottom: MARGIN_CONSTANT * 40,
 													}}
@@ -303,8 +307,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 											) : (
 												<Image
 													style={{
-														width: 40,
-														height: 40,
+														aspectRatio: 1,
+														height: (Math.max(Math.min(width * 0.1, height * 0.08), 60) * 2) / 3,
 														resizeMode: "contain",
 														marginBottom: MARGIN_CONSTANT * 40,
 													}}
@@ -312,8 +316,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 												/>
 											)}
 										</View>
-									</TouchableOpacity>
-								</View>
+									</View>
+								</TouchableOpacity>
 							</View>
 						</Gradient>
 					</Animated.View>
@@ -324,7 +328,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						style={[
 							commonStyles.photo,
 							{
-								width: width * 0.9,
+								height: Math.min(width * 1.35, height * 0.7),
 								position: "absolute",
 								backfaceVisibility: "hidden",
 								backgroundColor: "transparent",
@@ -339,7 +343,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 							blurRadius={20}
 							style={{
 								position: "absolute",
-								width: width * 0.9,
+								height: Math.min(width * 1.35, height * 0.7),
 								aspectRatio: 1 / 1.5,
 								resizeMode: "cover",
 								transform: [{ rotateY: "180deg" }],
@@ -366,13 +370,15 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									name={"Location"}
 									style={{
 										color: colors.light_gray,
-										fontSize: width * 0.045,
+										fontSize: Math.min(width * 0.045, 27),
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Yer{"\n"}
-									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+									<Text
+										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
+									>
 										{location}
 									</Text>
 								</Text>
@@ -380,13 +386,15 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									name={"Date"}
 									style={{
 										color: colors.light_gray,
-										fontSize: width * 0.045,
+										fontSize: Math.min(width * 0.045, 27),
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Tarih{"\n"}
-									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+									<Text
+										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
+									>
 										{date}
 									</Text>
 								</Text>
@@ -394,13 +402,15 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									name={"Time"}
 									style={{
 										color: colors.light_gray,
-										fontSize: width * 0.045,
+										fontSize: Math.min(width * 0.045, 27),
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Saat{"\n"}
-									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+									<Text
+										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
+									>
 										{time}
 									</Text>
 								</Text>
@@ -408,92 +418,114 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									name={"Genre"}
 									style={{
 										color: colors.light_gray,
-										fontSize: width * 0.045,
+										fontSize: Math.min(width * 0.045, 27),
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
 									Tür{"\n"}
-									<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: width * 0.055 }}>
+									<Text
+										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
+									>
 										{genre}
 									</Text>
 								</Text>
 								<Text
 									name={"Seller"}
 									style={{
-										color: colors.light_gray,
-										fontSize: width * 0.045,
 										textAlign: "center",
-										paddingVertical: 5,
+										color: colors.light_gray,
+										fontSize: Math.min(width * 0.045, 27),
+										paddingTop: 5,
 									}}
 								>
-									Bilet Platformu{"\n"}
-									<View style={{ alignContent: "center" }}>
-										<Pressable
-											onPress={async () => {
-												if (turn.value != -1) return;
-												await axios
-													.post(
-														url + "/eventLinkClick",
-														{ EventId: EventId },
-														{ headers: { "access-token": sesToken } }
-													)
-													.catch((err) => console.log(err));
+									Bilet Platformu
+								</Text>
+								<Pressable
+									onPress={async () => {
+										if (turn.value != -1) return;
+										await axios
+											.post(
+												url + "/eventLinkClick",
+												{ EventId: EventId },
+												{ headers: { "access-token": sesToken } }
+											)
+											.catch((err) => console.log(err));
 
-												await Linking.openURL(BuyLink);
+										await Linking.openURL(BuyLink);
+									}}
+								>
+									<View style={{ flexDirection: "row", alignContent: "center" }}>
+										<Text
+											style={{
+												color: colors.light_gray,
+												textDecorationLine: "underline",
+												fontSize: Math.min(width * 0.055, 30),
+												fontFamily: "PoppinsSemiBold",
 											}}
 										>
-											<View style={{ flexDirection: "row" }}>
-												<Text
-													style={{
-														color: colors.light_gray,
-														textDecorationLine: "underline",
-														fontSize: width * 0.055,
-														fontFamily: "PoppinsSemiBold",
-													}}
-												>
-													{seller}
-												</Text>
-												<Text style={{ fontSize: width * 0.045, color: colors.light_gray }}>
-													{" "}
-													⇗
-												</Text>
-											</View>
-										</Pressable>
-									</View>
-								</Text>
-								<TouchableOpacity onPress={explorePeople}>
-									<View
-										style={{
-											width: width * 0.6,
-											height: 40,
-											borderRadius: 10,
-											borderWidth: 1,
-											borderColor: colors.light_gray,
-											justifyContent: "center",
-											alignItems: "center",
-											marginTop: 10,
-										}}
-									>
+											{seller}
+										</Text>
 										<Text
-											numberOfLines={1}
-											adjustsFontSizeToFit={true}
 											style={{
-												fontSize: width * 0.04,
+												textAlign: "center",
+												fontSize: Math.min(width * 0.07, 30),
 												color: colors.light_gray,
 											}}
 										>
-											Etkinliği Beğenen Kişileri Keşfet
+											{"⇗"}
 										</Text>
 									</View>
-								</TouchableOpacity>
+								</Pressable>
+								<View style={{ width: "100%" }}>
+									<TouchableOpacity onPress={explorePeople}>
+										<View
+											style={{
+												// width: width,
+												// backgroundColor: "blue",
+												paddingHorizontal: 10,
+												paddingVertical: 15,
+												borderRadius: 10,
+												borderWidth: 1,
+												borderColor: colors.light_gray,
+												justifyContent: "center",
+												alignItems: "center",
+												marginTop: 10,
+											}}
+										>
+											<Text
+												numberOfLines={1}
+												adjustsFontSizeToFit={true}
+												style={{
+													fontSize: Math.min(width * 0.1, 18),
+													color: colors.light_gray,
+												}}
+											>
+												Etkinliği Beğenen Kişileri Keşfet
+											</Text>
+										</View>
+									</TouchableOpacity>
+								</View>
 							</View>
 						</ScrollView>
 					</Animated.View>
 				</Animated.View>
-				{/* </TapGestureHandler> */}
 			</GestureDetector>
 		</View>
+	);
+};
+
+const CustomButton = ({ onPress, children, ref }) => {
+	const tapHandler = Gesture.Tap()
+		.numberOfTaps(1)
+		.onEnd(() => {
+			runOnJS(onPress)();
+		});
+
+	return (
+		<GestureDetector ref={ref} gesture={tapHandler}>
+			{children}
+		</GestureDetector>
 	);
 };
 
@@ -513,7 +545,7 @@ export default function EventCards({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" translucent={false} backgroundColor="#F4F3F3" />
+			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
 				style={{
 					backgroundColor: "#F4F3F3",
@@ -524,6 +556,12 @@ export default function EventCards({ navigation, route }) {
 					paddingHorizontal: 20,
 					alignItems: "center",
 					elevation: 10,
+					shadowOffset: {
+						width: 0,
+						height: 5,
+					},
+					shadowOpacity: 0.34,
+					shadowRadius: 6.27,
 				}}
 			>
 				<TouchableOpacity
@@ -535,13 +573,14 @@ export default function EventCards({ navigation, route }) {
 				</TouchableOpacity>
 				<Image
 					source={require("../../assets/dorm_text.png")}
-					resizeMode="center"
-					style={{ width: "30%", maxHeight: "60%" }}
+					resizeMode="contain"
+					style={{ flex: 1, maxHeight: "60%" }}
 				/>
 				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
 
 			<Carousel
+				style={{ alignItems: "center" }}
 				defaultIndex={idx}
 				width={width}
 				loop={false}

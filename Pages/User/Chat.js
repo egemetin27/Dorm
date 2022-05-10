@@ -13,7 +13,7 @@ import {
 	Keyboard,
 	TextInput,
 	FlatList,
-	Modal
+	Modal,
 } from "react-native";
 import { Feather, Octicons, MaterialIcons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
@@ -34,7 +34,7 @@ import InputBox from "./chatInputBox";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 
 import { listMsgUsers, listSentMsgs, msgByDate } from "../../src/graphql/queries";
-import {updateUserChat} from "../../src/graphql/mutations";
+import { updateUserChat } from "../../src/graphql/mutations";
 import { onCreateSentMsg } from "../../src/graphql/subscriptions";
 import ChatMsg from "./ChatMsg";
 import { decompose2d } from "react-native-redash";
@@ -49,12 +49,11 @@ export default function Chat({ navigation, route }) {
 
 	const [reportText, changeReportText] = React.useState(null);
 
-	const { otherUser, myUserID, chatID, unreadMsg, lastMsgSender} = route.params;
-	
+	const { otherUser, myUserID, chatID, unreadMsg, lastMsgSender } = route.params;
+
 	const [profilePage, setProfilePage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
-
 
 	const [deleteChatModal, setDeleteChatModal] = React.useState(false);
 
@@ -67,7 +66,7 @@ export default function Chat({ navigation, route }) {
 		try {
 			API.graphql(
 				graphqlOperation(updateUserChat, {
-					input: {id: chatID, status: "Deactive"},
+					input: { id: chatID, status: "Deactive" },
 				})
 			);
 			axios
@@ -78,18 +77,18 @@ export default function Chat({ navigation, route }) {
 					},
 					{ headers: { "access-token": myToken } }
 				)
-				.catch((error) =>{
+				.catch((error) => {
 					console.log(error);
 				});
 			navigation.goBack();
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
 	const closeProfile = () => {
 		setProfilePage(false);
-	}
+	};
 	const fetchNewMessages = async () => {
 		try {
 			const chatMsgData = await API.graphql(
@@ -103,7 +102,6 @@ export default function Chat({ navigation, route }) {
 				})
 			);
 			await setChatMessages(chatMsgData.data.msgByDate.items);
-			
 		} catch (error) {
 			console.log(error);
 		}
@@ -128,7 +126,6 @@ export default function Chat({ navigation, route }) {
 					//console.log(res.data[0].PhotoLink);
 					setImageUri(res.data[0].PhotoLink);
 					//console.log(res);
-					
 				})
 				.catch((err) => {
 					console.log(err);
@@ -138,25 +135,22 @@ export default function Chat({ navigation, route }) {
 		}
 	};
 
-	const updateChat = async() =>{
-        try {
-            const newMessageData = await API.graphql(
-                graphqlOperation(
-                    updateUserChat,
-                    {
-                        input: {
-                            id: chatID,
-                            unreadMsg: 0,
-                        }
-                    }
-                )
-            )
-        } catch (e) {
-            console.log(e);
-        }
-    }
+	const updateChat = async () => {
+		try {
+			const newMessageData = await API.graphql(
+				graphqlOperation(updateUserChat, {
+					input: {
+						id: chatID,
+						unreadMsg: 0,
+					},
+				})
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
-	const fetchProfile= async () => {
+	const fetchProfile = async () => {
 		try {
 			let abortController = new AbortController();
 			const userDataStr = await SecureStore.getItemAsync("userData");
@@ -177,7 +171,6 @@ export default function Chat({ navigation, route }) {
 
 					//console.log(res.data[0].PhotoLink);
 					//console.log(res);
-					
 				})
 				.catch((err) => {
 					console.log(err);
@@ -185,7 +178,6 @@ export default function Chat({ navigation, route }) {
 		} catch (error) {
 			console.log(error);
 		}
-
 	};
 
 	React.useEffect(async () => {
@@ -198,8 +190,7 @@ export default function Chat({ navigation, route }) {
 		await fetchProfile();
 		await fetchNewMessages();
 		//console.log(lastMsgSender);
-		if(lastMsgSender != myUserID)
-		{
+		if (lastMsgSender != myUserID) {
 			updateChat();
 		}
 		//console.log(unreadMsg);
@@ -231,18 +222,17 @@ export default function Chat({ navigation, route }) {
 		}
 	}, []);
 
-	const openProfile= async () => {
+	const openProfile = async () => {
 		try {
 			//console.log(cardData);
+			Keyboard.dismiss();
 			setProfilePage(true);
 		} catch (error) {
 			console.log(error);
 		}
-
 	};
 
-	const reportProfile = async() => {
-		
+	const reportProfile = async () => {
 		//console.log(chosenReport);
 		//console.log(myUserID);
 		//console.log(otherUser.id);
@@ -251,120 +241,119 @@ export default function Chat({ navigation, route }) {
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const myToken = userData.sesToken;
-		
+
 		try {
 			await axios
 				.post(
 					url + "/report",
-					{ 	
+					{
 						UserId: myUserID,
 						sikayetEdilen: otherUser.id,
 						sikayetKodu: chosenReport,
-						aciklama: "",					
+						aciklama: "",
 					},
 					{ headers: { "access-token": myToken } }
 				)
 				.catch((err) => {
 					console.log(err);
 				});
-				
+
 			API.graphql(
 				graphqlOperation(updateUserChat, {
-					input: { id: chatID, status: "Reported"},
+					input: { id: chatID, status: "Reported" },
 				})
 			);
 			navigation.goBack();
-			
 		} catch (error) {
 			console.log(error);
 		}
-		
 	};
 
 	return (
-		<View style={styles.inner}>
-			<View 
-				name={"Header"} 
-				style={[styles.header, {
-						position: "absolute",
-						top:0,
-						left:0,
-						right:0,
-						bottom:0,
+		<View style={styles.container}>
+			<View
+				name={"Header"}
+				style={[
+					styles.header,
+					{
 						zIndex: 1,
-					}]}>
-				<TouchableOpacity
-					style={{ width: "12%", paddingBottom: 5 }}
-					name={"backButton"}
-					onPress={() => {
-						navigation.goBack();
-					}}
-				>
-					<Feather name="chevron-left" size={36} color="#4A4A4A" />
-				</TouchableOpacity>
-				<Image
-					style={{ resizeMode: "cover", width: "15%", height: "80%", borderRadius: 15 }}
-					source={{
-						uri: imageUri,
-					}}
-				/>
-				<View style={{ width: "2%" }}></View>
-				<View
-					style={{
-						flexDirection: "column",
-						width: "45%",
-						marginLeft: 10,
-						justifyContent: "space-between",
-					}}
-				>
+					},
+				]}
+			>
+				<View style={{ flexDirection: "row", height: "100%", alignItems: "center" }}>
 					<TouchableOpacity
-						onPress={openProfile}
+						style={{ width: "12%" }}
+						name={"backButton"}
+						onPress={() => {
+							navigation.goBack();
+						}}
 					>
-						<GradientText
-							text={otherUser.name}
-							style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", paddingLeft: 0 }}
-						/>
-						<Text style={{ fontSize: 10, marginBottom: 10, color: colors.white }}>{"-"}</Text>
+						<Feather name="chevron-left" size={36} color="#4A4A4A" />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={openProfile}>
+						<View style={{ height: "100%", flexDirection: "row", alignItems: "center" }}>
+							<Image
+								style={{ resizeMode: "cover", aspectRatio: 2 / 3, height: "90%", borderRadius: 15 }}
+								source={{
+									uri: imageUri,
+								}}
+							/>
+							<View style={{ width: "2%" }} />
+							<View
+								style={{
+									flexDirection: "column",
+									width: "45%",
+									marginLeft: 10,
+									justifyContent: "flex-start",
+								}}
+							>
+								<GradientText
+									text={otherUser.name}
+									style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", paddingLeft: 0 }}
+								/>
+							</View>
+						</View>
 					</TouchableOpacity>
 				</View>
-				<TouchableOpacity 
-					style={{ paddingBottom: 16 }} 
-					name={"reportButton"} 
+				<TouchableOpacity
+					style={{ paddingBottom: 16 }}
+					name={"reportButton"}
 					onPress={() => {
 						setDeleteChatModal(true);
-					}}>
+					}}
+				>
 					<MaterialIcons name="block" size={32} color="#4A4A4A" />
 				</TouchableOpacity>
-				<View style={{paddingHorizontal: "2%"}}/>
-				<TouchableOpacity 
-					style={{ paddingBottom: 16 }} 
-					name={"reportButton"} 
+				<View style={{ paddingHorizontal: "2%" }} />
+				<TouchableOpacity
+					style={{ paddingBottom: 16 }}
+					name={"reportButton"}
 					onPress={() => {
 						setReportPage(true);
-					}}>
+					}}
+				>
 					<MaterialIcons name="outlined-flag" size={32} color="#4A4A4A" />
 				</TouchableOpacity>
 			</View>
-			{ lastMsgSender == "" && chatMessages.length == 0 ? 
-			(
+			{lastMsgSender == "" && chatMessages.length == 0 ? (
 				<View
 					style={{
-						position: "absolute",
-						top:0,
-						left:0,
-						right:0,
-						bottom:0,
-						justifyContent:"flex-end",
-						alignItems:"center",
+						position: "relative",
+						flex: 1,
+						// top: 0,
+						// left: 0,
+						// right: 0,
+						// bottom: 0,
+						justifyContent: "center",
+						alignItems: "center",
 					}}
 				>
 					<Image
 						blurRadius={20}
-						style={{ 
-							resizeMode: "cover", 
-							width:width, 
-							height: height*0.85,
-
+						style={{
+							minHeight: "100%",
+							minWidth: width,
+							resizeMode: "cover",
 						}}
 						source={{
 							uri: imageUri,
@@ -373,70 +362,91 @@ export default function Chat({ navigation, route }) {
 					<View
 						style={{
 							position: "absolute",
-							top:0,
-							left:0,
-							right:0,
-							bottom:0,
-							justifyContent:"center",
-							alignItems:"center",
+							width: width,
+							top: "40%",
+							// justifyContent: "center",
+							// alignItems: "center",
 						}}
 					>
-						<Text 
+						<Text
 							style={{
 								color: colors.white,
 								textAlign: "center",
-								fontSize: 14,
-								lineHeight: 15,
+								fontSize: Math.min(18, width * 0.04),
+								lineHeight: Math.min(18, width * 0.04) + 5,
 								letterSpacing: 1,
-								paddingHorizontal: 50,
+								paddingHorizontal: width * 0.125,
 							}}
 						>
-							Çekinme! O da senden mesaj bekliyor. Sohbeti başlatmak için bir şaka patlatabilir ya da klasiklerden giderek selam yazabilirsin.
+							Çekinme! O da senden mesaj bekliyor. Sohbeti başlatmak için bir şaka patlatabilir ya
+							da klasiklerden giderek selam yazabilirsin.
 						</Text>
 					</View>
+					<View
+						style={{
+							position: "absolute",
+							width: width,
+							bottom: 20,
+							paddingHorizontal: 10,
+						}}
+					>
+						<InputBox
+							myUserID={myUserID}
+							chatID={chatID}
+							otherUser={otherUser}
+							lastMsgSender={lastMsgSender}
+							unreadMsg={unreadMsg}
+						/>
+					</View>
 				</View>
-			) 
-			
-			: 
-			
-			(
-				null
-			)
-			
-			}
-			<View
-				style={{
-					height: height - 100,
-					paddingTop: 105,
-				}}
-			>
-				<FlatList
-					style={{
-						flexDirection: "column",
-						borderRadius: 8,
-					}}
-					data={chatMessages}
-					renderItem={({ item, index }) => {
-						return <ChatMsg data={item} myUserID={myUserID} />;
-					}}
-					inverted
-				/>
-			</View>
-			<View>
-				<InputBox myUserID={myUserID} chatID={chatID} otherUser={otherUser} lastMsgSender={lastMsgSender} unreadMsg={unreadMsg}/>
-			</View>
+			) : (
+				<View style={{ flex: 1 }}>
+					<View
+						style={{
+							width: width,
+							flex: 1,
+						}}
+					>
+						<FlatList
+							showsVerticalScrollIndicator={false}
+							contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 20 }}
+							data={chatMessages}
+							renderItem={({ item, index }) => {
+								return <ChatMsg data={item} myUserID={myUserID} />;
+							}}
+							inverted
+						/>
+					</View>
+					<View
+						style={{
+							position: "relative",
+							width: width,
+							paddingVertical: 20,
+							paddingHorizontal: 10,
+						}}
+					>
+						<InputBox
+							myUserID={myUserID}
+							chatID={chatID}
+							otherUser={otherUser}
+							lastMsgSender={lastMsgSender}
+							unreadMsg={unreadMsg}
+						/>
+					</View>
+				</View>
+			)}
 			{Platform.OS == "ios" ? <KeyboardSpacer /> : null}
 			{/* Report page custom modal */}
 			<CustomModal
-				visible= {reportPage}
-				dismiss={()=>{
+				visible={reportPage}
+				dismiss={() => {
 					setReportPage(false);
 				}}
 			>
 				<View
 					style={{
-						maxWidth: width* 0.9,
-						height: height *0.9,
+						maxWidth: width * 0.9,
+						height: height * 0.9,
 						backgroundColor: colors.white,
 						borderRadius: 10,
 						alignItems: "center",
@@ -453,12 +463,12 @@ export default function Chat({ navigation, route }) {
 							padding: 16,
 						}}
 					>
-					    <Text style = {{fontSize: 22, color: colors.medium_gray}}>İptal</Text>
+						<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
 					</TouchableOpacity>
 					<View
 						style={{
-							width:"100%",
-							marginTop:20,
+							width: "100%",
+							marginTop: 20,
 						}}
 					>
 						<View
@@ -466,46 +476,62 @@ export default function Chat({ navigation, route }) {
 								flexDirection: "row",
 								width: "100%",
 								alignContent: "center",
-                      			justifyContent: "center",      
+								justifyContent: "center",
 								marginVertical: 10,
 							}}
 						>
-                    		<Image source={require("../../assets/report.png")} />	
+							<Image source={require("../../assets/report.png")} />
 						</View>
 						<View
-                    		style = {{
-                      		flexDirection: "row",
-                      		width: "100%",
-                      		alignItems: "center",
-                      		justifyContent: "center",
-                      		marginVertical: 5,
-                    		}}
-                  		>
-                    		<Text style = {{ color: colors.black, fontSize: 20, lineHeight: 24,fontFamily: "PoppinsSemiBold", fontWeight: "500"}}>
-                      			Bildirmek istiyor musun ?
-                    		</Text>
-                  		</View>
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+								marginVertical: 5,
+							}}
+						>
+							<Text
+								style={{
+									color: colors.black,
+									fontSize: 20,
+									lineHeight: 24,
+									fontFamily: "PoppinsSemiBold",
+									fontWeight: "500",
+								}}
+							>
+								Bildirmek istiyor musun ?
+							</Text>
+						</View>
 						<View
-                    		style = {{
-                      		flexDirection: "row",
-                      		width: "100%",
-                      		alignItems: "center",
-                      		justifyContent: "center",
-                      		marginVertical: 10,
-                    		}}
-                  		>
-                    		<Text style = {{ color: colors.dark_gray, fontSize: 13, fontFamily: "Poppins", fontWeight: "400", textAlign: "center"}}>
-                      			{otherUser.name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz. 
-                    		</Text>
-                		</View>
+							style={{
+								flexDirection: "row",
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+								marginVertical: 10,
+							}}
+						>
+							<Text
+								style={{
+									color: colors.dark_gray,
+									fontSize: 13,
+									fontFamily: "Poppins",
+									fontWeight: "400",
+									textAlign: "center",
+								}}
+							>
+								{otherUser.name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz.
+							</Text>
+						</View>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==1 ? setChosenReport(0) :setChosenReport(1);
+							onPress={() => {
+								chosenReport == 1 ? setChosenReport(0) : setChosenReport(1);
 							}}
 							style={{
 								maxWidth: "100%",
 								maxHeight: "20%",
-								aspectRatio: 22/2,
+								aspectRatio: 22 / 2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -513,30 +539,27 @@ export default function Chat({ navigation, route }) {
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 1 ? (
-								
 								<GradientText
 									text={"Sahte Profil/Spam"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Sahte Profil/Spam
 								</Text>
 							)}
-							
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==2 ? setChosenReport(0) :setChosenReport(2);
+							onPress={() => {
+								chosenReport == 2 ? setChosenReport(0) : setChosenReport(2);
 							}}
 							style={{
 								maxWidth: "100%",
 								maxHeight: "20%",
-								aspectRatio: 22/2,
+								aspectRatio: 22 / 2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -544,29 +567,25 @@ export default function Chat({ navigation, route }) {
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 2 ? (
-								
 								<GradientText
 									text={"Uygunsuz Mesaj"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
-									Uygunsuz Mesaj
-								</Text>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Uygunsuz Mesaj</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==3 ? setChosenReport(0) :setChosenReport(3);
+							onPress={() => {
+								chosenReport == 3 ? setChosenReport(0) : setChosenReport(3);
 							}}
 							style={{
 								maxWidth: "100%",
 								maxHeight: "20%",
-								aspectRatio: 22/2,
+								aspectRatio: 22 / 2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -574,29 +593,27 @@ export default function Chat({ navigation, route }) {
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 3 ? (
-								
 								<GradientText
 									text={"Uygunsuz Fotoğraf"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Uygunsuz Fotoğraf
 								</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==4 ? setChosenReport(0) :setChosenReport(4);
+							onPress={() => {
+								chosenReport == 4 ? setChosenReport(0) : setChosenReport(4);
 							}}
 							style={{
 								maxWidth: "100%",
 								maxHeight: "20%",
-								aspectRatio: 22/2,
+								aspectRatio: 22 / 2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -604,29 +621,27 @@ export default function Chat({ navigation, route }) {
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 4 ? (
-								
 								<GradientText
 									text={"Uygunsuz Biyografi"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Uygunsuz Biyografi
 								</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==5 ? setChosenReport(0) :setChosenReport(5);
+							onPress={() => {
+								chosenReport == 5 ? setChosenReport(0) : setChosenReport(5);
 							}}
 							style={{
 								maxWidth: "100%",
 								maxHeight: "20%",
-								aspectRatio: 22/2,
+								aspectRatio: 22 / 2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -637,25 +652,24 @@ export default function Chat({ navigation, route }) {
 							}}
 						>
 							{chosenReport == 5 ? (
-								
 								<GradientText
 									text={"Reşit olmayan kullanıcı"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
 									Reşit Olmayan Kullanıcı
 								</Text>
 							)}
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={()=> {
-								chosenReport==6 ? setChosenReport(0) :setChosenReport(6);
+							onPress={() => {
+								chosenReport == 6 ? setChosenReport(0) : setChosenReport(6);
 							}}
 							style={{
 								maxWidth: "100%",
 								maxHeight: "20%",
-								aspectRatio: 22/2,
+								aspectRatio: 22 / 2,
 								borderRadius: 12,
 								overflow: "hidden",
 								justifyContent: "center",
@@ -663,63 +677,65 @@ export default function Chat({ navigation, route }) {
 								borderColor: colors.black,
 								borderWidth: 1,
 								marginBottom: 10,
-
 							}}
 						>
 							{chosenReport == 6 ? (
-								
 								<GradientText
 									text={"Diğer"}
 									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
 								/>
-							):(
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5}}>
-									Diğer
-								</Text>
+							) : (
+								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Diğer</Text>
 							)}
 						</TouchableOpacity>
-						
+
 						<TouchableOpacity
-					      	onPress={reportProfile}
-					      	style={{
-						      	maxWidth: "100%",
-					      		maxHeight: "20%",
-						      	aspectRatio: 22 / 2,
-						      	borderRadius: 12,
-						      	overflow: "hidden",
-						      	marginTop: 20,
+							onPress={reportProfile}
+							style={{
+								maxWidth: "100%",
+								maxHeight: "20%",
+								aspectRatio: 22 / 2,
+								borderRadius: 12,
+								overflow: "hidden",
+								marginTop: 20,
 								justifyContent: "center",
-								alignItems:"center",
-					      	}}
-			      		>
-					      	<Gradient
-						      	style={{
-							      	justifyContent: "center",
-							      	alignItems: "center",
-							      	width: "100%",
-						      	}}
-					      	>
-						      	<Text style={{ color: colors.white, fontSize: 22, fontFamily: "PoppinsSemiBold", padding: 10 }}>
-							    	Bildir
-						      	</Text>
-					      	</Gradient>
-				      	</TouchableOpacity>
+								alignItems: "center",
+							}}
+						>
+							<Gradient
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+									width: "100%",
+								}}
+							>
+								<Text
+									style={{
+										color: colors.white,
+										fontSize: 22,
+										fontFamily: "PoppinsSemiBold",
+										padding: 10,
+									}}
+								>
+									Bildir
+								</Text>
+							</Gradient>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</CustomModal>
 			{/* Report page custom modal */}
-			
 
 			{/* Unmatch page custom modal */}
 			<CustomModal
-				visible= {deleteChatModal}
-				dismiss={()=>{
+				visible={deleteChatModal}
+				dismiss={() => {
 					setDeleteChatModal(false);
 				}}
 			>
 				<View
 					style={{
-						maxWidth: width* 0.84,
+						maxWidth: width * 0.84,
 						backgroundColor: colors.white,
 						borderRadius: 10,
 						alignItems: "center",
@@ -733,10 +749,10 @@ export default function Chat({ navigation, route }) {
 						style={{
 							position: "absolute",
 							alignSelf: "flex-end",
-							padding:16,
+							padding: 16,
 						}}
 					>
-						<Text style = {{fontSize: 22, color: colors.medium_gray}}>İptal</Text>
+						<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
 					</TouchableOpacity>
 					<View
 						style={{
@@ -764,10 +780,17 @@ export default function Chat({ navigation, route }) {
 								marginVertical: 10,
 							}}
 						>
-							<Text style = {{ color: colors.black, fontSize: 26, lineHeight: 36,fontFamily: "PoppinsSemiBold", fontWeight: "800"}}>
-                      			Emin misin ?
-
-                    		</Text>
+							<Text
+								style={{
+									color: colors.black,
+									fontSize: 26,
+									lineHeight: 36,
+									fontFamily: "PoppinsSemiBold",
+									fontWeight: "800",
+								}}
+							>
+								Emin misin ?
+							</Text>
 						</View>
 						<View
 							style={{
@@ -778,11 +801,20 @@ export default function Chat({ navigation, route }) {
 								marginVertical: 10,
 							}}
 						>
-							<Text style = {{ color: colors.dark_gray, fontSize: 13, fontFamily: "Poppins", fontWeight: "400", textAlign: "center"}}>
-                      			Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.
-                    		</Text>
+							<Text
+								style={{
+									color: colors.dark_gray,
+									fontSize: 13,
+									fontFamily: "Poppins",
+									fontWeight: "400",
+									textAlign: "center",
+								}}
+							>
+								Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj
+								atamazsın.
+							</Text>
 						</View>
-					</View>	
+					</View>
 					<TouchableOpacity
 						onPress={deleteChat}
 						style={{
@@ -796,69 +828,60 @@ export default function Chat({ navigation, route }) {
 						}}
 					>
 						<Gradient
-						    style={{
-							    justifyContent: "center",
-							    alignItems: "center",
-							    width: "100%",
-							    height: "100%",
-						    }}
-					    >
-						    <Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
-							    Eşleşmeyi Kaldır
-						    </Text>
-					    </Gradient>
-					</TouchableOpacity>				
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+								Eşleşmeyi Kaldır
+							</Text>
+						</Gradient>
+					</TouchableOpacity>
 				</View>
 			</CustomModal>
 			{/* Unmatvh page custom modal */}
 
 			{/* Profil page custom modal */}
-			{profilePage ?  
-				(
-					<View 
+			{profilePage ? (
+				<View
+					style={{
+						position: "absolute",
+						height: height,
+						width: width,
+						zIndex: 2,
+					}}
+				>
+					<View
 						style={{
-							position:"absolute",
+							position: "absolute",
 							height: height,
 							width: width,
-							zIndex: 2,
+							zIndex: 3,
+							backgroundColor: colors.dark_gray,
+							opacity: 0.5,
+						}}
+					/>
+
+					<View
+						style={{
+							position: "absolute",
+							zIndex: 4,
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: height * 0.06,
+							alignItems: "center",
+							justifyContent: "center",
 						}}
 					>
-						<View
-							style={{
-								position: "absolute",
-								height: height,
-								width: width,
-								zIndex: 3,
-								backgroundColor: colors.dark_gray,
-								opacity: 0.5,
-							}}
-						/>
-
-						<View
-							style={{
-								position: "absolute",
-								zIndex: 4,
-								top:0,
-								left: 0,
-								right:0,
-								bottom: height *0.06,
-								alignItems: "center",
-								justifyContent: "center",
-							}}
-						>
-							<ChatProfile data = {cardData} close = {closeProfile}/>
-						</View>
-
+						<ChatProfile data={cardData} close={closeProfile} />
 					</View>
-					
-				)
-				:
-				(
-					null
-				)
+				</View>
+			) : null}
 
-			}
-			
 			{/* Profil page custom modal */}
 		</View>
 	);
@@ -872,7 +895,7 @@ const styles = StyleSheet.create({
 		elevation: 20,
 		flexDirection: "row",
 		alignItems: "flex-end",
-		paddingLeft: 10,
+		paddingHorizontal: 10,
 		paddingBottom: 10,
 	},
 	buttonContainer: {

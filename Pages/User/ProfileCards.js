@@ -28,46 +28,23 @@ export default function ProfileCards({ navigation, route }) {
 	const [isLoading, setIsLoading] = React.useState(true);
 	// const [peopleList, setPeopleList] = React.useState(route.params.list);
 	const [peopleList, setPeopleList] = React.useState([]);
-	const popupVisible = useSharedValue(false);
+	const superLikeEndedPopup = useSharedValue(false);
 	const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
+	const [likeEndedModal, setLikeEndedModal] = React.useState(false);
+	const [endOfListModal, setEndOfListModal] = React.useState(false);
 
 	const [myProfilePicture, setMyProfilePicture] = React.useState();
-
-	React.useEffect(async () => {
-		try {
-			let abortController = new AbortController();
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const userID = userData.UserId.toString();
-			const myToken = userData.sesToken;
-
-			await axios
-				.post(url + "/getProfilePic", { UserId: userID }, { headers: { "access-token": myToken } })
-				.then((res) => {
-					//setPeopleList(res.data);
-					//console.log(res.data);
-					//console.log(res.data[0].PhotoLink);
-					setMyProfilePicture(res.data[0].PhotoLink);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		} catch (error) {
-			console.log(error);
-		}
-	}, []);
-
 	const [matchPage, setMatchPage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
 
-
 	const [name, setName] = React.useState("");
-	const [firstImg, setFirstImg ] = React.useState("");
+	const [firstImg, setFirstImg] = React.useState("");
 	const [secondImg, setSecondImg] = React.useState("");
 
 	const showMatchScreen = (otherName, otherPicture, myPicture) => {
 		setMatchPage(true);
+		// matchPopup.value = true;
 		setName(otherName);
 		setFirstImg(otherPicture);
 		setSecondImg(myPicture);
@@ -84,9 +61,9 @@ export default function ProfileCards({ navigation, route }) {
 		navigation.replace("MainScreen", { screen: "Mesajlar" });
 	};
 
-	
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
+	const likeEnded = useSharedValue(false);
 
 	const derivedText = useDerivedValue(
 		() =>
@@ -100,13 +77,32 @@ export default function ProfileCards({ navigation, route }) {
 	// const peopleList = route.params.list;
 	const { myID, sesToken } = route.params;
 
-	function handlePopupSubmit() {
-		console.log("super like popup submit...");
+	function likeEndedModalSubmit() {
+		console.log("like ended modal submit...");
 	}
 
 	const hour = 15;
 	const minute = 20;
 	const second = 51; // TODO: get this data from database
+
+	React.useEffect(async () => {
+		try {
+			await axios
+				.post(
+					url + "/getProfilePic",
+					{ UserId: route.params.myID },
+					{ headers: { "access-token": route.params.sesToken } }
+				)
+				.then((res) => {
+					setMyProfilePicture(res.data[0].PhotoLink);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} catch (error) {
+			console.log(error);
+		}
+	}, []);
 
 	React.useEffect(() => {
 		const { fromEvent = false } = route.params;
@@ -142,6 +138,10 @@ export default function ProfileCards({ navigation, route }) {
 		}
 	}, []);
 
+	React.useEffect(() => {
+		if (peopleList.length > 0 && indexOfFrontCard == peopleList.length) setEndOfListModal(true);
+	}, [indexOfFrontCard]);
+
 	{
 		isLoading && (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
@@ -153,7 +153,7 @@ export default function ProfileCards({ navigation, route }) {
 
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" translucent={false} backgroundColor="#F4F3F3" />
+			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
 				name={"header"}
 				style={{
@@ -165,6 +165,12 @@ export default function ProfileCards({ navigation, route }) {
 					paddingHorizontal: 20,
 					alignItems: "center",
 					elevation: 10,
+					shadowOffset: {
+						width: 0,
+						height: 5,
+					},
+					shadowOpacity: 0.34,
+					shadowRadius: 6.27,
 				}}
 			>
 				<TouchableOpacity
@@ -204,7 +210,7 @@ export default function ProfileCards({ navigation, route }) {
 						index={peopleList.length - index - 1}
 						card={item}
 						backFace={backFace}
-						setPopupVisible={(val) => (popupVisible.value = val)}
+						setPopupVisible={(val) => (superLikeEndedPopup.value = val)}
 						numberOfSuperLikes={numberOfSuperLikes}
 						myID={myID}
 						sesToken={sesToken}
@@ -216,8 +222,12 @@ export default function ProfileCards({ navigation, route }) {
 						navigateFromCard={() => {
 							navigateFromCard();
 						}}
-						showMatchScreen={(otherName, otherPicture, myPicture)=>{
+						showMatchScreen={(otherName, otherPicture, myPicture) => {
 							showMatchScreen(otherName, otherPicture, myPicture);
+						}}
+						likeEnded={likeEnded}
+						showLikeEndedModal={() => {
+							setLikeEndedModal(true);
 						}}
 					/>
 				))}
@@ -226,23 +236,25 @@ export default function ProfileCards({ navigation, route }) {
 			<View
 				style={{
 					width: "100%",
+					position: "relative",
+					// top: 20,
 				}}
 			>
 				<ReText
 					text={derivedText}
 					style={{
 						textAlign: "center",
-						fontSize: width * 0.04,
+						fontSize: Math.min(width * 0.04, 24),
 						color: colors.medium_gray,
 						letterSpacing: 0.2,
 					}}
 				/>
 			</View>
 
-			<AnimatedModal
-				visible={popupVisible.value}
+			{/* <AnimatedModal
+				visible={superLikeEndedPopup.value}
 				dismiss={() => {
-					popupVisible.value = false;
+					superLikeEndedPopup.value = false;
 				}}
 				// style={{ position: "absolute" }}
 			>
@@ -260,7 +272,7 @@ export default function ProfileCards({ navigation, route }) {
 				>
 					<ReactNative.TouchableOpacity
 						onPress={() => {
-							popupVisible.value = false;
+							superLikeEndedPopup.value = false;
 						}}
 						style={{ position: "absolute", top: 15, right: 20 }}
 					>
@@ -328,15 +340,13 @@ export default function ProfileCards({ navigation, route }) {
 						</Gradient>
 					</ReactNative.TouchableOpacity>
 				</View>
-			</AnimatedModal>
-			
+			</AnimatedModal> */}
+
 			{/*Match Page Modal */}
 			<CustomModal
 				visible={matchPage}
-				onRequestClose={() => {
-					setMatchPage(false);
-				}}
-				onDismiss={() => {
+				dismiss={() => {
+					// matchPopup.value = false;
 					setMatchPage(false);
 				}}
 			>
@@ -427,14 +437,11 @@ export default function ProfileCards({ navigation, route }) {
 							“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 						</Text>
 
-						<TouchableOpacity
-							onPress={ () => {
+						<ReactNative.TouchableOpacity
+							onPress={async () => {
 								setMatchPage(false);
 								setIndexOfFrontCard(indexOfFrontCard + 1);
 								navigation.replace("MainScreen", { screen: "Mesajlar" });
-
-								setMatchPage(false);
-								//goToMsg();
 							}}
 							style={{
 								paddingTop: 10,
@@ -463,14 +470,16 @@ export default function ProfileCards({ navigation, route }) {
 									Mesaj Gönder
 								</Text>
 							</Gradient>
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							style={{
 								paddingTop: 5,
 							}}
-							onPress={ () => {
-								 setMatchPage(false);
+							onPress={async () => {
+								await setMatchPage(false);
 								setIndexOfFrontCard(indexOfFrontCard + 1);
+								// matchPopup.value = false;
+								//incrementIndex();
 							}}
 						>
 							<GradientText
@@ -483,13 +492,169 @@ export default function ProfileCards({ navigation, route }) {
 								}}
 								text={"Daha sonra"}
 							/>
-						</TouchableOpacity>
+						</ReactNative.TouchableOpacity>
 					</View>
 				</View>
 			</CustomModal>
 			{/* Match Page Modal */}
+
+			<CustomModal
+				visible={likeEndedModal}
+				dismiss={() => {
+					setLikeEndedModal(false);
+				}}
+			>
+				<View
+					style={{
+						width: width * 0.8,
+						aspectRatio: 1,
+						maxHeight: height * 0.5,
+						backgroundColor: "white",
+						borderRadius: 10,
+						alignItems: "center",
+						paddingVertical: 30,
+						paddingHorizontal: 40,
+					}}
+				>
+					{/* <ReactNative.TouchableOpacity
+						onPress={() => {
+							setLikeEndedModal(false);
+						}}
+						style={{ position: "absolute", top: 15, right: 20 }}
+					>
+						<Text
+							style={{
+								color: colors.medium_gray,
+								fontSize: 16,
+								fontWeight: "600",
+								letterSpacing: 0.5,
+							}}
+						>
+							Kapat
+						</Text>
+					</ReactNative.TouchableOpacity> */}
+					<Image
+						source={require("../../assets/superLikeFinished.png")}
+						style={{ height: "24%" }}
+						resizeMode={"contain"}
+					/>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.medium_gray,
+							fontSize: 16,
+						}}
+					>
+						Beğenme hakların bitti!{"\n"} Ama korkma gün içinde tekrar yenilecek
+					</Text>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.cool_gray,
+							fontSize: 16,
+						}}
+					>
+						Beğenme hakkın için kalan süre:{"\n"}
+						<Feather name="clock" size={16} color={colors.cool_gray} />
+						{hour} saat {minute} dakika {second} saniye
+					</Text>
+					<ReactNative.TouchableOpacity
+						onPress={() => {
+							setLikeEndedModal(false);
+						}}
+						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
+					>
+						<Gradient
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<Text
+								style={{
+									color: colors.white,
+									fontSize: 20,
+									fontFamily: "PoppinsSemiBold",
+									letterSpacing: 1,
+								}}
+							>
+								Devam Et
+							</Text>
+						</Gradient>
+					</ReactNative.TouchableOpacity>
+				</View>
+			</CustomModal>
+
+			<CustomModal
+				visible={endOfListModal}
+				dismiss={() => {
+					setEndOfListModal(false);
+				}}
+			>
+				<View
+					style={{
+						width: width * 0.8,
+						aspectRatio: 1,
+						maxHeight: height * 0.5,
+						backgroundColor: "white",
+						borderRadius: 10,
+						alignItems: "center",
+						paddingVertical: 30,
+						paddingHorizontal: 40,
+					}}
+				>
+					<Image
+						source={require("../../assets/sadFace.png")}
+						style={{ height: "24%" }}
+						resizeMode={"contain"}
+					/>
+					<Text
+						style={{
+							textAlign: "center",
+							marginTop: 20,
+							color: colors.medium_gray,
+							fontSize: 16,
+						}}
+					>
+						Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa
+						zamanda tekrar uğramayı unutma!
+					</Text>
+					<ReactNative.TouchableOpacity
+						onPress={() => {
+							navigation.replace("MainScreen", {
+								screen: "AnaSayfa",
+								params: { screen: "Home" },
+							});
+						}}
+						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
+					>
+						<Gradient
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<Text
+								style={{
+									color: colors.white,
+									fontSize: 20,
+									fontFamily: "PoppinsSemiBold",
+									letterSpacing: 1,
+								}}
+							>
+								Ana Sayfaya Dön
+							</Text>
+						</Gradient>
+					</ReactNative.TouchableOpacity>
+				</View>
+			</CustomModal>
 		</View>
-		
 	);
 }
 

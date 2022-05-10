@@ -98,10 +98,10 @@ export default function Profile({ route, navigation }) {
 			setMajor(data.Major == "null" ? "" : data.Major);
 			setReligion(data.Din == "null" ? "" : data.Din);
 
-			setSign(data.Burc == "null" ? signList[0] : signList[data.Burc])
-			setDiet(data.Beslenme == "null" ? dietList[0] : dietList[data.Beslenme])
-			setDrink(data.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Alkol])
-			setSmoke(data.Sigara == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Sigara])
+			setSign(data.Burc == "null" ? signList[0] : signList[data.Burc]);
+			setDiet(data.Beslenme == "null" ? dietList[0] : dietList[data.Beslenme]);
+			setDrink(data.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Alkol]);
+			setSmoke(data.Sigara == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Sigara]);
 
 			/*
 			setSign(getChoice(data.Burc, signList));
@@ -202,7 +202,7 @@ export default function Profile({ route, navigation }) {
 
 	return (
 		<View style={[commonStyles.Container, { alignItems: "center", backgroundColor: "#F4F3F3" }]}>
-			<StatusBar style="dark" translucent={false} backgroundColor={"#F4F3F3"} />
+			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 			<View
 				style={{
 					height: height * 0.08,
@@ -272,6 +272,7 @@ export default function Profile({ route, navigation }) {
 									invisibility: user.Invisible == "1" ? true : false,
 									campusGhost: user.BlockCampus == "1" ? true : false,
 									schoolLover: user.OnlyCampus == "1" ? true : false,
+									isFriendMode: user.matchMode == "1" ? true : false,
 									userID: user.UserId,
 									sesToken: user.sesToken,
 								});
@@ -325,7 +326,7 @@ export default function Profile({ route, navigation }) {
 			<KeyboardAvoidingView behavior={"padding"}>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
-					contentContainerStyle={{ width: width, paddingBottom: tabBarHeight * 2 }}
+					contentContainerStyle={{ width: width, paddingBottom: tabBarHeight }}
 					keyboardShouldPersistTaps="handled"
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>

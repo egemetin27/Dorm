@@ -29,19 +29,16 @@ const ChatMsg = (props) => {
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
 						style={{
-							borderRadius: 18,
-							borderBottomStartRadius: 0,
-							padding: 10,
-							marginLeft: 50,
-							marginRight: 0,
-							overflow: "hidden",
+							borderRadius: 20,
+							borderBottomRightRadius: 0,
+							paddingHorizontal: 12,
+							paddingVertical: 10,
 							alignSelf: "flex-end",
 						}}
 					>
-						<Text style={{ color: "white", fontFamily: "Poppins"}}>{props.data.text}</Text>
-						
+						<Text style={{ color: "white", fontFamily: "Poppins" }}>{props.data.text}</Text>
 					</LinearGradient>
-					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8, marginRight: 8, }}>
+					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8, marginRight: 8 }}>
 						{moment(props.data.updatedAt).fromNow()}
 					</Text>
 				</View>
@@ -51,14 +48,11 @@ const ChatMsg = (props) => {
 						style={[
 							styles.messageBox,
 							{
-								marginLeft: 0,
-								marginRight: 50,
-								borderTopLeftRadius: 20,
-								borderTopRightRadius: 20,
+								borderRadius: 20,
 								borderBottomLeftRadius: 0,
-								borderBottomRightRadius: 20,
+								paddingHorizontal: 12,
+								paddingVertical: 10,
 								alignSelf: "flex-start",
-								padding: 10,
 								backgroundColor: colors.white,
 							},
 						]}
@@ -67,7 +61,6 @@ const ChatMsg = (props) => {
 						<Text style={styles.message}>{props.data.text}</Text>
 					</View>
 					<Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
-
 				</View>
 			)}
 		</View>
@@ -78,7 +71,7 @@ export default ChatMsg;
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 5,
+		paddingVertical: 5,
 	},
 	messageBox: {
 		borderRadius: 5,
@@ -95,6 +88,6 @@ const styles = StyleSheet.create({
 		fontSize: 8,
 		alignSelf: "flex-start",
 		color: "grey",
-		fontFamily: "Poppins"
+		fontFamily: "Poppins",
 	},
 });
