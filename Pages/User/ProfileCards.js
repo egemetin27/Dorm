@@ -329,7 +329,7 @@ export default function ProfileCards({ navigation, route }) {
 					</ReactNative.TouchableOpacity>
 				</View>
 			</AnimatedModal>
-
+			
 			{/*Match Page Modal */}
 			<CustomModal
 				visible={matchPage}
@@ -428,9 +428,12 @@ export default function ProfileCards({ navigation, route }) {
 						</Text>
 
 						<TouchableOpacity
-							onPress={() => {
+							onPress={ () => {
 								setMatchPage(false);
-								//incrementIndex();
+								setIndexOfFrontCard(indexOfFrontCard + 1);
+								navigation.replace("MainScreen", { screen: "Mesajlar" });
+
+								setMatchPage(false);
 								//goToMsg();
 							}}
 							style={{
@@ -465,9 +468,9 @@ export default function ProfileCards({ navigation, route }) {
 							style={{
 								paddingTop: 5,
 							}}
-							onPress={async () => {
-								await setMatchPage(false);
-								//incrementIndex();
+							onPress={ () => {
+								 setMatchPage(false);
+								setIndexOfFrontCard(indexOfFrontCard + 1);
 							}}
 						>
 							<GradientText
