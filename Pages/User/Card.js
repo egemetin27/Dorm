@@ -120,20 +120,20 @@ export default Card = ({
 
 	const sendNotification = async () => {
 		try {
-			// const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
-			// let response = fetch("https://exp.host/--/api/v2/push/send", {
-			// 	method: "POST",
-			// 	headers: {
-			// 		Accept: "application/json",
-			// 		"Content-Type": "application/json",
-			// 	},
-			// 	body: JSON.stringify({
-			// 		to: userData.data.getMsgUser.pushToken,
-			// 		sound: "default",
-			// 		title: "Dorm",
-			// 		body: "Yeni bir eşleşmeniz var!",
-			// 	}),
-			// });
+			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
+			let response = fetch("https://exp.host/--/api/v2/push/send", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					to: userData.data.getMsgUser.pushToken,
+					sound: "default",
+					title: "Dorm",
+					body: "Yeni bir eşleşmeniz var!",
+				}),
+			});
 		} catch (e) {
 			console.log(e);
 		}
@@ -166,9 +166,11 @@ export default Card = ({
 						likeEnded.value = true;
 					}
 					if (res.data.message == "Match") {
+						
 						console.log("send notification.");
 						sendNotification();
-						setMatchPage(true);
+						showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
+						//setMatchPage(true);
 					}
 					incrementIndex();
 				})
@@ -416,8 +418,8 @@ export default Card = ({
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
 											onPress={() => {
-												showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
-												//setReportPage(true);
+												//showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
+												setReportPage(true);
 												//setMatchPage(true);
 											}}
 										>

@@ -439,7 +439,7 @@ export default function ProfileCards({ navigation, route }) {
 
 						<ReactNative.TouchableOpacity
 							onPress={async () => {
-								setMatchPage(false);
+								await setMatchPage(false);
 								setIndexOfFrontCard(indexOfFrontCard + 1);
 								navigation.replace("MainScreen", { screen: "Mesajlar" });
 							}}
