@@ -6,6 +6,8 @@ import awsmobile from "./src/aws-exports";
 
 const { width, height } = Dimensions.get("window");
 
+Amplify.configure(awsmobile);
+
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";

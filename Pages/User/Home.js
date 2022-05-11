@@ -28,14 +28,9 @@ import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { height, width } = Dimensions.get("window");
 
-import { API, graphqlOperation } from "aws-amplify";
-import { getMsgUser } from "../../src/graphql/queries";
-import { createMsgUser, updateMsgUser } from "../../src/graphql/mutations";
-import { Constants } from "@aws-amplify/core";
 import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { color } from "react-native-reanimated";
 
 const CategoryList = [
 	{
@@ -473,26 +468,16 @@ export default function MainPage({ navigation }) {
 		setMyID(userID);
 		setSesToken(myToken);
 
-		 
-
-
-		if (filterCinsiyet == [0,0,0]) {
-			
+		if (filterCinsiyet == [0, 0, 0]) {
 		}
-		if (filterEgsersiz == [0,0,0]) {
-			
+		if (filterEgsersiz == [0, 0, 0]) {
 		}
-		if (filterAlkol == [0,0,0]) {
-			
+		if (filterAlkol == [0, 0, 0]) {
 		}
-		if (filterSigara == [0,0,0]) {
-			
+		if (filterSigara == [0, 0, 0]) {
 		}
-		if (filterYemek == [0,0,0,0,0]) {
-			
+		if (filterYemek == [0, 0, 0, 0, 0]) {
 		}
-
-		
 
 		/*
 		const [minAge, setMinAge] = React.useState(18);
@@ -593,44 +578,8 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
-		const token = await registerForPushNotificationAsync();
-		/*
-		console.log("-----------------");
-		console.log(token);
-		console.log("-----------------");
-		*/
-		const userName = userData.Name;
-		async function fetchUser() {
-			const newUser = {
-				id: userID,
-				name: userName,
-				pushToken: null,
-			};
-
-			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
-			if (userData.data.getMsgUser) {
-				console.log("User is already registered in database");
-
-				await API.graphql(
-					graphqlOperation(updateMsgUser, {
-						input: { id: userID, name: userName, pushToken: token },
-					})
-				);
-
-				return;
-			} else {
-				console.log("User does not exists");
-			}
-
-			console.log(newUser);
-			await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
-
-			console.log("New user created");
-		}
-
 		try {
 			await prepare();
-			await fetchUser();
 		} catch (err) {
 			console.log(err);
 		} finally {
