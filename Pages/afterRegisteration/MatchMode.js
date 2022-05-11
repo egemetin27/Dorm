@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 
-export default Interested = ({ value, setValue }) => {
+export default MatchMode = ({ value, setValue }) => {
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
@@ -13,7 +13,7 @@ export default Interested = ({ value, setValue }) => {
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
 				<GradientText
-					text={"İlgi duyduğum"}
+					text={"Ne Arıyorum"}
 					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
 				/>
 			</View>
@@ -36,17 +36,16 @@ export default Interested = ({ value, setValue }) => {
 						<Text
 							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
 						>
-							Kadın
+							Flört
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
-						text={"Kadın"}
+						text={"Flört"}
 						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
-
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
 				onPress={() => {
@@ -66,50 +65,16 @@ export default Interested = ({ value, setValue }) => {
 						<Text
 							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
 						>
-							Erkek
+							Arkadaş
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
-						text={"Erkek"}
+						text={"Arkadaş"}
 						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}
 			</TouchableOpacity>
-
-			<TouchableOpacity
-				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
-				onPress={() => {
-					setValue(3);
-				}}
-			>
-				{value == 3 ? (
-					<Gradient
-						style={{
-							borderRadius: 8,
-							justifyContent: "center",
-							alignItems: "center",
-							width: "100%",
-							height: "100%",
-						}}
-					>
-						<Text
-							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
-						>
-							Herkes
-						</Text>
-					</Gradient>
-				) : (
-					<GradientText
-						text={"Herkes"}
-						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
-					/>
-				)}
-			</TouchableOpacity>
-
-			<Text style={{ color: "gray", fontSize: 15, letterSpacing: 0.6, marginTop: 20 }}>
-				Seçimini daha sonra değiştirebilirsin
-			</Text>
 		</View>
 	);
 };

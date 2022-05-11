@@ -4,22 +4,27 @@ import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
 
-Amplify.configure(awsmobile);
-
 const { width, height } = Dimensions.get("window");
+
+Amplify.configure(awsmobile);
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { red } from "react-native-redash";
-import { colors } from "./visualComponents/colors";
+import MatchMode from "./Pages/afterRegisteration/MatchMode";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
-
-	return <SafeAreaProvider style ={{flex: 1}}>
+	return (
+		<SafeAreaProvider style={{ flex: 1 }}>
 			<Stack />
 		</SafeAreaProvider>
+	);
+	// return (
+	// 	<GestureHandlerRootView style={{ flex: 1 }}>
+	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
+	// 	</GestureHandlerRootView>
+	// );
 	// return <Temp route={{ params: {} }} />;
 }
 

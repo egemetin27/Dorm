@@ -28,14 +28,9 @@ import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { height, width } = Dimensions.get("window");
 
-import { API, graphqlOperation } from "aws-amplify";
-import { getMsgUser } from "../../src/graphql/queries";
-import { createMsgUser, updateMsgUser } from "../../src/graphql/mutations";
-import { Constants } from "@aws-amplify/core";
 import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { color } from "react-native-reanimated";
 
 const CategoryList = [
 	{
@@ -408,6 +403,7 @@ export default function MainPage({ navigation }) {
 	const [peopleList, setPeopleList] = React.useState([]);
 	const [myID, setMyID] = React.useState(null);
 	const [sesToken, setSesToken] = React.useState("");
+	const [matchMode, setMatchMode] = React.useState(0);
 	const eventsRef = React.useRef();
 
 	//Filtre Modal
@@ -472,26 +468,16 @@ export default function MainPage({ navigation }) {
 		setMyID(userID);
 		setSesToken(myToken);
 
-		 
-
-
-		if (filterCinsiyet == [0,0,0]) {
-			
+		if (filterCinsiyet == [0, 0, 0]) {
 		}
-		if (filterEgsersiz == [0,0,0]) {
-			
+		if (filterEgsersiz == [0, 0, 0]) {
 		}
-		if (filterAlkol == [0,0,0]) {
-			
+		if (filterAlkol == [0, 0, 0]) {
 		}
-		if (filterSigara == [0,0,0]) {
-			
+		if (filterSigara == [0, 0, 0]) {
 		}
-		if (filterYemek == [0,0,0,0,0]) {
-			
+		if (filterYemek == [0, 0, 0, 0, 0]) {
 		}
-
-		
 
 		/*
 		const [minAge, setMinAge] = React.useState(18);
@@ -554,8 +540,10 @@ export default function MainPage({ navigation }) {
 		const userData = JSON.parse(userDataStr);
 		const userID = userData.UserId.toString();
 		const myToken = userData.sesToken;
+		const myMode = userData.matchMode;
 		setMyID(userID);
 		setSesToken(myToken);
+		setMatchMode(myMode);
 
 		async function prepare() {
 			await axios
@@ -590,44 +578,8 @@ export default function MainPage({ navigation }) {
 				});
 		}
 
-		const token = await registerForPushNotificationAsync();
-		/*
-		console.log("-----------------");
-		console.log(token);
-		console.log("-----------------");
-		*/
-		const userName = userData.Name;
-		async function fetchUser() {
-			const newUser = {
-				id: userID,
-				name: userName,
-				pushToken: null,
-			};
-
-			const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
-			if (userData.data.getMsgUser) {
-				console.log("User is already registered in database");
-
-				await API.graphql(
-					graphqlOperation(updateMsgUser, {
-						input: { id: userID, name: userName, pushToken: token },
-					})
-				);
-
-				return;
-			} else {
-				console.log("User does not exists");
-			}
-
-			console.log(newUser);
-			await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
-
-			console.log("New user created");
-		}
-
 		try {
 			await prepare();
-			await fetchUser();
 		} catch (err) {
 			console.log(err);
 		} finally {
@@ -667,7 +619,7 @@ export default function MainPage({ navigation }) {
 		console.log("");
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
-				<StatusBar style="dark" />
+				<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
@@ -678,7 +630,6 @@ export default function MainPage({ navigation }) {
 		<View style={[commonStyles.Container, { justifyContent: "space-between" }]}>
 			<StatusBar
 				style="dark"
-				translucent={false}
 				backgroundColor={"#F4F3F3"}
 				// hidden={Platform.OS == "ios"}
 			/>
@@ -689,7 +640,7 @@ export default function MainPage({ navigation }) {
 				<GradientText
 					text={"Kişiler"}
 					style={{
-						fontSize: Math.min(height * 0.035, 32),
+						fontSize: Math.min(height * 0.035, 100),
 						fontFamily: "NowBold",
 						letterSpacing: 1.2,
 						marginLeft: 20,
@@ -737,7 +688,7 @@ export default function MainPage({ navigation }) {
 									navigation.replace("ProfileCards", {
 										idx: idx,
 										list: peopleList,
-										// list: peopleList.slice(0, 10),
+										matchMode: matchMode,
 										myID: myID,
 										sesToken: sesToken,
 									});

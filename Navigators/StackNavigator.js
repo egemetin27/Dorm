@@ -15,6 +15,11 @@ import { loadAsync } from "expo-font";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { API, graphqlOperation } from "aws-amplify";
+import { getMsgUser } from "../src/graphql/queries";
+import { createMsgUser, updateMsgUser } from "../src/graphql/mutations";
+import * as Notifications from "expo-notifications";
+
 import { colors, GradientText } from "../visualComponents/colors";
 
 // AUTH PAGES
@@ -77,13 +82,19 @@ function MainScreen({ route, navigation }) {
 	}, [route]);
 
 	return (
-		<View style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}>
+		<View
+			style={{
+				flex: 1,
+				paddingTop: insets.top,
+				backgroundColor: colors.backgroundColor,
+			}}
+		>
 			<Tab.Navigator
 				backBehavior="initialRoute"
 				screenOptions={{
 					tabBarStyle: {
-						height: height * 0.08,
-						paddingBottom: height * 0.008,
+						height: height * 0.08 + insets.bottom,
+						paddingBottom: height * 0.008 + insets.bottom,
 						position: "relative",
 					},
 					headerShown: false,
@@ -236,6 +247,62 @@ function MainScreen({ route, navigation }) {
 
 const Stack = createNativeStackNavigator();
 
+async function registerForPushNotificationAsync() {
+	let token;
+	const { status: existingStatus } = await Notifications.getPermissionsAsync();
+	let finalStatus = existingStatus;
+	console.log(existingStatus);
+	console.log(finalStatus);
+	if (existingStatus != "granted") {
+		const { status } = await Notifications.requestPermissionsAsync();
+		finalStatus = status;
+	}
+	if (finalStatus != "granted") {
+		return null;
+	}
+	token = (await Notifications.getExpoPushTokenAsync()).data;
+	console.log(token);
+
+	if (Platform.OS == "android") {
+		Notifications.setNotificationChannelAsync("default", {
+			name: "default",
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: "#FF231F7C",
+		});
+	}
+
+	return token;
+}
+
+async function fetchUser(userName, userID, token) {
+	const newUser = {
+		id: userID,
+		name: userName,
+		pushToken: null,
+	};
+
+	const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
+	if (userData.data.getMsgUser) {
+		console.log("User is already registered in database");
+
+		await API.graphql(
+			graphqlOperation(updateMsgUser, {
+				input: { id: userID, name: userName, pushToken: token },
+			})
+		);
+
+		return;
+	} else {
+		console.log("User does not exists");
+	}
+
+	console.log(newUser);
+	await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
+
+	console.log("New user created");
+}
+
 export default function StackNavigator() {
 	const [appIsReady, setAppIsReady] = React.useState(false); // is the background fetching done
 	const [isLoggedIn, setIsLoggedIn] = React.useState(false); // is the user logged in or not
@@ -265,8 +332,11 @@ export default function StackNavigator() {
 							});
 							return;
 						}
-
 						// If signed in
+
+						const token = await registerForPushNotificationAsync();
+						await fetchUser(res.data.Name, res.data.UserId, token);
+
 						const photoList = res.data.Photo.map((item) => {
 							return {
 								PhotoLink: item.PhotoLink,

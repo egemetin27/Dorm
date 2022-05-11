@@ -205,7 +205,7 @@ export default function PhotoUpload({ navigation, route }) {
 						);
 					})}
 					{photoList.length < 4 && (
-						<Pressable onPress={pickImage} style={{ height: "100%" }}>
+						<Pressable onPress={pickImage} style={{}}>
 							<View
 								style={[
 									commonStyles.photo,

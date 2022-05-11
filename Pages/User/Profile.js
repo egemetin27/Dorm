@@ -341,27 +341,43 @@ export default function Profile({ route, navigation }) {
 								}}
 								style={{ overflow: "visible", transform: [{ scale: 1.1 }] }}
 								width={width * 0.7}
-								data={PHOTO_LIST}
+								data={PHOTO_LIST.length < 4 ? [...PHOTO_LIST, "Add Photo"] : PHOTO_LIST}
 								renderItem={({ item }) => (
 									<View style={[styles.photo]}>
-										<Pressable
-											onPress={() => {
-												if (isEditable) {
-													setEditibility(false);
+										{item != "Add Photo" ? (
+											<Pressable
+												onPress={() => {
+													if (isEditable) {
+														setEditibility(false);
+														navigation.navigate("ProfilePhotos", {
+															photoList: PHOTO_LIST,
+															userID: userID,
+															sesToken: sesToken,
+														});
+													}
+												}}
+											>
+												<Image
+													style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
+													resizeMode="cover"
+													source={{ uri: item.PhotoLink }}
+												/>
+											</Pressable>
+										) : (
+											<Pressable
+												onPress={() => {
 													navigation.navigate("ProfilePhotos", {
 														photoList: PHOTO_LIST,
 														userID: userID,
 														sesToken: sesToken,
 													});
-												}
-											}}
-										>
-											<Image
-												style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
-												resizeMode="cover"
-												source={{ uri: item.PhotoLink }}
-											/>
-										</Pressable>
+												}}
+											>
+												<View style={styles.photo}>
+													<Feather name="plus" size={width / 8} color={colors.gray} />
+												</View>
+											</Pressable>
+										)}
 									</View>
 								)}
 							/>
@@ -1129,6 +1145,13 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignSelf: "center",
 		overflow: "hidden",
+		elevation: 3,
+		shadowOffset: {
+			width: 0,
+			height: 1,
+		},
+		shadowOpacity: 0.22,
+		shadowRadius: 2.22,
 	},
 	placeHolder: {
 		position: "absolute",
