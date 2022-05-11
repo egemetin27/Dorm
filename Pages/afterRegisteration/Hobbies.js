@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import * as SecureStore from "expo-secure-store";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
@@ -21,6 +22,7 @@ import { AuthContext } from "../../nonVisualComponents/Context";
 const { height, width } = Dimensions.get("window");
 
 export default function Hobbies({ navigation, route }) {
+	const insets = useSafeAreaInsets()
 	const [hobbies, setHobbies] = React.useState(
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
@@ -145,8 +147,8 @@ export default function Hobbies({ navigation, route }) {
 	];
 
 	return (
-		<View style={commonStyles.Container}>
-			<StatusBar style="dark" translucent={false} backgroundColor="#F4F3F3" />
+		<View style={[commonStyles.Container, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
 				style={{
 					justifyContent: "space-between",

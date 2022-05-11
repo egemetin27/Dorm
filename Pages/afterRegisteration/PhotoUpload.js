@@ -163,25 +163,24 @@ export default function PhotoUpload({ navigation, route }) {
 			<View style={{ paddingHorizontal: 30, marginTop: 20 }}>
 				<GradientText
 					text={"En güzel fotoğraflarım"}
-					style={{ fontSize: 30, fontFamily: "NowBold" }}
+					style={{ fontSize: Math.min(30, height * 0.04), fontFamily: "NowBold" }}
 				/>
 				<Text
 					style={{
-						fontSize: 18,
+						fontSize: Math.min(18, height * 0.024),
 						color: colors.medium_gray,
-						marginTop: 20,
-						lineHeight: 27,
+						marginTop: 5,
 						letterSpacing: 0.5,
 					}}
 				>
-					Kendi fotoğraflarını ekle, görmek{"\n"}istediğimiz kişi sensin. :{")"}
+					Kendi fotoğraflarını ekle, görmek istediğimiz kişi sensin. :{")"}
 				</Text>
 			</View>
-			<View style={{ height: "100%", width: "100%", alignItems: "center" }}>
+			<View style={{  width: "100%", alignItems: "center" }}>
 				<ScrollView
 					horizontal={true}
 					showsHorizontalScrollIndicator={false}
-					style={{ height: "100%", marginTop: 20 }}
+					style={{  marginTop: 20 }}
 					// snapToInterval={width * 0.8 + 30}
 				>
 					{photoList.map((item, index) => {
@@ -191,8 +190,7 @@ export default function PhotoUpload({ navigation, route }) {
 									style={[
 										commonStyles.photo,
 										{
-											width: width * 0.8,
-											maxHeight: "90%",
+											height: Math.min(width * 1.35, height * 0.6),
 											marginHorizontal: 20,
 										},
 									]}
@@ -212,8 +210,7 @@ export default function PhotoUpload({ navigation, route }) {
 								style={[
 									commonStyles.photo,
 									{
-										width: width * 0.8,
-										maxHeight: "90%",
+										height: Math.min(width * 1.35, height * 0.6),
 									},
 								]}
 							>

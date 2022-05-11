@@ -73,15 +73,15 @@ export default function FirstPassword({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style={"dark"} />
 			<View style={commonStyles.Header} />
-			<View style={commonStyles.innerContainer}>
+			<View style={{paddingHorizontal: "5%"}}>
 				<GradientText
-					text={"Gitmeden\nşifre belirleyebilir misin?"}
+					text={"Gitmeden şifre belirleyebilir misin?"}
 					style={{ fontFamily: "NowBold", fontSize: 30, paddingBottom: 20 }}
 				/>
 
 				<View style={{ position: "relative" }}>
 					<Text style={styles.text}>
-						Güvenliğin için en az 8 karakterli şifre{"\n"}oluşturmanı istiyoruz.
+						Güvenliğin için en az 8 karakterli şifre oluşturmanı istiyoruz.
 					</Text>
 				</View>
 

@@ -538,7 +538,7 @@ export default function Register({ navigation }) {
 				</Animated.View>
 			</View>
 			{show && (
-				<DateTimePicker testID="dateTimePicker" value={date} mode="date" onChange={datePick} />
+				<DateTimePicker textColor="black" accentColor="red" testID="dateTimePicker" value={date} style={{backgroundColor:"white"}} mode="date" onChange={datePick} />
 			)}
 			<View style={styles.TextContainer}>
 				<Animated.Text
