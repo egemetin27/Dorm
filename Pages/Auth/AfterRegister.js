@@ -113,8 +113,8 @@ export default function AfterRegister({ route, navigation }) {
 							<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
 						</TouchableOpacity>
 					</View>
-					{pageNum == 1 && <Gender value={gender} setValue={setGender} isEnabled={genderSwitch} />}
-					{pageNum == 2 && <MatchMode value={matchMode} setValue={setMatchMode} />}
+					{pageNum == 1 && <MatchMode value={matchMode} setValue={setMatchMode} />}
+					{pageNum == 2 && <Gender value={gender} setValue={setGender} isEnabled={genderSwitch} />}
 					{pageNum == 3 && <Expectation value={expectation} setValue={setExpectation} />}
 					{pageNum == 4 && <Interested value={interested} setValue={setInterested} />}
 					{pageNum == 5 && (

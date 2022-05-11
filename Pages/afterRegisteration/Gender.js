@@ -1,10 +1,12 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { Switch } from "../../visualComponents/customComponents";
+
+const { width, height } = Dimensions.get("window");
 
 export default Gender = ({ value, setValue, isEnabled }) => {
 	const [switchOn, setSwitchOn] = React.useState(isEnabled.value ? 1 : -1);
@@ -17,7 +19,10 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 			>
 				<GradientText
 					text={"Cinsiyetim"}
-					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
+					style={{
+						fontSize: Math.min(30, Math.min(height * 0.035, width * 0.06)),
+						fontFamily: "NowBold",
+					}}
 				/>
 			</View>
 
@@ -149,7 +154,9 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 					marginTop: 20,
 				}}
 			>
-				<Text style={{ color: "gray", fontSize: 15, letterSpacing: 0.6, marginRight: 30 }}>
+				<Text
+					style={{ color: colors.medium_gray, fontSize: 15, letterSpacing: 0.6, marginRight: 30 }}
+				>
 					Profilinde cinsiyet görünürlüğü
 				</Text>
 				<Switch

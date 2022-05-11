@@ -49,7 +49,7 @@ export default styles = StyleSheet.create({
 	},
 	button: {
 		backgroundColor: "#B6B6B6",
-		width: width * 0.8,
+		width: Math.min(width * 0.8, 600),
 		aspectRatio: 6 / 1,
 		alignItems: "center",
 		justifyContent: "center",

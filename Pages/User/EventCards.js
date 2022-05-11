@@ -31,9 +31,10 @@ import { StatusBar } from "expo-status-bar";
 import * as SecureStore from "expo-secure-store";
 
 import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient } from "../../visualComponents/colors";
+import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
+import { CustomModal } from "../../visualComponents/customComponents";
 
 const { width, height } = Dimensions.get("window");
 
@@ -51,7 +52,10 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 		isLiked,
 	} = event;
 
-	const favorited = isLiked == 1 ? true : false;
+	const [favFlag, setFavFlag] = React.useState(isLiked == 1 ? true : false);
+	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
+	const [likeEventModal, setLikeEventModal] = React.useState(false);
+	const [seeWhoLikedModal, setSeeWhoLikedModal] = React.useState(false);
 
 	const progress = useSharedValue(0);
 	const turn = useSharedValue(1); // 1 => front, -1 => back
@@ -79,10 +83,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 		progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
 	};
 
-	const [favFlag, setFavFlag] = React.useState(favorited);
-
-	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
-
 	useAnimatedReaction(
 		() => {
 			return progress.value;
@@ -95,33 +95,41 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	// how much the Fav star should go up relative to the height of the surrounding circle (height * constant = marginBottom)
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
-	const handleFavorited = async () => {
+	const handleLikeButton = async () => {
 		const id = await SecureStore.getItemAsync("userID");
-		if (!favFlag) {
-			await axios
-				.post(
-					url + "/likeEvent",
-					{ UserId: id, eventId: EventId },
-					{ headers: { "access-token": sesToken } }
-				)
-				.then((res) => console.log(res.data))
-				.catch((err) => console.log(err));
 
-			// send favorited value to database
-		} else {
+		if (favFlag) {
 			await axios
 				.post(
 					url + "/dislikeEvent",
 					{ UserId: id, eventId: EventId },
 					{ headers: { "access-token": sesToken } }
 				)
-				.then((res) => console.log(res.data))
+				.then((res) => setFavFlag(false))
 				.catch((err) => console.log(err));
+			return;
 		}
-		setFavFlag(!favFlag);
+		setLikeEventModal(true);
+	};
+
+	const likeEvent = async (likeMode) => {
+		const id = await SecureStore.getItemAsync("userID");
+
+		await axios
+			.post(
+				url + "/likeEvent",
+				{ UserId: id, eventId: EventId, likeMode: likeMode },
+				{ headers: { "access-token": sesToken } }
+			)
+			.then((res) => setFavFlag(true))
+			.catch((err) => console.log(err.response));
 	};
 
 	const explorePeople = async () => {
+		if (!favFlag) {
+			setSeeWhoLikedModal(true);
+			return;
+		}
 		await axios
 			.post(
 				url + "/eventParticipants",
@@ -156,7 +164,11 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 					<Animated.View
 						style={[
 							commonStyles.photo,
-							{ height: Math.min(width * 1.35, height * 0.7), backfaceVisibility: "hidden" },
+							{
+								height: Math.min(width * 1.35, height * 0.7),
+								backfaceVisibility: "hidden",
+								elevation: 0,
+							},
 							animatedCard,
 						]}
 					>
@@ -277,7 +289,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									</Text>
 								</View>
 								{/* <View style={{ zIndex: 5 }}> */}
-								<TouchableOpacity onPress={handleFavorited}>
+								<TouchableOpacity onPress={handleLikeButton}>
 									<View
 										style={{
 											backgroundColor: colors.white,
@@ -328,6 +340,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						style={[
 							commonStyles.photo,
 							{
+								elevation: 0,
 								height: Math.min(width * 1.35, height * 0.7),
 								position: "absolute",
 								backfaceVisibility: "hidden",
@@ -511,21 +524,162 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 					</Animated.View>
 				</Animated.View>
 			</GestureDetector>
+			<CustomModal
+				visible={likeEventModal}
+				dismiss={() => {
+					setLikeEventModal(false);
+				}}
+			>
+				<Gradient
+					style={{
+						width: Math.min(width * 0.8, 400),
+						aspectRatio: 1.8,
+						borderRadius: 30,
+						alignItems: "center",
+					}}
+				>
+					<View style={{ position: "absolute", top: 10, right: 15 }}>
+						<Pressable
+							onPress={() => {
+								setLikeEventModal(false);
+							}}
+						>
+							<Feather name="x" size={Math.min(width * 0.05, 28)} color={colors.light_gray} />
+						</Pressable>
+					</View>
+					<View
+						style={{
+							width: "75%",
+							height: "100%",
+							paddingVertical: "5%",
+							alignItems: "center",
+						}}
+					>
+						<Text
+							style={{
+								color: colors.white,
+								fontSize: Math.min(20, width * 0.04),
+								fontFamily: "PoppinsBold",
+								textAlign: "center",
+							}}
+						>
+							Daha iyi bir eşleşme deneyimi için bu etkinlikteki beklentilerini merak ediyoruz
+						</Text>
+						<View
+							style={{
+								flexDirection: "row",
+								flex: 1,
+								alignItems: "center",
+								justifyContent: "space-around",
+								width: "100%",
+							}}
+						>
+							<View
+								style={{ width: "45%", aspectRatio: 2.1, borderRadius: 10, overflow: "hidden" }}
+							>
+								<ReactNative.TouchableOpacity
+									onPress={() => {
+										likeEvent(0);
+										setLikeEventModal(false);
+									}}
+									style={{
+										width: "100%",
+										height: "100%",
+										backgroundColor: colors.light_gray,
+										justifyContent: "center",
+										alignItems: "center",
+									}}
+								>
+									<GradientText text={"Flört"} style={{ fontFamily: "PoppinsSemiBold" }} />
+								</ReactNative.TouchableOpacity>
+							</View>
+							<View
+								style={{ width: "45%", aspectRatio: 2.1, borderRadius: 10, overflow: "hidden" }}
+							>
+								<ReactNative.TouchableOpacity
+									onPress={() => {
+										likeEvent(1);
+										setLikeEventModal(false);
+									}}
+									style={{
+										width: "100%",
+										height: "100%",
+										backgroundColor: colors.light_gray,
+										justifyContent: "center",
+										alignItems: "center",
+									}}
+								>
+									<GradientText text={"Arkadaş"} style={{ fontFamily: "PoppinsSemiBold" }} />
+								</ReactNative.TouchableOpacity>
+							</View>
+						</View>
+					</View>
+				</Gradient>
+			</CustomModal>
+			<CustomModal
+				visible={seeWhoLikedModal}
+				dismiss={() => {
+					setSeeWhoLikedModal(false);
+				}}
+			>
+				<Gradient
+					style={{
+						width: Math.min(width * 0.7, 300),
+						maxWidth: width * 0.8,
+						paddingVertical: 30,
+						borderRadius: 30,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<View style={{ position: "absolute", top: 10, right: 15 }}>
+						<Pressable
+							onPress={() => {
+								setSeeWhoLikedModal(false);
+							}}
+						>
+							<Feather name="x" size={Math.min(width * 0.05, 28)} color={colors.light_gray} />
+						</Pressable>
+					</View>
+
+					<View
+						style={{
+							paddingHorizontal: "10%",
+							alignItems: "center",
+						}}
+					>
+						<Text
+							style={{
+								color: colors.white,
+								fontSize: Math.min(20, width * 0.04),
+								fontFamily: "PoppinsBold",
+								textAlign: "center",
+							}}
+						>
+							Etkinliğe gidenleri keşfetmen için etkinliği favorilere eklemiş olmalısın!
+						</Text>
+					</View>
+
+					<View style={{ width: "70%", marginTop: 20 }}>
+						<ReactNative.TouchableOpacity
+							onPress={() => {
+								setSeeWhoLikedModal(false);
+								setLikeEventModal(true);
+							}}
+							style={{
+								paddingVertical: 10,
+								backgroundColor: colors.light_gray,
+								justifyContent: "center",
+								alignItems: "center",
+								borderRadius: 10,
+							}}
+						>
+							<GradientText text={"Etkinliği Beğen"} style={{ fontFamily: "PoppinsSemiBold" }} />
+						</ReactNative.TouchableOpacity>
+					</View>
+				</Gradient>
+			</CustomModal>
 		</View>
-	);
-};
-
-const CustomButton = ({ onPress, children, ref }) => {
-	const tapHandler = Gesture.Tap()
-		.numberOfTaps(1)
-		.onEnd(() => {
-			runOnJS(onPress)();
-		});
-
-	return (
-		<GestureDetector ref={ref} gesture={tapHandler}>
-			{children}
-		</GestureDetector>
 	);
 };
 
@@ -578,17 +732,32 @@ export default function EventCards({ navigation, route }) {
 				/>
 				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
-
-			<Carousel
-				style={{ alignItems: "center" }}
-				defaultIndex={idx}
-				width={width}
-				loop={false}
-				data={list}
-				renderItem={({ item }) => (
-					<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
-				)}
-			/>
+			<View style={{}}>
+				<Carousel
+					style={{}}
+					defaultIndex={idx}
+					width={width}
+					height={0}
+					loop={false}
+					data={list}
+					renderItem={({ item }) => (
+						<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
+					)}
+				/>
+			</View>
+			<View style={{ position: "absolute", bottom: 10, paddingHorizontal: width * 0.05 }}>
+				<Text
+					style={{
+						textAlign: "center",
+						fontSize: Math.min(width * 0.04, 24),
+						color: colors.medium_gray,
+						letterSpacing: 0.2,
+					}}
+				>
+					Etkinlikle ilgili ayrıntılı bilgi almak ve etkinliğe gidenleri keşfetmek için karta çift
+					dokun
+				</Text>
+			</View>
 		</View>
 	);
 }

@@ -32,6 +32,7 @@ export default function ProfileCards({ navigation, route }) {
 	const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
 	const [likeEndedModal, setLikeEndedModal] = React.useState(false);
 	const [endOfListModal, setEndOfListModal] = React.useState(false);
+	const [endOfLikesTimer, setEndOfLikesTimer] = React.useState({ hour: 0, minute: 0 });
 
 	const [myProfilePicture, setMyProfilePicture] = React.useState();
 	const [matchPage, setMatchPage] = React.useState(false);
@@ -80,10 +81,6 @@ export default function ProfileCards({ navigation, route }) {
 	function likeEndedModalSubmit() {
 		console.log("like ended modal submit...");
 	}
-
-	const hour = 15;
-	const minute = 20;
-	const second = 51; // TODO: get this data from database
 
 	React.useEffect(async () => {
 		try {
@@ -228,6 +225,9 @@ export default function ProfileCards({ navigation, route }) {
 						likeEnded={likeEnded}
 						showLikeEndedModal={() => {
 							setLikeEndedModal(true);
+						}}
+						setTimer={(hour, minute) => {
+							setEndOfLikesTimer({ hour: hour, minute: minute });
 						}}
 					/>
 				))}
@@ -558,7 +558,8 @@ export default function ProfileCards({ navigation, route }) {
 					>
 						Beğenme hakkın için kalan süre:{"\n"}
 						<Feather name="clock" size={16} color={colors.cool_gray} />
-						{hour} saat {minute} dakika {second} saniye
+						{endOfLikesTimer.hour != 0 ? endOfLikesTimer.hour + " saat" : ""}{" "}
+						{endOfLikesTimer.minute} dakika
 					</Text>
 					<ReactNative.TouchableOpacity
 						onPress={() => {

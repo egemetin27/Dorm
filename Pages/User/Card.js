@@ -1,5 +1,12 @@
 import React from "react";
-import ReactNative, { View, Text, Image, Dimensions, Modal } from "react-native";
+import ReactNative, {
+	View,
+	Text,
+	Image,
+	Dimensions,
+	Modal,
+	RefreshControlBase,
+} from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -52,6 +59,7 @@ export default Card = ({
 	myProfilePicture,
 	showLikeEndedModal,
 	likeEnded,
+	setTimer,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -148,52 +156,57 @@ export default Card = ({
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		if (likeEnded.value == false || val == 2) {
-			await axios
-				.post(
-					url + "/LikeDislike",
-					{
-						isLike: val,
-						userSwiped: myID,
-						otherUser: id,
-						matchMode: "0",
-					},
-					{ headers: { "access-token": sesToken } }
-				)
-				.then((res) => {
-					console.log(res.data);
-					if (res.data.LikeCount == 0) {
+		// if (likeEnded.value == false || val == 2) {
+		await axios
+			.post(
+				url + "/LikeDislike",
+				{
+					isLike: val,
+					userSwiped: myID,
+					otherUser: id,
+					matchMode: "0",
+				},
+				{ headers: { "access-token": sesToken } }
+			)
+			.then((res) => {
+				console.log(res.data);
+				if (res.data.LikeCount == 0) {
+					likeEnded.value = true;
+				}
+				if (res.data.message == "Match") {
+					console.log("send notification.");
+					sendNotification();
+					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
+					//setMatchPage(true);
+				}
+				incrementIndex();
+			})
+			.catch((error) => {
+				if (error.response) {
+					if (error.response.status == 408) {
 						likeEnded.value = true;
+						console.log("swipe count ended response");
+						let endTime = new Date(error.response.data);
+						let currentTime = new Date(Date.now());
+						let hourLeft = (endTime.getHours() - currentTime.getHours() + 24) % 24;
+						let minuteLeft = (endTime.getMinutes() - currentTime.getMinutes() + 60) % 60;
+						setTimer(hourLeft, minuteLeft);
+
+						x.value = withSpring(0);
+						destination.value = 0;
+						showLikeEndedModal();
 					}
-					if (res.data.message == "Match") {
-						
-						console.log("send notification.");
-						sendNotification();
-						showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
-						//setMatchPage(true);
-					}
-					incrementIndex();
-				})
-				.catch((error) => {
-					if (error.response) {
-						if (error.response.status == 408) {
-							likeEnded.value = true;
-							console.log("swipe count ended response");
-							x.value = withSpring(0);
-							destination.value = 0;
-							showLikeEndedModal();
-						}
-					} else if (error.request) {
-						console.log("request error: ", error.request);
-					} else {
-						console.log("error: ", error.message);
-					}
-				});
-		} else {
-			x.value = withSpring(0);
-			destination.value = 0;
-			showLikeEndedModal();
-		}
+				} else if (error.request) {
+					console.log("request error: ", error.request);
+				} else {
+					console.log("error: ", error.message);
+				}
+			});
+		// } else {
+		// 	x.value = withSpring(0);
+		// 	destination.value = 0;
+		// 	showLikeEndedModal();
+		// }
 	};
 
 	const panHandler =

@@ -23,17 +23,18 @@ import { Gradient, colors } from "./colors";
 const { width, height } = Dimensions.get("screen");
 
 export const CustomModal = (props) => {
+	const { visible, transparent = true, dismiss, animationType = "fade", children } = props;
 	return (
 		<Modal
-			visible={props.visible}
-			transparent={props.transparent || true}
-			onRequestClose={props.dismiss}
-			animationType={props.animationType || "fade"}
+			visible={visible}
+			transparent={transparent}
+			onRequestClose={dismiss}
+			animationType={animationType}
 		>
-			<TouchableWithoutFeedback onPress={props.dismiss}>
+			<TouchableWithoutFeedback onPress={dismiss}>
 				<View style={[styles.modalOverlay, props?.overlay]} />
 			</TouchableWithoutFeedback>
-			<View style={styles.modalContent}>{props.children}</View>
+			<View style={styles.modalContent}>{children}</View>
 		</Modal>
 	);
 };

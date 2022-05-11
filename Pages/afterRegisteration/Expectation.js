@@ -1,9 +1,11 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+
+const { width, height } = Dimensions.get("window");
 
 export default Expectation = ({ value, setValue }) => {
 	return (
@@ -14,7 +16,10 @@ export default Expectation = ({ value, setValue }) => {
 			>
 				<GradientText
 					text={"dorm'dan Beklentim"}
-					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
+					style={{
+						fontSize: Math.min(30, Math.min(height * 0.035, width * 0.06)),
+						fontFamily: "NowBold",
+					}}
 				/>
 			</View>
 			<TouchableOpacity

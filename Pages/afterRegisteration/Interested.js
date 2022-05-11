@@ -1,9 +1,11 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+
+const { width, height } = Dimensions.get("window");
 
 export default Interested = ({ value, setValue }) => {
 	return (
@@ -14,7 +16,10 @@ export default Interested = ({ value, setValue }) => {
 			>
 				<GradientText
 					text={"İlgi duyduğum"}
-					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
+					style={{
+						fontSize: Math.min(30, Math.min(height * 0.035, width * 0.06)),
+						fontFamily: "NowBold",
+					}}
 				/>
 			</View>
 			<TouchableOpacity
@@ -107,7 +112,7 @@ export default Interested = ({ value, setValue }) => {
 				)}
 			</TouchableOpacity>
 
-			<Text style={{ color: "gray", fontSize: 15, letterSpacing: 0.6, marginTop: 20 }}>
+			<Text style={{ color: colors.medium_gray, fontSize: 15, letterSpacing: 0.6, marginTop: 20 }}>
 				Seçimini daha sonra değiştirebilirsin
 			</Text>
 		</View>
