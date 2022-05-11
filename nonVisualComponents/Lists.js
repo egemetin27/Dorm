@@ -7,17 +7,17 @@ export const genderList = [
 
 export const univList = [
 	{ key: 0, choice: "" },
-	{ key: 1, choice: "Acıbadem Üniversitesi" },
-	{ key: 2, choice: "Bahçeşehir Üniversitesi" },
-	{ key: 3, choice: "Bilgi Üniversitesi" },
-	{ key: 4, choice: "Boğaziçi Üniversitesi" },
-	{ key: 5, choice: "Galatasaray Üniversitesi" },
-	{ key: 6, choice: "İstanbul Teknik Üniversitesi" },
-	{ key: 7, choice: "Koç Üniversitesi" },
-	{ key: 8, choice: "Mimar Sinan Üniversitesi" },
-	{ key: 9, choice: "Özyeğin Üniversitesi" },
-	{ key: 10, choice: "Sabancı Üniversitesi" },
-	{ key: 11, choice: "Yeditepe Üniversitesi" },
+	{ key: 1, choice: "Acıbadem Üniversitesi", mailExt: "acibadem.edu.tr" },
+	{ key: 2, choice: "Bahçeşehir Üniversitesi", mailExt: "bahcesehir.edu.tr" },
+	{ key: 3, choice: "Bilgi Üniversitesi", mailExt: "bilgiedu.net" },
+	{ key: 4, choice: "Boğaziçi Üniversitesi", mailExt: "boun.edu.tr" },
+	{ key: 5, choice: "Galatasaray Üniversitesi", mailExt: "gsu.edu.tr" },
+	{ key: 6, choice: "İstanbul Teknik Üniversitesi", mailExt: "itu.edu.tr" },
+	{ key: 7, choice: "Koç Üniversitesi", mailExt: "ku.edu.tr" },
+	{ key: 8, choice: "Mimar Sinan Üniversitesi", mailExt: "msgsu.edu.tr" },
+	{ key: 9, choice: "Özyeğin Üniversitesi", mailExt: "ozu.edu.tr" },
+	{ key: 10, choice: "Sabancı Üniversitesi", mailExt: "sabanciuniv.edu" },
+	{ key: 11, choice: "Yeditepe Üniversitesi", mailExt: "std.yeditepe.edu.tr" },
 ];
 
 export const religionList = [

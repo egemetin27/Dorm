@@ -5,7 +5,7 @@
 		"version": "1.1.43",
 		"orientation": "portrait",
 		"icon": "./assets/DormIcon.png",
-		"owner": "berkeodaci",
+		"owner": "dorm",
 		"splash": {
 			"image": "./assets/splashscreen.png",
 			"resizeMode": "cover",
@@ -22,7 +22,7 @@
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 53
+			"versionCode": 55
 		},
 		"web": {
 			"favicon": "./assets/DormIcon.png"

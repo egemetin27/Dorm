@@ -45,52 +45,22 @@ export default function Register({ navigation }) {
 
 	const [counter, setCounter] = React.useState(0);
 
-	// const pickerRef = React.useRef().current;
-
-	const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
-
-	const handleRegister = async () => {
+	const handleRegister = () => {
 		const fullName = name.trim();
-
-		if (fullName.lastIndexOf(" ") == -1) {
-			Alert.alert("Hata!", "Adını ve soyadını yanlış girmiş olabilirsin", [
-				{ text: "Kontrol Edeyim" },
-			]);
-			return;
-		}
+		const trimmedMail = email.trim();
 
 		const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
 		const fName = fullName.slice(0, fullName.lastIndexOf(" "));
 
-		const trimmedMail = email.trim();
-
-		if (
-			emailRegex.test(trimmedMail) &&
-			fName != "" &&
-			lName != "" &&
-			parsedDate != "" &&
-			university != "" &&
-			getAge(parsedDate) >= 18
-		) {
-			const profile = {
-				mail: trimmedMail,
-				name: fName,
-				surName: lName,
-				city: city,
-				bDay: parsedDate,
-				school: university.choice,
-			};
-
-			navigation.replace("FirstPassword", { profile: profile });
-		} else {
-			if (getAge(parsedDate) < 18) {
-				Alert.alert("Hata!", "Yaşın 18'den küçük olamaz.", [{ text: "Kontrol Edeyim" }]);
-			} else {
-				Alert.alert("Hata!", "Boş bıraktığın bir soru var, istersen bir kontrol et.", [
-					{ text: "Kontrol Edeyim" },
-				]);
-			}
-		}
+		const profile = {
+			mail: trimmedMail,
+			name: fName,
+			surName: lName,
+			city: city,
+			bDay: parsedDate,
+			school: university.choice,
+		};
+		navigation.replace("FirstPassword", { profile: profile });
 	};
 
 	const handleForward = (ref) => {
@@ -143,6 +113,34 @@ export default function Register({ navigation }) {
 		setParsedDate(formattedDate);
 	};
 
+	const checkInput = () => {
+		if (counter == 0 && name.trim().lastIndexOf(" ") == -1) {
+			Alert.alert("Hata!", "Adını ve soyadını yanlış girmiş olabilirsin", [
+				{ text: "Kontrol Edeyim" },
+			]);
+			return;
+		}
+		if (counter == 1 && getAge(parsedDate) < 18) {
+			Alert.alert("Hata!", "18 Yaşından Büyük Olmalısın!", [{ text: "Kontrol Edeyim" }]);
+			return;
+		}
+		if (counter == 3 && university.choice == "") {
+			Alert.alert("Hata!", "Lütfen okuduğunuz üniversiteyi seçin!", [{ text: "Kontrol Edeyim" }]);
+			return;
+		}
+		if (counter == 4 && email.trim().split("@")[1] != university.mailExt) {
+			Alert.alert("Hata!", "Mail adresin ile seçtiğin üniversite eşleşmiyor!", [
+				{ text: "Kontrol Edeyim" },
+			]);
+			return;
+		}
+		if (counter < 4) {
+			handleForward(refList[counter]);
+			return;
+		}
+		handleRegister();
+	};
+
 	return (
 		<View>
 			<StatusBar style={"dark"} />
@@ -162,7 +160,6 @@ export default function Register({ navigation }) {
 				<TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
-						
 						counter > 0 ? handleBackward(refList[counter - 1]) : navigation.replace("WelcomePage");
 					}}
 				>
@@ -210,56 +207,7 @@ export default function Register({ navigation }) {
 				<TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
-						if (counter == 0) {
-							const fullName = name.trim();
-							const fName = fullName.slice(0, fullName.lastIndexOf(" "));
-							const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
-							console.log(fName);
-							console.log(lName);
-							if(fName == "" || lName == "")
-							{
-								Alert.alert("Hata!", "Adını ve soyadını yanlış girmiş olabilirsin", [
-									{ text: "Kontrol Edeyim" },
-								]);
-							}
-							else
-							{
-								handleForward(refList[counter]);
-							}
-
-						} else if (counter == 1) {
-							if (getAge(parsedDate) >= 18) {
-								handleForward(refList[counter]);
-							} else {
-								Alert.alert("Hata!", "Legal olmadıkça giremezsin!", [
-									{ text: "Kontrol Edeyim" },
-								]);
-							}
-
-						} else if (counter == 2) {
-							handleForward(refList[counter]);
-						} else if (counter == 3) {
-							if (university == "") {
-								Alert.alert("Hata!", "Lütfen okuduğunuz üniversiteyi seçin!", [
-									{ text: "Kontrol Edeyim" },
-								]);
-
-							} else {
-								handleForward(refList[counter]);
-							}
-						} else if (counter == 4) {
-							const trimmedMail = email.trim();
-							if (emailRegex.test(trimmedMail)) {
-								handleRegister();
-							} else {
-								Alert.alert("Hata!", "Lütfen girmiş olduğunuz üniversiteyi kontrol ediniz!", [
-									{ text: "Kontrol Edeyim" },
-								]);
-							}
-
-						}
-
-						//counter < 4 ? handleForward(refList[counter]) : handleRegister();
+						checkInput();
 					}}
 				>
 					<Text
@@ -318,7 +266,7 @@ export default function Register({ navigation }) {
 						</View>
 						<TextInput
 							onSubmitEditing={() => {
-								handleRegister();
+								checkInput();
 							}}
 							onChangeText={setEmail}
 							value={email}
@@ -538,7 +486,15 @@ export default function Register({ navigation }) {
 				</Animated.View>
 			</View>
 			{show && (
-				<DateTimePicker textColor="black" accentColor="red" testID="dateTimePicker" value={date} style={{backgroundColor:"white"}} mode="date" onChange={datePick} />
+				<DateTimePicker
+					textColor="black"
+					accentColor="red"
+					testID="dateTimePicker"
+					value={date}
+					style={{ backgroundColor: "white" }}
+					mode="date"
+					onChange={datePick}
+				/>
 			)}
 			<View style={styles.TextContainer}>
 				<Animated.Text
@@ -573,7 +529,7 @@ export default function Register({ navigation }) {
 
 			<CustomPicker
 				style={{ width: width * 0.7, height: height * 0.6, maxWidth: 300, maxHeight: 500 }}
-				data={univList}
+				data={univList.slice(1)}
 				visible={univListVisible}
 				setVisible={setUnivListVisible}
 				setChoice={setUniversity}
