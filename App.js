@@ -3,7 +3,6 @@ import { StyleSheet, Dimensions, View } from "react-native";
 import { API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
@@ -15,7 +14,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
 	return (
-		<SafeAreaProvider>
+		<SafeAreaProvider style={{ flex: 1 }}>
 			<Stack />
 		</SafeAreaProvider>
 	);
@@ -24,6 +23,7 @@ export default function App() {
 	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
 	// 	</GestureHandlerRootView>
 	// );
+	// return <Temp route={{ params: {} }} />;
 }
 
 const styles = StyleSheet.create({

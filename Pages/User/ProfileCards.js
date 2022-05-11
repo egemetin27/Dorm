@@ -439,7 +439,7 @@ export default function ProfileCards({ navigation, route }) {
 
 						<ReactNative.TouchableOpacity
 							onPress={async () => {
-								setMatchPage(false);
+								await setMatchPage(false);
 								setIndexOfFrontCard(indexOfFrontCard + 1);
 								navigation.replace("MainScreen", { screen: "Mesajlar" });
 							}}
@@ -477,6 +477,7 @@ export default function ProfileCards({ navigation, route }) {
 							}}
 							onPress={async () => {
 								await setMatchPage(false);
+								setIndexOfFrontCard(indexOfFrontCard + 1);
 								// matchPopup.value = false;
 								//incrementIndex();
 							}}
@@ -624,6 +625,7 @@ export default function ProfileCards({ navigation, route }) {
 					</Text>
 					<ReactNative.TouchableOpacity
 						onPress={() => {
+							setEndOfListModal(false);
 							navigation.replace("MainScreen", {
 								screen: "AnaSayfa",
 								params: { screen: "Home" },

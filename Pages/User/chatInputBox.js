@@ -9,8 +9,10 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 
 const InputBox = (props) => {
+
 	const [message, setMessage] = React.useState("");
 	const [newNumber, setNewNumber] = React.useState(1);
+	const [msgHeight, setMsgHeight] = React.useState(45);
 
 	const sendMessage = async () => {
 		try {
@@ -86,6 +88,9 @@ const InputBox = (props) => {
 					padding: 10,
 					marginRight: 10,
 					borderRadius: 25,
+					height: msgHeight,
+					minHeight: 20,
+					maxHeight: 84,
 				}}
 			>
 				<TextInput
@@ -94,6 +99,10 @@ const InputBox = (props) => {
 					placeholder={"Mesajın..."}
 					value={message}
 					onChangeText={setMessage}
+					onContentSizeChange= {(event) => {
+						console.log(event.nativeEvent.contentSize.height);
+						setMsgHeight(event.nativeEvent.contentSize.height+21);
+					}}
 				/>
 			</View>
 			<TouchableOpacity

@@ -19,6 +19,7 @@ const ChatMsg = (props) => {
 	const isMyMessage = () => {
 		return props.data.sentMsgSenderId == props.myUserID;
 	};
+	
 
 	return (
 		<View style={styles.container}>
@@ -39,6 +40,7 @@ const ChatMsg = (props) => {
 						<Text style={{ color: "white", fontFamily: "Poppins" }}>{props.data.text}</Text>
 					</LinearGradient>
 					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8, marginRight: 8 }}>
+						
 						{moment(props.data.updatedAt).fromNow()}
 					</Text>
 				</View>

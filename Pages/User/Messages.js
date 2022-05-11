@@ -206,8 +206,6 @@ export default function Messages({ route, navigation }) {
 	}, []);
 
 	
-
-	
 	return (
 		<View style={{ width: width, height: height}}>
 			<StatusBar style="dark" translucent={false} />
@@ -222,7 +220,6 @@ export default function Messages({ route, navigation }) {
 				</View>
 				<View style={{ flexDirection: "row", alignSelf: "center" }}>
 					<TouchableOpacity onPress={() => {}}>
-						<Feather name="search" size={27} color={colors.gray} style={{ paddingRight: 15 }} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -415,7 +412,8 @@ export default function Messages({ route, navigation }) {
 				) : (
 					<View>
 						<View style={{ marginBottom: 10 }} />
-						<View>
+						<View >
+							
 							<FlatList
 								style={{
 									width: width,
@@ -441,17 +439,19 @@ export default function Messages({ route, navigation }) {
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
 												userID={myUserID}
 											/>
 										);
 									}
 								}}
 							/>
+							
 						</View>
 						<View style={{ marginBottom: 10 }} />
-						<View>
+						<View> 
 							<FlatList
+								horizontal= {false}
 								style={{
 									borderRadius: 8,
 									height: height-35 - height*0.051 - msgBoxHeight - height*0.08-50,
@@ -460,6 +460,7 @@ export default function Messages({ route, navigation }) {
 								data={chatRooms}
 								renderItem={({ item, index }) => {
 									if (item.mod == 1 && item.lastMsg != null && item.firstUser.id == myUserID && item.status == "Active") {
+										console.log(msgBoxHeight);
 										return (
 											<MsgBox
 												data={item.secondUser}
@@ -474,7 +475,6 @@ export default function Messages({ route, navigation }) {
 										);
 									}
 									if (item.mod == 1 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
-
 										return (
 											<MsgBox
 												data={item.firstUser}
