@@ -476,41 +476,41 @@ export default function MainPage({ navigation }) {
 
 		
 		var numberOfFilters = 0;
-		
 
-		if (applyCinsiyet.keys == [0, 0, 0].keys) {
+		if (applyCinsiyet[0] == 0 && applyCinsiyet[1] == 0 && applyCinsiyet[2] == 0 ) {
 			applyCinsiyet = [1,1,1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;			
 		}
 		
 
-		if (applyEgsersiz.keys == [0, 0, 0].keys) {
+		if (applyEgsersiz[0] == 0 && applyEgsersiz[1] == 0 && applyEgsersiz[2] == 0) {
 			applyEgsersiz = [1,1,1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
-		if (applyAlkol.keys == [0, 0, 0].keys) {
+		if (applyAlkol[0] == 0 && applyAlkol[1] == 0 && applyAlkol[2] == 0) {
 			applyAlkol = [1,1,1];
 
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
-		if (applySigara.keys == [0, 0, 0].keys) {
+
+		if (applySigara[0] == 0 && applySigara[1] == 0 && applySigara[2] == 0) {
 			applySigara = [1,1,1];
 
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
-		if (applyYemek.keys == [0,0,0,0,0].keys) {
+		if (applyYemek[0] == 0 && applyYemek[1] == 0 && applyYemek[2] == 0 && applyYemek[3] == 0 && applyYemek[4] == 0) {
 			applyYemek = [1,1,1,1,1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
-		
+		console.log(applyCinsiyet);
 		console.log(applyEgsersiz);
 		console.log(applyAlkol);
 		console.log(applySigara);
@@ -557,7 +557,7 @@ export default function MainPage({ navigation }) {
 				});
 		}
 		try {
-			await prepare();
+			//await prepare();
 		} catch (err) {
 			console.log(err);
 		}
