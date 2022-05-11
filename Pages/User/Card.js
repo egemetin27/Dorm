@@ -56,6 +56,7 @@ export default Card = ({
 	incrementIndex,
 	navigateFromCard,
 	showMatchScreen,
+	showReportPage,
 	myProfilePicture,
 	showLikeEndedModal,
 	likeEnded,
@@ -434,7 +435,8 @@ export default Card = ({
 										<TouchableOpacity
 											onPress={() => {
 												//showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
-												setReportPage(true);
+												showReportPage(id);
+												//setReportPage(true);
 												//setMatchPage(true);
 											}}
 										>
