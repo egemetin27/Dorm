@@ -7,13 +7,18 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { Switch } from "../../visualComponents/customComponents";
 
 export default Gender = ({ value, setValue, isEnabled }) => {
+	const [switchOn, setSwitchOn] = React.useState(isEnabled.value ? 1 : -1);
+
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
-				<GradientText text={"Cinsiyetim"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
+				<GradientText
+					text={"Cinsiyetim"}
+					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
+				/>
 			</View>
 
 			<TouchableOpacity
@@ -148,9 +153,10 @@ export default Gender = ({ value, setValue, isEnabled }) => {
 					Profilinde cinsiyet görünürlüğü
 				</Text>
 				<Switch
-					value={isEnabled.value}
+					value={switchOn}
 					onValueChange={(value) => {
 						isEnabled.value = value;
+						setSwitchOn(value ? 1 : -1);
 					}}
 				/>
 			</View>

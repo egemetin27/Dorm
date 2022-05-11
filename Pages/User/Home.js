@@ -408,6 +408,7 @@ export default function MainPage({ navigation }) {
 	const [peopleList, setPeopleList] = React.useState([]);
 	const [myID, setMyID] = React.useState(null);
 	const [sesToken, setSesToken] = React.useState("");
+	const [matchMode, setMatchMode] = React.useState(0);
 	const eventsRef = React.useRef();
 
 	//Filtre Modal
@@ -522,8 +523,10 @@ export default function MainPage({ navigation }) {
 		const userData = JSON.parse(userDataStr);
 		const userID = userData.UserId.toString();
 		const myToken = userData.sesToken;
+		const myMode = userData.matchMode;
 		setMyID(userID);
 		setSesToken(myToken);
+		setMatchMode(myMode);
 
 		async function prepare() {
 			await axios
@@ -635,7 +638,7 @@ export default function MainPage({ navigation }) {
 		console.log("");
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
-				<StatusBar style="dark" />
+				<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
@@ -646,7 +649,6 @@ export default function MainPage({ navigation }) {
 		<View style={[commonStyles.Container, { justifyContent: "space-between" }]}>
 			<StatusBar
 				style="dark"
-				translucent={false}
 				backgroundColor={"#F4F3F3"}
 				// hidden={Platform.OS == "ios"}
 			/>
@@ -657,7 +659,7 @@ export default function MainPage({ navigation }) {
 				<GradientText
 					text={"Kişiler"}
 					style={{
-						fontSize: Math.min(height * 0.035, 32),
+						fontSize: Math.min(height * 0.035, 100),
 						fontFamily: "NowBold",
 						letterSpacing: 1.2,
 						marginLeft: 20,
@@ -705,7 +707,7 @@ export default function MainPage({ navigation }) {
 									navigation.replace("ProfileCards", {
 										idx: idx,
 										list: peopleList,
-										// list: peopleList.slice(0, 10),
+										matchMode: matchMode,
 										myID: myID,
 										sesToken: sesToken,
 									});

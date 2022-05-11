@@ -5,13 +5,12 @@ import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-Amplify.configure(awsmobile);
-
 const { width, height } = Dimensions.get("window");
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
+import MatchMode from "./Pages/afterRegisteration/MatchMode";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
@@ -22,7 +21,7 @@ export default function App() {
 	);
 	// return (
 	// 	<GestureHandlerRootView style={{ flex: 1 }}>
-	// 		<Temp />
+	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
 	// 	</GestureHandlerRootView>
 	// );
 }

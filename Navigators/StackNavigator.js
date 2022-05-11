@@ -77,13 +77,19 @@ function MainScreen({ route, navigation }) {
 	}, [route]);
 
 	return (
-		<View style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}>
+		<View
+			style={{
+				flex: 1,
+				paddingTop: insets.top,
+				backgroundColor: colors.backgroundColor,
+			}}
+		>
 			<Tab.Navigator
 				backBehavior="initialRoute"
 				screenOptions={{
 					tabBarStyle: {
-						height: height * 0.08,
-						paddingBottom: height * 0.008,
+						height: height * 0.08 + insets.bottom,
+						paddingBottom: height * 0.008 + insets.bottom,
 						position: "relative",
 					},
 					headerShown: false,

@@ -12,7 +12,10 @@ export default Expectation = ({ value, setValue }) => {
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
-				<GradientText text={"dorm'dan Beklentim"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
+				<GradientText
+					text={"dorm'dan Beklentim"}
+					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
+				/>
 			</View>
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}

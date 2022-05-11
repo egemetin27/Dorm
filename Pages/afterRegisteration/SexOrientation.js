@@ -7,13 +7,17 @@ import commonStyles from "../../visualComponents/styles";
 import { Switch } from "../../visualComponents/customComponents";
 
 export default sexOrientation = ({ value, setValue, isEnabled }) => {
+	const [switchOn, setSwitchOn] = React.useState(isEnabled.value ? 1 : -1);
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
 			<View
 				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
 			>
-				<GradientText text={"Cinsel Yönelimim"} style={{ fontSize: 30, fontFamily: "NowBold" }} />
+				<GradientText
+					text={"Cinsel Yönelimim"}
+					style={{ fontSize: 30, fontFamily: "NowBold", fontWeight: "bold" }}
+				/>
 			</View>
 
 			<TouchableOpacity
@@ -177,8 +181,9 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 				<Switch
 					onValueChange={(value) => {
 						isEnabled.value = value;
+						setSwitchOn(value ? 1 : -1);
 					}}
-					value={isEnabled.value}
+					value={switchOn}
 				/>
 			</View>
 		</View>

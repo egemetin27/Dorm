@@ -177,11 +177,11 @@ export default function PhotoUpload({ navigation, route }) {
 					Kendi fotoğraflarını ekle, görmek{"\n"}istediğimiz kişi sensin. :{")"}
 				</Text>
 			</View>
-			<View style={{ height: "100%", width: "100%", alignItems: "center" }}>
+			<View style={{ width: "100%", alignItems: "center" }}>
 				<ScrollView
 					horizontal={true}
 					showsHorizontalScrollIndicator={false}
-					style={{ height: "100%", marginTop: 20 }}
+					style={{ marginTop: 20 }}
 					// snapToInterval={width * 0.8 + 30}
 				>
 					{photoList.map((item, index) => {
@@ -191,8 +191,7 @@ export default function PhotoUpload({ navigation, route }) {
 									style={[
 										commonStyles.photo,
 										{
-											width: width * 0.8,
-											maxHeight: "90%",
+											height: Math.min(width * 1.35, height * 0.9),
 											marginHorizontal: 20,
 										},
 									]}
@@ -207,13 +206,13 @@ export default function PhotoUpload({ navigation, route }) {
 						);
 					})}
 					{photoList.length < 4 && (
-						<Pressable onPress={pickImage} style={{ height: "100%" }}>
+						<Pressable onPress={pickImage} style={{}}>
 							<View
 								style={[
 									commonStyles.photo,
 									{
-										width: width * 0.8,
-										maxHeight: "90%",
+										elevation: 0,
+										height: Math.min(width * 1.35, height * 0.9),
 									},
 								]}
 							>

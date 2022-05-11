@@ -215,10 +215,10 @@ export default function ProfileCards({ navigation, route }) {
 						myID={myID}
 						sesToken={sesToken}
 						indexOfFrontCard={indexOfFrontCard}
+						myProfilePicture={myProfilePicture}
 						incrementIndex={() => {
 							setIndexOfFrontCard(indexOfFrontCard + 1);
 						}}
-						myProfilePicture={myProfilePicture}
 						navigateFromCard={() => {
 							navigateFromCard();
 						}}

@@ -178,6 +178,7 @@ export default Card = ({
 							likeEnded.value = true;
 							console.log("swipe count ended response");
 							x.value = withSpring(0);
+							destination.value = 0;
 							showLikeEndedModal();
 						}
 					} else if (error.request) {
@@ -188,6 +189,7 @@ export default Card = ({
 				});
 		} else {
 			x.value = withSpring(0);
+			destination.value = 0;
 			showLikeEndedModal();
 		}
 	};
