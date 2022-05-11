@@ -17,6 +17,7 @@ import {
 import { Feather, Octicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
@@ -24,8 +25,10 @@ const { width, height } = Dimensions.get("window");
 
 export default function RToplulukKurallari({ navigation }) {
 	const [isChecked, setChecked] = useState(false);
+	const insets = useSafeAreaInsets();
+
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
 			<StatusBar style={"dark"} translucent={false} backgroundColor={colors.white} />
 			<View name={"Header"} style={[styles.header]}>
 				<TouchableOpacity

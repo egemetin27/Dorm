@@ -227,7 +227,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								);
 							})}
 						</View>
-
+						{/*Report button for event card }
 						<View style={{ position: "absolute", top: 20, right: 20 }}>
 							<TouchableOpacity onPress={() => {}}>
 								<Image
@@ -240,6 +240,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								/>
 							</TouchableOpacity>
 						</View>
+						{ */}
 
 						<Gradient
 							colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}

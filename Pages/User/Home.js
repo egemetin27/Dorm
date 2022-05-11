@@ -423,13 +423,13 @@ export default function MainPage({ navigation }) {
 	const [maxAge, setMaxAge] = React.useState(99);
 	const [filterCinsiyet, setFilterCinsiyet] = React.useState([0, 0, 0]);
 	const [filterEgsersiz, setFilterEgsersiz] = React.useState([0, 0, 0]);
-	const [filterUniversite, setFilterUniversite] = React.useState();
+	//const [filterUniversite, setFilterUniversite] = React.useState();
 	const [filterAlkol, setFilterAlkol] = React.useState([0, 0, 0]);
 	const [filterSigara, setFilterSigara] = React.useState([0, 0, 0]);
-	const [filterBurc, setFilterBurc] = React.useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-	const [filterDin, setFilterDin] = React.useState([0, 0, 0]);
+	//const [filterBurc, setFilterBurc] = React.useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+	//const [filterDin, setFilterDin] = React.useState([0, 0, 0]);
 	const [filterYemek, setFilterYemek] = React.useState([0, 0, 0, 0, 0]);
-	const [filterHobi, setFilterHobi] = React.useState();
+	//const [filterHobi, setFilterHobi] = React.useState();
 
 	async function registerForPushNotificationAsync() {
 		let token;
@@ -468,16 +468,55 @@ export default function MainPage({ navigation }) {
 		setMyID(userID);
 		setSesToken(myToken);
 
-		if (filterCinsiyet == [0, 0, 0]) {
+		var applyCinsiyet = filterCinsiyet;
+		var applyEgsersiz = filterEgsersiz;
+		var applyAlkol = filterAlkol;
+		var applySigara = filterSigara;
+		var applyYemek = filterYemek;
+
+		
+		var numberOfFilters = 0;
+		
+
+		if (applyCinsiyet.keys == [0, 0, 0].keys) {
+			applyCinsiyet = [1,1,1];
+		} else {
+			numberOfFilters = numberOfFilters + 1;			
 		}
-		if (filterEgsersiz == [0, 0, 0]) {
+		
+
+		if (applyEgsersiz.keys == [0, 0, 0].keys) {
+			applyEgsersiz = [1,1,1];
+		} else {
+			numberOfFilters = numberOfFilters + 1;
 		}
-		if (filterAlkol == [0, 0, 0]) {
+
+		if (applyAlkol.keys == [0, 0, 0].keys) {
+			applyAlkol = [1,1,1];
+
+		} else {
+			numberOfFilters = numberOfFilters + 1;
 		}
-		if (filterSigara == [0, 0, 0]) {
+		if (applySigara.keys == [0, 0, 0].keys) {
+			applySigara = [1,1,1];
+
+		} else {
+			numberOfFilters = numberOfFilters + 1;
 		}
-		if (filterYemek == [0, 0, 0, 0, 0]) {
+
+		if (applyYemek.keys == [0,0,0,0,0].keys) {
+			applyYemek = [1,1,1,1,1];
+		} else {
+			numberOfFilters = numberOfFilters + 1;
 		}
+
+		
+		console.log(applyEgsersiz);
+		console.log(applyAlkol);
+		console.log(applySigara);
+		console.log(applyYemek);
+		console.log(numberOfFilters);
+		
 
 		/*
 		const [minAge, setMinAge] = React.useState(18);
@@ -492,16 +531,7 @@ export default function MainPage({ navigation }) {
 		const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
 		const [filterHobi, setFilterHobi] = React.useState();
 		*/
-
-		console.log(userID);
-		console.log(minAge);
-		console.log(maxAge);
-		console.log(filterCinsiyet);
-		console.log(filterEgsersiz);
-		console.log(filterAlkol);
-		console.log(filterSigara);
-		console.log(filterYemek);
-
+		
 		async function prepare() {
 			await axios
 				.post(
@@ -510,11 +540,11 @@ export default function MainPage({ navigation }) {
 						UserId: userID,
 						Minyas: minAge,
 						Maxyas: maxAge,
-						Cinsiyet: filterCinsiyet,
-						Egsersiz: filterEgsersiz,
-						Alkol: filterAlkol,
-						Sigara: filterSigara,
-						Yemek: filterYemek,
+						Cinsiyet: applyCinsiyet,
+						Egsersiz: applyEgsersiz,
+						Alkol: applyAlkol,
+						Sigara: applySigara,
+						Yemek: applyYemek,
 					},
 					{ headers: { "access-token": myToken } }
 				)
@@ -526,7 +556,6 @@ export default function MainPage({ navigation }) {
 					console.log(err);
 				});
 		}
-
 		try {
 			await prepare();
 		} catch (err) {
