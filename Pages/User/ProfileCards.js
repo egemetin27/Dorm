@@ -625,6 +625,7 @@ export default function ProfileCards({ navigation, route }) {
 					</Text>
 					<ReactNative.TouchableOpacity
 						onPress={() => {
+							setEndOfListModal(false);
 							navigation.replace("MainScreen", {
 								screen: "AnaSayfa",
 								params: { screen: "Home" },

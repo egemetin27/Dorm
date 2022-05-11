@@ -16,6 +16,7 @@ import {
 	Modal,
 } from "react-native";
 import { Feather, Octicons, MaterialIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
@@ -57,6 +58,8 @@ export default function Chat({ navigation, route }) {
 
 	const [deleteChatModal, setDeleteChatModal] = React.useState(false);
 
+	const insets = useSafeAreaInsets();
+	
 	const deleteChat = async () => {
 		console.log(chatID);
 		let abortController = new AbortController();
@@ -190,7 +193,7 @@ export default function Chat({ navigation, route }) {
 		await fetchProfile();
 		await fetchNewMessages();
 		//console.log(lastMsgSender);
-		if (lastMsgSender != myUserID) {
+		if (lastMsgSender != myUserID && unreadMsg != 0) {
 			updateChat();
 		}
 		//console.log(unreadMsg);
@@ -270,7 +273,7 @@ export default function Chat({ navigation, route }) {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, {marginTop: insets.top, marginBottom: insets.bottom}]}>
 			<View
 				name={"Header"}
 				style={[
@@ -851,7 +854,7 @@ export default function Chat({ navigation, route }) {
 						position: "absolute",
 						height: height,
 						width: width,
-						zIndex: 2,
+						zIndex: 3,
 					}}
 				>
 					<View
@@ -859,7 +862,7 @@ export default function Chat({ navigation, route }) {
 							position: "absolute",
 							height: height,
 							width: width,
-							zIndex: 3,
+							zIndex: 4,
 							backgroundColor: colors.dark_gray,
 							opacity: 0.5,
 						}}
@@ -868,7 +871,7 @@ export default function Chat({ navigation, route }) {
 					<View
 						style={{
 							position: "absolute",
-							zIndex: 4,
+							zIndex: 5,
 							top: 0,
 							left: 0,
 							right: 0,

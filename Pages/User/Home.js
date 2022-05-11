@@ -425,14 +425,14 @@ export default function MainPage({ navigation }) {
 	const [filtreModal, setFiltreModal] = React.useState(false);
 	const [minAge, setMinAge] = React.useState(18);
 	const [maxAge, setMaxAge] = React.useState(99);
-	const [filterCinsiyet, setFilterCinsiyet] = React.useState([1, 1, 1]);
-	const [filterEgsersiz, setFilterEgsersiz] = React.useState([1, 1, 1]);
+	const [filterCinsiyet, setFilterCinsiyet] = React.useState([0, 0, 0]);
+	const [filterEgsersiz, setFilterEgsersiz] = React.useState([0, 0, 0]);
 	const [filterUniversite, setFilterUniversite] = React.useState();
-	const [filterAlkol, setFilterAlkol] = React.useState([1, 1, 1]);
-	const [filterSigara, setFilterSigara] = React.useState([1, 1, 1]);
-	const [filterBurc, setFilterBurc] = React.useState([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
-	const [filterDin, setFilterDin] = React.useState([1, 1, 1]);
-	const [filterYemek, setFilterYemek] = React.useState([1, 1, 1, 1, 1]);
+	const [filterAlkol, setFilterAlkol] = React.useState([0, 0, 0]);
+	const [filterSigara, setFilterSigara] = React.useState([0, 0, 0]);
+	const [filterBurc, setFilterBurc] = React.useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+	const [filterDin, setFilterDin] = React.useState([0, 0, 0]);
+	const [filterYemek, setFilterYemek] = React.useState([0, 0, 0, 0, 0]);
 	const [filterHobi, setFilterHobi] = React.useState();
 
 	async function registerForPushNotificationAsync() {
@@ -471,6 +471,28 @@ export default function MainPage({ navigation }) {
 		const myToken = userData.sesToken;
 		setMyID(userID);
 		setSesToken(myToken);
+
+		 
+
+
+		if (filterCinsiyet == [0,0,0]) {
+			
+		}
+		if (filterEgsersiz == [0,0,0]) {
+			
+		}
+		if (filterAlkol == [0,0,0]) {
+			
+		}
+		if (filterSigara == [0,0,0]) {
+			
+		}
+		if (filterYemek == [0,0,0,0,0]) {
+			
+		}
+
+		
+
 		/*
 		const [minAge, setMinAge] = React.useState(18);
 		const [maxAge, setMaxAge] = React.useState(99);
@@ -484,6 +506,16 @@ export default function MainPage({ navigation }) {
 		const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
 		const [filterHobi, setFilterHobi] = React.useState();
 		*/
+
+		console.log(userID);
+		console.log(minAge);
+		console.log(maxAge);
+		console.log(filterCinsiyet);
+		console.log(filterEgsersiz);
+		console.log(filterAlkol);
+		console.log(filterSigara);
+		console.log(filterYemek);
+
 		async function prepare() {
 			await axios
 				.post(
@@ -495,7 +527,7 @@ export default function MainPage({ navigation }) {
 						Cinsiyet: filterCinsiyet,
 						Egsersiz: filterEgsersiz,
 						Alkol: filterAlkol,
-						Sigara: filterAlkol,
+						Sigara: filterSigara,
 						Yemek: filterYemek,
 					},
 					{ headers: { "access-token": myToken } }
@@ -856,16 +888,16 @@ export default function MainPage({ navigation }) {
 								<View
 									style={{
 										flexDirection: "row",
-										justifyContent: "flex-start",
+										justifyContent: "space-between",
 										alignItems: "center",
 									}}
 								>
 									<Text style={styles.filtreCategory}>Yaş</Text>
 									<View style={{ margin: 10 }} />
 									{toggleYas ? (
-										<Feather name="chevron-up" size={20} color="#4A4A4A" />
-									) : (
 										<Feather name="chevron-down" size={20} color="#4A4A4A" />
+									) : (
+										<Feather name="chevron-right" size={20} color="#4A4A4A" />
 									)}
 								</View>
 								{toggleYas ? (
@@ -912,16 +944,16 @@ export default function MainPage({ navigation }) {
 								<View
 									style={{
 										flexDirection: "row",
-										justifyContent: "flex-start",
+										justifyContent: "space-between",
 										alignItems: "center",
 									}}
 								>
 									<Text style={styles.filtreCategory}>Cinsiyet</Text>
 									<View style={{ margin: 10 }} />
 									{toggleCinsiyet ? (
-										<Feather name="chevron-up" size={20} color="#4A4A4A" />
-									) : (
 										<Feather name="chevron-down" size={20} color="#4A4A4A" />
+									) : (
+										<Feather name="chevron-right" size={20} color="#4A4A4A" />
 									)}
 								</View>
 								{toggleCinsiyet ? (
@@ -1042,16 +1074,16 @@ export default function MainPage({ navigation }) {
 								<View
 									style={{
 										flexDirection: "row",
-										justifyContent: "flex-start",
+										justifyContent: "space-between",
 										alignItems: "center",
 									}}
 								>
 									<Text style={styles.filtreCategory}>Egzersiz</Text>
 									<View style={{ margin: 10 }} />
 									{toggleEgsersiz ? (
-										<Feather name="chevron-up" size={20} color="#4A4A4A" />
-									) : (
 										<Feather name="chevron-down" size={20} color="#4A4A4A" />
+									) : (
+										<Feather name="chevron-right" size={20} color="#4A4A4A" />
 									)}
 								</View>
 								{toggleEgsersiz ? (
@@ -1164,7 +1196,7 @@ export default function MainPage({ navigation }) {
 							</TouchableOpacity>
 							{/* Filtre Egzersiz toggle */}
 
-							{/* Filtre Üniversite toggle */}
+							{/* Filtre Üniversite toggle }
 							<TouchableOpacity
 								onPress={() => {
 									setToggleUniversite(!toggleUniversite);
@@ -1187,7 +1219,7 @@ export default function MainPage({ navigation }) {
 								</View>
 								{toggleUniversite ? null : null}
 							</TouchableOpacity>
-							{/* Filtre Üniversite toggle */}
+							{ Filtre Üniversite toggle */}
 
 							{/* Filtre Alkol Kullanımı toggle */}
 							<TouchableOpacity
@@ -1198,16 +1230,16 @@ export default function MainPage({ navigation }) {
 								<View
 									style={{
 										flexDirection: "row",
-										justifyContent: "flex-start",
+										justifyContent: "space-between",
 										alignItems: "center",
 									}}
 								>
 									<Text style={styles.filtreCategory}>Alkol Kullanımı</Text>
 									<View style={{ margin: 10 }} />
 									{toggleAlkol ? (
-										<Feather name="chevron-up" size={20} color="#4A4A4A" />
-									) : (
 										<Feather name="chevron-down" size={20} color="#4A4A4A" />
+									) : (
+										<Feather name="chevron-right" size={20} color="#4A4A4A" />
 									)}
 								</View>
 								{toggleAlkol ? (
@@ -1329,16 +1361,16 @@ export default function MainPage({ navigation }) {
 								<View
 									style={{
 										flexDirection: "row",
-										justifyContent: "flex-start",
+										justifyContent: "space-between",
 										alignItems: "center",
 									}}
 								>
 									<Text style={styles.filtreCategory}>Sigara</Text>
 									<View style={{ margin: 10 }} />
 									{toggleSigara ? (
-										<Feather name="chevron-up" size={20} color="#4A4A4A" />
-									) : (
 										<Feather name="chevron-down" size={20} color="#4A4A4A" />
+									) : (
+										<Feather name="chevron-right" size={20} color="#4A4A4A" />
 									)}
 								</View>
 								{toggleSigara ? (
@@ -1451,7 +1483,7 @@ export default function MainPage({ navigation }) {
 							</TouchableOpacity>
 							{/* Filtre Sigara toggle */}
 
-							{/* Filtre Burç toggle */}
+							{/* Filtre Burç toggle }
 							<TouchableOpacity
 								onPress={() => {
 									setToggleBurc(!toggleBurc);
@@ -1474,9 +1506,9 @@ export default function MainPage({ navigation }) {
 								</View>
 								{toggleBurc ? null : null}
 							</TouchableOpacity>
-							{/* Filtre Burç toggle */}
+							{ Filtre Burç toggle */}
 
-							{/* Filtre Din toggle */}
+							{/* Filtre Din toggle }
 							<TouchableOpacity
 								onPress={() => {
 									setToggleDin(!toggleDin);
@@ -1499,7 +1531,7 @@ export default function MainPage({ navigation }) {
 								</View>
 								{toggleDin ? null : null}
 							</TouchableOpacity>
-							{/* Filtre Din toggle */}
+							{ Filtre Din toggle */}
 
 							{/* Filtre Yeme Biçimi toggle */}
 							<TouchableOpacity
@@ -1510,16 +1542,16 @@ export default function MainPage({ navigation }) {
 								<View
 									style={{
 										flexDirection: "row",
-										justifyContent: "flex-start",
+										justifyContent: "space-between",
 										alignItems: "center",
 									}}
 								>
 									<Text style={styles.filtreCategory}>Yeme Biçimi</Text>
 									<View style={{ margin: 10 }} />
 									{toggleYemek ? (
-										<Feather name="chevron-up" size={20} color="#4A4A4A" />
-									) : (
 										<Feather name="chevron-down" size={20} color="#4A4A4A" />
+									) : (
+										<Feather name="chevron-right" size={20} color="#4A4A4A" />
 									)}
 								</View>
 								{toggleYemek ? (
@@ -1759,7 +1791,7 @@ export default function MainPage({ navigation }) {
 							</TouchableOpacity>
 							{/* Filtre Yeme Biçimi toggle */}
 
-							{/* Filtre İlgi Alanları toggle */}
+							{/* Filtre İlgi Alanları toggle }
 							<TouchableOpacity
 								onPress={() => {
 									setToggleHobi(!toggleHobi);
@@ -1782,7 +1814,7 @@ export default function MainPage({ navigation }) {
 								</View>
 								{toggleHobi ? null : null}
 							</TouchableOpacity>
-							{/* Filtre İlgi Alanları toggle */}
+							{ Filtre İlgi Alanları toggle */}
 						</ScrollView>
 						<View style={{ height: 15 }}></View>
 					</View>
