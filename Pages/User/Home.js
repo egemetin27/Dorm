@@ -467,6 +467,7 @@ export default function MainPage({ navigation }) {
 		const myToken = userData.sesToken;
 		setMyID(userID);
 		setSesToken(myToken);
+		
 
 		var applyCinsiyet = filterCinsiyet;
 		var applyEgsersiz = filterEgsersiz;
@@ -481,6 +482,10 @@ export default function MainPage({ navigation }) {
 			applyCinsiyet = [1,1,1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;			
+		}
+		
+		if (matchMode == 1) {
+			applyCinsiyet = [1,1,1];
 		}
 		
 
@@ -918,7 +923,12 @@ export default function MainPage({ navigation }) {
 							{/* Filtre Cinsiyet toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									setToggleCinsiyet(!toggleCinsiyet);
+									if (matchMode == 1) {
+										alert("BFF modunda bu filtreyi kullanamazsınız.")
+									} else {
+										setToggleCinsiyet(!toggleCinsiyet);
+									}
+									
 								}}
 							>
 								<View
