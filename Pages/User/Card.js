@@ -183,6 +183,10 @@ export default Card = ({
 	};
 
 	const onSwipe = async (val) => {
+		let abortController = new AbortController();
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const myMode = userData.matchMode;
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
 		await axios
 			.post(
@@ -191,7 +195,7 @@ export default Card = ({
 					isLike: val,
 					userSwiped: myID,
 					otherUser: id,
-					matchMode: "0",
+					matchMode: myMode,
 				},
 				{ headers: { "access-token": sesToken } }
 			)

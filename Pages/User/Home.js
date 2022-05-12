@@ -925,8 +925,8 @@ export default function MainPage({ navigation }) {
 							{/* Filtre Cinsiyet toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									if (matchMode == 1) {
-										alert("BFF modunda bu filtreyi kullanamazsınız.");
+									if (matchMode == 0) {
+										alert("Flört modunda bu filtreyi kullanamazsınız.");
 									} else {
 										setToggleCinsiyet(!toggleCinsiyet);
 									}
