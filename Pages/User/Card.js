@@ -210,6 +210,7 @@ export default Card = ({
 			})
 			.catch((error) => {
 				if (error.response) {
+					console.log(error.response);
 					if (error.response.status == 408) {
 						console.log("swipe count ended response");
 						let endTime = new Date(error.response.data);

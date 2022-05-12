@@ -179,6 +179,9 @@ export default function ProfileCards({ navigation, route }) {
 	}, []);
 
 	React.useEffect(() => {
+		console.log(indexOfFrontCard);
+		console.log(peopleList.length);
+
 		if (peopleList.length > 0 && indexOfFrontCard == peopleList.length) setEndOfListModal(true);
 	}, [indexOfFrontCard]);
 
@@ -190,6 +193,14 @@ export default function ProfileCards({ navigation, route }) {
 			</View>
 		);
 	}
+
+	React.useEffect(() => {
+		const unsubscribe = navigation.addListener("blur", () => {
+			setEndOfListModal(false);
+		});
+
+		return unsubscribe;
+	}, [navigation]);
 
 	return (
 		<View style={commonStyles.Container}>
@@ -965,8 +976,8 @@ export default function ProfileCards({ navigation, route }) {
 						zamanda tekrar uğramayı unutma!
 					</Text>
 					<ReactNative.TouchableOpacity
-						onPress={() => {
-							setEndOfListModal(false);
+						onPress={async () => {
+							await setEndOfListModal(false);
 							navigation.replace("MainScreen", {
 								screen: "AnaSayfa",
 								params: { screen: "Home" },
