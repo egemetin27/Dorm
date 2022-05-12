@@ -28,6 +28,7 @@ import Animated, {
 import { snapPoint } from "react-native-redash";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
@@ -42,7 +43,7 @@ const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../../src/graphql/queries";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { NavigationContainer } from "@react-navigation/native";
+import { ConsoleLogger } from "@aws-amplify/core";
 
 export default Card = ({
 	card,
@@ -58,8 +59,9 @@ export default Card = ({
 	showMatchScreen,
 	myProfilePicture,
 	showLikeEndedModal,
-	likeEnded,
 	setTimer,
+	isScrollShowed,
+	setScrollShowed,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -72,7 +74,50 @@ export default Card = ({
 	const [matchPage, setMatchPage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
+	const {
+		About: about,
+		Alkol: drink,
+		Beslenme: diet,
+		Burc: sign,
+		Din: religion,
+		Gender: genderNo,
+		Major: major,
+		Name: name,
+		School: university,
+		Sigara: smoke,
+		Surname: sName,
+		UserId: id,
+		photos: photoList,
+		Birth_Date: bDay,
+		interest: hobbies,
+	} = card;
+	const photoListRef = React.useRef();
 
+	const scroll = () => {
+		setTimeout(() => {
+			// scrollDown();
+			photoListRef.current.scrollToIndex({ index: 0.4 });
+		}, 200);
+		setTimeout(() => {
+			// scrollUp();
+			photoListRef.current.scrollToIndex({ index: 0 });
+		}, 600);
+	};
+
+	const scrollToEnd = async () => {
+		if (index == indexOfFrontCard && !isScrollShowed && photoList.length > 1) {
+			await AsyncStorage.getItem("scrollNotShowed").then((res) => {
+				console.log(res);
+				scroll();
+				let newValue = parseInt(res) + 1;
+				if (newValue == 5) {
+					AsyncStorage.removeItem("scrollNotShowed");
+				} else {
+					AsyncStorage.setItem("scrollNotShowed", newValue.toString());
+				}
+			});
+		}
+	};
 	const reportProfile = async () => {
 		setReportPage(false);
 		let abortController = new AbortController();
@@ -100,24 +145,6 @@ export default Card = ({
 			console.log(error);
 		}
 	};
-
-	const {
-		About: about,
-		Alkol: drink,
-		Beslenme: diet,
-		Burc: sign,
-		Din: religion,
-		Gender: genderNo,
-		Major: major,
-		Name: name,
-		School: university,
-		Sigara: smoke,
-		Surname: sName,
-		UserId: id,
-		photos: photoList,
-		Birth_Date: bDay,
-		interest: hobbies,
-	} = card;
 
 	const gender = getGender(genderNo);
 	const age = getAge(bDay);
@@ -156,7 +183,6 @@ export default Card = ({
 
 	const onSwipe = async (val) => {
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		// if (likeEnded.value == false || val == 2) {
 		await axios
 			.post(
 				url + "/LikeDislike",
@@ -179,15 +205,14 @@ export default Card = ({
 					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 					//setMatchPage(true);
 				}
-				incrementIndex();
 			})
 			.catch((error) => {
 				if (error.response) {
 					if (error.response.status == 408) {
-						likeEnded.value = true;
 						console.log("swipe count ended response");
 						let endTime = new Date(error.response.data);
 						let currentTime = new Date(Date.now());
+						currentTime.setHours(currentTime.getHours() + 3);
 						let hourLeft = (endTime.getHours() - currentTime.getHours() + 24) % 24;
 						let minuteLeft = (endTime.getMinutes() - currentTime.getMinutes() + 60) % 60;
 						setTimer(hourLeft, minuteLeft);
@@ -195,6 +220,7 @@ export default Card = ({
 						x.value = withSpring(0);
 						destination.value = 0;
 						showLikeEndedModal();
+						return;
 					}
 				} else if (error.request) {
 					console.log("request error: ", error.request);
@@ -202,11 +228,7 @@ export default Card = ({
 					console.log("error: ", error.message);
 				}
 			});
-		// } else {
-		// 	x.value = withSpring(0);
-		// 	destination.value = 0;
-		// 	showLikeEndedModal();
-		// }
+		incrementIndex();
 	};
 
 	const panHandler =
@@ -365,7 +387,11 @@ export default Card = ({
 								>
 									{photoList?.length > 0 ? (
 										<FlatList
+											ref={photoListRef}
 											data={photoList}
+											onLayout={async () => {
+												await scrollToEnd();
+											}}
 											keyExtractor={(item) => {
 												return item.Photo_Order;
 											}}

@@ -41,7 +41,7 @@ const { width, height } = Dimensions.get("window");
 const Card = ({ event, myID, navigation, sesToken }) => {
 	const {
 		EventId,
-		BuyLink,
+		BuyLink: buyLink,
 		Description: name,
 		Date: date,
 		StartTime: time,
@@ -158,7 +158,11 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	const likeButton = React.createRef();
 
 	return (
-		<View name={"cards"} style={{ width: "100%", justifyContent: "center", height: height * 0.76 }}>
+		<View
+			name={"cards"}
+			style={{ width: "100%", justifyContent: "flex-start", flex: 1, justifyContent: "center" }}
+			// style={{ width: "100%", backgroundColor: "green" }}
+		>
 			<GestureDetector gesture={tapHandler} waitFor={likeButton}>
 				<Animated.View>
 					<Animated.View
@@ -216,7 +220,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 												borderRadius: 4,
 												backgroundColor: colors.white,
 											},
-
 											useAnimatedStyle(() => {
 												return {
 													height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
@@ -241,98 +244,129 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 							</TouchableOpacity>
 						</View>
 						{ */}
-
-						<Gradient
-							colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
-							locations={[0, 0.1, 1]}
-							start={{ x: 0.5, y: 0 }}
-							end={{ x: 0.5, y: 1 }}
+						<View
 							style={{
-								height: "15%",
 								width: "100%",
 								position: "absolute",
-								justifyContent: "flex-end",
 								bottom: 0,
+								maxHeight: Math.min(width * 0.405, height * 0.21),
 							}}
 						>
-							<View
+							<Gradient
+								colors={["rgba(0,0,0,0.001)", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.65)"]}
+								locations={[0, 0.4, 1]}
+								start={{ x: 0.5, y: 0 }}
+								end={{ x: 0.5, y: 1 }}
 								style={{
-									width: "100%",
 									height: "100%",
-									alignItems: "center",
-									justifyContent: "space-between",
-									flexDirection: "row",
-									paddingHorizontal: "5%",
+									paddingTop: Math.min(width * 0.1, height * 0.05),
+									paddingBottom: 20,
+									width: "100%",
+									justifyContent: "flex-start",
 								}}
 							>
-								<View style={{ flex: 1, paddingRight: "5%" }}>
-									<Text
-										numberOfLines={1}
-										style={{
-											color: colors.white,
-											fontSize: Math.min(24, width * 0.048),
-											fontFamily: "PoppinsSemiBold",
-											letterSpacing: 1.05,
-										}}
-									>
-										{name}
-									</Text>
-									<Text
-										style={{
-											color: colors.white,
-											fontSize: Math.min(18, width * 0.036),
-											fontFamily: "PoppinsItalic",
-										}}
-									>
-										{date}
-										{"\n"}
-										{time}
-									</Text>
-								</View>
-								{/* <View style={{ zIndex: 5 }}> */}
-								<TouchableOpacity onPress={handleLikeButton}>
+								<View
+									style={{
+										width: "100%",
+										height: "100%",
+										flex: 1,
+										alignItems: "center",
+										justifyContent: "space-between",
+										flexDirection: "row",
+										paddingHorizontal: "5%",
+									}}
+								>
 									<View
 										style={{
-											backgroundColor: colors.white,
-											height: Math.max(Math.min(width * 0.1, height * 0.08), 60),
-											aspectRatio: 1 / 1,
-											borderRadius: Math.max(Math.min(width * 0.1, height * 0.08), 60) / 2,
+											flex: 1,
+											height: "100%",
+											paddingRight: "3%",
+											justifyContent: "flex-start",
 										}}
 									>
-										<View
+										<Text
+											numberOfLines={1}
 											style={{
-												width: "100%",
-												height: "100%",
-												justifyContent: "center",
-												alignItems: "center",
+												color: colors.white,
+												fontSize: Math.min(36, height * 0.03),
+												lineHeight: Math.min(height * 0.03, 36) * 1.2,
+												fontFamily: "PoppinsSemiBold",
+												letterSpacing: -0.2,
 											}}
 										>
-											{favFlag ? (
-												<Image
-													style={{
-														aspectRatio: 1,
-														height: (Math.max(Math.min(width * 0.1, height * 0.08), 60) * 2) / 3,
-														resizeMode: "contain",
-														marginBottom: MARGIN_CONSTANT * 40,
-													}}
-													source={require("../../assets/Fav_filled.png")}
-												/>
-											) : (
-												<Image
-													style={{
-														aspectRatio: 1,
-														height: (Math.max(Math.min(width * 0.1, height * 0.08), 60) * 2) / 3,
-														resizeMode: "contain",
-														marginBottom: MARGIN_CONSTANT * 40,
-													}}
-													source={require("../../assets/Fav.png")}
-												/>
-											)}
-										</View>
+											{name}
+										</Text>
+										{date != "NaN/NaN/NaN" && (
+											<Text
+												style={{
+													color: colors.white,
+													fontSize: Math.min(height * 0.02, 24),
+													lineHeight: Math.min(height * 0.02, 24) * 1.2,
+													fontFamily: "PoppinsItalic",
+												}}
+											>
+												{date}
+											</Text>
+										)}
+
+										{time != "" && (
+											<Text
+												style={{
+													color: colors.white,
+													fontSize: Math.min(height * 0.02, 24),
+													lineHeight: Math.min(height * 0.02, 24) * 1.2,
+													fontFamily: "PoppinsItalic",
+												}}
+											>
+												{time}
+											</Text>
+										)}
 									</View>
-								</TouchableOpacity>
-							</View>
-						</Gradient>
+									{/* <View style={{ zIndex: 5 }}> */}
+									<TouchableOpacity onPress={handleLikeButton}>
+										<View
+											style={{
+												backgroundColor: colors.white,
+												height: Math.max(Math.min(width * 0.1, height * 0.08), 60),
+												aspectRatio: 1 / 1,
+												borderRadius: Math.max(Math.min(width * 0.1, height * 0.08), 60) / 2,
+											}}
+										>
+											<View
+												style={{
+													width: "100%",
+													height: "100%",
+													justifyContent: "center",
+													alignItems: "center",
+												}}
+											>
+												{favFlag ? (
+													<Image
+														style={{
+															aspectRatio: 1,
+															height: (Math.max(Math.min(width * 0.1, height * 0.08), 60) * 2) / 3,
+															resizeMode: "contain",
+															marginBottom: MARGIN_CONSTANT * 40,
+														}}
+														source={require("../../assets/Fav_filled.png")}
+													/>
+												) : (
+													<Image
+														style={{
+															aspectRatio: 1,
+															height: (Math.max(Math.min(width * 0.1, height * 0.08), 60) * 2) / 3,
+															resizeMode: "contain",
+															marginBottom: MARGIN_CONSTANT * 40,
+														}}
+														source={require("../../assets/Fav.png")}
+													/>
+												)}
+											</View>
+										</View>
+									</TouchableOpacity>
+								</View>
+							</Gradient>
+						</View>
 					</Animated.View>
 
 					{/* PART: backface */}
@@ -381,7 +415,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						>
 							<View style={{ width: "100%", alignItems: "center" }}>
 								<Text
-									name={"Location"}
+									name={"Name"}
 									style={{
 										color: colors.light_gray,
 										fontSize: Math.min(width * 0.045, 27),
@@ -389,108 +423,152 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 										paddingVertical: 5,
 									}}
 								>
-									Yer{"\n"}
+									Etkinliğin Adı{"\n"}
 									<Text
-										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
+										style={{
+											textAlign: "left",
+											fontFamily: "PoppinsSemiBold",
+											fontSize: Math.min(width * 0.055, 30),
+										}}
 									>
-										{location}
+										{name}
 									</Text>
 								</Text>
-								<Text
-									name={"Date"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(width * 0.045, 27),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Tarih{"\n"}
+								{location != "" && (
 									<Text
-										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
+										name={"Location"}
+										style={{
+											color: colors.light_gray,
+											fontSize: Math.min(width * 0.045, 27),
+											textAlign: "center",
+											paddingVertical: 5,
+										}}
 									>
-										{date}
-									</Text>
-								</Text>
-								<Text
-									name={"Time"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(width * 0.045, 27),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Saat{"\n"}
-									<Text
-										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
-									>
-										{time}
-									</Text>
-								</Text>
-								<Text
-									name={"Genre"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(width * 0.045, 27),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Tür{"\n"}
-									<Text
-										style={{ fontFamily: "PoppinsSemiBold", fontSize: Math.min(width * 0.055, 30) }}
-									>
-										{genre}
-									</Text>
-								</Text>
-								<Text
-									name={"Seller"}
-									style={{
-										textAlign: "center",
-										color: colors.light_gray,
-										fontSize: Math.min(width * 0.045, 27),
-										paddingTop: 5,
-									}}
-								>
-									Bilet Platformu
-								</Text>
-								<Pressable
-									onPress={async () => {
-										if (turn.value != -1) return;
-										await axios
-											.post(
-												url + "/eventLinkClick",
-												{ EventId: EventId },
-												{ headers: { "access-token": sesToken } }
-											)
-											.catch((err) => console.log(err));
-
-										await Linking.openURL(BuyLink);
-									}}
-								>
-									<View style={{ flexDirection: "row", alignContent: "center" }}>
+										Yer{"\n"}
 										<Text
 											style={{
-												color: colors.light_gray,
-												textDecorationLine: "underline",
-												fontSize: Math.min(width * 0.055, 30),
 												fontFamily: "PoppinsSemiBold",
+												fontSize: Math.min(width * 0.055, 30),
 											}}
 										>
-											{seller}
+											{location}
 										</Text>
+									</Text>
+								)}
+								{date != "NaN/NaN/NaN" && (
+									<Text
+										name={"Date"}
+										style={{
+											color: colors.light_gray,
+											fontSize: Math.min(width * 0.045, 27),
+											textAlign: "center",
+											paddingVertical: 5,
+										}}
+									>
+										Tarih{"\n"}
 										<Text
+											style={{
+												fontFamily: "PoppinsSemiBold",
+												fontSize: Math.min(width * 0.055, 30),
+											}}
+										>
+											{date}
+										</Text>
+									</Text>
+								)}
+								{time != "" && (
+									<Text
+										name={"Time"}
+										style={{
+											color: colors.light_gray,
+											fontSize: Math.min(width * 0.045, 27),
+											textAlign: "center",
+											paddingVertical: 5,
+										}}
+									>
+										Saat{"\n"}
+										<Text
+											style={{
+												fontFamily: "PoppinsSemiBold",
+												fontSize: Math.min(width * 0.055, 30),
+											}}
+										>
+											{time}
+										</Text>
+									</Text>
+								)}
+								{genre != "" && (
+									<Text
+										name={"Genre"}
+										style={{
+											color: colors.light_gray,
+											fontSize: Math.min(width * 0.045, 27),
+											textAlign: "center",
+											paddingVertical: 5,
+										}}
+									>
+										Tür{"\n"}
+										<Text
+											style={{
+												fontFamily: "PoppinsSemiBold",
+												fontSize: Math.min(width * 0.055, 30),
+											}}
+										>
+											{genre}
+										</Text>
+									</Text>
+								)}
+								{buyLink != "" && (
+									<View style={{ width: "100%", alignItems: "center" }}>
+										<Text
+											name={"Seller"}
 											style={{
 												textAlign: "center",
-												fontSize: Math.min(width * 0.07, 30),
 												color: colors.light_gray,
+												fontSize: Math.min(width * 0.045, 27),
+												paddingTop: 5,
 											}}
 										>
-											{"⇗"}
+											Bilet Platformu
 										</Text>
+										<Pressable
+											onPress={async () => {
+												if (turn.value != -1) return;
+												await axios
+													.post(
+														url + "/eventLinkClick",
+														{ EventId: EventId },
+														{ headers: { "access-token": sesToken } }
+													)
+													.catch((err) => console.log(err));
+
+												await Linking.openURL(buyLink);
+											}}
+										>
+											<View style={{ flexDirection: "row", alignContent: "center" }}>
+												<Text
+													style={{
+														color: colors.light_gray,
+														textDecorationLine: "underline",
+														fontSize: Math.min(width * 0.055, 30),
+														fontFamily: "PoppinsSemiBold",
+													}}
+												>
+													{seller}
+												</Text>
+												<Text
+													style={{
+														textAlign: "center",
+														fontSize: Math.min(width * 0.07, 30),
+														color: colors.light_gray,
+													}}
+												>
+													{"⇗"}
+												</Text>
+											</View>
+										</Pressable>
 									</View>
-								</Pressable>
+								)}
 								<View style={{ width: "100%" }}>
 									<TouchableOpacity onPress={explorePeople}>
 										<View
@@ -733,12 +811,10 @@ export default function EventCards({ navigation, route }) {
 				/>
 				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
-			<View style={{}}>
+			<View style={{ flex: 1 }}>
 				<Carousel
-					style={{}}
 					defaultIndex={idx}
 					width={width}
-					height={0}
 					loop={false}
 					data={list}
 					renderItem={({ item }) => (
@@ -746,8 +822,17 @@ export default function EventCards({ navigation, route }) {
 					)}
 				/>
 			</View>
-			<View style={{ position: "absolute", bottom: 10, paddingHorizontal: width * 0.05 }}>
+			<View
+				style={{
+					width: width,
+					paddingHorizontal: width * 0.06,
+					marginBottom: Math.min(12, height * 0.02),
+					// backgroundColor: "red",
+				}}
+			>
 				<Text
+					numberOfLines={2}
+					// adjustsFontSizeToFit={true}
 					style={{
 						textAlign: "center",
 						fontSize: Math.min(width * 0.04, 24),

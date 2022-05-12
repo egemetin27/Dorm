@@ -310,18 +310,20 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 			/>
 			<Gradient
-				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.75)"]}
-				locations={[0, 0.1, 1]}
+				colors={["rgba(0,0,0,0.001)", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.65)"]}
+				locations={[0, 0.4, 1]}
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
-					height: height * 0.08,
+					height: "40%",
+					paddingTop: "25%",
+					// height: height * 0.08,
 					width: "100%",
 					position: "absolute",
-					justifyContent: "flex-end",
-					paddingBottom: height * 0.005,
+					justifyContent: "flex-start",
 					bottom: 0,
-					paddingHorizontal: width * 0.02,
+					paddingBottom: "2%",
+					paddingHorizontal: "5%",
 				}}
 			>
 				<Text
@@ -345,51 +347,57 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 						paddingTop: height * 0.002,
 					}}
 				>
-					<Text
-						style={{
-							color: colors.white,
-							fontSize: height * 0.015,
-							lineHeight: height * 0.018,
-						}}
-					>
-						{Date}
-					</Text>
-					<Text
-						style={{
-							color: colors.white,
-							fontSize: height * 0.015,
-							lineHeight: height * 0.018,
-						}}
-					>
-						{StartTime}
-					</Text>
+					{Date != "NaN/NaN/NaN" && (
+						<Text
+							style={{
+								color: colors.white,
+								fontSize: height * 0.015,
+								lineHeight: height * 0.018,
+							}}
+						>
+							{Date}
+						</Text>
+					)}
+					{StartTime != "" && (
+						<Text
+							style={{
+								color: colors.white,
+								fontSize: height * 0.015,
+								lineHeight: height * 0.018,
+							}}
+						>
+							{StartTime}
+						</Text>
+					)}
 				</View>
-				<View
-					name={"location"}
-					style={{
-						width: "100%",
-						flexDirection: "row",
-						alignItems: "flex-end",
-						paddingTop: height * 0.002,
-					}}
-				>
-					<MaterialCommunityIcons
-						name="map-marker-radius"
-						size={height * 0.018}
-						color={colors.white}
-						style={{ paddingRight: width * 0.005 }}
-					/>
-					<Text
-						numberOfLines={1}
+				{Location != "" && (
+					<View
+						name={"location"}
 						style={{
-							color: colors.white,
-							fontSize: height * 0.015,
-							lineHeight: height * 0.018,
+							width: "100%",
+							flexDirection: "row",
+							alignItems: "flex-end",
+							paddingTop: height * 0.002,
 						}}
 					>
-						{Location}
-					</Text>
-				</View>
+						<MaterialCommunityIcons
+							name="map-marker-radius"
+							size={height * 0.018}
+							color={colors.white}
+							style={{ paddingRight: width * 0.005 }}
+						/>
+						<Text
+							numberOfLines={1}
+							style={{
+								color: colors.white,
+								fontSize: height * 0.015,
+								lineHeight: height * 0.018,
+							}}
+						>
+							{Location}
+						</Text>
+					</View>
+				)}
 			</Gradient>
 		</Pressable>
 	);
@@ -431,34 +439,6 @@ export default function MainPage({ navigation }) {
 	const [filterYemek, setFilterYemek] = React.useState([0, 0, 0, 0, 0]);
 	//const [filterHobi, setFilterHobi] = React.useState();
 
-	async function registerForPushNotificationAsync() {
-		let token;
-		const { status: existingStatus } = await Notifications.getPermissionsAsync();
-		let finalStatus = existingStatus;
-		console.log(existingStatus);
-		console.log(finalStatus);
-		if (existingStatus != "granted") {
-			const { status } = await Notifications.requestPermissionsAsync();
-			finalStatus = status;
-		}
-		if (finalStatus != "granted") {
-			return null;
-		}
-		token = (await Notifications.getExpoPushTokenAsync()).data;
-		console.log(token);
-
-		if (Platform.OS == "android") {
-			Notifications.setNotificationChannelAsync("default", {
-				name: "default",
-				importance: Notifications.AndroidImportance.MAX,
-				vibrationPattern: [0, 250, 250, 250],
-				lightColor: "#FF231F7C",
-			});
-		}
-
-		return token;
-	}
-
 	const applyFilter = async () => {
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
@@ -474,38 +454,40 @@ export default function MainPage({ navigation }) {
 		var applySigara = filterSigara;
 		var applyYemek = filterYemek;
 
-		
 		var numberOfFilters = 0;
 
-		if (applyCinsiyet[0] == 0 && applyCinsiyet[1] == 0 && applyCinsiyet[2] == 0 ) {
-			applyCinsiyet = [1,1,1];
+		if (applyCinsiyet[0] == 0 && applyCinsiyet[1] == 0 && applyCinsiyet[2] == 0) {
+			applyCinsiyet = [1, 1, 1];
 		} else {
-			numberOfFilters = numberOfFilters + 1;			
+			numberOfFilters = numberOfFilters + 1;
 		}
-		
 
 		if (applyEgsersiz[0] == 0 && applyEgsersiz[1] == 0 && applyEgsersiz[2] == 0) {
-			applyEgsersiz = [1,1,1];
+			applyEgsersiz = [1, 1, 1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
 		if (applyAlkol[0] == 0 && applyAlkol[1] == 0 && applyAlkol[2] == 0) {
-			applyAlkol = [1,1,1];
-
+			applyAlkol = [1, 1, 1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
 		if (applySigara[0] == 0 && applySigara[1] == 0 && applySigara[2] == 0) {
-			applySigara = [1,1,1];
-
+			applySigara = [1, 1, 1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
-		if (applyYemek[0] == 0 && applyYemek[1] == 0 && applyYemek[2] == 0 && applyYemek[3] == 0 && applyYemek[4] == 0) {
-			applyYemek = [1,1,1,1,1];
+		if (
+			applyYemek[0] == 0 &&
+			applyYemek[1] == 0 &&
+			applyYemek[2] == 0 &&
+			applyYemek[3] == 0 &&
+			applyYemek[4] == 0
+		) {
+			applyYemek = [1, 1, 1, 1, 1];
 		} else {
 			numberOfFilters = numberOfFilters + 1;
 		}
@@ -516,7 +498,6 @@ export default function MainPage({ navigation }) {
 		console.log(applySigara);
 		console.log(applyYemek);
 		console.log(numberOfFilters);
-		
 
 		/*
 		const [minAge, setMinAge] = React.useState(18);
@@ -531,7 +512,7 @@ export default function MainPage({ navigation }) {
 		const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
 		const [filterHobi, setFilterHobi] = React.useState();
 		*/
-		
+
 		async function prepare() {
 			await axios
 				.post(
@@ -645,7 +626,6 @@ export default function MainPage({ navigation }) {
 	});
 
 	if (!isAppReady) {
-		console.log("");
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
 				<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
@@ -776,29 +756,52 @@ export default function MainPage({ navigation }) {
 				/>
 			</View>
 			<View name={"Events"} style={{ width: "100%", height: "35%" }}>
-				<FlatList
-					ref={eventsRef}
-					horizontal={true}
-					showsHorizontalScrollIndicator={false}
-					keyExtractor={(item) => item.EventId.toString()}
-					data={shownEvents}
-					renderItem={({ item, index }) => (
-						<Event
-							setIsAppReady={setIsAppReady}
-							index={index}
-							event={item}
-							length={shownEvents.length}
-							openEvents={(idx) => {
-								navigation.navigate("EventCards", {
-									idx: idx,
-									list: shownEvents,
-									myID: myID,
-									sesToken: sesToken,
-								});
+				{shownEvents.length > 0 ? (
+					<FlatList
+						ref={eventsRef}
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+						keyExtractor={(item) => item.EventId.toString()}
+						data={shownEvents}
+						renderItem={({ item, index }) => (
+							<Event
+								setIsAppReady={setIsAppReady}
+								index={index}
+								event={item}
+								length={shownEvents.length}
+								openEvents={(idx) => {
+									navigation.navigate("EventCards", {
+										idx: idx,
+										list: shownEvents,
+										myID: myID,
+										sesToken: sesToken,
+									});
+								}}
+							/>
+						)}
+					/>
+				) : (
+					<View
+						style={{
+							width: "100%",
+							height: "100%",
+							justifyContent: "center",
+							alignItems: "center",
+							paddingHorizontal: "10%",
+						}}
+					>
+						<Text
+							style={{
+								textAlign: "center",
+								fontFamily: "PoppinsSemiBold",
+								fontSize: Math.min(width * 0.042, 20),
+								color: colors.gray,
 							}}
-						/>
-					)}
-				/>
+						>
+							Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
+						</Text>
+					</View>
+				)}
 			</View>
 
 			<CustomModal

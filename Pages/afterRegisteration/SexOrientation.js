@@ -52,10 +52,10 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
 				onPress={() => {
-					setValue(234);
+					setValue(2);
 				}}
 			>
-				{value == 234 ? (
+				{value == 2 ? (
 					<Gradient
 						style={{
 							borderRadius: 8,
@@ -81,10 +81,10 @@ export default sexOrientation = ({ value, setValue, isEnabled }) => {
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
 				onPress={() => {
-					setValue(34);
+					setValue(3);
 				}}
 			>
-				{value == 34 ? (
+				{value == 3 ? (
 					<Gradient
 						style={{
 							borderRadius: 8,

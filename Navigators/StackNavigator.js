@@ -400,6 +400,11 @@ export default function StackNavigator() {
 				setCustomTextInput({ style: { fontFamily: "Poppins" } });
 
 				await AsyncStorage.getItem("introShown").then((res) => {
+					if (res != "yes") {
+						// if app is opened for the first time, set scroll not showed to teach user scrolling photos
+						AsyncStorage.setItem("scrollNotShowed", "0");
+						console.log("scroll Not Showed");
+					}
 					// set intro shown value to true or false according to the data in local storage
 					setIntroShown(res == "yes" ? true : false);
 				});

@@ -15,8 +15,9 @@ import { ReText } from "react-native-redash";
 import { Octicons, Feather } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { url } from "../../connection";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { url } from "../../connection";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { AnimatedModal, CustomModal } from "../../visualComponents/customComponents";
@@ -33,6 +34,7 @@ export default function ProfileCards({ navigation, route }) {
 	const [likeEndedModal, setLikeEndedModal] = React.useState(false);
 	const [endOfListModal, setEndOfListModal] = React.useState(false);
 	const [endOfLikesTimer, setEndOfLikesTimer] = React.useState({ hour: 0, minute: 0 });
+	const [isScrollShowed, setIsScrollShowed] = React.useState(false);
 
 	const [myProfilePicture, setMyProfilePicture] = React.useState();
 	const [matchPage, setMatchPage] = React.useState(false);
@@ -64,7 +66,6 @@ export default function ProfileCards({ navigation, route }) {
 
 	const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
 	const backFace = useSharedValue(false);
-	const likeEnded = useSharedValue(false);
 
 	const derivedText = useDerivedValue(
 		() =>
@@ -81,6 +82,14 @@ export default function ProfileCards({ navigation, route }) {
 	function likeEndedModalSubmit() {
 		console.log("like ended modal submit...");
 	}
+
+	React.useEffect(async () => {
+		await AsyncStorage.getItem("scrollNotShowed").then((res) => {
+			if (res == null) {
+				setIsScrollShowed(true);
+			}
+		});
+	}, []);
 
 	React.useEffect(async () => {
 		try {
@@ -213,6 +222,10 @@ export default function ProfileCards({ navigation, route }) {
 						sesToken={sesToken}
 						indexOfFrontCard={indexOfFrontCard}
 						myProfilePicture={myProfilePicture}
+						isScrollShowed={isScrollShowed}
+						setScrollShowed={() => {
+							setIsScrollShowed(true);
+						}}
 						incrementIndex={() => {
 							setIndexOfFrontCard(indexOfFrontCard + 1);
 						}}
@@ -222,7 +235,6 @@ export default function ProfileCards({ navigation, route }) {
 						showMatchScreen={(otherName, otherPicture, myPicture) => {
 							showMatchScreen(otherName, otherPicture, myPicture);
 						}}
-						likeEnded={likeEnded}
 						showLikeEndedModal={() => {
 							setLikeEndedModal(true);
 						}}

@@ -45,7 +45,7 @@ export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const [imgUri, setImgUri] = React.useState();
 	const [noMatch, setNoMatch] = React.useState(false);
-	const [msgBoxHeight, setMsgBoxHeight ] = React.useState(0);
+	const [msgBoxHeight, setMsgBoxHeight] = React.useState(0);
 
 	const openChat = async (userInfo, myUserID, chatID, unreadMsg, lastMsgSender) => {
 		navigation.navigate("Chat", {
@@ -55,9 +55,7 @@ export default function Messages({ route, navigation }) {
 			unreadMsg: unreadMsg,
 			lastMsgSender: lastMsgSender,
 		});
-	}; 
-
-	
+	};
 
 	const [chatRooms, setChatRooms] = useState([]);
 	const [myUserID, setmyUserID] = useState("");
@@ -79,7 +77,6 @@ export default function Messages({ route, navigation }) {
 			//console.log(data);
 
 			const userID = data.UserId.toString();
-
 
 			const msgBoxData = await API.graphql(
 				graphqlOperation(chatByDate, {
@@ -110,7 +107,6 @@ export default function Messages({ route, navigation }) {
 			const userName = data.Name;
 			const fetchUser = async () => {
 				const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
-				
 
 				const msgBoxData = await API.graphql(
 					graphqlOperation(chatByDate, {
@@ -125,8 +121,7 @@ export default function Messages({ route, navigation }) {
 					})
 				);
 				//console.log(msgBoxData.data.chatByDate.items.length);
-				if(msgBoxData.data.chatByDate.items.length == 0)
-				{
+				if (msgBoxData.data.chatByDate.items.length == 0) {
 					setNoMatch(true);
 				}
 				await setChatRooms(msgBoxData.data.chatByDate.items);
@@ -161,7 +156,6 @@ export default function Messages({ route, navigation }) {
 					} else {
 						console.log("Message is in your chat");
 						fetchNewUsers();
-
 					}
 
 					// setMessages([newMessage, ...messages]);
@@ -205,10 +199,9 @@ export default function Messages({ route, navigation }) {
 		} catch (error) {}
 	}, []);
 
-	
 	return (
-		<View style={{ width: width, height: height}}>
-			<StatusBar style="dark" translucent={false} />
+		<View style={{ width: width, height: height }}>
+			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 			<View name={"Header"} style={[commonStyles.Header, { marginTop: height * 0.02 }]}>
 				<View style={{ marginLeft: 20 }}>
 					{
@@ -219,8 +212,7 @@ export default function Messages({ route, navigation }) {
 					}
 				</View>
 				<View style={{ flexDirection: "row", alignSelf: "center" }}>
-					<TouchableOpacity onPress={() => {}}>
-					</TouchableOpacity>
+					<TouchableOpacity onPress={() => {}}></TouchableOpacity>
 				</View>
 			</View>
 			<View
@@ -229,7 +221,7 @@ export default function Messages({ route, navigation }) {
 					flexDirection: "row",
 					justifyContent: "center",
 					marginTop: 10,
-					height: height* 0.051,
+					height: height * 0.051,
 				}}
 			>
 				<View style={{ flex: 1 }}>
@@ -303,34 +295,31 @@ export default function Messages({ route, navigation }) {
 			</View>
 
 			<View>
-				{noMatch == true ? 
-					(
-						<View style = {{
-							paddingTop: "5%"
-						}}>
-							<Text 
-								style={{
-									textAlign: "center",
-									fontSize: 12,
-									lineHeight: 15,
-									letterSpacing: 1,
-									paddingHorizontal: 15,
-								}}
-							>
-								Keşfetmeye Başla. Ana sayfaya giderek diğer kullanıcılarla eşleştiğinde buradan onlara mesaj atabileceksin. Sana mesaj atmak isteyen bir sürü kişi var, sadece senin kaydırmanı bekliyorlar. 
-							</Text>
-						</View>
-					) 
-					: 
-					(
-						null
-					)
-				}
+				{noMatch == true ? (
+					<View
+						style={{
+							paddingTop: "5%",
+						}}
+					>
+						<Text
+							style={{
+								textAlign: "center",
+								fontSize: 12,
+								lineHeight: 15,
+								letterSpacing: 1,
+								paddingHorizontal: 15,
+							}}
+						>
+							Keşfetmeye Başla. Ana sayfaya giderek diğer kullanıcılarla eşleştiğinde buradan onlara
+							mesaj atabileceksin. Sana mesaj atmak isteyen bir sürü kişi var, sadece senin
+							kaydırmanı bekliyorlar.
+						</Text>
+					</View>
+				) : null}
 				{chatMod[0] == 1 ? (
 					<View>
 						<View style={{ marginBottom: 10 }} />
-						<View >
-							
+						<View>
 							<FlatList
 								style={{
 									width: width,
@@ -339,51 +328,87 @@ export default function Messages({ route, navigation }) {
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 0 && item.lastMsg == null && item.firstUser.id == myUserID && item.status == "Active") {
-										setMsgBoxHeight(height*0.11);
+									if (
+										item.mod == 0 &&
+										item.lastMsg == null &&
+										item.firstUser.id == myUserID &&
+										item.status == "Active"
+									) {
+										setMsgBoxHeight(height * 0.11);
 
 										return (
 											<NewMatchBox
 												data={item.secondUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.secondUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 											/>
 										);
 									}
-									if (item.mod == 0 && item.lastMsg == null && item.secondUser.id == myUserID && item.status == "Active") {
-										setMsgBoxHeight(height*0.11);
+									if (
+										item.mod == 0 &&
+										item.lastMsg == null &&
+										item.secondUser.id == myUserID &&
+										item.status == "Active"
+									) {
+										setMsgBoxHeight(height * 0.11);
 
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.firstUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 											/>
 										);
 									}
 								}}
 							/>
-							
 						</View>
 						<View style={{ marginBottom: 10 }} />
-						<View> 
+						<View>
 							<FlatList
-								horizontal= {false}
 								style={{
 									borderRadius: 8,
-									height: height-35 - height*0.051 - msgBoxHeight - height*0.08-50,
+									height: height - 35 - height * 0.051 - msgBoxHeight - height * 0.08 - 50,
 									flexGrow: 1,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 0 && item.lastMsg != null && item.firstUser.id == myUserID && item.status == "Active") {
-										console.log(msgBoxHeight);
+									if (
+										item.mod == 0 &&
+										item.lastMsg != null &&
+										item.firstUser.id == myUserID &&
+										item.status == "Active"
+									) {
 										return (
 											<MsgBox
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.secondUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 												chatID={item.id}
 												unreadMsg={item.unreadMsg}
@@ -391,13 +416,26 @@ export default function Messages({ route, navigation }) {
 											/>
 										);
 									}
-									if (item.mod == 0 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
+									if (
+										item.mod == 0 &&
+										item.lastMsg != null &&
+										item.secondUser.id == myUserID &&
+										item.status == "Active"
+									) {
 										return (
 											<MsgBox
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.firstUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 												chatID={item.id}
 												unreadMsg={item.unreadMsg}
@@ -412,8 +450,7 @@ export default function Messages({ route, navigation }) {
 				) : (
 					<View>
 						<View style={{ marginBottom: 10 }} />
-						<View >
-							
+						<View>
 							<FlatList
 								style={{
 									width: width,
@@ -422,51 +459,89 @@ export default function Messages({ route, navigation }) {
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 1 && item.lastMsg == null && item.firstUser.id == myUserID && item.status == "Active") {
-										setMsgBoxHeight(height*0.11);
+									if (
+										item.mod == 1 &&
+										item.lastMsg == null &&
+										item.firstUser.id == myUserID &&
+										item.status == "Active"
+									) {
+										setMsgBoxHeight(height * 0.11);
 
 										return (
 											<NewMatchBox
 												data={item.secondUser}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.secondUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 											/>
 										);
 									}
-									if (item.mod == 1 && item.lastMsg == null && item.secondUser.id == myUserID && item.status == "Active") {
-										setMsgBoxHeight(height*0.11);
+									if (
+										item.mod == 1 &&
+										item.lastMsg == null &&
+										item.secondUser.id == myUserID &&
+										item.status == "Active"
+									) {
+										setMsgBoxHeight(height * 0.11);
 
 										return (
 											<NewMatchBox
 												data={item.firstUser}
-												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.firstUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 											/>
 										);
 									}
 								}}
 							/>
-							
 						</View>
 						<View style={{ marginBottom: 10 }} />
-						<View> 
+						<View>
 							<FlatList
-								horizontal= {false}
+								horizontal={false}
 								style={{
 									borderRadius: 8,
-									height: height-35 - height*0.051 - msgBoxHeight - height*0.08-50,
+									height: height - 35 - height * 0.051 - msgBoxHeight - height * 0.08 - 50,
 									flexGrow: 1,
 								}}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
-									if (item.mod == 1 && item.lastMsg != null && item.firstUser.id == myUserID && item.status == "Active") {
+									if (
+										item.mod == 1 &&
+										item.lastMsg != null &&
+										item.firstUser.id == myUserID &&
+										item.status == "Active"
+									) {
 										console.log(msgBoxHeight);
 										return (
 											<MsgBox
 												data={item.secondUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.secondUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.secondUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 												chatID={item.id}
 												unreadMsg={item.unreadMsg}
@@ -474,13 +549,26 @@ export default function Messages({ route, navigation }) {
 											/>
 										);
 									}
-									if (item.mod == 1 && item.lastMsg != null && item.secondUser.id == myUserID && item.status == "Active") {
+									if (
+										item.mod == 1 &&
+										item.lastMsg != null &&
+										item.secondUser.id == myUserID &&
+										item.status == "Active"
+									) {
 										return (
 											<MsgBox
 												data={item.firstUser}
 												lastMsg={item.lastMsg}
 												lastTime={item.updatedAt}
-												openChat={() => openChat(item.firstUser, myUserID, item.id, item.unreadMsg, item.lastMsgSender)}
+												openChat={() =>
+													openChat(
+														item.firstUser,
+														myUserID,
+														item.id,
+														item.unreadMsg,
+														item.lastMsgSender
+													)
+												}
 												userID={myUserID}
 												chatID={item.id}
 												unreadMsg={item.unreadMsg}
