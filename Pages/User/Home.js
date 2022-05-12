@@ -462,6 +462,10 @@ export default function MainPage({ navigation }) {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
+		if (matchMode == 1) {
+			applyCinsiyet = [1, 1, 1];
+		}
+
 		if (applyEgsersiz[0] == 0 && applyEgsersiz[1] == 0 && applyEgsersiz[2] == 0) {
 			applyEgsersiz = [1, 1, 1];
 		} else {
@@ -538,7 +542,7 @@ export default function MainPage({ navigation }) {
 				});
 		}
 		try {
-			//await prepare();
+			await prepare();
 		} catch (err) {
 			console.log(err);
 		}
@@ -921,7 +925,11 @@ export default function MainPage({ navigation }) {
 							{/* Filtre Cinsiyet toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									setToggleCinsiyet(!toggleCinsiyet);
+									if (matchMode == 1) {
+										alert("BFF modunda bu filtreyi kullanamazsınız.");
+									} else {
+										setToggleCinsiyet(!toggleCinsiyet);
+									}
 								}}
 							>
 								<View
@@ -1048,10 +1056,12 @@ export default function MainPage({ navigation }) {
 								) : null}
 							</TouchableOpacity>
 							{/* Filtre Cinsiyet toggle */}
+
 							{/* Filtre Egzersiz toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									setToggleEgsersiz(!toggleEgsersiz);
+									alert("Bu filtre suan aktif degil");
+									//setToggleEgsersiz(!toggleEgsersiz);
 								}}
 							>
 								<View
@@ -1207,7 +1217,8 @@ export default function MainPage({ navigation }) {
 							{/* Filtre Alkol Kullanımı toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									setToggleAlkol(!toggleAlkol);
+									alert("Bu filtre suan aktif degil");
+									//setToggleAlkol(!toggleAlkol);
 								}}
 							>
 								<View
@@ -1338,7 +1349,8 @@ export default function MainPage({ navigation }) {
 							{/* Filtre Sigara toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									setToggleSigara(!toggleSigara);
+									alert("Bu filtre suan aktif degil");
+									//setToggleSigara(!toggleSigara);
 								}}
 							>
 								<View
@@ -1519,7 +1531,8 @@ export default function MainPage({ navigation }) {
 							{/* Filtre Yeme Biçimi toggle */}
 							<TouchableOpacity
 								onPress={() => {
-									setToggleYemek(!toggleYemek);
+									alert("Bu filtre suan aktif degil");
+									//setToggleYemek(!toggleYemek);
 								}}
 							>
 								<View

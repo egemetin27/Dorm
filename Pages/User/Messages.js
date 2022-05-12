@@ -40,12 +40,16 @@ import {
 	onDeleteUserChat,
 	onUpdateUserChat,
 } from "../../src/graphql/subscriptions";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
 	const [imgUri, setImgUri] = React.useState();
 	const [noMatch, setNoMatch] = React.useState(false);
 	const [msgBoxHeight, setMsgBoxHeight] = React.useState(0);
+
+	const [unreadMsgInFlirt, setUnreadMsgInFlirt] = React.useState(0);
+	const [unreadMsgInFriend, setUnreadMsgInFriend] = React.useState(0);
 
 	const openChat = async (userInfo, myUserID, chatID, unreadMsg, lastMsgSender) => {
 		navigation.navigate("Chat", {
@@ -252,9 +256,31 @@ export default function Messages({ route, navigation }) {
 							onPress={() => {
 								setChatMod([1, 0]);
 								setMsgBoxHeight(0);
+								setUnreadMsgInFlirt(0);
 							}}
 						>
-							<Text style={{ fontSize: 20, color: colors.cool_gray }}>Flört Modu</Text>
+							<View flexDirection="row">
+								<Text style={{ fontSize: 20, color: colors.cool_gray, paddingRight: 5 }}>
+									Flört Modu
+								</Text>
+								{unreadMsgInFlirt == 1 ? (
+									<LinearGradient
+										colors={["#4136F1", "#8743FF"]}
+										start={{ x: 0, y: 0 }}
+										end={{ x: 1, y: 1 }}
+										style={{
+											borderColor: colors.white,
+											borderWidth: 2,
+											height: width * 0.03,
+											width: width * 0.03,
+											borderRadius: 6,
+											borderBottomStartRadius: 0,
+											overflow: "hidden",
+											alignSelf: "center",
+										}}
+									/>
+								) : null}
+							</View>
 						</Pressable>
 					)}
 				</View>
@@ -286,9 +312,31 @@ export default function Messages({ route, navigation }) {
 							onPress={() => {
 								setChatMod([0, 1]);
 								setMsgBoxHeight(0);
+								setUnreadMsgInFriend(0);
 							}}
 						>
-							<Text style={{ fontSize: 20, color: colors.cool_gray }}>Arkadaş Modu</Text>
+							<View flexDirection="row">
+								<Text style={{ fontSize: 20, color: colors.cool_gray, paddingRight: 5 }}>
+									Arkadaş Modu
+								</Text>
+								{unreadMsgInFriend == 1 ? (
+									<LinearGradient
+										colors={["#4136F1", "#8743FF"]}
+										start={{ x: 0, y: 0 }}
+										end={{ x: 1, y: 1 }}
+										style={{
+											borderColor: colors.white,
+											borderWidth: 2,
+											height: width * 0.03,
+											width: width * 0.03,
+											borderRadius: 6,
+											borderBottomStartRadius: 0,
+											overflow: "hidden",
+											alignSelf: "center",
+										}}
+									/>
+								) : null}
+							</View>
 						</Pressable>
 					)}
 				</View>
@@ -328,6 +376,26 @@ export default function Messages({ route, navigation }) {
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
+									if (
+										item.mod == 1 &&
+										item.lastMsg != null &&
+										item.firstUser.id == myUserID &&
+										item.status == "Active" &&
+										item.unreadMsg != 0 &&
+										item.lastMsgSender != myUserID
+									) {
+										setUnreadMsgInFriend(1);
+									}
+									if (
+										item.mod == 1 &&
+										item.lastMsg != null &&
+										item.secondUser.id == myUserID &&
+										item.status == "Active" &&
+										item.unreadMsg != 0 &&
+										item.lastMsgSender != myUserID
+									) {
+										setUnreadMsgInFriend(1);
+									}
 									if (
 										item.mod == 0 &&
 										item.lastMsg == null &&
@@ -459,6 +527,33 @@ export default function Messages({ route, navigation }) {
 								showsHorizontalScrollIndicator={false}
 								data={chatRooms}
 								renderItem={({ item, index }) => {
+									if (
+										item.mod == 0 &&
+										item.lastMsg != null &&
+										item.firstUser.id == myUserID &&
+										item.status == "Active" &&
+										item.unreadMsg != 0 &&
+										item.lastMsgSender != myUserID
+									) {
+										console.log(item.lastMsg);
+										console.log(item.id);
+										console.log(item.unreadMsg);
+
+										setUnreadMsgInFlirt(1);
+									}
+									if (
+										item.mod == 0 &&
+										item.lastMsg != null &&
+										item.secondUser.id == myUserID &&
+										item.status == "Active" &&
+										item.unreadMsg != 0 &&
+										item.lastMsgSender != myUserID
+									) {
+										console.log(item.lastMsg);
+										console.log(item.id);
+										console.log(item.unreadMsg);
+										setUnreadMsgInFlirt(1);
+									}
 									if (
 										item.mod == 1 &&
 										item.lastMsg == null &&
