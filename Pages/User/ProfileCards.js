@@ -272,7 +272,6 @@ export default function ProfileCards({ navigation, route }) {
 						showReportPage={(otherUserID) => {
 							showReportPage(otherUserID);
 						}}
-						likeEnded={likeEnded}
 						showLikeEndedModal={() => {
 							setLikeEndedModal(true);
 						}}

@@ -197,9 +197,6 @@ export default Card = ({
 			)
 			.then((res) => {
 				console.log(res.data);
-				if (res.data.LikeCount == 0) {
-					likeEnded.value = true;
-				}
 				if (res.data.message == "Match") {
 					console.log("send notification.");
 					sendNotification();
