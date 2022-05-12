@@ -462,7 +462,7 @@ export default function MainPage({ navigation }) {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
-		if (matchMode == 1) {
+		if (matchMode == 0) {
 			applyCinsiyet = [1, 1, 1];
 		}
 
