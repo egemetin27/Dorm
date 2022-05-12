@@ -183,7 +183,6 @@ export default Card = ({
 	};
 
 	const onSwipe = async (val) => {
-		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const myMode = userData.matchMode;
@@ -207,6 +206,7 @@ export default Card = ({
 					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 					//setMatchPage(true);
 				}
+				incrementIndex();
 			})
 			.catch((error) => {
 				if (error.response) {
@@ -214,23 +214,23 @@ export default Card = ({
 						console.log("swipe count ended response");
 						let endTime = new Date(error.response.data);
 						let currentTime = new Date(Date.now());
-						currentTime.setHours(currentTime.getHours() + 3);
-						let hourLeft = (endTime.getHours() - currentTime.getHours() + 24) % 24;
-						let minuteLeft = (endTime.getMinutes() - currentTime.getMinutes() + 60) % 60;
-						setTimer(hourLeft, minuteLeft);
+						currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
+						let diffSec = endTime.getTime() - currentTime.getTime();
+						let diff = new Date(diffSec).toISOString().slice(11, 16);
+						setTimer(diff.split(":")[0], diff.split(":")[1]);
 
 						x.value = withSpring(0);
 						destination.value = 0;
 						showLikeEndedModal();
-						return;
 					}
+					return;
 				} else if (error.request) {
 					console.log("request error: ", error.request);
 				} else {
 					console.log("error: ", error.message);
 				}
+				incrementIndex();
 			});
-		incrementIndex();
 	};
 
 	const panHandler =

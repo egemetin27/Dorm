@@ -412,7 +412,8 @@ export default function MainPage({ navigation }) {
 	const [myID, setMyID] = React.useState(null);
 	const [sesToken, setSesToken] = React.useState("");
 	const [matchMode, setMatchMode] = React.useState(0);
-	const eventsRef = React.useRef();
+	const eventsFlatListRef = React.useRef();
+	const peopleFlatListRef = React.useRef();
 
 	//Filtre Modal
 	const [toggleYas, setToggleYas] = React.useState(false);
@@ -624,10 +625,16 @@ export default function MainPage({ navigation }) {
 	}, []);
 
 	React.useEffect(() => {
-		if (eventsRef.current && shownEvents.length > 0) {
-			eventsRef.current.scrollToIndex({ index: 0 });
+		if (eventsFlatListRef.current && shownEvents.length > 0) {
+			eventsFlatListRef.current.scrollToIndex({ index: 0 });
 		}
-	});
+	}, [shownEvents]);
+
+	React.useEffect(() => {
+		if (peopleFlatListRef.current) {
+			peopleFlatListRef.current.scrollToIndex({ index: 0 });
+		}
+	}, [peopleList]);
 
 	if (!isAppReady) {
 		return (
@@ -683,6 +690,7 @@ export default function MainPage({ navigation }) {
 			>
 				{peopleList.length > 0 ? (
 					<FlatList
+						ref={peopleFlatListRef}
 						keyExtractor={(item) => item.UserId.toString()}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
@@ -762,7 +770,7 @@ export default function MainPage({ navigation }) {
 			<View name={"Events"} style={{ width: "100%", height: "35%" }}>
 				{shownEvents.length > 0 ? (
 					<FlatList
-						ref={eventsRef}
+						ref={eventsFlatListRef}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
 						keyExtractor={(item) => item.EventId.toString()}
