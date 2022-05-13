@@ -48,13 +48,9 @@ export default function ProfileCards({ navigation, route }) {
 
 	const showMatchScreen = (otherName, otherPicture, myPicture) => {
 		setMatchPage(true);
-		// matchPopup.value = true;
 		setName(otherName);
 		setFirstImg(otherPicture);
 		setSecondImg(myPicture);
-		//console.log(otherName);
-		//console.log(otherPicture);
-		//console.log(myPicture);
 	};
 
 	const showReportPage = (otherUserID) => {

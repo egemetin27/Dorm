@@ -190,7 +190,7 @@ export default Card = ({
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
 		backFace.value = false;
 		// incrementIndex();
-		await axios
+		axios
 			.post(
 				url + "/LikeDislike",
 				{
@@ -205,9 +205,9 @@ export default Card = ({
 			.then((res) => {
 				console.log(res.data);
 				if (res.data.message == "Match") {
+					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 					console.log("send notification.");
 					sendNotification();
-					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 					//setMatchPage(true);
 				}
 				incrementIndex();
@@ -691,13 +691,18 @@ export default Card = ({
 													name={"Gender"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Cinsiyet{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{gender}
 													</Text>
 												</Text>
@@ -707,13 +712,18 @@ export default Card = ({
 													name={"Religion"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Dini İnanç{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{religion}
 													</Text>
 												</Text>
@@ -723,13 +733,18 @@ export default Card = ({
 													name={"Sign"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Burç{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{signList[sign].choice}
 													</Text>
 												</Text>
@@ -739,13 +754,18 @@ export default Card = ({
 													name={"Diet"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Beslenme Tercihi{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{dietList[diet].choice}
 													</Text>
 												</Text>
@@ -755,13 +775,18 @@ export default Card = ({
 													name={"Drink"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Alkol Kullanımı{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{smokeAndDrinkList[drink].choice}
 													</Text>
 												</Text>
@@ -771,13 +796,18 @@ export default Card = ({
 													name={"Smoke"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Sigara Kullanımı{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{smokeAndDrinkList[smoke].choice}
 													</Text>
 												</Text>
@@ -787,7 +817,7 @@ export default Card = ({
 													name={"Hobbies"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
@@ -797,11 +827,19 @@ export default Card = ({
 														return (
 															<Text
 																key={index}
-																style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}
+																style={{
+																	fontFamily: "PoppinsSemiBold",
+																	fontSize: Math.min(height * 0.03, width * 0.048),
+																}}
 															>
 																{item.InterestName}
 																{hobbies.length > index + 1 ? (
-																	<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+																	<Text
+																		style={{
+																			fontFamily: "PoppinsSemiBold",
+																			fontSize: Math.min(height * 0.03, width * 0.048),
+																		}}
+																	>
 																		{" "}
 																		|{" "}
 																	</Text>
@@ -816,13 +854,18 @@ export default Card = ({
 													name={"About"}
 													style={{
 														color: colors.light_gray,
-														fontSize: 18,
+														fontSize: Math.min(height * 0.025, width * 0.04),
 														textAlign: "center",
 														paddingVertical: 5,
 													}}
 												>
 													Hakkında{"\n"}
-													<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 22 }}>
+													<Text
+														style={{
+															fontFamily: "PoppinsSemiBold",
+															fontSize: Math.min(height * 0.03, width * 0.048),
+														}}
+													>
 														{about}
 													</Text>
 												</Text>
