@@ -586,7 +586,7 @@ export default function ProfileCards({ navigation, route }) {
 									left: width * 0.2,
 								}}
 							>
-								<TouchableOpacity
+								<ReactNative.TouchableOpacity
 									onPress={() => {
 										setReportPage(false);
 									}}
@@ -597,7 +597,7 @@ export default function ProfileCards({ navigation, route }) {
 									}}
 								>
 									<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
-								</TouchableOpacity>
+								</ReactNative.TouchableOpacity>
 							</View>
 						</View>
 						<View
@@ -642,7 +642,7 @@ export default function ProfileCards({ navigation, route }) {
 								{name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz.
 							</Text>
 						</View>
-						<TouchableOpacity
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								chosenReport == 1 ? setChosenReport(0) : setChosenReport(1);
 							}}
@@ -668,8 +668,8 @@ export default function ProfileCards({ navigation, route }) {
 									Sahte Profil/Spam
 								</Text>
 							)}
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								chosenReport == 2 ? setChosenReport(0) : setChosenReport(2);
 							}}
@@ -692,8 +692,8 @@ export default function ProfileCards({ navigation, route }) {
 							) : (
 								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Uygunsuz Mesaj</Text>
 							)}
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								chosenReport == 3 ? setChosenReport(0) : setChosenReport(3);
 							}}
@@ -719,8 +719,8 @@ export default function ProfileCards({ navigation, route }) {
 									Uygunsuz Fotoğraf
 								</Text>
 							)}
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								chosenReport == 4 ? setChosenReport(0) : setChosenReport(4);
 							}}
@@ -746,8 +746,8 @@ export default function ProfileCards({ navigation, route }) {
 									Uygunsuz Biyografi
 								</Text>
 							)}
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								chosenReport == 5 ? setChosenReport(0) : setChosenReport(5);
 							}}
@@ -773,8 +773,8 @@ export default function ProfileCards({ navigation, route }) {
 									Reşit Olmayan Kullanıcı
 								</Text>
 							)}
-						</TouchableOpacity>
-						<TouchableOpacity
+						</ReactNative.TouchableOpacity>
+						<ReactNative.TouchableOpacity
 							onPress={() => {
 								chosenReport == 6 ? setChosenReport(0) : setChosenReport(6);
 							}}
@@ -798,9 +798,9 @@ export default function ProfileCards({ navigation, route }) {
 							) : (
 								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Diğer</Text>
 							)}
-						</TouchableOpacity>
+						</ReactNative.TouchableOpacity>
 
-						<TouchableOpacity
+						<ReactNative.TouchableOpacity
 							onPress={reportProfile}
 							style={{
 								maxWidth: "100%",
@@ -830,7 +830,7 @@ export default function ProfileCards({ navigation, route }) {
 									Bildir
 								</Text>
 							</Gradient>
-						</TouchableOpacity>
+						</ReactNative.TouchableOpacity>
 					</View>
 				</View>
 			</CustomModal>
