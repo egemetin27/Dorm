@@ -174,9 +174,6 @@ export default function ProfileCards({ navigation, route }) {
 	}, []);
 
 	React.useEffect(() => {
-		console.log(indexOfFrontCard);
-		console.log(peopleList.length);
-
 		if (peopleList.length > 0 && indexOfFrontCard == peopleList.length) setEndOfListModal(true);
 	}, [indexOfFrontCard]);
 
@@ -204,7 +201,7 @@ export default function ProfileCards({ navigation, route }) {
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
-					maxHeight: height * 0.15,
+					paddingVertical: height * 0.015,
 					width: width,
 					flexDirection: "row",
 					justifyContent: "space-between",
@@ -229,24 +226,15 @@ export default function ProfileCards({ navigation, route }) {
 				<Image
 					source={require("../../assets/dorm_text.png")}
 					resizeMode="contain"
-					style={{ flex: 1, maxHeight: "60%" }}
-					// style={{ width: "30%", maxHeight: "60%" }}
+					style={{ height: height * 0.04, flex: 1 }}
 				/>
-				<TouchableOpacity>
-					{/* TODO: open filtering modal here  */}
-					<Octicons
-						style={{ transform: [{ rotate: "-90deg" }] }}
-						name="settings"
-						size={30}
-						color={colors.cool_gray}
-					/>
-				</TouchableOpacity>
+				<Feather name="chevron-left" size={30} color={"transparent"} />
 			</View>
 			<View
 				style={{
 					width: "100%",
 					height: height * 0.7,
-					alignItems: "center",
+					// alignItems: "center",
 					marginTop: height * 0.05,
 					// backgroundColor: "blue",
 				}}
@@ -293,12 +281,9 @@ export default function ProfileCards({ navigation, route }) {
 			<View
 				style={{
 					width: "100%",
-					// height: "100%",
-					// flex: 1,
-					// backgroundColor: "red",
+					flex: 1,
 					paddingHorizontal: width * 0.1,
-					// justifyContent: "center",
-					// top: 20,
+					justifyContent: "center",
 				}}
 			>
 				<ReText

@@ -1,6 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated, Alert } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	TextInput,
+	Animated,
+	Alert,
+	Dimensions,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -8,6 +17,8 @@ import axios from "axios";
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+
+const { width, height } = Dimensions.get("screen");
 
 export default function FirstPassword({ navigation, route }) {
 	const [password, setPassword] = React.useState("");
@@ -73,10 +84,14 @@ export default function FirstPassword({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style={"dark"} />
 			<View style={commonStyles.Header} />
-			<View style={{paddingHorizontal: "5%"}}>
+			<View style={{ paddingHorizontal: "5%" }}>
 				<GradientText
 					text={"Gitmeden şifre belirleyebilir misin?"}
-					style={{ fontFamily: "NowBold", fontSize: 30, paddingBottom: 20 }}
+					style={{
+						fontFamily: "PoppinsBold",
+						fontSize: Math.min(height * 0.04, width * 0.08),
+						paddingBottom: 20,
+					}}
 				/>
 
 				<View style={{ position: "relative" }}>
@@ -211,7 +226,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: "#525A64",
-		fontSize: 18,
+		fontSize: Math.min(width * 0.045, height * 0.02),
 		alignContent: "flex-start",
 		letterSpacing: 0.3,
 	},

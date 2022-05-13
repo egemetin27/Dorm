@@ -109,7 +109,7 @@ export default Card = ({
 	const scrollToEnd = async () => {
 		if (index == indexOfFrontCard && !isScrollShowed && photoList.length > 1) {
 			await AsyncStorage.getItem("scrollNotShowed").then((res) => {
-				console.log(res);
+				// console.log(res);
 				scroll();
 				let newValue = parseInt(res) + 1;
 				if (newValue == 5) {
@@ -188,53 +188,54 @@ export default Card = ({
 		// const userData = JSON.parse(userDataStr);
 		// const myMode = userData.matchMode;
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		incrementIndex();
-		// await axios
-		// 	.post(
-		// 		url + "/LikeDislike",
-		// 		{
-		// 			isLike: val,
-		// 			userSwiped: myID,
-		// 			otherUser: id,
-		// 			matchMode: matchMode,
-		//			// matchMode: myMode,
-		// 		},
-		// 		{ headers: { "access-token": sesToken } }
-		// 	)
-		// 	.then((res) => {
-		// 		console.log(res.data);
-		// 		if (res.data.message == "Match") {
-		// 			console.log("send notification.");
-		// 			sendNotification();
-		// 			showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
-		// 			//setMatchPage(true);
-		// 		}
-		// 		incrementIndex();
-		// 	})
-		// 	.catch((error) => {
-		// 		if (error.response) {
-		// 			console.log(error.response);
-		// 			if (error.response.status == 408) {
-		// 				console.log("swipe count ended response");
-		// 				let endTime = new Date(error.response.data);
-		// 				let currentTime = new Date(Date.now());
-		// 				currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
-		// 				let diffSec = endTime.getTime() - currentTime.getTime();
-		// 				let diff = new Date(diffSec).toISOString().slice(11, 16);
-		// 				setTimer(diff.split(":")[0], diff.split(":")[1]);
+		backFace.value = false;
+		// incrementIndex();
+		await axios
+			.post(
+				url + "/LikeDislike",
+				{
+					isLike: val,
+					userSwiped: myID,
+					otherUser: id,
+					matchMode: matchMode,
+					// matchMode: myMode,
+				},
+				{ headers: { "access-token": sesToken } }
+			)
+			.then((res) => {
+				console.log(res.data);
+				if (res.data.message == "Match") {
+					console.log("send notification.");
+					sendNotification();
+					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
+					//setMatchPage(true);
+				}
+				incrementIndex();
+			})
+			.catch((error) => {
+				if (error.response) {
+					console.log(error.response);
+					if (error.response.status == 408) {
+						console.log("swipe count ended response");
+						let endTime = new Date(error.response.data);
+						let currentTime = new Date(Date.now());
+						currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
+						let diffSec = endTime.getTime() - currentTime.getTime();
+						let diff = new Date(diffSec).toISOString().slice(11, 16);
+						setTimer(diff.split(":")[0], diff.split(":")[1]);
 
-		// 				x.value = withSpring(0);
-		// 				destination.value = 0;
-		// 				showLikeEndedModal();
-		// 			}
-		// 			return;
-		// 		} else if (error.request) {
-		// 			console.log("request error: ", error.request);
-		// 		} else {
-		// 			console.log("error: ", error.message);
-		// 		}
-		// 		incrementIndex();
-		// 	});
+						x.value = withSpring(0);
+						destination.value = 0;
+						showLikeEndedModal();
+					}
+					return;
+				} else if (error.request) {
+					console.log("request error: ", error.request);
+				} else {
+					console.log("error: ", error.message);
+				}
+				incrementIndex();
+			});
 	};
 
 	const panHandler =
@@ -309,10 +310,7 @@ export default Card = ({
 	});
 
 	const animatedLike = useAnimatedStyle(() => {
-		// if (index != indexOfFrontCard) return {};
-		// if (index != 0) return {};
 		return {
-			opacity: destination.value == SNAP_POINTS[1] ? withTiming(1) : withTiming(0),
 			transform: [
 				{
 					translateX:
@@ -324,14 +322,12 @@ export default Card = ({
 					scale: x.value > 0 ? interpolate(x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
 				},
 			],
+			opacity: interpolate(x.value, [width * 0.95, width], [1, 0]),
 		};
 	});
 
 	const animatedDislike = useAnimatedStyle(() => {
-		// if (index != indexOfFrontCard) return {};
-		// if (index != 0) return {};
 		return {
-			opacity: destination.value == SNAP_POINTS[1] ? withTiming(1) : withTiming(0),
 			transform: [
 				{
 					translateX:
@@ -343,6 +339,7 @@ export default Card = ({
 					scale: x.value < 0 ? interpolate(-x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
 				},
 			],
+			opacity: interpolate(x.value, [-width * 0.95, -width], [1, 0]),
 		};
 	});
 
@@ -398,9 +395,17 @@ export default Card = ({
 	const composedGesture = Gesture.Race(tapHandler, panHandler);
 
 	return (
-		<View key={index} style={{ position: "absolute", zIndex: index < indexOfFrontCard ? -1 : 1 }}>
+		<View key={index} style={{ zIndex: index < indexOfFrontCard ? -1 : 1, width: "100%" }}>
 			{(indexOfFrontCard == index || indexOfFrontCard == index - 1) && ( // front or the 2nd card
-				<View name={"cards"} style={{ width: "100%", justifyContent: "center", zIndex: 1 }}>
+				<View
+					name={"cards"}
+					style={{
+						width: "100%",
+						zIndex: 1,
+						position: "absolute",
+						justifyContent: "center",
+					}}
+				>
 					<Animated.View style={[animatedSwipe]}>
 						<GestureDetector gesture={composedGesture}>
 							<Animated.View>
@@ -535,7 +540,7 @@ export default Card = ({
 										</TouchableOpacity>
 									</View>
 									<LinearGradient
-										colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+										colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.7)"]}
 										locations={[0, 0.1, 1]}
 										start={{ x: 0.5, y: 0 }}
 										end={{ x: 0.5, y: 1 }}
@@ -927,7 +932,7 @@ export default Card = ({
 						</Text>
 						<Image
 							source={{
-								uri: photoList[0].PhotoLink,
+								uri: photoList.length > 0 ? photoList[0]?.PhotoLink : null,
 							}}
 							style={{
 								top: height * 0.25,

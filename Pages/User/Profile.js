@@ -323,10 +323,13 @@ export default function Profile({ route, navigation }) {
 					</TouchableOpacity>
 				</View>
 			)} */}
-			<KeyboardAvoidingView behavior={"padding"}>
+			<KeyboardAvoidingView
+				style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+				behavior="height"
+			>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
-					contentContainerStyle={{ width: width, paddingBottom: tabBarHeight }}
+					contentContainerStyle={{ width: width }}
 					keyboardShouldPersistTaps="handled"
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
@@ -1161,8 +1164,8 @@ const styles = StyleSheet.create({
 	inputContainer: {
 		marginTop: 20,
 		position: "relative",
-		width: width * 0.85,
-		height: 64,
+		width: Math.min(width * 0.84, 600),
+		height: Math.min(width * 0.14, 100),
 		borderRadius: 12,
 		alignSelf: "center",
 		alignItems: "center",
@@ -1172,9 +1175,9 @@ const styles = StyleSheet.create({
 	input: {
 		textAlignVertical: "bottom",
 		textAlign: "center",
-		width: width * 0.75,
-		height: 36,
-		fontSize: 20,
+		width: "100%",
+		paddingHorizontal: "5%",
+		fontSize: Math.min(height * 0.023, width * 0.05),
 	},
 	modalContainer: {
 		borderRadius: 20,

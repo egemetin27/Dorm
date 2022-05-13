@@ -8,6 +8,7 @@ import {
 	TextInput,
 	Animated,
 	Dimensions,
+	ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
 const { width, height } = Dimensions.get("window");
 
 export default function Login({ navigation }) {
+	const [loading, setLoading] = React.useState(false);
 	const [email, onChangeEmail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
 	const [wrongInput, setWrongInput] = React.useState({
@@ -48,8 +50,18 @@ export default function Login({ navigation }) {
 	};
 
 	const { signIn } = React.useContext(AuthContext);
+
 	const handleLogin = async () => {
-		signIn({ email: email, password: password, isNewUser: false, navigation: navigation });
+		setLoading(true);
+		signIn({
+			email: email,
+			password: password,
+			isNewUser: false,
+			navigation: navigation,
+			notLoading: () => {
+				setLoading(false);
+			},
+		});
 	};
 
 	return (
@@ -189,7 +201,7 @@ export default function Login({ navigation }) {
 
 				<TouchableOpacity
 					style={[commonStyles.button, { marginTop: 30 }]}
-					disabled={email == "" || password == ""}
+					disabled={email == "" || password == "" || loading}
 					onPress={handleLogin}
 				>
 					{!(email == "" || password == "") ? (
@@ -206,7 +218,11 @@ export default function Login({ navigation }) {
 								alignItems: "center",
 							}}
 						>
-							<Text style={commonStyles.buttonText}>Giriş Yap</Text>
+							{loading ? (
+								<ActivityIndicator size={"small"} color="white" />
+							) : (
+								<Text style={commonStyles.buttonText}>Giriş Yap</Text>
+							)}
 						</LinearGradient>
 					) : (
 						<Text style={commonStyles.buttonText}>Giriş Yap</Text>

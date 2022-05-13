@@ -14,6 +14,7 @@ export default styles = StyleSheet.create({
 		zIndex: 0,
 	},
 	innerContainer: {
+		paddingHorizontal: width * 0.06,
 		marginTop: 20,
 		position: "relative",
 	},

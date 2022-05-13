@@ -1,6 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	TextInput,
+	Animated,
+	Dimensions,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
@@ -8,6 +16,8 @@ import axios from "axios";
 
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+
+const { width, height } = Dimensions.get("screen");
 
 export default function ForgotPassword({ navigation }) {
 	const [email, onChangeEmail] = React.useState("");
@@ -55,14 +65,14 @@ export default function ForgotPassword({ navigation }) {
 					<Ionicons name="arrow-back-outline" size={32} color="#B6B6B6" />
 				</TouchableOpacity>
 			</View>
-			<View style={commonStyles.innerContainer}>
+			<View style={[commonStyles.innerContainer]}>
 				<MaskedView
 					style={styles.maskedViewStyle}
 					maskElement={
 						<Text
 							style={{
-								fontFamily: "PoppinsSemiBold",
-								fontSize: 30,
+								fontFamily: "PoppinsBold",
+								fontSize: Math.min(height * 0.04, width * 0.08),
 							}}
 						>
 							Olur öyle
@@ -78,8 +88,8 @@ export default function ForgotPassword({ navigation }) {
 						<Text
 							style={{
 								opacity: 0,
-								fontFamily: "PoppinsSemiBold",
-								fontSize: 30,
+								fontFamily: "PoppinsBold",
+								fontSize: Math.min(height * 0.04, width * 0.08),
 							}}
 						>
 							Olur öyle
@@ -90,7 +100,7 @@ export default function ForgotPassword({ navigation }) {
 				<View style={{ position: "relative", marginTop: 10 }}>
 					<Text style={styles.text}>Hangimiz şifremizi unutmadık ki!</Text>
 					<Text style={styles.text}>
-						Hiç sorun değil, sana mail atacağımız{"\n"}doğrulamaya tıklaman yeterli.
+						Hiç sorun değil, sana mail atacağımız doğrulamaya tıklaman yeterli.
 					</Text>
 				</View>
 
@@ -164,7 +174,13 @@ export default function ForgotPassword({ navigation }) {
 				</TouchableOpacity>
 
 				<View style={{ alignSelf: "center", flexDirection: "row", marginTop: 15 }}>
-					<Text style={{ color: "#4A4A4A", letterSpacing: 0.3, fontSize: 15 }}>
+					<Text
+						style={{
+							color: "#4A4A4A",
+							letterSpacing: 0.3,
+							fontSize: Math.min(width * 0.04, height * 0.016),
+						}}
+					>
 						Mailine ulaşamıyor musun?
 					</Text>
 					<TouchableOpacity style={{ left: 5 }}>
@@ -173,7 +189,7 @@ export default function ForgotPassword({ navigation }) {
 								color: "#6B46D2",
 								fontFamily: "PoppinsSemiBold",
 								letterSpacing: 0.3,
-								fontSize: 15,
+								fontSize: Math.min(width * 0.04, height * 0.016),
 							}}
 						>
 							Bize Ulaş
@@ -192,7 +208,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: "#525A64",
-		fontSize: 18,
+		fontSize: Math.min(width * 0.045, height * 0.02),
 		alignContent: "flex-start",
 		letterSpacing: 0.3,
 	},

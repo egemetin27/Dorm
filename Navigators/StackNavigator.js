@@ -95,7 +95,7 @@ function MainScreen({ route, navigation }) {
 					tabBarStyle: {
 						height: height * 0.08 + insets.bottom,
 						paddingBottom: height * 0.008 + insets.bottom,
-						position: "relative",
+						// position: "relative",
 					},
 					headerShown: false,
 					tabBarShowLabel: false,
@@ -312,7 +312,7 @@ export default function StackNavigator() {
 	// const navigation = React.useContext(NavigationContext);
 
 	const authContext = React.useMemo(() => ({
-		signIn: async ({ email, password, isNewUser, navigation = null }) => {
+		signIn: async ({ email, password, isNewUser, navigation = null, notLoading = () => {} }) => {
 			if (isNewUser) setNewUser(true);
 			else setNewUser(false);
 
@@ -358,6 +358,7 @@ export default function StackNavigator() {
 					} else {
 						console.log("else:", res.data);
 						alert(res.data);
+						notLoading();
 					}
 				})
 				.catch(async (error) => {
@@ -366,6 +367,7 @@ export default function StackNavigator() {
 					await SecureStore.deleteItemAsync("userData");
 					await AsyncStorage.removeItem("isLoggedIn");
 					setIsLoggedIn(false);
+					notLoading();
 				});
 		},
 		signOut: async () => {

@@ -16,7 +16,7 @@ import {
 	TextInput,
 	SafeAreaView,
 } from "react-native";
-import { Octicons, MaterialCommunityIcons, Entypo, Feather } from "@expo/vector-icons";
+import { Octicons, MaterialCommunityIcons, Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 

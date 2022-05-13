@@ -32,9 +32,9 @@ export default function Onboarding({ navigation }) {
 		"Aradığını bulmak\nartık kolay",
 	];
 	const contentArr = [
-		"Kişinin kart alanına çift dokunarak\nkartın arka yüzünü görebilir ve\nonu daha yakından tanıyabilirsin!",
-		"Şehrin en iyi etkinlikleri üzerinden\nyeni insanlarla tanışma şansı\nseni bekliyor.",
-		"İnsanları istediğin gibi filtrele,\nortak zevklerin olan insanlarla eşleş.",
+		"Kişinin kart alanına çift dokunarak kartın arka yüzünü görebilir ve onu daha yakından tanıyabilirsin!",
+		"Şehrin en iyi etkinlikleri üzerinden yeni insanlarla tanışma şansı seni bekliyor.",
+		"İnsanları istediğin gibi filtrele, ortak zevklerin olan insanlarla eşleş.",
 	];
 
 	const [counter, counterChanger] = React.useState(0);
@@ -56,8 +56,18 @@ export default function Onboarding({ navigation }) {
 				}}
 			>
 				<View style={{ alignSelf: "flex-end", marginTop: height * 0.05 }}>
-					<TouchableOpacity style={{ right: 35, top: 2 }} onPress={navigate}>
-						<Text style={{ fontSize: height * 0.03, color: colors.white }}>Atla</Text>
+					<TouchableOpacity
+						style={{
+							right: 35,
+							top: 2,
+							paddingHorizontal: width * 0.05,
+							paddingVertical: height * 0.01,
+						}}
+						onPress={navigate}
+					>
+						<Text style={{ fontSize: Math.min(height * 0.03, width * 0.05), color: colors.white }}>
+							Atla
+						</Text>
 					</TouchableOpacity>
 				</View>
 				<View
@@ -100,6 +110,8 @@ export default function Onboarding({ navigation }) {
 					<View
 						name={"text"}
 						style={{
+							paddingRight: width * 0.2,
+							width: "100%",
 							marginLeft: width * 0.05,
 						}}
 					>
@@ -220,12 +232,12 @@ const styles = StyleSheet.create({
 	TextHeader: {
 		color: colors.white,
 		fontFamily: "PoppinsSemiBold",
-		fontSize: Math.min(height * 0.05, width * 0.085),
+		fontSize: Math.min(height * 0.04, width * 0.06),
 	},
 	TextContent: {
 		marginTop: 5,
 		color: colors.white,
 		letterSpacing: 0.9,
-		fontSize: height * 0.02,
+		fontSize: Math.min(height * 0.02, width * 0.03),
 	},
 });

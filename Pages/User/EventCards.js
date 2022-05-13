@@ -408,198 +408,208 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						/>
 						<ScrollView
 							showsVerticalScrollIndicator={false}
+							contentContainerStyle={{
+								// marginTop: 30,
+								paddingBottom: 10,
+								justifyContent: "center",
+							}}
 							style={{
+								marginTop: 30,
+								marginBottom: 10,
 								width: "80%",
-								marginVertical: 30,
 							}}
 						>
-							<View style={{ width: "100%", alignItems: "center" }}>
+							{/* <View style={{ width: "100%", alignItems: "center" }}> */}
+							<Text
+								name={"Name"}
+								style={{
+									color: colors.light_gray,
+									fontSize: Math.min(height * 0.025, width * 0.04),
+									textAlign: "center",
+									paddingVertical: 5,
+								}}
+							>
+								Etkinliğin Adı{"\n"}
 								<Text
-									name={"Name"}
+									style={{
+										textAlign: "left",
+										fontFamily: "PoppinsSemiBold",
+										fontSize: Math.min(height * 0.03, width * 0.048),
+									}}
+								>
+									{name}
+								</Text>
+							</Text>
+							{location != "" && (
+								<Text
+									name={"Location"}
 									style={{
 										color: colors.light_gray,
-										fontSize: Math.min(width * 0.045, 27),
+										fontSize: Math.min(height * 0.025, width * 0.04),
 										textAlign: "center",
 										paddingVertical: 5,
 									}}
 								>
-									Etkinliğin Adı{"\n"}
+									Yer{"\n"}
 									<Text
 										style={{
-											textAlign: "left",
 											fontFamily: "PoppinsSemiBold",
-											fontSize: Math.min(width * 0.055, 30),
+											fontSize: Math.min(height * 0.03, width * 0.048),
 										}}
 									>
-										{name}
+										{location}
 									</Text>
 								</Text>
-								{location != "" && (
+							)}
+							{date != "NaN/NaN/NaN" && (
+								<Text
+									name={"Date"}
+									style={{
+										color: colors.light_gray,
+										fontSize: Math.min(height * 0.025, width * 0.04),
+										textAlign: "center",
+										paddingVertical: 5,
+									}}
+								>
+									Tarih{"\n"}
 									<Text
-										name={"Location"}
 										style={{
-											color: colors.light_gray,
-											fontSize: Math.min(width * 0.045, 27),
-											textAlign: "center",
-											paddingVertical: 5,
+											fontFamily: "PoppinsSemiBold",
+											fontSize: Math.min(height * 0.03, width * 0.048),
 										}}
 									>
-										Yer{"\n"}
-										<Text
-											style={{
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(width * 0.055, 30),
-											}}
-										>
-											{location}
-										</Text>
+										{date}
 									</Text>
-								)}
-								{date != "NaN/NaN/NaN" && (
+								</Text>
+							)}
+							{time != "" && (
+								<Text
+									name={"Time"}
+									style={{
+										color: colors.light_gray,
+										fontSize: Math.min(height * 0.025, width * 0.04),
+										textAlign: "center",
+										paddingVertical: 5,
+									}}
+								>
+									Saat{"\n"}
 									<Text
-										name={"Date"}
 										style={{
-											color: colors.light_gray,
-											fontSize: Math.min(width * 0.045, 27),
-											textAlign: "center",
-											paddingVertical: 5,
+											fontFamily: "PoppinsSemiBold",
+											fontSize: Math.min(height * 0.03, width * 0.048),
 										}}
 									>
-										Tarih{"\n"}
-										<Text
-											style={{
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(width * 0.055, 30),
-											}}
-										>
-											{date}
-										</Text>
+										{time}
 									</Text>
-								)}
-								{time != "" && (
+								</Text>
+							)}
+							{genre != "" && (
+								<Text
+									name={"Genre"}
+									style={{
+										color: colors.light_gray,
+										fontSize: Math.min(height * 0.025, width * 0.04),
+										textAlign: "center",
+										paddingVertical: 5,
+									}}
+								>
+									Tür{"\n"}
 									<Text
-										name={"Time"}
 										style={{
-											color: colors.light_gray,
-											fontSize: Math.min(width * 0.045, 27),
-											textAlign: "center",
-											paddingVertical: 5,
+											fontFamily: "PoppinsSemiBold",
+											fontSize: Math.min(height * 0.03, width * 0.048),
 										}}
 									>
-										Saat{"\n"}
-										<Text
-											style={{
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(width * 0.055, 30),
-											}}
-										>
-											{time}
-										</Text>
+										{genre}
 									</Text>
-								)}
-								{genre != "" && (
+								</Text>
+							)}
+							{buyLink != "" && (
+								<View style={{ width: "100%", alignItems: "center" }}>
 									<Text
-										name={"Genre"}
+										name={"Seller"}
 										style={{
-											color: colors.light_gray,
-											fontSize: Math.min(width * 0.045, 27),
 											textAlign: "center",
-											paddingVertical: 5,
+											color: colors.light_gray,
+											fontSize: Math.min(height * 0.025, width * 0.04),
+											paddingTop: 5,
 										}}
 									>
-										Tür{"\n"}
-										<Text
-											style={{
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(width * 0.055, 30),
-											}}
-										>
-											{genre}
-										</Text>
+										Bilet Platformu
 									</Text>
-								)}
-								{buyLink != "" && (
-									<View style={{ width: "100%", alignItems: "center" }}>
-										<Text
-											name={"Seller"}
-											style={{
-												textAlign: "center",
-												color: colors.light_gray,
-												fontSize: Math.min(width * 0.045, 27),
-												paddingTop: 5,
-											}}
-										>
-											Bilet Platformu
-										</Text>
-										<Pressable
-											onPress={async () => {
-												if (turn.value != -1) return;
-												await axios
-													.post(
-														url + "/eventLinkClick",
-														{ EventId: EventId },
-														{ headers: { "access-token": sesToken } }
-													)
-													.catch((err) => console.log(err));
+									<Pressable
+										onPress={async () => {
+											if (turn.value != -1) return;
+											await axios
+												.post(
+													url + "/eventLinkClick",
+													{ EventId: EventId },
+													{ headers: { "access-token": sesToken } }
+												)
+												.catch((err) => console.log(err));
 
-												await Linking.openURL(buyLink);
-											}}
-										>
-											<View style={{ flexDirection: "row", alignContent: "center" }}>
-												<Text
-													style={{
-														color: colors.light_gray,
-														textDecorationLine: "underline",
-														fontSize: Math.min(width * 0.055, 30),
-														fontFamily: "PoppinsSemiBold",
-													}}
-												>
-													{seller}
-												</Text>
-												<Text
-													style={{
-														textAlign: "center",
-														fontSize: Math.min(width * 0.07, 30),
-														color: colors.light_gray,
-													}}
-												>
-													{"⇗"}
-												</Text>
-											</View>
-										</Pressable>
-									</View>
-								)}
-								<View style={{ width: "100%" }}>
-									<TouchableOpacity onPress={explorePeople}>
+											await Linking.openURL(buyLink);
+										}}
+										// style={{ backgroundColor: "pink" }}
+									>
 										<View
 											style={{
-												// width: width,
-												// backgroundColor: "blue",
-												paddingHorizontal: 10,
-												paddingVertical: 15,
-												borderRadius: 10,
-												borderWidth: 1,
-												borderColor: colors.light_gray,
-												justifyContent: "center",
+												flexDirection: "row",
 												alignItems: "center",
-												marginTop: 10,
 											}}
 										>
 											<Text
-												numberOfLines={1}
-												adjustsFontSizeToFit={true}
 												style={{
-													fontSize: Math.min(width * 0.1, 18),
+													color: colors.light_gray,
+													textDecorationLine: "underline",
+													fontSize: Math.min(height * 0.03, width * 0.048),
+													fontFamily: "PoppinsSemiBold",
+												}}
+											>
+												{seller}
+											</Text>
+											<Text
+												style={{
+													// textAlign: "center",
+													fontSize: Math.min(height * 0.03, width * 0.048),
 													color: colors.light_gray,
 												}}
 											>
-												Etkinliği Beğenen Kişileri Keşfet
+												{"⇗"}
 											</Text>
 										</View>
-									</TouchableOpacity>
+									</Pressable>
 								</View>
-							</View>
+							)}
+							{/* </View> */}
 						</ScrollView>
+						<View style={{ width: "80%", marginBottom: height * 0.05 }}>
+							<TouchableOpacity onPress={explorePeople}>
+								<View
+									style={{
+										paddingHorizontal: 10,
+										paddingVertical: 15,
+										borderRadius: 10,
+										borderWidth: 1,
+										borderColor: colors.light_gray,
+										justifyContent: "center",
+										alignItems: "center",
+										marginTop: 10,
+									}}
+								>
+									<Text
+										numberOfLines={1}
+										adjustsFontSizeToFit={true}
+										style={{
+											fontSize: Math.min(width * 0.1, 18),
+											color: colors.light_gray,
+										}}
+									>
+										Etkinliği Beğenen Kişileri Keşfet
+									</Text>
+								</View>
+							</TouchableOpacity>
+						</View>
 					</Animated.View>
 				</Animated.View>
 			</GestureDetector>
@@ -782,7 +792,9 @@ export default function EventCards({ navigation, route }) {
 			<View
 				style={{
 					backgroundColor: "#F4F3F3",
-					maxHeight: height * 0.15,
+					// maxHeight: height * 0.15,
+					paddingVertical: height * 0.015,
+
 					width: width,
 					flexDirection: "row",
 					justifyContent: "space-between",
@@ -807,7 +819,7 @@ export default function EventCards({ navigation, route }) {
 				<Image
 					source={require("../../assets/dorm_text.png")}
 					resizeMode="contain"
-					style={{ flex: 1, maxHeight: "60%" }}
+					style={{ height: height * 0.04, flex: 1 }}
 				/>
 				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
