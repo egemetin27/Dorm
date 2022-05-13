@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { API, graphqlOperation } from "aws-amplify";
 import { createSentMsg, updateUserChat } from "../../src/graphql/mutations";
 import * as SecureStore from "expo-secure-store";

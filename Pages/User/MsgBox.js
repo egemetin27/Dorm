@@ -183,7 +183,7 @@ const MsgBox = (props) => {
                     <View style={{ flexDirection: "column"}}>
                       <Text style = {{marginBottom: height*0.02, marginRight: 5, fontSize: 12}}>
                         {
-                          moment(props.lastTime).format("DD/MM/YYYY")
+                          moment(props.lastTime).format("dddd")
                         }
                       </Text>
                     </View>
