@@ -627,8 +627,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						alignItems: "center",
 					}}
 				>
-					<View style={{ position: "absolute", top: 10, right: 15 }}>
+					<View style={{ position: "absolute", top: 5, right: 10 }}>
 						<Pressable
+							style={{ padding: 5 }}
 							onPress={() => {
 								setLikeEventModal(false);
 							}}
@@ -721,8 +722,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						alignItems: "center",
 					}}
 				>
-					<View style={{ position: "absolute", top: 10, right: 15 }}>
+					<View style={{ position: "absolute", top: 5, right: 10 }}>
 						<Pressable
+							style={{ padding: 5 }}
 							onPress={() => {
 								setSeeWhoLikedModal(false);
 							}}

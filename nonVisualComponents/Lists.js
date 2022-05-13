@@ -18,6 +18,7 @@ export const univList = [
 	{ key: 9, choice: "Özyeğin Üniversitesi", mailExt: "ozu.edu.tr" },
 	{ key: 10, choice: "Sabancı Üniversitesi", mailExt: "sabanciuniv.edu" },
 	{ key: 11, choice: "Yeditepe Üniversitesi", mailExt: "std.yeditepe.edu.tr" },
+	{ key: 12, choice: "Yıldız Teknik Üniversitesi", mailExt: "std.yildiz.edu.tr" },
 ];
 
 export const religionList = [

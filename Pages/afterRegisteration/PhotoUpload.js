@@ -160,20 +160,20 @@ export default function PhotoUpload({ navigation, route }) {
 					<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
 				</TouchableOpacity>
 			</View>
-			<View style={{ paddingHorizontal: 30, marginTop: 20 }}>
+			<View style={{ paddingHorizontal: width * 0.1, marginTop: 20, width: "100%" }}>
 				<GradientText
 					text={"En güzel fotoğraflarım"}
-					style={{ fontSize: Math.min(30, height * 0.04), fontFamily: "NowBold" }}
+					style={{ fontSize: Math.min(height * 0.032, width * 0.06), fontFamily: "NowBold" }}
 				/>
 				<Text
 					style={{
-						fontSize: Math.min(18, height * 0.024),
+						fontSize: Math.min(height * 0.02, width * 0.0375),
 						color: colors.medium_gray,
 						marginTop: 5,
 						letterSpacing: 0.5,
 					}}
 				>
-					Kendi fotoğraflarını ekle, görmek istediğimiz kişi sensin. :{")"}
+					Kendi fotoğraflarını ekle, görmek istediğimiz kişi sensin. :)
 				</Text>
 			</View>
 			<View style={{ width: "100%", alignItems: "center" }}>

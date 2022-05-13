@@ -201,7 +201,7 @@ export default function Profile({ route, navigation }) {
 		);
 
 	return (
-		<View style={[commonStyles.Container, { alignItems: "center", backgroundColor: "#F4F3F3" }]}>
+		<View style={[commonStyles.Container, { alignItems: "center" }]}>
 			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 			<View
 				style={{
@@ -220,14 +220,14 @@ export default function Profile({ route, navigation }) {
 						<TouchableOpacity onPress={() => setEditibility(!isEditable)}>
 							<MaterialCommunityIcons
 								name="arrow-left"
-								size={30}
+								size={height * 0.035}
 								color={colors.gray}
 								style={{ paddingRight: 15 }}
 							/>
 						</TouchableOpacity>
 					) : (
 						<GradientText
-							style={{ fontSize: 30, fontFamily: "NowBold", letterSpacing: 1.2 }}
+							style={{ fontSize: height * 0.035, fontFamily: "NowBold", letterSpacing: 1.2 }}
 							text={"Profilim"}
 						/>
 					)}
@@ -402,7 +402,7 @@ export default function Profile({ route, navigation }) {
 					</View>
 
 					<View name={"Info"} style={{ paddingBottom: 50 }}>
-						<View name={"Name"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Name"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -443,7 +443,7 @@ export default function Profile({ route, navigation }) {
 								}}
 							/>
 						</View>
-						<View name={"Age"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Age"} style={[styles.inputContainer, {}]}>
 							<Text
 								style={[
 									styles.placeHolder,
@@ -465,7 +465,7 @@ export default function Profile({ route, navigation }) {
 								value={age.toString()}
 							/>
 						</View>
-						<View name={"Sex"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Sex"} style={[styles.inputContainer, {}]}>
 							<Text
 								style={[
 									styles.placeHolder,
@@ -493,10 +493,7 @@ export default function Profile({ route, navigation }) {
 								<Text style={[styles.input, { color: colors.black }]}>{sex.choice}</Text>
 							</Pressable>
 						</View>
-						<View
-							name={"School"}
-							style={[styles.inputContainer, { backgroundColor: colors.white }]}
-						>
+						<View name={"School"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -522,7 +519,7 @@ export default function Profile({ route, navigation }) {
 							name={"City"}
 							style={[
 								styles.inputContainer,
-								{ backgroundColor: colors.white },
+								{},
 								// { backgroundColor: isEditable ? "transparent" : colors.white },
 							]}
 						>
@@ -580,7 +577,7 @@ export default function Profile({ route, navigation }) {
 										) : (
 											<View
 												style={{
-													backgroundColor: colors.white,
+													
 													height: "100%",
 													justifyContent: "center",
 													alignItems: "center",
@@ -616,7 +613,7 @@ export default function Profile({ route, navigation }) {
 										) : (
 											<View
 												style={{
-													backgroundColor: colors.white,
+													
 													height: "100%",
 													justifyContent: "center",
 													alignItems: "center",
@@ -652,7 +649,7 @@ export default function Profile({ route, navigation }) {
 										) : (
 											<View
 												style={{
-													backgroundColor: colors.white,
+													
 													height: "100%",
 													justifyContent: "center",
 													alignItems: "center",
@@ -666,7 +663,7 @@ export default function Profile({ route, navigation }) {
 							)} */}
 						</View>
 
-						<View name={"Major"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Major"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -708,10 +705,7 @@ export default function Profile({ route, navigation }) {
 							/>
 						</View>
 
-						<View
-							name={"Religion"}
-							style={[styles.inputContainer, { backgroundColor: colors.white }]}
-						>
+						<View name={"Religion"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -753,7 +747,7 @@ export default function Profile({ route, navigation }) {
 							/>
 						</View>
 
-						<View name={"Sign"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Sign"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -794,7 +788,7 @@ export default function Profile({ route, navigation }) {
 							</Pressable>
 						</View>
 
-						<View name={"Diet"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Diet"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -835,10 +829,7 @@ export default function Profile({ route, navigation }) {
 							</Pressable>
 						</View>
 
-						<View
-							name={"Alcohol"}
-							style={[styles.inputContainer, { backgroundColor: colors.white }]}
-						>
+						<View name={"Alcohol"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -879,7 +870,7 @@ export default function Profile({ route, navigation }) {
 							</Pressable>
 						</View>
 
-						<View name={"Smoke"} style={[styles.inputContainer, { backgroundColor: colors.white }]}>
+						<View name={"Smoke"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -933,10 +924,7 @@ export default function Profile({ route, navigation }) {
 								}
 							}}
 						>
-							<View
-								name={"Hobbies"}
-								style={[styles.inputContainer, { backgroundColor: colors.white }]}
-							>
+							<View name={"Hobbies"} style={[styles.inputContainer, {}]}>
 								<Animated.Text
 									style={[
 										styles.placeHolder,
@@ -969,6 +957,8 @@ export default function Profile({ route, navigation }) {
 										{
 											width: "100%",
 											height: "100%",
+											// paddingHorizontal: "5%",
+											// paddingTop: "3%",
 										},
 									]}
 								>
@@ -976,8 +966,11 @@ export default function Profile({ route, navigation }) {
 										// style={{ backgroundColor: "blue" }}
 										contentContainerStyle={{
 											alignItems: "flex-end",
-											paddingBottom: 12,
-											paddingHorizontal: 20,
+											// paddingBottom: 12,
+											// paddingHorizontal: 20,
+											height: "100%",
+											paddingTop: "3%",
+											paddingHorizontal: "5%",
 										}}
 										keyExtractor={(item) => item.InterestName}
 										horizontal={true}
@@ -985,26 +978,31 @@ export default function Profile({ route, navigation }) {
 										data={hobbies}
 										renderItem={({ item }) => {
 											return (
-												<Text style={{ color: colors.black, fontSize: 20 }}>
+												<Text
+													style={{
+														color: colors.black,
+														fontSize: Math.min(height * 0.023, width * 0.05),
+													}}
+												>
 													{item.InterestName}
 												</Text>
 											);
 										}}
-										ItemSeparatorComponent={() =>
-											// prettier-ignore
-											<Text style={{ color: colors.gray, fontSize: 20 }}>  |  </Text>
-										}
+										ItemSeparatorComponent={() => (
+											<Text
+												style={[
+													{ color: colors.gray, fontSize: Math.min(height * 0.023, width * 0.05) },
+												]}
+											>
+												{" "}
+												|{" "}
+											</Text>
+										)}
 									/>
 								</View>
 							</View>
 						</Pressable>
-						<View
-							name={"About"}
-							style={[
-								styles.inputContainer,
-								{ backgroundColor: colors.white, height: height * 0.2 },
-							]}
-						>
+						<View name={"About"} style={[styles.inputContainer, { height: height * 0.2 }]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -1170,13 +1168,14 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: colors.cool_gray,
+		backgroundColor: colors.white,
 	},
 	input: {
 		textAlignVertical: "bottom",
 		textAlign: "center",
 		width: "100%",
 		paddingHorizontal: "5%",
+		paddingTop: "3%",
 		fontSize: Math.min(height * 0.023, width * 0.05),
 	},
 	modalContainer: {

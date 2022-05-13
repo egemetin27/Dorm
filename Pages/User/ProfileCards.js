@@ -287,7 +287,7 @@ export default function ProfileCards({ navigation, route }) {
 					style={{
 						// backgroundColor: "pink",
 						textAlign: "center",
-						fontSize: Math.min(width * 0.035, 16),
+						fontSize: Math.min(width * 0.035, 10),
 						color: colors.medium_gray,
 						letterSpacing: 0.2,
 					}}

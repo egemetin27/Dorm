@@ -71,7 +71,12 @@ export default function AfterRegister({ route, navigation }) {
 			<StatusBar style={"dark"} />
 			{initial ? (
 				<View
-					style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
+					style={{
+						width: "100%",
+						height: "100%",
+						justifyContent: "flex-end",
+						alignItems: "center",
+					}}
 					onLayout={() => {
 						setTimeout(() => {
 							setInitial(false);
@@ -80,14 +85,13 @@ export default function AfterRegister({ route, navigation }) {
 				>
 					<GradientText
 						text={"Kaydın tamam!"}
-						style={{ fontSize: 36, fontFamily: "NowBold", letterSpacing: 1.2 }}
+						style={{ fontSize: width * 0.08, fontFamily: "NowBold", letterSpacing: 1.2 }}
 					/>
 					<Image
 						source={require("../../assets/RegisterationComplete.png")}
 						style={{
-							position: "absolute",
-							bottom: 0,
-							height: height * 0.45,
+							marginTop: height * 0.05,
+							height: height * 0.4,
 							aspectRatio: 1,
 						}}
 						resizeMode={"contain"}

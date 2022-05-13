@@ -210,7 +210,7 @@ export default function Messages({ route, navigation }) {
 				<View style={{ marginLeft: 20 }}>
 					{
 						<GradientText
-							style={{ fontSize: 27, fontFamily: "NowBold", letterSpacing: 1.2 }}
+							style={{ fontSize: height * 0.035, fontFamily: "NowBold", letterSpacing: 1.2 }}
 							text={"Sohbetlerim"}
 						/>
 					}

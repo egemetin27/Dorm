@@ -22,7 +22,7 @@ import { AuthContext } from "../../nonVisualComponents/Context";
 const { height, width } = Dimensions.get("window");
 
 export default function Hobbies({ navigation, route }) {
-	const insets = useSafeAreaInsets()
+	const insets = useSafeAreaInsets();
 	const [hobbies, setHobbies] = React.useState(
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
@@ -88,47 +88,92 @@ export default function Hobbies({ navigation, route }) {
 		{ key: "🤼 Dövüş Sanatları" },
 	];
 
-	// Fotoğrafçılık,  Plastik sanatlar, Makyaj, Vlogging, Yazı
+	// Vlogging, Yazı
 	const creativity = [
 		{ key: "🎸 Müzik" },
 		{ key: "💃 Dans" },
 		{ key: "📹 Vlog" },
 		{ key: "📝 Yazı" },
 		{ key: "🎨 Resim" },
+		{ key: "📷 Fotoğrafçılık" },
+		{ key: "🗿 Plastik sanatlar" },
+		{ key: "💄 Makyaj" },
 	];
 
-	// Şarap, Bira, Viski, Vegan, Vejetaryen, Tatlı, Gastronomi, Kahve, Meyhane Kültürü
 	const consumables = [
 		{ key: "🍷 Şarap" },
 		{ key: "🍺 Bira" },
 		{ key: "🍸 Kokteyl" },
 		{ key: "🥦 Vegan" },
+		{ key: "🥃 Viski" },
+		{ key: "🥬 Vejetaryen " },
+		{ key: "🧁 Tatlı" },
+		{ key: "🧑🏻‍🍳 Gastronomi" },
+		{ key: "☕ Kahve" },
+		{ key: "🥛 Meyhane" },
 	];
 
-	// Aksiyon, Animasyon, Anime, Komedi, Belgesel, Dram, Fantastik, Bilim Kurgu, Korku, Gerilim, Avrupa Sineması, Süper kahraman, Yarışma programları
-	const movies = [{ key: "🦸 Süper Kahraman" }, { key: "🙀 Korku" }, { key: "🧑‍🚀 Bilim Kurgu" }];
+	const movies = [
+		{ key: "🦸 Süper Kahraman" },
+		{ key: "🙀 Korku" },
+		{ key: "🧑‍🚀 Bilim Kurgu" },
+		{ key: "🪂 Aksiyon" },
+		{ key: "👾 Animasyon" },
+		{ key: "😂 Komedi" },
+		{ key: "🦁 Belgesel" },
+		{ key: "🥺 Dram" },
+		{ key: "🧛🏻 Fantastik" },
+		{ key: "😰 Gerilim" },
+		{ key: "👸🏻 Avrupa Sineması" },
+		{ key: "🏅 Yarışma programları" },
+		{ key: "⛩️ Anime" },
+	];
 
-	// Klasikler, Aksiyon ve Macera, Biyografi, Çizgi roman, Fantastik, Korku, Şiir, Felsefe, Tarih, Siyaset, Suç, Psikoloji
 	const reading = [
 		{ key: "🖊️ Klasik" },
 		{ key: "🏺 Tarih" },
 		{ key: "🔪 Suç" },
 		{ key: "🧝‍♀️ Fantastik" },
+		{ key: "🏔 Aksiyon ve macera" },
+		{ key: "👤 Biyografi" },
+		{ key: "🦸🏻‍♂️ Çizgi roman" },
+		{ key: "😱 Korku" },
+		{ key: "🌷 Şiir" },
+		{ key: "📢 Siyaset" },
+		{ key: "💭 Felsefe" },
+		{ key: "🧠 Psikoloji" },
 	];
 
-	// Blues, Klasik, Cpuntry, Elektronik, Folk & Akustik, Funk, Hip hop, House, Indie, Jazz, K-pop, Latin, Metal, Pop, Punk, R&B, Rap, Reggae, Rock, Alternatif Rock, Soul
 	const music = [
 		{ key: "🎹 Klasik" },
 		{ key: "🎷 Jazz" },
 		{ key: "🎸 Rock" },
 		{ key: "🪕 Country" },
+		{ key: "🎙 Blues" },
+		{ key: "🎧 Elektronik" },
+		{ key: "🕺🏼 Funk" },
+		{ key: "🧢 Hiphop" },
+		{ key: "👩🏾‍🦱 Soul" },
+		{ key: "💃🏻 Latin" },
+		{ key: "🤘🏼 Metal" },
+		{ key: "🎤 Pop" },
+		{ key: "🧑🏻‍🎤 Punk" },
+		{ key: "🪘 Reggae" },
+		{ key: "🇰🇷 K-pop" },
+		{ key: "Rap" },
+		{ key: "Indie" },
+		{ key: "Rnb" },
+		{ key: "Alternatif rock" },
+		{ key: "Folk & Akustik" },
 	];
 
 	// Trans destekçisi, İnsan hakları
 	const activism = [
 		{ key: "💁🏻‍♀️ Feminist" },
-		{ key: "🏳️‍🌈 LGBTQ+ destekçisi" },
 		{ key: "🌲 Çevrecilik" },
+		{ key: "🏳️‍🌈 LGBTQ+ destekçisi" },
+		{ key: "🏳️‍⚧️ Trans destekçisi" },
+		{ key: " İnsan hakları" },
 	];
 
 	const traits = [
@@ -147,7 +192,9 @@ export default function Hobbies({ navigation, route }) {
 	];
 
 	return (
-		<View style={[commonStyles.Container, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+		<View
+			style={[commonStyles.Container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
+		>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
 				style={{
