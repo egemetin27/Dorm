@@ -63,6 +63,7 @@ export default Card = ({
 	setTimer,
 	isScrollShowed,
 	setScrollShowed,
+	matchMode,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -183,55 +184,57 @@ export default Card = ({
 	};
 
 	const onSwipe = async (val) => {
-		const userDataStr = await SecureStore.getItemAsync("userData");
-		const userData = JSON.parse(userDataStr);
-		const myMode = userData.matchMode;
+		// const userDataStr = await SecureStore.getItemAsync("userData");
+		// const userData = JSON.parse(userDataStr);
+		// const myMode = userData.matchMode;
 		// val = 0 means "like" ; 1 means "superLike" ; 2 means "dislike"
-		await axios
-			.post(
-				url + "/LikeDislike",
-				{
-					isLike: val,
-					userSwiped: myID,
-					otherUser: id,
-					matchMode: myMode,
-				},
-				{ headers: { "access-token": sesToken } }
-			)
-			.then((res) => {
-				console.log(res.data);
-				if (res.data.message == "Match") {
-					console.log("send notification.");
-					sendNotification();
-					showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
-					//setMatchPage(true);
-				}
-				incrementIndex();
-			})
-			.catch((error) => {
-				if (error.response) {
-					console.log(error.response);
-					if (error.response.status == 408) {
-						console.log("swipe count ended response");
-						let endTime = new Date(error.response.data);
-						let currentTime = new Date(Date.now());
-						currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
-						let diffSec = endTime.getTime() - currentTime.getTime();
-						let diff = new Date(diffSec).toISOString().slice(11, 16);
-						setTimer(diff.split(":")[0], diff.split(":")[1]);
+		incrementIndex();
+		// await axios
+		// 	.post(
+		// 		url + "/LikeDislike",
+		// 		{
+		// 			isLike: val,
+		// 			userSwiped: myID,
+		// 			otherUser: id,
+		// 			matchMode: matchMode,
+		//			// matchMode: myMode,
+		// 		},
+		// 		{ headers: { "access-token": sesToken } }
+		// 	)
+		// 	.then((res) => {
+		// 		console.log(res.data);
+		// 		if (res.data.message == "Match") {
+		// 			console.log("send notification.");
+		// 			sendNotification();
+		// 			showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
+		// 			//setMatchPage(true);
+		// 		}
+		// 		incrementIndex();
+		// 	})
+		// 	.catch((error) => {
+		// 		if (error.response) {
+		// 			console.log(error.response);
+		// 			if (error.response.status == 408) {
+		// 				console.log("swipe count ended response");
+		// 				let endTime = new Date(error.response.data);
+		// 				let currentTime = new Date(Date.now());
+		// 				currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
+		// 				let diffSec = endTime.getTime() - currentTime.getTime();
+		// 				let diff = new Date(diffSec).toISOString().slice(11, 16);
+		// 				setTimer(diff.split(":")[0], diff.split(":")[1]);
 
-						x.value = withSpring(0);
-						destination.value = 0;
-						showLikeEndedModal();
-					}
-					return;
-				} else if (error.request) {
-					console.log("request error: ", error.request);
-				} else {
-					console.log("error: ", error.message);
-				}
-				incrementIndex();
-			});
+		// 				x.value = withSpring(0);
+		// 				destination.value = 0;
+		// 				showLikeEndedModal();
+		// 			}
+		// 			return;
+		// 		} else if (error.request) {
+		// 			console.log("request error: ", error.request);
+		// 		} else {
+		// 			console.log("error: ", error.message);
+		// 		}
+		// 		incrementIndex();
+		// 	});
 	};
 
 	const panHandler =
@@ -243,16 +246,21 @@ export default Card = ({
 					.onEnd((event) => {
 						destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
 						x.value = withSpring(destination.value);
-					})
-					.onFinalize(() => {
-						// TODO: decrease the daily number of likes by one if the value is greater than 0 and send the LIKED/DISLIKED data to backend
 						destination.value > 0
 							? runOnJS(onSwipe)(0)
 							: destination.value < 0
 							? runOnJS(onSwipe)(2)
 							: null;
 					})
-			: Gesture.Pan();
+			: // .onFinalize(() => {
+			  // 	// TODO: decrease the daily number of likes by one if the value is greater than 0 and send the LIKED/DISLIKED data to backend
+			  // 	destination.value > 0
+			  // 		? runOnJS(onSwipe)(0)
+			  // 		: destination.value < 0
+			  // 		? runOnJS(onSwipe)(2)
+			  // 		: null;
+			  // })
+			  Gesture.Pan();
 
 	const tapHandler = Gesture.Tap()
 		.numberOfTaps(2)
@@ -338,12 +346,30 @@ export default Card = ({
 		};
 	});
 
-	const animatedPhotoProgress = (index) =>
-		useAnimatedStyle(() => {
-			return {
-				height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
-			};
-		});
+	const animatedPhotoProgress1 = useAnimatedStyle(() => {
+		return {
+			backgroundColor: photoList.length > 0 ? colors.white : "transparent",
+			height: interpolate(progress.value, [0, 1], [24, 8]),
+		};
+	});
+	const animatedPhotoProgress2 = useAnimatedStyle(() => {
+		return {
+			backgroundColor: photoList.length > 1 ? colors.white : "transparent",
+			height: interpolate(progress.value, [0, 1, 2], [8, 24, 8]),
+		};
+	});
+	const animatedPhotoProgress3 = useAnimatedStyle(() => {
+		return {
+			backgroundColor: photoList.length > 2 ? colors.white : "transparent",
+			height: interpolate(progress.value, [1, 2, 3], [8, 24, 8]),
+		};
+	});
+	const animatedPhotoProgress4 = useAnimatedStyle(() => {
+		return {
+			backgroundColor: photoList.length > 3 ? colors.white : "transparent",
+			height: interpolate(progress.value, [2, 3], [8, 24]),
+		};
+	});
 
 	const handleScroll = ({ nativeEvent }) => {
 		progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
@@ -373,7 +399,7 @@ export default Card = ({
 
 	return (
 		<View key={index} style={{ position: "absolute", zIndex: index < indexOfFrontCard ? -1 : 1 }}>
-			{indexOfFrontCard == index || indexOfFrontCard == index - 1 ? ( // front or the 2nd card
+			{(indexOfFrontCard == index || indexOfFrontCard == index - 1) && ( // front or the 2nd card
 				<View name={"cards"} style={{ width: "100%", justifyContent: "center", zIndex: 1 }}>
 					<Animated.View style={[animatedSwipe]}>
 						<GestureDetector gesture={composedGesture}>
@@ -384,6 +410,7 @@ export default Card = ({
 										{
 											height: Math.min(width * 1.35, height * 0.7),
 											backfaceVisibility: "hidden",
+											elevation: 0,
 										},
 										animatedFrontFace,
 									]}
@@ -438,26 +465,55 @@ export default Card = ({
 											position: "absolute",
 											left: 20,
 											top: 20,
-											justifyContent: "space-between",
-											minHeight: photoList?.length * 10 + 16,
 										}}
 									>
-										{photoList?.map((_, index) => {
-											return (
-												<Animated.View
-													key={index}
-													style={[
-														{
-															minHeight: 8,
-															width: 8,
-															borderRadius: 4,
-															backgroundColor: colors.white,
-														},
-														animatedPhotoProgress(index),
-													]}
-												/>
-											);
-										})}
+										<Animated.View
+											style={[
+												{
+													minHeight: 8,
+													maxHeight: 24,
+													width: 8,
+													borderRadius: 4,
+												},
+												animatedPhotoProgress1,
+											]}
+										/>
+										<Animated.View
+											style={[
+												{
+													minHeight: 8,
+													maxHeight: 24,
+													width: 8,
+													borderRadius: 4,
+													marginTop: 4,
+												},
+												animatedPhotoProgress2,
+											]}
+										/>
+										<Animated.View
+											style={[
+												{
+													minHeight: 8,
+													maxHeight: 24,
+													width: 8,
+													borderRadius: 4,
+													marginTop: 4,
+												},
+												animatedPhotoProgress3,
+											]}
+										/>
+										<Animated.View
+											style={[
+												{
+													minHeight: 8,
+													maxHeight: 24,
+													width: 8,
+													borderRadius: 4,
+													marginTop: 4,
+												},
+												animatedPhotoProgress4,
+											]}
+										/>
 									</View>
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
@@ -581,6 +637,7 @@ export default Card = ({
 											position: "absolute",
 											backfaceVisibility: "hidden",
 											backgroundColor: colors.cool_gray,
+											elevation: 0,
 										},
 										animatedBackFace,
 									]}
@@ -815,175 +872,6 @@ export default Card = ({
 							source={require("../../assets/Dislike.png")}
 						/>
 					</Animated.View>
-				</View>
-			) : (
-				<View
-					name={"cards"}
-					style={{
-						width: "100%",
-						justifyContent: "center",
-						zIndex: index < indexOfFrontCard ? -1 : 0,
-						opacity: index < indexOfFrontCard ? 0 : 1,
-					}}
-				>
-					<View
-						style={[
-							commonStyles.photo,
-							{
-								width: width * 0.9,
-								maxHeight: height * 0.7,
-								backfaceVisibility: "hidden",
-							},
-						]}
-					>
-						<Image
-							key={index}
-							source={{
-								// uri: photoList[0]?.PhotoLink,
-								uri: indexOfFrontCard + 1 == index ? photoList[0]?.PhotoLink ?? null : null,
-							}}
-							style={{
-								height: "100%",
-								width: "100%",
-								resizeMode: "cover",
-								backgroundColor: colors.cool_gray,
-							}}
-						/>
-						<View
-							style={{
-								position: "absolute",
-								left: 20,
-								top: 20,
-								justifyContent: "space-between",
-								minHeight: photoList?.length * 10 + 16,
-							}}
-						>
-							{photoList.map((_, index) => {
-								return (
-									<Animated.View
-										key={index}
-										style={[
-											{
-												minHeight: 8,
-												width: 8,
-												borderRadius: 4,
-												backgroundColor: colors.white,
-												height: index == 0 ? 24 : 8,
-											},
-											animatedPhotoProgress(index),
-										]}
-									/>
-								);
-							})}
-						</View>
-
-						<View style={{ position: "absolute", top: 20, right: 20 }}>
-							<TouchableOpacity
-								onPress={() => {
-									setReportPage(true);
-								}}
-							>
-								<Image
-									style={{
-										height: 25,
-										tintColor: colors.white,
-										resizeMode: "contain",
-									}}
-									source={require("../../assets/report.png")}
-								/>
-							</TouchableOpacity>
-						</View>
-
-						<LinearGradient
-							colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
-							locations={[0, 0.1, 1]}
-							start={{ x: 0.5, y: 0 }}
-							end={{ x: 0.5, y: 1 }}
-							style={{
-								minHeight: height * 0.12,
-								width: "100%",
-								position: "absolute",
-								bottom: 0,
-								paddingVertical: 10,
-							}}
-						>
-							<View
-								style={{
-									width: "100%",
-									height: "100%",
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "space-between",
-									paddingHorizontal: 20,
-								}}
-							>
-								<View style={{ flexShrink: 1 }}>
-									<Text
-										style={{
-											color: colors.white,
-											fontSize: width * 0.06,
-											fontFamily: "PoppinsSemiBold",
-											letterSpacing: 1.05,
-										}}
-									>
-										{name} • {age}
-									</Text>
-									<Text
-										style={{
-											color: colors.white,
-											fontSize: width * 0.045,
-											fontFamily: "PoppinsItalic",
-											lineHeight: width * 0.05,
-										}}
-									>
-										{university}
-										{"\n"}
-										{major}
-									</Text>
-								</View>
-
-								{/* <View
-											style={{
-												backgroundColor: colors.white,
-												height: width * 0.16,
-												aspectRatio: 1 / 1,
-												borderRadius: Dimensions.get("window").height * 0.1,
-											}}
-										>
-											<TouchableOpacity onPress={handleSuperlike}>
-												<View
-													style={{
-														width: "100%",
-														height: "100%",
-														justifyContent: "center",
-														alignItems: "center",
-													}}
-												>
-													{likeFlag ? (
-														<Image
-															style={{
-																width: "65%",
-																height: "65%",
-																resizeMode: "center",
-															}}
-															source={require("../../assets/spark_filled.png")}
-														/>
-													) : (
-														<Image
-															style={{
-																width: "65%",
-																height: "65%",
-																resizeMode: "center",
-															}}
-															source={require("../../assets/spark_outline.png")}
-														/>
-													)}
-												</View>
-											</TouchableOpacity>
-										</View> */}
-							</View>
-						</LinearGradient>
-					</View>
 				</View>
 			)}
 			{/* Match Page Modal */}

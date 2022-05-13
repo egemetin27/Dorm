@@ -825,17 +825,17 @@ export default function EventCards({ navigation, route }) {
 			<View
 				style={{
 					width: width,
-					paddingHorizontal: width * 0.06,
+					paddingHorizontal: width * 0.1,
 					marginBottom: Math.min(12, height * 0.02),
 					// backgroundColor: "red",
 				}}
 			>
 				<Text
 					numberOfLines={2}
-					// adjustsFontSizeToFit={true}
+					adjustsFontSizeToFit={true}
 					style={{
 						textAlign: "center",
-						fontSize: Math.min(width * 0.04, 24),
+						// fontSize: Math.min(width * 0.04, 24),
 						color: colors.medium_gray,
 						letterSpacing: 0.2,
 					}}

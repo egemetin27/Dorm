@@ -67,22 +67,17 @@ export default function ProfileCards({ navigation, route }) {
 			alert("Lütfen bildirme nedeninizi seçiniz!");
 		} else {
 			setReportPage(false);
-			let abortController = new AbortController();
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const userID = userData.UserId.toString();
-			const myToken = userData.sesToken;
 			try {
 				await axios
 					.post(
 						url + "/report",
 						{
-							UserId: userID,
+							UserId: route.params.myID,
 							sikayetEdilen: reportUserID,
 							sikayetKodu: chosenReport,
 							aciklama: "",
 						},
-						{ headers: { "access-token": myToken } }
+						{ headers: { "access-token": route.params.sesToken } }
 					)
 					.catch((err) => {
 						console.log(err);
@@ -253,6 +248,7 @@ export default function ProfileCards({ navigation, route }) {
 					height: height * 0.7,
 					alignItems: "center",
 					marginTop: height * 0.05,
+					// backgroundColor: "blue",
 				}}
 			>
 				{peopleList.map((item, index) => (
@@ -268,6 +264,7 @@ export default function ProfileCards({ navigation, route }) {
 						indexOfFrontCard={indexOfFrontCard}
 						myProfilePicture={myProfilePicture}
 						isScrollShowed={isScrollShowed}
+						matchMode={route.params.matchMode}
 						setScrollShowed={() => {
 							setIsScrollShowed(true);
 						}}
@@ -296,15 +293,20 @@ export default function ProfileCards({ navigation, route }) {
 			<View
 				style={{
 					width: "100%",
-					position: "relative",
+					// height: "100%",
+					// flex: 1,
+					// backgroundColor: "red",
+					paddingHorizontal: width * 0.1,
+					// justifyContent: "center",
 					// top: 20,
 				}}
 			>
 				<ReText
 					text={derivedText}
 					style={{
+						// backgroundColor: "pink",
 						textAlign: "center",
-						fontSize: Math.min(width * 0.04, 24),
+						fontSize: Math.min(width * 0.035, 16),
 						color: colors.medium_gray,
 						letterSpacing: 0.2,
 					}}
