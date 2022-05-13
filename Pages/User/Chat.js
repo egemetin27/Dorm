@@ -320,12 +320,11 @@ export default function Chat({ navigation, route }) {
 				</View>
 				<TouchableOpacity
 					style={{ paddingBottom: 16 }}
-					name={"reportButton"}
 					onPress={() => {
 						setDeleteChatModal(true);
 					}}
 				>
-					<MaterialIcons name="block" size={32} color="#4A4A4A" />
+					<Feather name="trash" size={32} color="#4A4A4A"/>
 				</TouchableOpacity>
 				<View style={{ paddingHorizontal: "2%" }} />
 				<TouchableOpacity
