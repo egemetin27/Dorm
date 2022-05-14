@@ -27,7 +27,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { snapPoint } from "react-native-redash";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -77,22 +77,23 @@ export default Card = ({
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
 	const [matchPage, setMatchPage] = React.useState(false);
+
 	const {
-		About: about,
-		Alkol: drink,
-		Beslenme: diet,
-		Burc: sign,
-		Din: religion,
-		Gender: genderNo,
-		Major: major,
-		Name: name,
-		School: university,
-		Sigara: smoke,
+		About: about = "",
+		Alkol: drink = "",
+		Beslenme: diet = "",
+		Burc: sign = "",
+		Din: religion = " ",
+		Gender: genderNo = 0,
+		Major: major = "",
+		Name: name = "",
+		School: university = "",
+		Sigara: smoke = "",
 		Surname: sName,
-		UserId: id,
-		photos: photoList,
-		Birth_Date: bDay,
-		interest: hobbies,
+		UserId: id = 0,
+		photos: photoList = [],
+		Birth_Date: bDay = "",
+		interest: hobbies = [],
 	} = card;
 
 	const gender = getGender(genderNo);
@@ -328,26 +329,66 @@ export default Card = ({
 
 	const animatedPhotoProgress1 = useAnimatedStyle(() => {
 		return {
-			backgroundColor: photoList.length > 0 ? colors.white : "transparent",
 			height: interpolate(progress.value, [0, 1], [24, 8]),
+			backgroundColor: photoList?.length > 0 ? colors.white : "transparent",
+			elevation: photoList?.length > 0 ? 20 : 0,
+			shadowOffset:
+				photoList?.length > 0
+					? {
+							width: 0,
+							height: 10,
+					  }
+					: {},
+			shadowOpacity: photoList?.length > 0 ? 0.51 : 0,
+			shadowRadius: photoList?.length > 0 ? 13.16 : 0,
 		};
 	});
 	const animatedPhotoProgress2 = useAnimatedStyle(() => {
 		return {
-			backgroundColor: photoList.length > 1 ? colors.white : "transparent",
 			height: interpolate(progress.value, [0, 1, 2], [8, 24, 8]),
+			backgroundColor: photoList?.length > 1 ? colors.white : "transparent",
+			elevation: photoList?.length > 1 ? 20 : 0,
+			shadowOffset:
+				photoList?.length > 1
+					? {
+							width: 0,
+							height: 10,
+					  }
+					: {},
+			shadowOpacity: photoList?.length > 1 ? 0.51 : 0,
+			shadowRadius: photoList?.length > 1 ? 13.16 : 0,
 		};
 	});
 	const animatedPhotoProgress3 = useAnimatedStyle(() => {
 		return {
-			backgroundColor: photoList.length > 2 ? colors.white : "transparent",
 			height: interpolate(progress.value, [1, 2, 3], [8, 24, 8]),
+			backgroundColor: photoList?.length > 2 ? colors.white : "transparent",
+			elevation: photoList?.length > 2 ? 20 : 0,
+			shadowOffset:
+				photoList?.length > 2
+					? {
+							width: 0,
+							height: 10,
+					  }
+					: {},
+			shadowOpacity: photoList?.length > 2 ? 0.51 : 0,
+			shadowRadius: photoList?.length > 2 ? 13.16 : 0,
 		};
 	});
 	const animatedPhotoProgress4 = useAnimatedStyle(() => {
 		return {
-			backgroundColor: photoList.length > 3 ? colors.white : "transparent",
 			height: interpolate(progress.value, [2, 3], [8, 24]),
+			backgroundColor: photoList?.length > 3 ? colors.white : "transparent",
+			elevation: photoList?.length > 3 ? 20 : 0,
+			shadowOffset:
+				photoList?.length > 3
+					? {
+							width: 0,
+							height: 10,
+					  }
+					: {},
+			shadowOpacity: photoList?.length > 3 ? 0.51 : 0,
+			shadowRadius: photoList?.length > 3 ? 13.16 : 0,
 		};
 	});
 
@@ -506,20 +547,26 @@ export default Card = ({
 									<View style={{ position: "absolute", top: 20, right: 20 }}>
 										<TouchableOpacity
 											onPress={() => {
-												//showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 												showReportPage(id);
-												//setReportPage(true);
-												//setMatchPage(true);
 											}}
 										>
-											<Image
+											<Text
+												style={{
+													textShadowColor: colors.black,
+													textShadowRadius: 20,
+													textShadowOffset: { width: 0, height: 0 },
+												}}
+											>
+												<MaterialIcons name="outlined-flag" size={30} color={colors.white} />
+											</Text>
+											{/* <Image
 												style={{
 													height: 25,
 													tintColor: colors.white,
 													resizeMode: "contain",
 												}}
 												source={require("../../assets/report.png")}
-											/>
+											/> */}
 										</TouchableOpacity>
 									</View>
 									<LinearGradient

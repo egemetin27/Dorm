@@ -76,7 +76,6 @@ const InputBox = (props) => {
 		<View
 			style={{
 				flexDirection: "row",
-				// alignItems: "flex-end",
 			}}
 		>
 			<View
@@ -89,10 +88,11 @@ const InputBox = (props) => {
 					height: msgHeight,
 					minHeight: 20,
 					maxHeight: 84,
+					elevation: 23,
 				}}
 			>
 				<TextInput
-					style={{ flex: 1, marginHorizontal: 10 }}
+					style={{ marginHorizontal: 10, width: "100%" }}
 					multiline
 					placeholder={"Mesajın..."}
 					value={message}
@@ -119,33 +119,30 @@ const InputBox = (props) => {
 					}
 				}}
 				style={{
-					borderRadius: 45,
-					width: 45,
-					height: 45,
-					justifyContent: "center",
-					alignItems: "center",
+					width: "12%",
 				}}
 			>
 				<MaskedView
 					style={{
-						// width: "100%",
-						// height: "100%",
-						alignContent: "center",
+						width: "100%",
+						height: "100%",
 						flex: 1,
-						flexDirection: "row",
+						alignItems: "center",
+						justifyContent: "center",
 					}}
 					maskElement={
 						<View
 							style={{
+								height: "100%",
 								justifyContent: "center",
 								alignItems: "center",
 							}}
 						>
-							<Ionicons name="send" size={30} color="white" style={styles.shadow} />
+							<Ionicons name="send" size={30} color="white" />
 						</View>
 					}
 				>
-					<LinearGradient colors={["#4136F1", "#8743FF"]} style={{ flex: 1 }} />
+					<LinearGradient colors={["#4136F1", "#8743FF"]} style={{ flex: 1, width: "100%" }} />
 				</MaskedView>
 			</TouchableOpacity>
 		</View>

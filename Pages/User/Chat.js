@@ -288,6 +288,7 @@ export default function Chat({ navigation, route }) {
 					styles.header,
 					{
 						zIndex: 1,
+						alignItems: "baseline",
 					},
 				]}
 			>
@@ -350,10 +351,7 @@ export default function Chat({ navigation, route }) {
 					style={{
 						position: "relative",
 						flex: 1,
-						// top: 0,
-						// left: 0,
-						// right: 0,
-						// bottom: 0,
+						width: width,
 						justifyContent: "center",
 						alignItems: "center",
 					}}

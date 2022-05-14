@@ -171,7 +171,9 @@ export const AnimatedModal = (props) => {
 			<TouchableWithoutFeedback onPress={props.dismiss}>
 				<View style={[styles.modalOverlay, props?.overlay]} />
 			</TouchableWithoutFeedback>
-			<View style={styles.modalContent}>{props.children}</View>
+			<View style={styles.modalContent}>
+				<View>{props.children}</View>
+			</View>
 		</Animated.View>
 	);
 };

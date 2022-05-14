@@ -847,30 +847,15 @@ export default function ProfileCards({ navigation, route }) {
 				<View
 					style={{
 						width: width * 0.8,
+						// height: height * 0.6,
 						backgroundColor: "white",
 						borderRadius: 10,
 						alignItems: "center",
-						// paddingVertical: 30,
-						paddingHorizontal: 40,
+						justifyContent: "space-around",
+						paddingVertical: 30,
+						paddingHorizontal: "7.5%",
 					}}
 				>
-					{/* <ReactNative.TouchableOpacity
-						onPress={() => {
-							setLikeEndedModal(false);
-						}}
-						style={{ position: "absolute", top: 15, right: 20 }}
-					>
-						<Text
-							style={{
-								color: colors.medium_gray,
-								fontSize: 16,
-								fontWeight: "600",
-								letterSpacing: 0.5,
-							}}
-						>
-							Kapat
-						</Text>
-					</ReactNative.TouchableOpacity> */}
 					<Image
 						source={require("../../assets/superLikeFinished.png")}
 						style={{ height: "24%" }}
@@ -886,35 +871,37 @@ export default function ProfileCards({ navigation, route }) {
 					>
 						Beğenme hakların bitti!{"\n"} Ama korkma gün içinde tekrar yenilecek
 					</Text>
-					<Text
-						numberOfLines={1}
-						adjustsFontSizeToFit={true}
-						style={{
-							textAlign: "center",
-							marginTop: 20,
-							color: colors.cool_gray,
-							fontSize: Math.min(height * 0.021, width * 0.04),
-						}}
-					>
-						Beğenme hakkın için kalan süre:
-					</Text>
-					<Text
-						numberOfLines={1}
-						adjustsFontSizeToFit={true}
-						style={{
-							textAlign: "center",
-							color: colors.cool_gray,
-							fontSize: Math.min(height * 0.021, width * 0.04),
-						}}
-					>
-						<Feather
-							name="clock"
-							size={Math.min(height * 0.021, width * 0.04)}
-							color={colors.cool_gray}
-						/>
-						{endOfLikesTimer.hour != 0 ? endOfLikesTimer.hour + " saat" : ""}{" "}
-						{endOfLikesTimer.minute} dakika
-					</Text>
+					<View>
+						<Text
+							numberOfLines={1}
+							adjustsFontSizeToFit={true}
+							style={{
+								textAlign: "center",
+								marginTop: 20,
+								color: colors.cool_gray,
+								fontSize: Math.min(height * 0.021, width * 0.04),
+							}}
+						>
+							Beğenme hakkın için kalan süre:
+						</Text>
+						<Text
+							numberOfLines={1}
+							adjustsFontSizeToFit={true}
+							style={{
+								textAlign: "center",
+								color: colors.cool_gray,
+								fontSize: Math.min(height * 0.021, width * 0.04),
+							}}
+						>
+							<Feather
+								name="clock"
+								size={Math.min(height * 0.021, width * 0.04)}
+								color={colors.cool_gray}
+							/>
+							{endOfLikesTimer.hour != 0 ? endOfLikesTimer.hour + " saat" : ""}{" "}
+							{endOfLikesTimer.minute} dakika
+						</Text>
+					</View>
 					<ReactNative.TouchableOpacity
 						onPress={() => {
 							setLikeEndedModal(false);
