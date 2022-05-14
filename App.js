@@ -3,8 +3,6 @@ import { StyleSheet, Dimensions, View, AppState } from "react-native";
 import Amplify from "aws-amplify";
 import awsmobile from "./src/aws-exports";
 
-import { Restart } from "fiction-expo-restart";
-
 const { width, height } = Dimensions.get("window");
 
 Amplify.configure(awsmobile);
@@ -31,7 +29,6 @@ export default function App() {
 	const _handleAppStateChange = (nextAppState) => {
 		if (appState.current.match(/inactive|background/) && nextAppState === "active") {
 			console.log("App has come to the foreground!");
-			// Restart();
 		}
 
 		appState.current = nextAppState;

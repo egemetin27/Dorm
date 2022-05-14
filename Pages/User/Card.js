@@ -553,7 +553,7 @@ export default Card = ({
 											<Text
 												style={{
 													textShadowColor: colors.black,
-													textShadowRadius: 20,
+													textShadowRadius: 8,
 													textShadowOffset: { width: 0, height: 0 },
 												}}
 											>

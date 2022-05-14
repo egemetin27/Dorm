@@ -791,7 +791,6 @@ export default function EventCards({ navigation, route }) {
 	const { idx, list, myID, sesToken } = route.params;
 
 	React.useEffect(() => {
-		console.log(list);
 		const backAction = () => {
 			navigation.replace("MainScreen", { screen: "AnaSayfa" });
 			return true;
