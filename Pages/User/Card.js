@@ -331,64 +331,64 @@ export default Card = ({
 		return {
 			height: interpolate(progress.value, [0, 1], [24, 8]),
 			backgroundColor: photoList?.length > 0 ? colors.white : "transparent",
-			elevation: photoList?.length > 0 ? 20 : 0,
-			shadowOffset:
-				photoList?.length > 0
-					? {
-							width: 0,
-							height: 10,
-					  }
-					: {},
-			shadowOpacity: photoList?.length > 0 ? 0.51 : 0,
-			shadowRadius: photoList?.length > 0 ? 13.16 : 0,
+			// elevation: photoList?.length > 0 ? 20 : 0,
+			// shadowOffset:
+			// 	photoList?.length > 0
+			// 		? {
+			// 				width: 0,
+			// 				height: 10,
+			// 		  }
+			// 		: {},
+			// shadowOpacity: photoList?.length > 0 ? 0.51 : 0,
+			// shadowRadius: photoList?.length > 0 ? 13.16 : 0,
 		};
 	});
 	const animatedPhotoProgress2 = useAnimatedStyle(() => {
 		return {
 			height: interpolate(progress.value, [0, 1, 2], [8, 24, 8]),
 			backgroundColor: photoList?.length > 1 ? colors.white : "transparent",
-			elevation: photoList?.length > 1 ? 20 : 0,
-			shadowOffset:
-				photoList?.length > 1
-					? {
-							width: 0,
-							height: 10,
-					  }
-					: {},
-			shadowOpacity: photoList?.length > 1 ? 0.51 : 0,
-			shadowRadius: photoList?.length > 1 ? 13.16 : 0,
+			// elevation: photoList?.length > 1 ? 20 : 0,
+			// shadowOffset:
+			// 	photoList?.length > 1
+			// 		? {
+			// 				width: 0,
+			// 				height: 10,
+			// 		  }
+			// 		: {},
+			// shadowOpacity: photoList?.length > 1 ? 0.51 : 0,
+			// shadowRadius: photoList?.length > 1 ? 13.16 : 0,
 		};
 	});
 	const animatedPhotoProgress3 = useAnimatedStyle(() => {
 		return {
 			height: interpolate(progress.value, [1, 2, 3], [8, 24, 8]),
 			backgroundColor: photoList?.length > 2 ? colors.white : "transparent",
-			elevation: photoList?.length > 2 ? 20 : 0,
-			shadowOffset:
-				photoList?.length > 2
-					? {
-							width: 0,
-							height: 10,
-					  }
-					: {},
-			shadowOpacity: photoList?.length > 2 ? 0.51 : 0,
-			shadowRadius: photoList?.length > 2 ? 13.16 : 0,
+			// elevation: photoList?.length > 2 ? 20 : 0,
+			// shadowOffset:
+			// 	photoList?.length > 2
+			// 		? {
+			// 				width: 0,
+			// 				height: 10,
+			// 		  }
+			// 		: {},
+			// shadowOpacity: photoList?.length > 2 ? 0.51 : 0,
+			// shadowRadius: photoList?.length > 2 ? 13.16 : 0,
 		};
 	});
 	const animatedPhotoProgress4 = useAnimatedStyle(() => {
 		return {
 			height: interpolate(progress.value, [2, 3], [8, 24]),
 			backgroundColor: photoList?.length > 3 ? colors.white : "transparent",
-			elevation: photoList?.length > 3 ? 20 : 0,
-			shadowOffset:
-				photoList?.length > 3
-					? {
-							width: 0,
-							height: 10,
-					  }
-					: {},
-			shadowOpacity: photoList?.length > 3 ? 0.51 : 0,
-			shadowRadius: photoList?.length > 3 ? 13.16 : 0,
+			// elevation: photoList?.length > 3 ? 20 : 0,
+			// shadowOffset:
+			// 	photoList?.length > 3
+			// 		? {
+			// 				width: 0,
+			// 				height: 10,
+			// 		  }
+			// 		: {},
+			// shadowOpacity: photoList?.length > 3 ? 0.51 : 0,
+			// shadowRadius: photoList?.length > 3 ? 13.16 : 0,
 		};
 	});
 
@@ -550,23 +550,23 @@ export default Card = ({
 												showReportPage(id);
 											}}
 										>
-											<Text
+											{/* <Text
 												style={{
 													textShadowColor: colors.black,
-													textShadowRadius: 20,
+													textShadowRadius: 8,
 													textShadowOffset: { width: 0, height: 0 },
 												}}
 											>
 												<MaterialIcons name="outlined-flag" size={30} color={colors.white} />
-											</Text>
-											{/* <Image
+											</Text> */}
+											<Image
 												style={{
 													height: 25,
 													tintColor: colors.white,
 													resizeMode: "contain",
 												}}
 												source={require("../../assets/report.png")}
-											/> */}
+											/>
 										</TouchableOpacity>
 									</View>
 									<LinearGradient
