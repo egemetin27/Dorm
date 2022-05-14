@@ -7,6 +7,9 @@ import ReactNative, {
 	Dimensions,
 	BackHandler,
 	ActivityIndicator,
+	PlatformColor,
+	Platform,
+	Alert,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSharedValue, useDerivedValue } from "react-native-reanimated";
@@ -16,11 +19,14 @@ import { Octicons, Feather } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { normalize } from "../../nonVisualComponents/generalFunctions";
 
 import { url } from "../../connection";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { AnimatedModal, CustomModal } from "../../visualComponents/customComponents";
+import { AuthContext } from "../../nonVisualComponents/Context";
+
 import Card from "./Card";
 
 const { width, height } = Dimensions.get("window");
@@ -36,7 +42,7 @@ export default function ProfileCards({ navigation, route }) {
 	const [endOfLikesTimer, setEndOfLikesTimer] = React.useState({ hour: 0, minute: 0 });
 	const [isScrollShowed, setIsScrollShowed] = React.useState(false);
 
-	const [myProfilePicture, setMyProfilePicture] = React.useState();
+	// const [myProfilePicture, setMyProfilePicture] = React.useState();
 	const [matchPage, setMatchPage] = React.useState(false);
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
@@ -45,6 +51,8 @@ export default function ProfileCards({ navigation, route }) {
 	const [firstImg, setFirstImg] = React.useState("");
 	const [secondImg, setSecondImg] = React.useState("");
 	const [reportUserID, setReportUserID] = React.useState("");
+
+	const { signOut } = React.useContext(AuthContext);
 
 	const showMatchScreen = (otherName, otherPicture, myPicture) => {
 		setMatchPage(true);
@@ -75,6 +83,12 @@ export default function ProfileCards({ navigation, route }) {
 						},
 						{ headers: { "access-token": route.params.sesToken } }
 					)
+					.then((res) => {
+						if (res.data == "Unauthorized Session") {
+							Alert.alert("Oturumunuzun süresi doldu!");
+							signOut();
+						}
+					})
 					.catch((err) => {
 						console.log(err);
 					});
@@ -104,9 +118,19 @@ export default function ProfileCards({ navigation, route }) {
 	// const peopleList = route.params.list;
 	const { myID, sesToken } = route.params;
 
-	function likeEndedModalSubmit() {
-		console.log("like ended modal submit...");
-	}
+	React.useEffect(async () => {
+		async function prepare() {
+			const { list, idx } = route.params;
+			let profile = list.splice(idx, 1);
+			setPeopleList([profile[0], ...list].reverse());
+		}
+
+		try {
+			await prepare();
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
 
 	React.useEffect(async () => {
 		await AsyncStorage.getItem("scrollNotShowed").then((res) => {
@@ -116,24 +140,24 @@ export default function ProfileCards({ navigation, route }) {
 		});
 	}, []);
 
-	React.useEffect(async () => {
-		try {
-			await axios
-				.post(
-					url + "/getProfilePic",
-					{ UserId: route.params.myID },
-					{ headers: { "access-token": route.params.sesToken } }
-				)
-				.then((res) => {
-					setMyProfilePicture(res.data[0].PhotoLink);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		} catch (error) {
-			console.log(error);
-		}
-	}, []);
+	// React.useEffect(async () => {
+	// 	try {
+	// 		await axios
+	// 			.post(
+	// 				url + "/getProfilePic",
+	// 				{ UserId: route.params.myID },
+	// 				{ headers: { "access-token": route.params.sesToken } }
+	// 			)
+	// 			.then((res) => {
+	// 				setMyProfilePicture(res.data[0].PhotoLink);
+	// 			})
+	// 			.catch((err) => {
+	// 				console.log(err);
+	// 			});
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// }, []);
 
 	React.useEffect(() => {
 		const { fromEvent = false } = route.params;
@@ -150,37 +174,9 @@ export default function ProfileCards({ navigation, route }) {
 		return () => backHandler.remove();
 	}, []);
 
-	React.useEffect(async () => {
-		async function prepare() {
-			const { list, idx } = route.params;
-
-			var arr = new Array(...list);
-			const element = arr[idx];
-			arr.splice(idx, 1);
-			arr.splice(0, 0, element);
-			arr = arr.reverse();
-			setPeopleList(arr);
-		}
-
-		try {
-			await prepare();
-		} finally {
-			setIsLoading(false);
-		}
-	}, []);
-
 	React.useEffect(() => {
 		if (peopleList.length > 0 && indexOfFrontCard == peopleList.length) setEndOfListModal(true);
 	}, [indexOfFrontCard]);
-
-	{
-		isLoading && (
-			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
-				<StatusBar style="dark" />
-				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
-			</View>
-		);
-	}
 
 	React.useEffect(() => {
 		const unsubscribe = navigation.addListener("blur", () => {
@@ -190,10 +186,20 @@ export default function ProfileCards({ navigation, route }) {
 		return unsubscribe;
 	}, [navigation]);
 
+	if (isLoading) {
+		return (
+			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
+				<StatusBar style="dark" />
+				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+			</View>
+		);
+	}
+
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
+				onLayout={() => {}}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
@@ -229,7 +235,7 @@ export default function ProfileCards({ navigation, route }) {
 			<View
 				style={{
 					width: "100%",
-					height: height * 0.7,
+					height: Math.min(width * 1.35, height * 0.7),
 					// alignItems: "center",
 					marginTop: height * 0.05,
 					// backgroundColor: "blue",
@@ -246,7 +252,7 @@ export default function ProfileCards({ navigation, route }) {
 						myID={myID}
 						sesToken={sesToken}
 						indexOfFrontCard={indexOfFrontCard}
-						myProfilePicture={myProfilePicture}
+						myProfilePicture={route.params.myPP}
 						isScrollShowed={isScrollShowed}
 						matchMode={route.params.matchMode}
 						setScrollShowed={() => {
@@ -285,9 +291,9 @@ export default function ProfileCards({ navigation, route }) {
 				<ReText
 					text={derivedText}
 					style={{
-						// backgroundColor: "pink",
 						textAlign: "center",
-						fontSize: Math.min(width * 0.035, 10),
+						// fontSize: Platform.OS == "android" ? width * 0.03 : width * 0.04,
+						fontSize: normalize(10),
 						color: colors.medium_gray,
 						letterSpacing: 0.2,
 					}}
@@ -841,12 +847,10 @@ export default function ProfileCards({ navigation, route }) {
 				<View
 					style={{
 						width: width * 0.8,
-						aspectRatio: 1,
-						maxHeight: height * 0.5,
 						backgroundColor: "white",
 						borderRadius: 10,
 						alignItems: "center",
-						paddingVertical: 30,
+						// paddingVertical: 30,
 						paddingHorizontal: 40,
 					}}
 				>
@@ -877,21 +881,37 @@ export default function ProfileCards({ navigation, route }) {
 							textAlign: "center",
 							marginTop: 20,
 							color: colors.medium_gray,
-							fontSize: 16,
+							fontSize: Math.min(height * 0.021, width * 0.04),
 						}}
 					>
 						Beğenme hakların bitti!{"\n"} Ama korkma gün içinde tekrar yenilecek
 					</Text>
 					<Text
+						numberOfLines={1}
+						adjustsFontSizeToFit={true}
 						style={{
 							textAlign: "center",
 							marginTop: 20,
 							color: colors.cool_gray,
-							fontSize: 16,
+							fontSize: Math.min(height * 0.021, width * 0.04),
 						}}
 					>
-						Beğenme hakkın için kalan süre:{"\n"}
-						<Feather name="clock" size={16} color={colors.cool_gray} />
+						Beğenme hakkın için kalan süre:
+					</Text>
+					<Text
+						numberOfLines={1}
+						adjustsFontSizeToFit={true}
+						style={{
+							textAlign: "center",
+							color: colors.cool_gray,
+							fontSize: Math.min(height * 0.021, width * 0.04),
+						}}
+					>
+						<Feather
+							name="clock"
+							size={Math.min(height * 0.021, width * 0.04)}
+							color={colors.cool_gray}
+						/>
 						{endOfLikesTimer.hour != 0 ? endOfLikesTimer.hour + " saat" : ""}{" "}
 						{endOfLikesTimer.minute} dakika
 					</Text>

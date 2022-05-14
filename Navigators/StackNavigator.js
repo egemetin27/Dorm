@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Image, Dimensions, Alert, Pressable } from "react-native";
+import { View, Text, Image, Dimensions, Alert, Pressable, AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer, NavigationContext } from "@react-navigation/native";
@@ -109,6 +109,17 @@ function MainScreen({ route, navigation }) {
 					component={Profile}
 					initialParams={{ photoList: pList }}
 					options={{
+						tabBarButton: (props) => (
+							<Pressable
+								{...props}
+								style={[props.style, { zIndex: 1 }]}
+								onPress={() => {
+									navigation.navigate("MainScreen", {
+										screen: "Profil",
+									});
+								}}
+							/>
+						),
 						tabBarIcon: ({ focused }) => (
 							<View
 								style={{
@@ -127,12 +138,15 @@ function MainScreen({ route, navigation }) {
 									}}
 								/>
 								{focused ? (
-									<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Profil"} />
+									<GradientText
+										style={{ fontSize: 13, fontFamily: "PoppinsBold" }}
+										text={"Profil"}
+									/>
 								) : (
 									<Text
 										style={{
 											fontSize: 13,
-											fontWeight: "bold",
+											fontFamily: "PoppinsBold",
 											color: colors.cool_gray,
 										}}
 									>
@@ -186,13 +200,16 @@ function MainScreen({ route, navigation }) {
 									}}
 								/>
 								{focused ? (
-									<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Ana Sayfa"} />
+									<GradientText
+										style={{ fontSize: 13, fontFamily: "PoppinsBold" }}
+										text={"Ana Sayfa"}
+									/>
 								) : (
 									<Text
 										style={{
 											fontSize: 13,
-											fontWeight: "bold",
 											color: colors.cool_gray,
+											fontFamily: "PoppinsBold",
 										}}
 									>
 										Ana Sayfa
@@ -224,12 +241,15 @@ function MainScreen({ route, navigation }) {
 									}}
 								/>
 								{focused ? (
-									<GradientText style={{ fontSize: 13, fontWeight: "bold" }} text={"Mesajlar"} />
+									<GradientText
+										style={{ fontSize: 13, fontFamily: "PoppinsBold" }}
+										text={"Mesajlar"}
+									/>
 								) : (
 									<Text
 										style={{
 											fontSize: 13,
-											fontWeight: "bold",
+											fontFamily: "PoppinsBold",
 											color: colors.cool_gray,
 										}}
 									>
@@ -434,7 +454,6 @@ export default function StackNavigator() {
 				setAppIsReady(true); // app is ready
 			}
 		}
-
 		prepare();
 	}, []);
 

@@ -14,6 +14,7 @@ import {
 	TextInput,
 	FlatList,
 	Modal,
+	BackHandler,
 } from "react-native";
 import { Feather, Octicons, MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -59,10 +60,20 @@ export default function Chat({ navigation, route }) {
 	const [deleteChatModal, setDeleteChatModal] = React.useState(false);
 
 	const insets = useSafeAreaInsets();
-	
+
+	React.useEffect(() => {
+		const backAction = () => {
+			navigation.goBack();
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
+	}, []);
+
 	const deleteChat = async () => {
 		console.log(chatID);
-		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const myToken = userData.sesToken;
@@ -112,7 +123,6 @@ export default function Chat({ navigation, route }) {
 
 	const fetchImageUri = async () => {
 		try {
-			let abortController = new AbortController();
 			const userDataStr = await SecureStore.getItemAsync("userData");
 			const userData = JSON.parse(userDataStr);
 			const userID = userData.UserId.toString();
@@ -155,7 +165,6 @@ export default function Chat({ navigation, route }) {
 
 	const fetchProfile = async () => {
 		try {
-			let abortController = new AbortController();
 			const userDataStr = await SecureStore.getItemAsync("userData");
 			const userData = JSON.parse(userDataStr);
 			const myToken = userData.sesToken;
@@ -240,7 +249,6 @@ export default function Chat({ navigation, route }) {
 		//console.log(myUserID);
 		//console.log(otherUser.id);
 		//console.log(chatID);
-		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const myToken = userData.sesToken;
@@ -273,7 +281,7 @@ export default function Chat({ navigation, route }) {
 	};
 
 	return (
-		<View style={[styles.container, {marginTop: insets.top, marginBottom: insets.bottom}]}>
+		<View style={[styles.container, { marginTop: insets.top, marginBottom: insets.bottom }]}>
 			<View
 				name={"Header"}
 				style={[
@@ -324,7 +332,7 @@ export default function Chat({ navigation, route }) {
 						setDeleteChatModal(true);
 					}}
 				>
-					<Feather name="trash" size={32} color="#4A4A4A"/>
+					<Feather name="trash" size={32} color="#4A4A4A" />
 				</TouchableOpacity>
 				<View style={{ paddingHorizontal: "2%" }} />
 				<TouchableOpacity

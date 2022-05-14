@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	Dimensions,
 	Image,
+	BackHandler,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
@@ -376,6 +377,17 @@ export default function Settings({ navigation, route }) {
 	// const oneMonthPrice = 29;
 	// const threeMonthPrice = 24.6;
 	// const sixMonthPrice = 17.4;
+
+	React.useEffect(() => {
+		const backAction = () => {
+			navigation.goBack();
+			return true;
+		};
+
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+		return () => backHandler.remove();
+	}, []);
 
 	const handleInvisibility = (value) => {
 		setInvisibility(value);

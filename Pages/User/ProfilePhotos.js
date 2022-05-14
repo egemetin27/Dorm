@@ -16,6 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -69,9 +70,12 @@ export default function ProfilePhotos({ route, navigation }) {
 	const [PHOTO_LIST, setPhotoList] = React.useState(route.params?.photoList || []);
 	const [isLoading, setIsLoading] = React.useState(false);
 
+	const insets = useSafeAreaInsets();
+
 	const { userID, sesToken } = route.params;
 
 	React.useEffect(() => {
+		let abortController = new AbortController();
 		const backAction = () => {
 			handleSave();
 			return true;
@@ -79,7 +83,10 @@ export default function ProfilePhotos({ route, navigation }) {
 
 		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
-		return () => backHandler.remove();
+		return () => {
+			backHandler.remove();
+			abortController.abort();
+		};
 	}, []);
 
 	const handleDelete = async () => {
@@ -127,7 +134,8 @@ export default function ProfilePhotos({ route, navigation }) {
 	const pickImage = async () => {
 		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
 		if (!granted) {
-			await ImagePicker.requestMediaLibraryPermissionsAsync(false);
+			let x = await ImagePicker.requestMediaLibraryPermissionsAsync(false);
+			console.log(x);
 		} else {
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -230,28 +238,46 @@ export default function ProfilePhotos({ route, navigation }) {
 	};
 
 	return (
-		<View style={commonStyles.Container}>
+		<View
+			style={[commonStyles.Container, { paddingBottom: insets.bottom, paddingTop: insets.top }]}
+		>
 			<StatusBar style="dark" />
-			<View name={"Header"} style={commonStyles.Header}>
+			<View
+				name={"Header"}
+				style={{
+					flexDirection: "row",
+					justifyContent: "space-between",
+					alignItems: "center",
+					width: "100%",
+					marginTop: 10,
+				}}
+			>
 				<View style={{ marginLeft: 20 }}>
 					<TouchableOpacity onPress={handleSave}>
-						<Feather name="arrow-left" size={30} color={colors.gray} style={{ paddingLeft: 15 }} />
-					</TouchableOpacity>
-				</View>
-				<View style={{ flexDirection: "row", alignSelf: "center" }}>
-					<TouchableOpacity onPress={handleSave}>
-						<GradientText
-							style={{ fontSize: 25, letterSpacing: 1.2, paddingRight: 15 }}
-							text={"Kaydet"}
+						<Feather
+							name="arrow-left"
+							size={height * 0.04}
+							color={colors.gray}
+							style={{ padding: 10, paddingTop: 0 }}
 						/>
 					</TouchableOpacity>
 				</View>
+				{/* <View style={{ flexDirection: "row", alignSelf: "center" }}> */}
+				<TouchableOpacity onPress={handleSave}>
+					<GradientText
+						style={{
+							fontSize: height * 0.03,
+							letterSpacing: 1.2,
+							marginRight: 20,
+							fontFamily: "PoppinsSemiBold",
+						}}
+						text={"Kaydet"}
+					/>
+				</TouchableOpacity>
+				{/* </View> */}
 			</View>
 
-			<View
-				name={"Photos"}
-				style={[styles.photoContainer, { flexDirection: "row", flexWrap: "wrap" }]}
-			>
+			<View name={"Photos"} style={[styles.photoContainer, {}]}>
 				{PHOTO_LIST.map((item, index) => (
 					<Photo
 						key={index}
@@ -268,13 +294,19 @@ export default function ProfilePhotos({ route, navigation }) {
 						</View>
 					</Pressable>
 				)}
+				{PHOTO_LIST.length == 2 && (
+					<View style={[styles.photo, { backgroundColor: "transparent" }]} />
+				)}
 			</View>
 			<View
 				style={{
+					flex: 1,
+					justifyContent: "flex-end",
 					position: "relative",
+					paddingBottom: height * 0.02,
 				}}
 			>
-				<Text style={{ fontSize: width * 0.04, color: colors.medium_gray }}>
+				<Text style={{ fontSize: width * 0.03, color: colors.medium_gray }}>
 					En sevdiğin fotoğraflarından 4 tane seçebilirsin
 				</Text>
 			</View>
@@ -351,12 +383,14 @@ const styles = StyleSheet.create({
 	photoContainer: {
 		marginTop: 20,
 		width: "100%",
-		height: width * 1.55,
+		flexDirection: "row",
+		flexWrap: "wrap",
+		justifyContent: "space-evenly",
 	},
 	photo: {
-		marginVertical: height * 0.02,
-		marginHorizontal: width * 0.025,
-		width: width * 0.45,
+		marginVertical: height * 0.01,
+		marginHorizontal: width * 0.03,
+		height: Math.min(height * 0.35, width * 0.66),
 		aspectRatio: 1 / 1.5,
 		backgroundColor: colors.white,
 		borderRadius: 20,

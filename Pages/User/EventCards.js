@@ -35,6 +35,7 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import { CustomModal } from "../../visualComponents/customComponents";
+import { AuthContext } from "../../nonVisualComponents/Context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -56,6 +57,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 	const [likeEventModal, setLikeEventModal] = React.useState(false);
 	const [seeWhoLikedModal, setSeeWhoLikedModal] = React.useState(false);
+
+	const { signOut } = React.useContext(AuthContext);
 
 	const progress = useSharedValue(0);
 	const turn = useSharedValue(1); // 1 => front, -1 => back
@@ -121,8 +124,13 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 				{ UserId: id, eventId: EventId, likeMode: likeMode },
 				{ headers: { "access-token": sesToken } }
 			)
-			.then((res) => setFavFlag(true))
-			.catch((err) => console.log(err.response));
+			.then((res) => {
+				setFavFlag(true);
+				// Alert.alert("RES " + res.data);
+			})
+			.catch((err) => {
+				// Alert.alert(err.response.status);
+			});
 	};
 
 	const explorePeople = async () => {
@@ -140,7 +148,10 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 				{ headers: { "access-token": sesToken } }
 			)
 			.then((res) => {
-				if (res.data.length > 0) {
+				if (res.data == "Unauthorized Session") {
+					Alert.alert("Oturumunuzun süresi doldu!");
+					signOut();
+				} else if (res.data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
 						list: res.data,
@@ -152,7 +163,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 					Alert.alert("Etkinliği Beğenen Kimse Yok :/");
 				}
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	const likeButton = React.createRef();
@@ -183,7 +196,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 							showsVerticalScrollIndicator={false}
 							onScroll={handleScroll}
 						>
-							{photoList.map((item, index) => {
+							{photoList?.map((item, index) => {
 								return (
 									<Image
 										key={index}
@@ -209,7 +222,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								minHeight: photoList.length * 10 + 16,
 							}}
 						>
-							{photoList.map((_, index) => {
+							{photoList?.map((_, index) => {
 								return (
 									<Animated.View
 										key={index}
@@ -413,6 +426,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								paddingBottom: 10,
 								justifyContent: "center",
 							}}
+							rt
 							style={{
 								marginTop: 30,
 								marginBottom: 10,
@@ -432,7 +446,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 								Etkinliğin Adı{"\n"}
 								<Text
 									style={{
-										textAlign: "left",
 										fontFamily: "PoppinsSemiBold",
 										fontSize: Math.min(height * 0.03, width * 0.048),
 									}}
@@ -778,6 +791,7 @@ export default function EventCards({ navigation, route }) {
 	const { idx, list, myID, sesToken } = route.params;
 
 	React.useEffect(() => {
+		console.log(list);
 		const backAction = () => {
 			navigation.replace("MainScreen", { screen: "AnaSayfa" });
 			return true;
@@ -825,17 +839,19 @@ export default function EventCards({ navigation, route }) {
 				/>
 				<Feather name="chevron-left" size={30} color={"#F4F3F3"} />
 			</View>
-			<View style={{ flex: 1 }}>
-				<Carousel
-					defaultIndex={idx}
-					width={width}
-					loop={false}
-					data={list}
-					renderItem={({ item }) => (
-						<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
-					)}
-				/>
-			</View>
+			{list.length > 0 && (
+				<View style={{ flex: 1 }}>
+					<Carousel
+						defaultIndex={idx}
+						width={width}
+						loop={false}
+						data={list}
+						renderItem={({ item }) => (
+							<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
+						)}
+					/>
+				</View>
+			)}
 			<View
 				style={{
 					width: width,

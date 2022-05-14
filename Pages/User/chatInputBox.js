@@ -9,7 +9,6 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 
 const InputBox = (props) => {
-
 	const [message, setMessage] = React.useState("");
 	const [newNumber, setNewNumber] = React.useState(1);
 	const [msgHeight, setMsgHeight] = React.useState(45);
@@ -49,7 +48,6 @@ const InputBox = (props) => {
 	};
 	const sendNotification = async () => {
 		try {
-			let abortController = new AbortController();
 			const userDataStr = await SecureStore.getItemAsync("userData");
 			const userData = JSON.parse(userDataStr);
 			const userName = userData.Name;
@@ -99,9 +97,9 @@ const InputBox = (props) => {
 					placeholder={"Mesajın..."}
 					value={message}
 					onChangeText={setMessage}
-					onContentSizeChange= {(event) => {
+					onContentSizeChange={(event) => {
 						console.log(event.nativeEvent.contentSize.height);
-						setMsgHeight(event.nativeEvent.contentSize.height+21);
+						setMsgHeight(event.nativeEvent.contentSize.height + 21);
 					}}
 				/>
 			</View>

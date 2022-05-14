@@ -102,6 +102,7 @@ export default function Messages({ route, navigation }) {
 	};
 
 	React.useEffect(async () => {
+		let abortController = new AbortController();
 		try {
 			const dataStr = await SecureStore.getItemAsync("userData");
 			const data = JSON.parse(dataStr);
@@ -135,9 +136,14 @@ export default function Messages({ route, navigation }) {
 
 			fetchUser();
 		} catch (error) {}
+		return () => {
+			abortController.abort();
+		};
 	}, []);
 
 	React.useEffect(async () => {
+		let abortController = new AbortController();
+
 		try {
 			const dataStr = await SecureStore.getItemAsync("userData");
 			const data = JSON.parse(dataStr);
@@ -168,9 +174,14 @@ export default function Messages({ route, navigation }) {
 
 			return () => subscription.unsubscribe();
 		} catch (error) {}
+		return () => {
+			abortController.abort();
+		};
 	}, []);
 
 	React.useEffect(async () => {
+		let abortController = new AbortController();
+
 		try {
 			const dataStr = await SecureStore.getItemAsync("userData");
 			const data = JSON.parse(dataStr);
@@ -201,6 +212,9 @@ export default function Messages({ route, navigation }) {
 
 			return () => subscription.unsubscribe();
 		} catch (error) {}
+		return () => {
+			abortController.abort();
+		};
 	}, []);
 
 	return (

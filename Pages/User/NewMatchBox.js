@@ -21,7 +21,6 @@ const NewMatchBox = (props) => {
 
 	const fetchImageUri = async () => {
 		try {
-			let abortController = new AbortController();
 			const userDataStr = await SecureStore.getItemAsync("userData");
 			const userData = JSON.parse(userDataStr);
 			const userID = userData.UserId.toString();

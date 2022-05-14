@@ -31,6 +31,7 @@ const { height, width } = Dimensions.get("window");
 import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
+import { AuthContext } from "../../nonVisualComponents/Context";
 
 const CategoryList = [
 	{
@@ -46,7 +47,7 @@ const CategoryList = [
 		key: "Kaçmaz",
 		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
 	},
-	// { key: "Mekan", url: require("../../assets/HomeScreenCategoryIcons/Location.png") },
+	{ key: "Gece", url: require("../../assets/HomeScreenCategoryIcons/Gece.png") },
 	{
 		key: "Kampüs",
 		url: require("../../assets/HomeScreenCategoryIcons/Campus.png"),
@@ -93,7 +94,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 				},
 			]}
 		>
-			{photoList.length > 0 ? (
+			{photoList?.length > 0 ? (
 				<Image
 					source={{ uri: photoList[0]?.PhotoLink }}
 					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
@@ -151,7 +152,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 					</Text>
 				</View>
 				<Text
-					numberOfLines={2}
+					numberOfLines={1}
 					style={{
 						paddingTop: height * 0.002,
 						color: colors.white,
@@ -161,7 +162,17 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 					}}
 				>
 					{university}
-					{"\n"}
+				</Text>
+				<Text
+					numberOfLines={1}
+					style={{
+						paddingTop: height * 0.002,
+						color: colors.white,
+						fontFamily: "PoppinsItalic",
+						fontSize: height * 0.015,
+						lineHeight: height * 0.018,
+					}}
+				>
 					{major}
 				</Text>
 			</Gradient>
@@ -194,21 +205,26 @@ const Category = ({
 			return;
 		}
 		if (idx == 3) {
-			const filtered = eventList.filter((item) => item.Kampus == 1);
+			const filtered = eventList.filter((item) => item.Gece == 1);
 			setShownEvents(filtered);
 			return;
 		}
 		if (idx == 4) {
-			const filtered = eventList.filter((item) => item.Culture == 1);
+			const filtered = eventList.filter((item) => item.Kampus == 1);
 			setShownEvents(filtered);
 			return;
 		}
 		if (idx == 5) {
-			const filtered = eventList.filter((item) => item.Konser == 1);
+			const filtered = eventList.filter((item) => item.Culture == 1);
 			setShownEvents(filtered);
 			return;
 		}
 		if (idx == 6) {
+			const filtered = eventList.filter((item) => item.Konser == 1);
+			setShownEvents(filtered);
+			return;
+		}
+		if (idx == 7) {
 			const filtered = eventList.filter((item) => item.Film == 1);
 			setShownEvents(filtered);
 			return;
@@ -227,13 +243,13 @@ const Category = ({
 					marginLeft: Math.min(20, width * 0.03),
 					marginRight: index + 1 == CategoryList.length ? Math.min(20, width * 0.03) : 0,
 					backgroundColor: colors.white,
-					shadowColor: "#000",
+					shadowColor: "#000000",
 					shadowOffset: {
 						width: 0,
-						height: 2,
+						height: 6,
 					},
-					shadowOpacity: 0.23,
-					shadowRadius: 2.62,
+					shadowOpacity: 1,
+					shadowRadius: 8.3,
 					elevation: 4,
 				},
 			]}
@@ -306,7 +322,7 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 			]}
 		>
 			<Image
-				source={{ uri: photos.length > 0 ? photos[0] : "AAAA" }}
+				source={{ uri: photos?.length > 0 ? photos[0] : "AAAA" }}
 				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 			/>
 			<Gradient
@@ -411,6 +427,7 @@ export default function MainPage({ navigation }) {
 	const [peopleList, setPeopleList] = React.useState([]);
 	const [myID, setMyID] = React.useState(null);
 	const [sesToken, setSesToken] = React.useState("");
+	const [myPP, setMyPP] = React.useState("");
 	const [matchMode, setMatchMode] = React.useState(0);
 	const eventsFlatListRef = React.useRef();
 	const peopleFlatListRef = React.useRef();
@@ -441,7 +458,6 @@ export default function MainPage({ navigation }) {
 	//const [filterHobi, setFilterHobi] = React.useState();
 
 	const applyFilter = async () => {
-		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
 		const userID = userData.UserId.toString();
@@ -549,6 +565,8 @@ export default function MainPage({ navigation }) {
 		}
 	};
 
+	const { signOut } = React.useContext(AuthContext);
+
 	React.useEffect(async () => {
 		let abortController = new AbortController();
 		const userDataStr = await SecureStore.getItemAsync("userData");
@@ -556,9 +574,11 @@ export default function MainPage({ navigation }) {
 		const userID = userData.UserId.toString();
 		const myToken = userData.sesToken;
 		const myMode = userData.matchMode;
+		const myPhoto = userData.Photo[0].PhotoLink ?? "";
 		setMyID(userID);
 		setSesToken(myToken);
 		setMatchMode(myMode);
+		setMyPP(myPhoto);
 
 		async function prepare() {
 			await axios
@@ -577,9 +597,16 @@ export default function MainPage({ navigation }) {
 					{ headers: { "access-token": myToken } }
 				)
 				.then((res) => {
+					if (res.data == "Unauthorized Session") {
+						Alert.alert("Oturumunuzun süresi doldu!");
+						signOut();
+					}
 					setPeopleList(res.data);
 				})
 				.catch((err) => {
+					// if (err.response.status == 410) {
+					// 	// Alert.alert("HATA");
+					// }
 					console.log(err);
 				});
 			await axios
@@ -639,7 +666,7 @@ export default function MainPage({ navigation }) {
 	if (!isAppReady) {
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
-				<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
+				<StatusBar style="dark" backgroundColor={"#F4F3F3"} hideTransitionAnimation="slide" />
 
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
@@ -655,7 +682,15 @@ export default function MainPage({ navigation }) {
 			/>
 			<View
 				name={"PeopleHeader"}
-				style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+				style={[
+					{
+						marginTop: height * 0.01,
+						flexDirection: "row",
+						alignItems: "center",
+						justifyContent: "space-between",
+						width: "100%",
+					},
+				]}
 			>
 				<GradientText
 					text={"Kişiler"}
@@ -666,19 +701,27 @@ export default function MainPage({ navigation }) {
 						marginLeft: 20,
 					}}
 				/>
-				<TouchableOpacity
-					style={{ marginRight: 20 }}
-					onPress={() => {
-						setFiltreModal(true);
-					}}
-				>
-					<Octicons
-						style={{ transform: [{ rotate: "-90deg" }] }}
-						name="settings"
-						size={Math.min(height * 0.035, 30)}
-						color={colors.cool_gray}
-					/>
-				</TouchableOpacity>
+				<View style={{ marginRight: 20 }}>
+					<TouchableOpacity
+						style={{
+							paddingHorizontal: 15,
+							paddingVertical: 10,
+							// backgroundColor: "red",
+						}}
+						onPress={() => {
+							setFiltreModal(true);
+						}}
+					>
+						<View>
+							<Octicons
+								style={{ transform: [{ rotate: "-90deg" }] }}
+								name="settings"
+								size={Math.min(height * 0.035, 30)}
+								color={colors.cool_gray}
+							/>
+						</View>
+					</TouchableOpacity>
+				</View>
 			</View>
 			<View
 				name={"People"}
@@ -688,10 +731,10 @@ export default function MainPage({ navigation }) {
 					justifyContent: "center",
 				}}
 			>
-				{peopleList.length > 0 ? (
+				{peopleList?.length > 0 ? (
 					<FlatList
 						ref={peopleFlatListRef}
-						keyExtractor={(item) => item.UserId.toString()}
+						keyExtractor={(item) => item?.UserId?.toString() ?? index}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
 						data={peopleList.slice(0, 5)}
@@ -712,6 +755,7 @@ export default function MainPage({ navigation }) {
 										matchMode: matchMode,
 										myID: myID,
 										sesToken: sesToken,
+										myPP: myPP,
 									});
 								}}
 							/>
@@ -773,7 +817,7 @@ export default function MainPage({ navigation }) {
 						ref={eventsFlatListRef}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
-						keyExtractor={(item) => item.EventId.toString()}
+						keyExtractor={(item) => item?.EventId?.toString() ?? ""}
 						data={shownEvents}
 						renderItem={({ item, index }) => (
 							<Event
@@ -825,7 +869,7 @@ export default function MainPage({ navigation }) {
 				<View
 					style={{
 						maxHeight: height * 0.9,
-						maxWidth: width * 0.84,
+						width: width * 0.84,
 						backgroundColor: colors.white,
 						borderRadius: 10,
 						alignItems: "center",
@@ -844,28 +888,31 @@ export default function MainPage({ navigation }) {
 								flexDirection: "row",
 								width: "100%",
 								alignItems: "flex-start",
-								justifyContent: "space-around",
+								justifyContent: "space-between",
+								paddingHorizontal: "5%",
 							}}
 						>
 							<View>
 								<GradientText
-									text={"Filtreme"}
+									text={"Filtreleme"}
 									style={{
 										fontSize: 22,
 										fontFamily: "NowBold",
 										letterSpacing: 1.2,
-										marginLeft: 5,
 									}}
 								/>
 								<Text style={{ color: colors.gray }}>5 Filtre kullanma hakkın var</Text>
 							</View>
+							{/* <View style={{ position: "absolute", top: 0, right: 0 }}> */}
 							<TouchableOpacity
+								style={{ padding: 7 }}
 								onPress={() => {
 									setFiltreModal(false);
 								}}
 							>
 								<Entypo name="cross" size={24} color="black" />
 							</TouchableOpacity>
+							{/* </View> */}
 						</View>
 						<View
 							style={{
