@@ -132,16 +132,17 @@ export default function ProfilePhotos({ route, navigation }) {
 	};
 
 	const pickImage = async () => {
-		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
+		let { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
 		if (!granted) {
-			let x = await ImagePicker.requestMediaLibraryPermissionsAsync(false);
-			console.log(x);
-		} else {
+			let answer = await ImagePicker.requestMediaLibraryPermissionsAsync(false);
+			granted = answer.granted;
+		}
+		if (granted) {
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.5,
+				quality: 0.25,
 			});
 			if (!result.cancelled) {
 				handleAdd(result);

@@ -37,7 +37,7 @@ export default function PhotoUpload({ navigation, route }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.3,
+				quality: 0.25,
 			});
 			if (!result.cancelled) {
 				handleAdd(result);

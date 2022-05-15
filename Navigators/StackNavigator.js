@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, Text, Image, Dimensions, Alert, Pressable, AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
-import { NavigationContainer, NavigationContext } from "@react-navigation/native";
+import { NavigationContainer, TabActions } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -174,10 +174,10 @@ function MainScreen({ route, navigation }) {
 											params: { screen: "Home" },
 										});
 									} else if (!props?.accessibilityState?.selected) {
-										navigation.replace("MainScreen", {
-											screen: "AnaSayfa",
-											params: { screen: "Home" },
+										const jumpToAction = TabActions.jumpTo("AnaSayfa", {
+											screen: "Home",
 										});
+										navigation.dispatch(jumpToAction);
 									}
 								}}
 							/>

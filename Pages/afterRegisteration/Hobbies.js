@@ -47,7 +47,6 @@ export default function Hobbies({ navigation, route }) {
 					{ headers: { "access-token": route.params?.sesToken ?? data.sesToken } }
 				)
 				.then(async (res) => {
-					console.log(res);
 					const newHobbyList = hobbies.map((item) => {
 						return { InterestName: item };
 					});
