@@ -42,26 +42,29 @@ export default function FirstPassword({ navigation, route }) {
 		}
 
 		const dataToBeSent = { ...profile, password: password }; //TODO: userID should be come from route.params.id
-
 		await axios
 			.post(url + "/SendVerification", { Mail: profile.mail, isNewUser: true })
 			.then(() => {
 				navigation.replace("Verification", { dataToBeSent: dataToBeSent });
 			})
 			.catch((error) => {
+				if (error.response) {
+					if (error.response.status == 400) {
+						Alert.alert("Hata", "Bu mail adresi zaten kayitli", [
+							{
+								text: "Anasayfaya Dön",
+								onPress: () => {
+									navigation.replace("WelcomePage");
+								},
+							},
+						]);
+						return;
+					}
+				}
 				Alert.alert("Internet Hatası", [{ text: "Tamamdır" }]);
-				console.log("verification error: ", error);
+				console.log("verification error: ");
+				console.log(error.response);
 			});
-
-		// axios
-		// 	.post(url + "/PasswordRegister", dataToBeSent)
-		// 	.then(() => {
-		// 		console.log("Password Updated Successfully");
-		// 		signIn({ email: email, password: password, isNewUser: true });
-		// 	})
-		// 	.catch((error) => {
-		// 		console.log({ error });
-		// 	});
 	};
 
 	const handleFocus = (ref) => {

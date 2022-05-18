@@ -209,7 +209,11 @@ export const CustomRadio = (props) => {
 									props.listItemStyle,
 								]}
 							>
-								<Text style={{ color: colors.white, fontSize: Math.min(width * 0.04, 20) }}>
+								<Text
+									numberOfLines={1}
+									adjustsFontSizeToFit={true}
+									style={{ color: colors.white, fontSize: Math.min(width * 0.04, 20) }}
+								>
 									{item}
 								</Text>
 							</Gradient>
@@ -227,7 +231,13 @@ export const CustomRadio = (props) => {
 									props.listItemStyle,
 								]}
 							>
-								<Text style={{ fontSize: Math.min(width * 0.04, 20) }}>{item}</Text>
+								<Text
+									numberOfLines={1}
+									adjustsFontSizeToFit={true}
+									style={{ fontSize: Math.min(width * 0.04, 20) }}
+								>
+									{item}
+								</Text>
 							</View>
 						)}
 					</Pressable>

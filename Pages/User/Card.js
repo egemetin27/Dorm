@@ -230,31 +230,36 @@ export default Card = ({
 			});
 	};
 
-	const panHandler =
-		indexOfFrontCard == index
-			? Gesture.Pan()
-					.onUpdate((event) => {
-						x.value = event.translationX;
-					})
-					.onEnd((event) => {
-						destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
-						x.value = withSpring(destination.value);
-						destination.value > 0
-							? runOnJS(onSwipe)(0)
-							: destination.value < 0
-							? runOnJS(onSwipe)(2)
-							: null;
-					})
-			: Gesture.Pan();
+	const panHandler = React.useMemo(() =>
+		Gesture.Pan()
+			.onUpdate((event) => {
+				if (indexOfFrontCard == index) {
+					x.value = event.translationX;
+				}
+			})
+			.onEnd((event) => {
+				if (indexOfFrontCard == index) {
+					destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
+					x.value = withSpring(destination.value);
+					destination.value > 0
+						? runOnJS(onSwipe)(0)
+						: destination.value < 0
+						? runOnJS(onSwipe)(2)
+						: null;
+				}
+			})
+	);
 
-	const tapHandler = Gesture.Tap()
-		.numberOfTaps(2)
-		.onStart(() => {
-			if (indexOfFrontCard == index) {
-				turn.value = withTiming(-turn.value);
-				backFace.value = !backFace.value;
-			}
-		});
+	const tapHandler = React.useMemo(() =>
+		Gesture.Tap()
+			.numberOfTaps(2)
+			.onStart(() => {
+				if (indexOfFrontCard == index) {
+					turn.value = withTiming(-turn.value);
+					backFace.value = !backFace.value;
+				}
+			})
+	);
 
 	const animatedFrontFace = useAnimatedStyle(() => {
 		// if (index != indexOfFrontCard) return {};
@@ -703,9 +708,11 @@ export default Card = ({
 											backgroundColor: "rgba(0,0,0,0.25)",
 										}}
 									/>
-									<ReactNative.ScrollView
+									{/* <ReactNative.ScrollView */}
+									<ScrollView
 										showsVerticalScrollIndicator={false}
 										style={{
+											zIndex: 5,
 											width: "80%",
 											marginVertical: 30,
 										}}
@@ -901,7 +908,8 @@ export default Card = ({
 												</Text>
 											)}
 										</View>
-									</ReactNative.ScrollView>
+									</ScrollView>
+									{/* </ReactNative.ScrollView> */}
 								</Animated.View>
 							</Animated.View>
 						</GestureDetector>

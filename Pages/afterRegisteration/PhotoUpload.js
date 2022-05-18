@@ -16,7 +16,8 @@ import { StatusBar } from "expo-status-bar";
 import * as SecureStore from "expo-secure-store";
 
 import commonStyles from "../../visualComponents/styles";
-import { colors, GradientText } from "../../visualComponents/colors";
+import { colors, GradientText, Gradient } from "../../visualComponents/colors";
+import { CustomModal } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 
@@ -24,9 +25,12 @@ const { width, height } = Dimensions.get("screen");
 
 export default function PhotoUpload({ navigation, route }) {
 	const { UserId, sesToken } = route.params;
+	const [initial, setInitial] = React.useState(true);
+	const [isLoading, setIsLoading] = React.useState(false);
 
 	const [photoList, setPhotoList] = React.useState([]);
-	const [isLoading, setIsLoading] = React.useState(false);
+	const [modalVisible, setModalVisibility] = React.useState(false);
+	const [toBeDeleted, setToBeDeleted] = React.useState(false);
 
 	const pickImage = async () => {
 		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);
@@ -37,7 +41,7 @@ export default function PhotoUpload({ navigation, route }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.3,
+				quality: 0.25,
 			});
 			if (!result.cancelled) {
 				handleAdd(result);
@@ -57,9 +61,8 @@ export default function PhotoUpload({ navigation, route }) {
 	};
 
 	const handleDelete = () => {
-		//TODO: delete "toBeDeleted"
 		const filtered = [];
-		for (item of photoList) {
+		for (let item of photoList) {
 			if (item.Photo_Order != toBeDeleted.Photo_Order) {
 				if (item.Photo_Order > toBeDeleted.Photo_Order) {
 					filtered.push({ ...item, Photo_Order: item.Photo_Order - 1 });
@@ -68,7 +71,7 @@ export default function PhotoUpload({ navigation, route }) {
 				}
 			}
 		}
-		console.log(filtered);
+
 		setPhotoList(filtered);
 		setModalVisibility(false);
 	};
@@ -155,73 +158,131 @@ export default function PhotoUpload({ navigation, route }) {
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" />
-			<View style={[commonStyles.Header, { paddingHorizontal: 30, justifyContent: "flex-end" }]}>
-				<TouchableOpacity onPress={handleSave}>
-					<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
-				</TouchableOpacity>
-			</View>
-			<View style={{ paddingHorizontal: width * 0.1, marginTop: 20, width: "100%" }}>
-				<GradientText
-					text={"En güzel fotoğraflarım"}
-					style={{ fontSize: Math.min(height * 0.032, width * 0.06), fontFamily: "NowBold" }}
-				/>
-				<Text
+			{initial ? (
+				<View
 					style={{
-						fontSize: Math.min(height * 0.02, width * 0.0375),
-						color: colors.medium_gray,
-						marginTop: 5,
-						letterSpacing: 0.5,
+						width: "100%",
+						height: "100%",
+						justifyContent: "flex-end",
+						alignItems: "center",
+					}}
+					onLayout={() => {
+						setTimeout(() => {
+							setInitial(false);
+						}, 2000);
 					}}
 				>
-					Kendi fotoğraflarını ekle, görmek istediğimiz kişi sensin. :)
-				</Text>
-			</View>
-			<View style={{ width: "100%", alignItems: "center" }}>
-				<ScrollView
-					horizontal={true}
-					showsHorizontalScrollIndicator={false}
-					style={{ marginTop: 20 }}
-					// snapToInterval={width * 0.8 + 30}
-				>
-					{photoList.map((item, index) => {
-						return (
-							<View key={index} style={{ height: "100%" }}>
-								<View
-									style={[
-										commonStyles.photo,
-										{
-											height: Math.min(width * 1.35, height * 0.6),
-											marginHorizontal: 20,
-											elevation: 0,
-										},
-									]}
-								>
-									<Image
-										source={{ uri: item.PhotoLink }}
-										style={{ height: "100%", width: "100%" }}
-										resizeMode="cover"
-									/>
-								</View>
-							</View>
-						);
-					})}
-					{photoList.length < 4 && (
-						<Pressable onPress={pickImage} style={{ elevation: 0 }}>
-							<View
-								style={[
-									commonStyles.photo,
-									{
-										height: Math.min(width * 1.35, height * 0.6),
-										elevation: 0,
-									},
-								]}
-							>
-								<Feather name="plus" size={width / 8} color={colors.gray} />
-							</View>
-						</Pressable>
-					)}
-				</ScrollView>
-			</View>
+					<GradientText
+						text={"Kaydın tamam!"}
+						style={{ fontSize: width * 0.08, fontFamily: "NowBold", letterSpacing: 1.2 }}
+					/>
+					<Image
+						source={require("../../assets/RegisterationComplete.png")}
+						style={{
+							marginTop: height * 0.05,
+							height: height * 0.4,
+							aspectRatio: 1,
+						}}
+						resizeMode={"contain"}
+					/>
+				</View>
+			) : (
+				<View style={{ width: "100%", height: "100%", alignItems: "center" }}>
+					<View
+						style={[commonStyles.Header, { paddingHorizontal: 30, justifyContent: "flex-end" }]}
+					>
+						<TouchableOpacity onPress={handleSave}>
+							<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={{ paddingHorizontal: width * 0.1, marginTop: 20, width: "100%" }}>
+						<GradientText
+							text={"En güzel fotoğraflarım"}
+							style={{ fontSize: Math.min(height * 0.032, width * 0.06), fontFamily: "NowBold" }}
+						/>
+						<Text
+							style={{
+								fontSize: Math.min(height * 0.02, width * 0.0375),
+								color: colors.medium_gray,
+								marginTop: 5,
+								letterSpacing: 0.5,
+							}}
+						>
+							Kendi fotoğraflarını ekle, görmek istediğimiz kişi sensin. :)
+						</Text>
+					</View>
+					<View style={{ width: "100%", alignItems: "center" }}>
+						<ScrollView
+							horizontal={true}
+							showsHorizontalScrollIndicator={false}
+							style={{ marginTop: 20 }}
+							// snapToInterval={width * 0.8 + 30}
+						>
+							{photoList.map((item, index) => {
+								return (
+									<View key={index} style={{ height: "100%" }}>
+										<View
+											style={[
+												commonStyles.photo,
+												{
+													height: Math.min(width * 1.35, height * 0.6),
+													marginHorizontal: 20,
+													elevation: 0,
+												},
+											]}
+										>
+											<Image
+												source={{ uri: item.PhotoLink }}
+												style={{ height: "100%", width: "100%" }}
+												resizeMode="cover"
+											/>
+											<View
+												style={{
+													height: "100%",
+													width: "100%",
+													position: "absolute",
+													alignItems: "flex-end",
+													// padding: 10,
+												}}
+											>
+												<Pressable
+													onPress={() => {
+														setToBeDeleted(item);
+														setModalVisibility(true);
+													}}
+													style={{
+														position: "absolute",
+														alignItems: "center",
+														justifyContent: "center",
+														padding: 10,
+													}}
+												>
+													<Feather name="trash" size={24} color={colors.gray} />
+												</Pressable>
+											</View>
+										</View>
+									</View>
+								);
+							})}
+							{photoList.length < 4 && (
+								<Pressable onPress={pickImage} style={{ elevation: 0 }}>
+									<View
+										style={[
+											commonStyles.photo,
+											{
+												height: Math.min(width * 1.35, height * 0.6),
+												elevation: 0,
+											},
+										]}
+									>
+										<Feather name="plus" size={width / 8} color={colors.gray} />
+									</View>
+								</Pressable>
+							)}
+						</ScrollView>
+					</View>
+				</View>
+			)}
 			{isLoading && (
 				<View
 					style={[
@@ -236,6 +297,84 @@ export default function PhotoUpload({ navigation, route }) {
 					<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 				</View>
 			)}
+
+			<CustomModal
+				visible={modalVisible}
+				transparent={true}
+				dismiss={() => {
+					setModalVisibility(false);
+				}}
+				animationType={"fade"}
+			>
+				<View
+					style={{
+						paddingHorizontal: 23,
+						borderRadius: 20,
+						backgroundColor: colors.white,
+						width: width * 0.8,
+						aspectRatio: 1 / 1,
+						alignItems: "center",
+						justifyContent: "center",
+						shadowColor: "#000",
+						shadowOffset: {
+							width: 0,
+							height: 2,
+						},
+						shadowOpacity: 0.25,
+						shadowRadius: 4,
+						elevation: 5,
+					}}
+				>
+					<Image source={require("../../assets/sadFace.png")} />
+					<Text
+						style={{
+							color: colors.dark_gray,
+							fontSize: width * 0.042,
+							fontWeight: "500",
+							marginTop: 10,
+							textAlign: "center",
+						}}
+					>
+						Fotoğrafını profilinden kaldırmak üzeresin. Emin misin?{"\n"}
+						{"\n"}Tabii tekrar galerinden ekleyebilirsin
+					</Text>
+					<TouchableOpacity
+						style={{
+							width: "90%",
+							height: width * 0.15,
+							borderRadius: width * 0.03,
+							marginTop: 25,
+							overflow: "hidden",
+						}}
+						onPress={handleDelete}
+					>
+						<Gradient
+							style={{
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<View
+								style={{
+									flex: 1,
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+							>
+								<Text
+									style={{
+										fontSize: 25,
+										color: colors.white,
+										fontWeight: "700",
+									}}
+								>
+									Fotoğrafı Sil
+								</Text>
+							</View>
+						</Gradient>
+					</TouchableOpacity>
+				</View>
+			</CustomModal>
 		</View>
 	);
 }

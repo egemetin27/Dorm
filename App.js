@@ -12,6 +12,7 @@ import Stack from "./Navigators/StackNavigator";
 import Temp from "./Pages/Temp";
 import MatchMode from "./Pages/afterRegisteration/MatchMode";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
 	let abortController = new AbortController();
@@ -46,7 +47,11 @@ export default function App() {
 	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
 	// 	</GestureHandlerRootView>
 	// );
-	// return <Temp route={{ params: {} }} />;
+	// return (
+	// 	<GestureHandlerRootView>
+	// 		<Temp route={{ params: {} }} />
+	// 	</GestureHandlerRootView>
+	// );
 }
 
 const styles = StyleSheet.create({
