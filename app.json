@@ -22,7 +22,7 @@
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 65
+			"versionCode": 66
 		},
 		"web": {
 			"favicon": "./assets/DormIcon.png"

@@ -7,7 +7,7 @@ export const genderList = [
 
 export const univList = [
 	{ key: 0, choice: "" },
-	{ key: 1, choice: "Acıbadem Üniversitesi", mailExt: "acibadem.edu.tr" },
+	{ key: 1, choice: "Acıbadem Üniversitesi", mailExt: "live.acibadem.edu.tr" },
 	{ key: 2, choice: "Bahçeşehir Üniversitesi", mailExt: "bahcesehir.edu.tr" },
 	{ key: 3, choice: "Bilgi Üniversitesi", mailExt: "bilgiedu.net" },
 	{ key: 4, choice: "Boğaziçi Üniversitesi", mailExt: "boun.edu.tr" },
