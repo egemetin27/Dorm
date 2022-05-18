@@ -841,6 +841,7 @@ export default function EventCards({ navigation, route }) {
 			{list.length > 0 && (
 				<View style={{ flex: 1 }}>
 					<Carousel
+						windowSize={list.length > 7 ? 7 : list.length}
 						defaultIndex={idx}
 						width={width}
 						loop={false}
