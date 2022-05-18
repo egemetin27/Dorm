@@ -20,7 +20,6 @@ const { height, width } = Dimensions.get("screen");
 
 export default function AfterRegister({ route, navigation }) {
 	const insest = useSafeAreaInsets();
-	const [initial, setInitial] = React.useState(true);
 	const [pageNum, setPageNum] = React.useState(1);
 
 	const [gender, setGender] = React.useState(1); // 1: Kadın, 2: Erkek, 3: Non-Binary, 4: Belirsiz
@@ -69,67 +68,38 @@ export default function AfterRegister({ route, navigation }) {
 			]}
 		>
 			<StatusBar style={"dark"} />
-			{initial ? (
-				<View
-					style={{
-						width: "100%",
-						height: "100%",
-						justifyContent: "flex-end",
-						alignItems: "center",
-					}}
-					onLayout={() => {
-						setTimeout(() => {
-							setInitial(false);
-						}, 2000);
-					}}
-				>
-					<GradientText
-						text={"Kaydın tamam!"}
-						style={{ fontSize: width * 0.08, fontFamily: "NowBold", letterSpacing: 1.2 }}
-					/>
-					<Image
-						source={require("../../assets/RegisterationComplete.png")}
-						style={{
-							marginTop: height * 0.05,
-							height: height * 0.4,
-							aspectRatio: 1,
+
+			<View style={{ width: "100%", height: "100%" }}>
+				<View style={[commonStyles.Header, { paddingHorizontal: 30, marginTop: 0 }]}>
+					<TouchableOpacity
+						onPress={() => {
+							setPageNum(pageNum - 1);
 						}}
-						resizeMode={"contain"}
+					>
+						<Text style={{ color: colors.medium_gray, fontSize: 18 }}>
+							{pageNum > 1 ? "Geri" : ""}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							pageNum < 5 ? setPageNum(pageNum + 1) : handleSubmit();
+						}}
+					>
+						<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
+					</TouchableOpacity>
+				</View>
+				{pageNum == 1 && <MatchMode value={matchMode} setValue={setMatchMode} />}
+				{pageNum == 2 && <Gender value={gender} setValue={setGender} isEnabled={genderSwitch} />}
+				{pageNum == 3 && <Expectation value={expectation} setValue={setExpectation} />}
+				{pageNum == 4 && <Interested value={interested} setValue={setInterested} />}
+				{pageNum == 5 && (
+					<SexOrientation
+						value={sexualOrientation}
+						setValue={setSexualOrientation}
+						isEnabled={orientationSwitch}
 					/>
-				</View>
-			) : (
-				<View style={{ width: "100%", height: "100%" }}>
-					<View style={[commonStyles.Header, { paddingHorizontal: 30, marginTop: 0 }]}>
-						<TouchableOpacity
-							onPress={() => {
-								setPageNum(pageNum - 1);
-							}}
-						>
-							<Text style={{ color: colors.medium_gray, fontSize: 18 }}>
-								{pageNum > 1 ? "Geri" : ""}
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={() => {
-								pageNum < 5 ? setPageNum(pageNum + 1) : handleSubmit();
-							}}
-						>
-							<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
-						</TouchableOpacity>
-					</View>
-					{pageNum == 1 && <MatchMode value={matchMode} setValue={setMatchMode} />}
-					{pageNum == 2 && <Gender value={gender} setValue={setGender} isEnabled={genderSwitch} />}
-					{pageNum == 3 && <Expectation value={expectation} setValue={setExpectation} />}
-					{pageNum == 4 && <Interested value={interested} setValue={setInterested} />}
-					{pageNum == 5 && (
-						<SexOrientation
-							value={sexualOrientation}
-							setValue={setSexualOrientation}
-							isEnabled={orientationSwitch}
-						/>
-					)}
-				</View>
-			)}
+				)}
+			</View>
 		</View>
 	);
 }

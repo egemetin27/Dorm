@@ -748,34 +748,8 @@ export default function Profile({ route, navigation }) {
 						</View>
 
 						<View name={"Sign"} style={[styles.inputContainer, {}]}>
-							<Animated.Text
-								style={[
-									styles.placeHolder,
-									{
-										transform: [
-											{
-												translateY:
-													sign.choice == ""
-														? signRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
-														: -20,
-											},
-										],
-										fontSize:
-											sign.choice == ""
-												? signRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
-												: 15,
-									},
-								]}
-							>
-								Burcum
-							</Animated.Text>
 							<Pressable
+								style={{ width: "100%", alignItems: "center", justifyContent: "center" }}
 								onPress={
 									isEditable
 										? () => {
@@ -784,39 +758,40 @@ export default function Profile({ route, navigation }) {
 										: () => {}
 								}
 							>
+								<Animated.Text
+									style={[
+										styles.placeHolder,
+										{
+											transform: [
+												{
+													translateY:
+														sign.choice == ""
+															? signRef.interpolate({
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
+															: -20,
+												},
+											],
+											fontSize:
+												sign.choice == ""
+													? signRef.interpolate({
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
+													: 15,
+										},
+									]}
+								>
+									Burcum
+								</Animated.Text>
 								<Text style={[styles.input, { color: colors.black }]}>{sign.choice}</Text>
 							</Pressable>
 						</View>
 
 						<View name={"Diet"} style={[styles.inputContainer, {}]}>
-							<Animated.Text
-								style={[
-									styles.placeHolder,
-									{
-										transform: [
-											{
-												translateY:
-													diet.choice == ""
-														? dietRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
-														: -20,
-											},
-										],
-										fontSize:
-											diet.choice == ""
-												? dietRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
-												: 15,
-									},
-								]}
-							>
-								Beslenme Tercihim
-							</Animated.Text>
 							<Pressable
+								style={{ width: "100%", alignItems: "center", justifyContent: "center" }}
 								onPress={
 									isEditable
 										? () => {
@@ -825,39 +800,40 @@ export default function Profile({ route, navigation }) {
 										: () => {}
 								}
 							>
+								<Animated.Text
+									style={[
+										styles.placeHolder,
+										{
+											transform: [
+												{
+													translateY:
+														diet.choice == ""
+															? dietRef.interpolate({
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
+															: -20,
+												},
+											],
+											fontSize:
+												diet.choice == ""
+													? dietRef.interpolate({
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
+													: 15,
+										},
+									]}
+								>
+									Beslenme Tercihim
+								</Animated.Text>
 								<Text style={[styles.input, { color: colors.black }]}>{diet.choice}</Text>
 							</Pressable>
 						</View>
 
 						<View name={"Alcohol"} style={[styles.inputContainer, {}]}>
-							<Animated.Text
-								style={[
-									styles.placeHolder,
-									{
-										transform: [
-											{
-												translateY:
-													drink.choice == ""
-														? drinkRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
-														: -20,
-											},
-										],
-										fontSize:
-											drink.choice == ""
-												? drinkRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
-												: 15,
-									},
-								]}
-							>
-								Alkol Kullanımım
-							</Animated.Text>
 							<Pressable
+								style={{ width: "100%", alignItems: "center", justifyContent: "center" }}
 								onPress={
 									isEditable
 										? () => {
@@ -866,39 +842,40 @@ export default function Profile({ route, navigation }) {
 										: () => {}
 								}
 							>
+								<Animated.Text
+									style={[
+										styles.placeHolder,
+										{
+											transform: [
+												{
+													translateY:
+														drink.choice == ""
+															? drinkRef.interpolate({
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
+															: -20,
+												},
+											],
+											fontSize:
+												drink.choice == ""
+													? drinkRef.interpolate({
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
+													: 15,
+										},
+									]}
+								>
+									Alkol Kullanımım
+								</Animated.Text>
 								<Text style={[styles.input, { color: colors.black }]}>{drink.choice}</Text>
 							</Pressable>
 						</View>
 
 						<View name={"Smoke"} style={[styles.inputContainer, {}]}>
-							<Animated.Text
-								style={[
-									styles.placeHolder,
-									{
-										transform: [
-											{
-												translateY:
-													smoke.choice == ""
-														? smokeRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
-														: -20,
-											},
-										],
-										fontSize:
-											smoke.choice == ""
-												? smokeRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
-												: 15,
-									},
-								]}
-							>
-								Sigara Kullanımım
-							</Animated.Text>
 							<Pressable
+								style={{ width: "100%", alignItems: "center", justifyContent: "center" }}
 								onPress={
 									isEditable
 										? () => {
@@ -907,6 +884,33 @@ export default function Profile({ route, navigation }) {
 										: () => {}
 								}
 							>
+								<Animated.Text
+									style={[
+										styles.placeHolder,
+										{
+											transform: [
+												{
+													translateY:
+														smoke.choice == ""
+															? smokeRef.interpolate({
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
+															: -20,
+												},
+											],
+											fontSize:
+												smoke.choice == ""
+													? smokeRef.interpolate({
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
+													: 15,
+										},
+									]}
+								>
+									Sigara Kullanımım
+								</Animated.Text>
 								<Text style={[styles.input, { color: colors.black }]}>{smoke.choice}</Text>
 							</Pressable>
 						</View>
@@ -1065,35 +1069,35 @@ export default function Profile({ route, navigation }) {
 			</KeyboardAvoidingView>
 
 			<CustomPicker
-				data={genderList}
+				data={genderList.slice(1)}
 				visible={genderVisible}
 				setVisible={setGenderVisible}
 				setChoice={setSex}
 			/>
 
 			<CustomPicker
-				data={signList}
+				data={signList.slice(1)}
 				visible={signVisible}
 				setVisible={setSignVisible}
 				setChoice={setSign}
 				style={{ height: height * 0.5, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={dietList}
+				data={dietList.slice(1)}
 				visible={dietVisible}
 				setVisible={setDietVisible}
 				setChoice={setDiet}
 				style={{ height: (6 * height) / 16, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={smokeAndDrinkList}
+				data={smokeAndDrinkList.slice(1)}
 				visible={drinkVisible}
 				setVisible={setDrinkVisible}
 				setChoice={setDrink}
 				style={{ height: (5 * height) / 16, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={smokeAndDrinkList}
+				data={smokeAndDrinkList.slice(1)}
 				visible={smokeVisible}
 				setVisible={setSmokeVisible}
 				setChoice={setSmoke}

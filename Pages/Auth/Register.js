@@ -46,8 +46,8 @@ export default function Register({ navigation }) {
 	const [counter, setCounter] = React.useState(0);
 
 	const handleRegister = () => {
-		const fullName = name.trim();
-		const trimmedMail = email.trim();
+		const fullName = name.trim().toLocaleLowerCase();
+		const trimmedMail = email.trim().toLowerCase();
 
 		const lName = fullName.slice(fullName.lastIndexOf(" ") + 1);
 		const fName = fullName.slice(0, fullName.lastIndexOf(" "));

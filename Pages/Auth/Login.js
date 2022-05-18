@@ -54,8 +54,8 @@ export default function Login({ navigation }) {
 	const handleLogin = async () => {
 		setLoading(true);
 		signIn({
-			email: email,
-			password: password,
+			email: email.trim().toLowerCase(),
+			password: password.trim(),
 			isNewUser: false,
 			navigation: navigation,
 			notLoading: () => {
