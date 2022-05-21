@@ -9,6 +9,7 @@ export const getGender = (val) => {
 
 export const getAge = (date) => {
 	var birthday = new Date(date);
+	// console.log(birthday);
 	return ~~((Date.now() - birthday) / 31557600000);
 };
 
@@ -33,4 +34,23 @@ export function normalize(size) {
 	} else {
 		return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
 	}
+}
+
+export function getTimeDiff(refreshTime) {
+	let currentTime = new Date(Date.now());
+	currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
+
+	let endTime = new Date(refreshTime);
+
+	let diffSec = endTime.getTime() - currentTime.getTime();
+
+	let diff = new Date(diffSec).toISOString().slice(11, 16);
+
+	return { hour: diff.split(":")[0], minute: diff.split(":")[1] };
+}
+
+export function normalizeTime(time) {
+	let date = new Date(time);
+	date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
+	return date;
 }

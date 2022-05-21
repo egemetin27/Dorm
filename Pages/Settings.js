@@ -350,7 +350,6 @@ export default function Settings({ navigation, route }) {
 		invisibility: invis,
 		campusGhost: ghost,
 		schoolLover: onlyCampus,
-		isFriendMode,
 		userID,
 		sesToken,
 	} = route.params || { invisibility: true, campusGhost: true, schoolLover: true };
@@ -359,7 +358,6 @@ export default function Settings({ navigation, route }) {
 	const insets = useSafeAreaInsets();
 
 	// SWITCHES
-	const [friendMode, setFriendMode] = React.useState(isFriendMode);
 	const [invisibility, setInvisibility] = React.useState(invis);
 	const [campusGhost, setCampusGhost] = React.useState(ghost);
 	const [schoolLover, setSchoolLover] = React.useState(onlyCampus);
@@ -458,31 +456,6 @@ export default function Settings({ navigation, route }) {
 			});
 	};
 
-	const handleMatchModeChange = (index) => {
-		if ((friendMode && index == 1) || (!friendMode && index == 0)) {
-			return;
-		}
-		setFriendMode(index == 1 ? true : false);
-
-		axios
-			.post(
-				url + "/matchMode",
-				{ userId: userID, matchMode: index.toString() },
-				{ headers: { "access-token": sesToken } }
-			) // There is a typo (not Change but Chage) TODO: make userID variable
-			.then(async (res) => {
-				console.log(res.data);
-				let userStr = await SecureStore.getItemAsync("userData");
-				const user = JSON.parse(userStr);
-				const newUser = { ...user, matchMode: index };
-				userStr = JSON.stringify(newUser);
-				SecureStore.setItemAsync("userData", userStr);
-			})
-			.catch((error) => {
-				console.log("Match Mode Error: ", error);
-			});
-	};
-
 	const handleEmail = (value) => {
 		setEmail(value);
 	};
@@ -524,27 +497,6 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} /> */}
-
-				<View style={styles.buttonContainer}>
-					<Text style={{ fontSize: 20, fontFamily: "PoppinsSemiBold", color: "#333333" }}>
-						Eşleşme Ayarları
-					</Text>
-				</View>
-				<View style={{ width: "100%", alignItems: "center" }}>
-					<CustomRadio
-						horizontal={true}
-						list={["Flört Modu", "Arkadaşlık Modu"]}
-						listItemStyle={{
-							width: width * 0.4,
-							aspectRatio: 3 / 1,
-							borderRadius: (width * 0.4) / 6,
-						}}
-						index={friendMode ? 1 : 0}
-						setIndex={(index) => {
-							handleMatchModeChange(index);
-						}}
-					/>
-				</View>
 
 				{/* <TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Eşleşme Modu</Text>

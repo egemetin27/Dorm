@@ -41,7 +41,13 @@ export default function Onboarding({ navigation }) {
 
 	const navigate = async () => {
 		try {
-			await AsyncStorage.setItem("introShown", "yes");
+			await AsyncStorage.getItem("Constants").then(async (res) => {
+				const list = JSON.parse(res);
+				const toSave = { ...list, introShown: true };
+				await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+			});
+
+			// await AsyncStorage.setItem("introShown", "yes");
 		} catch (error) {}
 		navigation.replace("WelcomePage");
 	};

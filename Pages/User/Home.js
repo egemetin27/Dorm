@@ -80,7 +80,6 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 	return (
 		<Pressable
 			onPress={() => {
-				setIsAppReady(false);
 				openProfiles(index);
 			}}
 			style={[
@@ -429,6 +428,9 @@ export default function MainPage({ navigation }) {
 	const [sesToken, setSesToken] = React.useState("");
 	const [myPP, setMyPP] = React.useState("");
 	const [matchMode, setMatchMode] = React.useState(0);
+	const [listEmptyMessage, setLisetEmptyMessage] = React.useState(
+		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
+	);
 	const eventsFlatListRef = React.useRef();
 	const peopleFlatListRef = React.useRef();
 
@@ -551,7 +553,10 @@ export default function MainPage({ navigation }) {
 					{ headers: { "access-token": myToken } }
 				)
 				.then((res) => {
-					console.log(res.data);
+					if (res.data == "Invisible") {
+						setPeopleList([]);
+						return;
+					}
 					setPeopleList(res.data);
 				})
 				.catch((err) => {
@@ -600,6 +605,11 @@ export default function MainPage({ navigation }) {
 					if (res.data == "Unauthorized Session") {
 						Alert.alert("Oturumunuzun süresi doldu!");
 						signOut();
+					}
+					if (res.data == "Invisible") {
+						setPeopleList([]);
+						setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
+						return;
 					}
 					setPeopleList(res.data);
 				})
@@ -745,13 +755,9 @@ export default function MainPage({ navigation }) {
 								person={item}
 								length={peopleList.slice(0, 5).length}
 								openProfiles={(idx) => {
-									// var arr = new Array(...peopleList);
-									// const element = arr[idx];
-									// arr.splice(idx, 1);
-									// arr.splice(0, 0, element);
 									navigation.replace("ProfileCards", {
 										idx: idx,
-										list: peopleList,
+										list: peopleList.slice(0, 40),
 										matchMode: matchMode,
 										myID: myID,
 										sesToken: sesToken,
@@ -771,8 +777,7 @@ export default function MainPage({ navigation }) {
 								color: colors.gray,
 							}}
 						>
-							Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa
-							zamanda tekrar uğramayı unutma!
+							{listEmptyMessage}
 						</Text>
 					</View>
 				)}

@@ -58,7 +58,13 @@ import ToplulukKurallari from "../Pages/ToplulukKurallari";
 /////
 // COMPONENTS
 import { AuthContext } from "../nonVisualComponents/Context";
+import { Session } from "../nonVisualComponents/SessionVariables";
 /////
+
+import LikeEndedModal from "../Pages/modals/LikeEndedModal";
+import MatchModal from "../Pages/modals/MatchModal";
+import ListEndedModal from "../Pages/modals/ListEndedModal";
+
 const HomeStack = createNativeStackNavigator();
 
 function HomeStackScreen(route, navigation) {
@@ -95,7 +101,6 @@ function MainScreen({ route, navigation }) {
 					tabBarStyle: {
 						height: height * 0.08 + insets.bottom,
 						paddingBottom: height * 0.008 + insets.bottom,
-						// position: "relative",
 					},
 					headerShown: false,
 					tabBarShowLabel: false,
@@ -174,10 +179,14 @@ function MainScreen({ route, navigation }) {
 											params: { screen: "Home" },
 										});
 									} else if (!props?.accessibilityState?.selected) {
-										const jumpToAction = TabActions.jumpTo("AnaSayfa", {
-											screen: "Home",
+										// const jumpToAction = TabActions.jumpTo("AnaSayfa", {
+										// 	screen: "Home",
+										// });
+										// navigation.dispatch(jumpToAction);
+										navigation.replace("MainScreen", {
+											screen: "AnaSayfa",
+											params: { screen: "Home" },
 										});
-										navigation.dispatch(jumpToAction);
 									}
 								}}
 							/>
@@ -372,6 +381,11 @@ export default function StackNavigator() {
 
 						await SecureStore.setItemAsync("userData", userData);
 						await SecureStore.setItemAsync("userID", res.data.UserId.toString());
+						Session.User = {
+							...res.data,
+							email: email,
+							Photo: photoList,
+						};
 
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
@@ -420,21 +434,38 @@ export default function StackNavigator() {
 
 				setCustomText({ style: { fontFamily: "Poppins" } });
 				setCustomTextInput({ style: { fontFamily: "Poppins" } });
-
-				await AsyncStorage.getItem("introShown").then((res) => {
-					if (res != "yes") {
-						// if app is opened for the first time, set scroll not showed to teach user scrolling photos
-						AsyncStorage.setItem("scrollNotShowed", "0");
-						console.log("scroll Not Showed");
+				await AsyncStorage.getItem("Constants").then(async (res) => {
+					let constantDictStr = res;
+					if (res == null) {
+						constantDictStr = { introShown: false, tutorialShown: false };
+						AsyncStorage.setItem("scrollNotShowed", "0"); //scroll not shown
 					}
-					// set intro shown value to true or false according to the data in local storage
-					setIntroShown(res == "yes" ? true : false);
+					await AsyncStorage.getItem("scrollNotShowed").then((res) => {
+						if (res == null) {
+							Session.ScrollShown = true;
+						} else {
+							Session.ScrollNumber = parseInt(res);
+						}
+					});
+					const constants = JSON.parse(constantDictStr);
+					setIntroShown(constants.introShown);
+					setTutorialShown(constants.tutorialShown);
 				});
 
-				await AsyncStorage.getItem("tutorialShown").then((res) => {
-					// set tutorial shown value to true or false according to the data in local storage
-					setTutorialShown(res == "yes" ? true : false);
-				});
+				// await AsyncStorage.getItem("introShown").then((res) => {
+				// 	if (res != "yes") {
+				// 		// if app is opened for the first time, set scroll not showed to teach user scrolling photos
+				// 		AsyncStorage.setItem("scrollNotShowed", "0");
+				// 		console.log("scroll Not Showed");
+				// 	}
+				// 	// set intro shown value to true or false according to the data in local storage
+				// 	setIntroShown(res == "yes" ? true : false);
+				// });
+
+				// await AsyncStorage.getItem("tutorialShown").then((res) => {
+				// 	// set tutorial shown value to true or false according to the data in local storage
+				// 	setTutorialShown(res == "yes" ? true : false);
+				// });
 
 				await AsyncStorage.getItem("isLoggedIn").then(async (res) => {
 					// set logged in value to true or false according to the data in local storage
@@ -471,7 +502,7 @@ export default function StackNavigator() {
 				{/* <StatusBar style={"auto"} /> */}
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
-						<Stack.Navigator>
+						<Stack.Navigator mode={"modal"}>
 							{isLoggedIn ? (
 								// Screens for logged in users
 								<Stack.Group
@@ -509,6 +540,23 @@ export default function StackNavigator() {
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							)}
+							<Stack.Group name={"Modals"} screenOptions={{ headerShown: false }}>
+								<Stack.Screen
+									name="LikeEndedModal"
+									component={LikeEndedModal}
+									options={{ presentation: "transparentModal" }}
+								/>
+								<Stack.Screen
+									name="MatchModal"
+									component={MatchModal}
+									options={{ presentation: "transparentModal" }}
+								/>
+								<Stack.Screen
+									name="ListEndedModal"
+									component={ListEndedModal}
+									options={{ presentation: "transparentModal" }}
+								/>
+							</Stack.Group>
 						</Stack.Navigator>
 					</AuthContext.Provider>
 				</NavigationContainer>
