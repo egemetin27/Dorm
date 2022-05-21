@@ -95,7 +95,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 		>
 			{photoList?.length > 0 ? (
 				<Image
-					source={{ uri: photoList[0]?.PhotoLink }}
+					source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
 					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 				/>
 			) : (
@@ -321,7 +321,7 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 			]}
 		>
 			<Image
-				source={{ uri: photos?.length > 0 ? photos[0] : "AAAA" }}
+				source={{ uri: photos?.length > 0 ? photos[0] : "AAAA", cache: "force-cache" }}
 				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 			/>
 			<Gradient
@@ -757,7 +757,7 @@ export default function MainPage({ navigation }) {
 								openProfiles={(idx) => {
 									navigation.replace("ProfileCards", {
 										idx: idx,
-										list: peopleList.slice(0, 40),
+										list: peopleList.slice(0, 45),
 										matchMode: matchMode,
 										myID: myID,
 										sesToken: sesToken,

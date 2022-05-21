@@ -67,6 +67,7 @@ export default Card = ({
 	showListEndedModal,
 	showMatchScreen,
 	length,
+	refreshList,
 }) => {
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
@@ -76,22 +77,37 @@ export default Card = ({
 	const [likeFlag, setLikeFlag] = React.useState(false);
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
+	const About = card?.About ?? "";
+	const drink = card?.Alkol ?? "";
+	const diet = card?.Beslenme ?? "";
+	const sign = card?.Burc ?? "";
+	const religion = card?.Din ?? "";
+	const genderNo = card?.Gender ?? "";
+	const major = card?.Major ?? "";
+	const name = card?.Name ?? "";
+	const university = card?.School ?? "";
+	const smoke = card?.Sigara ?? "";
+	const id = card?.UserId ?? "";
+	const photoList = card?.photos ?? "";
+	const bDay = card?.Birth_Date ?? "";
+	const hobbies = card?.interest ?? "";
+
 	const {
-		About: about = "",
-		Alkol: drink = "",
-		Beslenme: diet = "",
-		Burc: sign = "",
-		Din: religion = " ",
-		Gender: genderNo = 0,
-		Major: major = "",
-		Name: name = "",
-		School: university = "",
-		Sigara: smoke = "",
-		Surname: sName,
-		UserId: id = 0,
-		photos: photoList = [],
-		Birth_Date: bDay = "",
-		interest: hobbies = [],
+		// About = "",
+		// Alkol: drink = "",
+		// Beslenme: diet = "",
+		// Burc: sign = "",
+		// Din: religion = " ",
+		// Gender: genderNo = 0,
+		// Major: major = "",
+		// Name: name = "",
+		// School: university = "",
+		// Sigara: smoke = "",
+		// Surname: sName,
+		// UserId: id = 0,
+		// photos: photoList = [],
+		// Birth_Date: bDay = "",
+		// interest: hobbies = [],
 	} = card;
 
 	const gender = getGender(genderNo);
@@ -160,10 +176,13 @@ export default Card = ({
 			return false;
 		return true;
 	};
+	console.log(indexOfFrontCard.value, index, name);
 
 	const onSwipe = async (val) => {
 		// 0 = like, 1 = super like, 2 =  dislike
 		backFace.value = false;
+		incrementIndex();
+		// await new Promise((resolve) => setTimeout(resolve, 150));
 
 		if (val == 0 && Session.User.LikeCount == 0) {
 			x.value = withSpring(0);
@@ -172,10 +191,6 @@ export default Card = ({
 			const time = getTimeDiff(Session.User.SwipeRefreshTime);
 			showLikeEndedModal(time.hour, time.minute);
 			return;
-		}
-
-		if (index + 1 == length) {
-			showListEndedModal();
 		}
 
 		axios
@@ -202,6 +217,11 @@ export default Card = ({
 					console.log("send notification.");
 					sendNotification();
 				}
+
+				if (index == length - 1) {
+					refreshList();
+				}
+
 				incrementIndex();
 			})
 			.catch((error) => {
@@ -233,11 +253,13 @@ export default Card = ({
 		Gesture.Pan()
 			.onUpdate((event) => {
 				if (indexOfFrontCard.value == index) {
+					// if (index == 1) {
 					x.value = event.translationX;
 				}
 			})
 			.onEnd((event) => {
 				if (indexOfFrontCard.value == index) {
+					// if (index == 1) {
 					destination.value = snapPoint(x.value, event.velocityX, SNAP_POINTS);
 					x.value = withSpring(destination.value);
 					destination.value > 0
@@ -254,6 +276,7 @@ export default Card = ({
 			.numberOfTaps(2)
 			.onStart(() => {
 				if (indexOfFrontCard.value == index) {
+					// if (index == 1) {
 					turn.value = withTiming(-turn.value);
 					backFace.value = !backFace.value;
 				}
@@ -396,18 +419,21 @@ export default Card = ({
 		progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
 	};
 
-	useAnimatedReaction(
-		() => {
-			return progress.value;
-		},
-		() => {
-			runOnJS(setBackfaceIndex)(Math.round(progress.value));
-		}
-	);
+	// useAnimatedReaction(
+	// 	() => {
+	// 		return progress.value;
+	// 	},
+	// 	() => {
+	// 		runOnJS(setBackfaceIndex)(Math.round(progress.value));
+	// 	},
+	// 	[progress.value]
+	// );
 
 	const animatedWrapper = useAnimatedStyle(() => {
 		return {
-			zIndex: index != indexOfFrontCard.value ? withTiming(-1) : 3,
+			// zIndex: withTiming(interpolate(index, [0, 1, 2], [-1, 1, -1])),
+			// display: index >= 0 && index <= 2 ? "flex" : "none",
+			zIndex: withTiming(interpolate(indexOfFrontCard.value - index, [-1, 0, 1], [-1, 1, -1])),
 			display:
 				indexOfFrontCard.value <= index + 1 && indexOfFrontCard.value >= index - 1
 					? "flex"
@@ -435,7 +461,6 @@ export default Card = ({
 				name={"cards"}
 				style={{
 					width: "100%",
-					zIndex: 1,
 					position: "absolute",
 					justifyContent: "center",
 				}}
@@ -471,6 +496,7 @@ export default Card = ({
 														// key={item.index}
 														source={{
 															uri: item?.PhotoLink ?? "AAA",
+															cache: "force-cache",
 														}}
 														style={{
 															aspectRatio: 1 / 1.5,
@@ -693,6 +719,7 @@ export default Card = ({
 											photoList?.length > 0
 												? photoList[backfaceIndex]?.PhotoLink
 												: "Nothing to see here",
+										cache: "force-cache",
 									}}
 									blurRadius={20}
 									style={{
@@ -891,7 +918,7 @@ export default Card = ({
 												})}
 											</Text>
 										)}
-										{checkText(about) && (
+										{checkText(About) && (
 											<Text
 												name={"About"}
 												style={{
@@ -908,7 +935,7 @@ export default Card = ({
 														fontSize: Math.min(height * 0.03, width * 0.048),
 													}}
 												>
-													{about}
+													{About}
 												</Text>
 											</Text>
 										)}

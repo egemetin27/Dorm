@@ -9,7 +9,16 @@ import ReactNative, {
 	ActivityIndicator,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useSharedValue, useDerivedValue } from "react-native-reanimated";
+import Animated, {
+	useSharedValue,
+	useDerivedValue,
+	useAnimatedReaction,
+	useAnimatedStyle,
+	runOnJS,
+	interpolate,
+	withTiming,
+	withRepeat,
+} from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
 import { Octicons, Feather } from "@expo/vector-icons";
@@ -33,6 +42,7 @@ export default function ProfileCards({ navigation, route }) {
 	const [isLoading, setIsLoading] = React.useState(true);
 	// const [peopleList, setPeopleList] = React.useState(route.params.list);
 	const [peopleList, setPeopleList] = React.useState([]);
+	const [shownList, setShownList] = React.useState([]);
 	// const superLikeEndedPopup = useSharedValue(false);
 	const indexOfFrontCard = useSharedValue(0);
 	// const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
@@ -47,7 +57,7 @@ export default function ProfileCards({ navigation, route }) {
 	const [name, setName] = React.useState("");
 	// const [firstImg, setFirstImg] = React.useState("");
 	// const [secondImg, setSecondImg] = React.useState("");
-	// const [reportUserID, setReportUserID] = React.useState("");
+	const [reportUserID, setReportUserID] = React.useState("");
 
 	const { signOut } = React.useContext(AuthContext);
 
@@ -110,19 +120,9 @@ export default function ProfileCards({ navigation, route }) {
 	);
 
 	// const peopleList = route.params.list;
-	const { myID, sesToken } = route.params;
+	const { myID, sesToken, list, idx, fromEvent = false } = route.params;
 
 	React.useEffect(async () => {
-		console.log("start");
-		// setIsScrollShowed(Session.ScrollShown)
-
-		// await AsyncStorage.getItem("scrollNotShowed").then((res) => {
-		// 	if (res == null) {
-		// 		setIsScrollShowed(true);
-		// 	}
-		// });
-
-		const { fromEvent = false } = route.params;
 		const backAction = () => {
 			if (fromEvent) {
 				navigation.goBack();
@@ -133,19 +133,36 @@ export default function ProfileCards({ navigation, route }) {
 		};
 		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 		async function prepare() {
-			const { list, idx } = route.params;
 			let profile = list.splice(idx, 1);
-			setPeopleList([profile[0], ...list].reverse());
-			// setPeopleList(list);
+			setPeopleList(list.slice(9));
+			setShownList([profile[0], ...list.slice(0, 9)]);
 		}
 		try {
 			await prepare();
 		} finally {
-			console.log("end");
 			setIsLoading(false);
 		}
 		return () => backHandler.remove();
 	}, []);
+
+	// useAnimatedReaction(
+	// 	() => {
+	// 		indexOfFrontCard.value;
+	// 	},
+	// 	() => {
+	// 		let list = peopleList;
+	// 		let person = list.shift();
+	// 		// console.log(person);
+	// 		console.log(shownList.length);
+	// 		if (shownList.length > 2) {
+	// 			runOnJS(setShownList)([...shownList.slice(1), person]);
+	// 			runOnJS(setPeopleList)(list);
+	// 			console.log([...shownList.slice(1), person]);
+	// 		}
+	// 		console.log("AAAA");
+	// 	},
+	// 	[indexOfFrontCard.value]
+	// );
 
 	// React.useEffect(async () => {
 	// 	try {
@@ -187,7 +204,6 @@ export default function ProfileCards({ navigation, route }) {
 			</View>
 		);
 	}
-
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
@@ -231,50 +247,79 @@ export default function ProfileCards({ navigation, route }) {
 						width: "100%",
 						height: Math.min(width * 1.35, height * 0.7),
 						marginTop: height * 0.05,
-						// backgroundColor: "blue",
 					}}
 				>
-					{peopleList.map((item, index) => (
-						<Card
-							key={index}
-							index={peopleList.length - index - 1}
-							card={item}
-							backFace={backFace}
-							myID={myID}
-							sesToken={sesToken}
-							indexOfFrontCard={indexOfFrontCard}
-							myProfilePicture={route.params.myPP}
-							isScrollShowed={Session.ScrollShown}
-							// isScrollShowed={isScrollShowed}
-							matchMode={route.params.matchMode}
-							// setScrollShowed={() => {
-							// 	setIsScrollShowed(true);
-							// }}
-							incrementIndex={() => {
-								indexOfFrontCard.value = indexOfFrontCard.value + 1;
-							}}
-							showMatchScreen={(otherName, otherPicture, myPicture) => {
-								navigation.navigate("MatchModal", {
-									firstImg: otherPicture,
-									secondImg: myPicture,
-									name: otherName,
-								});
-							}}
-							showReportPage={(otherUserID) => {
-								showReportPage(otherUserID);
-							}}
-							showLikeEndedModal={(hour, minute) => {
-								navigation.navigate("LikeEndedModal", {
-									hour: hour,
-									minute: minute,
-								});
-							}}
-							showListEndedModal={() => {
-								navigation.navigate("ListEndedModal");
-							}}
-							length={peopleList.length}
-						/>
-					))}
+					<Animated.View
+						style={[
+							{
+								width: "100%",
+								position: "absolute",
+								alignItems: "center",
+								justifyContent: "center",
+								top: height * 0.3,
+								zIndex: -1,
+							},
+						]}
+					>
+						<Text style={{ fontSize: normalize(18), color: colors.medium_gray, letterSpacing: 1 }}>
+							Yeni kişiler aranıyor...
+						</Text>
+					</Animated.View>
+					{shownList.map((item, index) => {
+						return (
+							<Card
+								key={index}
+								// index={9 - index}
+								// index={peopleList.length - index - 1}
+								index={index}
+								card={item}
+								backFace={backFace}
+								myID={myID}
+								sesToken={sesToken}
+								indexOfFrontCard={indexOfFrontCard}
+								myProfilePicture={route.params.myPP}
+								isScrollShowed={Session.ScrollShown}
+								matchMode={route.params.matchMode}
+								incrementIndex={() => {
+									indexOfFrontCard.value = indexOfFrontCard.value + 1;
+								}}
+								showMatchScreen={(otherName, otherPicture, myPicture) => {
+									navigation.navigate("MatchModal", {
+										firstImg: otherPicture,
+										secondImg: myPicture,
+										name: otherName,
+									});
+								}}
+								showReportPage={(otherUserID) => {
+									showReportPage(otherUserID);
+								}}
+								showLikeEndedModal={(hour, minute) => {
+									navigation.navigate("LikeEndedModal", {
+										hour: hour,
+										minute: minute,
+									});
+								}}
+								showListEndedModal={() => {
+									navigation.navigate("ListEndedModal");
+								}}
+								length={shownList.length}
+								refreshList={() => {
+									try {
+										setIsLoading(true);
+										setShownList(peopleList.slice(0, 10));
+										setPeopleList(peopleList.slice(10));
+										indexOfFrontCard.value = 0;
+										if (peopleList.length == 0) {
+											navigation.navigate("ListEndedModal");
+											return;
+										}
+									} finally {
+										setIsLoading(false);
+									}
+								}}
+							/>
+						);
+					})}
 				</View>
 
 				<View
