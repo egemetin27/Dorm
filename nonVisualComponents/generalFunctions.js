@@ -1,4 +1,5 @@
 import { Dimensions, Platform, PixelRatio } from "react-native";
+import { Session } from "../nonVisualComponents/SessionVariables";
 
 export const getGender = (val) => {
 	if (val == 0) return "Kadın";
@@ -37,10 +38,13 @@ export function normalize(size) {
 }
 
 export function getTimeDiff(refreshTime) {
-	let currentTime = new Date(Date.now());
-	currentTime.setHours(currentTime.getHours() - currentTime.getTimezoneOffset() / 60);
+	let currentTime = normalizeTime(Date.now());
 
 	let endTime = new Date(refreshTime);
+
+	if (endTime < currentTime) {
+		return false;
+	}
 
 	let diffSec = endTime.getTime() - currentTime.getTime();
 
