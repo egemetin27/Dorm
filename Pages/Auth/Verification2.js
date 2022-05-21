@@ -72,11 +72,13 @@ export default function Verification({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style={"dark"} />
 			<View style={commonStyles.Header}>
-				<TouchableOpacity style={{ left: 35 }}>
+				<TouchableOpacity
+					onPress={() => {
+						navigation.goBack();
+					}}
+					style={{ left: 35 }}
+				>
 					<Ionicons name="arrow-back-outline" size={32} color="#B6B6B6" />
-				</TouchableOpacity>
-				<TouchableOpacity style={{ right: 35, top: 2 }}>
-					<Text style={{ fontSize: 22, color: "#B6B6B6" }}>Atla</Text>
 				</TouchableOpacity>
 			</View>
 

@@ -168,9 +168,7 @@ export const AnimatedModal = (props) => {
 
 	return (
 		<Animated.View style={[{ width: "100%", height: "100%", position: "absolute" }, animStyle]}>
-			<TouchableWithoutFeedback onPress={props.dismiss}>
-				<View style={[styles.modalOverlay, props?.overlay]} />
-			</TouchableWithoutFeedback>
+			<Pressable onPress={dismiss} style={[styles.modalOverlay, props?.overlay]} />
 			<View style={styles.modalContent}>
 				<View>{props.children}</View>
 			</View>
@@ -255,8 +253,10 @@ const styles = StyleSheet.create({
 	},
 	modalOverlay: {
 		position: "absolute",
-		height: height,
-		width: width,
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
 		backgroundColor: "rgba(0,0,0,0.6)",
 	},
 	pickerContainer: {

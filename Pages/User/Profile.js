@@ -23,7 +23,7 @@ import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-import { CustomPicker } from "../../visualComponents/customComponents";
+import { CustomPicker, CustomRadio } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getChoice } from "../../nonVisualComponents/generalFunctions";
@@ -61,6 +61,7 @@ export default function Profile({ route, navigation }) {
 	const [hobbies, setHobbies] = React.useState("");
 	const [about, setAbout] = React.useState("");
 	const [PHOTO_LIST, setPhotoList] = React.useState("");
+	const [friendMode, setFriendMode] = React.useState(false);
 
 	const [city, setCity] = React.useState([0, 1, 0]);
 
@@ -97,6 +98,7 @@ export default function Profile({ route, navigation }) {
 			setSchool(data.School);
 			setMajor(data.Major == "null" ? "" : data.Major);
 			setReligion(data.Din == "null" ? "" : data.Din);
+			setFriendMode(data.matchMode == "1" ? true : false);
 
 			setSign(data.Burc == "null" ? signList[0] : signList[data.Burc]);
 			setDiet(data.Beslenme == "null" ? dietList[0] : dietList[data.Beslenme]);
@@ -192,6 +194,31 @@ export default function Profile({ route, navigation }) {
 		}).start();
 	};
 
+	const handleMatchModeChange = (index) => {
+		if ((friendMode && index == 1) || (!friendMode && index == 0)) {
+			return;
+		}
+		setFriendMode(index == 1 ? true : false);
+
+		axios
+			.post(
+				url + "/matchMode",
+				{ userId: userID, matchMode: index.toString() },
+				{ headers: { "access-token": sesToken } }
+			) // There is a typo (not Change but Chage) TODO: make userID variable
+			.then(async (res) => {
+				console.log(res.data);
+				let userStr = await SecureStore.getItemAsync("userData");
+				const user = JSON.parse(userStr);
+				const newUser = { ...user, matchMode: index };
+				userStr = JSON.stringify(newUser);
+				SecureStore.setItemAsync("userData", userStr);
+			})
+			.catch((error) => {
+				console.log("Match Mode Error: ", error);
+			});
+	};
+
 	if (!isReady)
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
@@ -272,7 +299,6 @@ export default function Profile({ route, navigation }) {
 									invisibility: user.Invisible == "1" ? true : false,
 									campusGhost: user.BlockCampus == "1" ? true : false,
 									schoolLover: user.OnlyCampus == "1" ? true : false,
-									isFriendMode: user.matchMode == "1" ? true : false,
 									userID: user.UserId,
 									sesToken: user.sesToken,
 								});
@@ -399,6 +425,22 @@ export default function Profile({ route, navigation }) {
 								</View>
 							</Pressable>
 						)}
+					</View>
+
+					<View style={{ width: "100%", alignItems: "center", marginTop: 50 }}>
+						<CustomRadio
+							horizontal={true}
+							list={["Flört Modu", "Arkadaşlık Modu"]}
+							listItemStyle={{
+								width: width * 0.4,
+								aspectRatio: 3 / 1,
+								borderRadius: (width * 0.4) / 6,
+							}}
+							index={friendMode ? 1 : 0}
+							setIndex={(index) => {
+								handleMatchModeChange(index);
+							}}
+						/>
 					</View>
 
 					<View name={"Info"} style={{ paddingBottom: 50 }}>

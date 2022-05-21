@@ -11,7 +11,7 @@ import {
 	BackHandler,
 	Alert,
 } from "react-native";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
@@ -321,6 +321,14 @@ export default function ProfilePhotos({ route, navigation }) {
 				animationType={"fade"}
 			>
 				<View style={styles.modalContainer}>
+					<TouchableOpacity
+						onPress={() => {
+							setModalVisibility(false);
+						}}
+						style={{ position: "absolute", right: 16, top: 10 }}
+					>
+						<Feather name="x" size={24} color="black" />
+					</TouchableOpacity>
 					<Image source={require("../../assets/sadFace.png")} />
 					<Text
 						style={{
@@ -339,25 +347,19 @@ export default function ProfilePhotos({ route, navigation }) {
 							style={{
 								width: "100%",
 								height: "100%",
+								justifyContent: "center",
+								alignItems: "center",
 							}}
 						>
-							<View
+							<Text
 								style={{
-									flex: 1,
-									justifyContent: "center",
-									alignItems: "center",
+									fontSize: 25,
+									color: colors.white,
+									fontWeight: "700",
 								}}
 							>
-								<Text
-									style={{
-										fontSize: 25,
-										color: colors.white,
-										fontWeight: "700",
-									}}
-								>
-									Fotoğrafı Sil
-								</Text>
-							</View>
+								Fotoğrafı Sil
+							</Text>
 						</Gradient>
 					</TouchableOpacity>
 				</View>

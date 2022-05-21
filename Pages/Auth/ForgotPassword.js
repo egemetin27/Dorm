@@ -32,7 +32,9 @@ export default function ForgotPassword({ navigation }) {
 				navigation.replace("Verification2", { email: email });
 			})
 			.catch((error) => {
-				console.log({ error });
+				if (error.response) {
+					console.log(error.response);
+				}
 			});
 	};
 

@@ -22,7 +22,12 @@ export default function Tutorial({ navigation }) {
 	const [index, setIndex] = React.useState(0);
 
 	const handleEnd = async () => {
-		await AsyncStorage.setItem("tutorialShown", "yes");
+		await AsyncStorage.getItem("Constants").then(async (res) => {
+			const list = JSON.parse(res);
+			const toSave = { ...list, tutorialShown: true };
+			await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+		});
+		// await AsyncStorage.setItem("tutorialShown", "yes");
 		navigation.replace("MainScreen");
 	};
 
