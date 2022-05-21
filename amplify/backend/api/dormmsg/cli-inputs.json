@@ -6,8 +6,8 @@
     "gqlSchemaPath": "C:\\testDorm\\amplify\\backend\\api\\dormmsg\\schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "expirationTime": 30,
-      "apiKeyExpirationDate": "2022-05-20T18:27:42.169Z",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2023-05-19T17:58:48.769Z",
       "keyDescription": "testAPI"
     },
     "conflictResolution": {},
