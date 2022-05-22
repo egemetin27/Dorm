@@ -125,6 +125,14 @@ export default Card = React.memo(
 			};
 		});
 
+		React.useEffect(async () => {
+			if (photoList.length > 0) {
+				photoList.map(async (item, index) => {
+					await Image.prefetch(item?.PhotoLink);
+				});
+			}
+		}, []);
+
 		const scroll = () => {
 			if (photoListRef.current) {
 				setTimeout(() => {

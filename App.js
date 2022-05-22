@@ -38,17 +38,17 @@ export default function App() {
 		console.log("AppState", appState.current);
 	};
 
-	// return (
-	// 	<SafeAreaProvider style={{ flex: 1 }}>
-	// 		<Stack />
-	// 	</SafeAreaProvider>
-	// );
+	return (
+		<SafeAreaProvider style={{ flex: 1 }}>
+			<Stack />
+		</SafeAreaProvider>
+	);
 	// return (
 	// 	<GestureHandlerRootView style={{ flex: 1 }}>
 	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
 	// 	</GestureHandlerRootView>
 	// );
-	return <ImageManipulatorTest route={{ params: {} }} />;
+	// return <ImageManipulatorTest route={{ params: {} }} />;
 }
 
 const styles = StyleSheet.create({
