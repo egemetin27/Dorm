@@ -17,6 +17,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -142,10 +143,14 @@ export default function ProfilePhotos({ route, navigation }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.25,
+				quality: 0.2,
+			});
+			let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
+				compress: 0.2,
+				format: SaveFormat.JPEG,
 			});
 			if (!result.cancelled) {
-				handleAdd(result);
+				handleAdd(resizedResult);
 			}
 		}
 	};

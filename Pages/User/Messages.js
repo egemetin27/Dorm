@@ -1,46 +1,32 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-	StyleSheet,
 	Text,
 	View,
-	TextInput,
 	Dimensions,
 	Pressable,
-	Animated,
 	TouchableOpacity,
-	ScrollView,
-	KeyboardAvoidingView,
 	FlatList,
-	Image,
-	Button,
 	BackHandler,
 } from "react-native";
-import commonStyles from "../../visualComponents/styles";
-import { Ionicons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
-import { colors, GradientText, Gradient } from "../../visualComponents/colors";
-const { height, width } = Dimensions.get("window");
-import { color } from "react-native-reanimated";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import MsgBox from "./MsgBox";
-import NewMatchBox from "./NewMatchBox";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { render } from "react-dom";
-import { red } from "react-native-redash";
-import * as SecureStore from "expo-secure-store";
-import axios from "axios";
-
-import { url } from "../../connection";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 
-import { listUserChats, getMsgUser, chatByDate } from "../../src/graphql/queries";
+import { getMsgUser, chatByDate } from "../../src/graphql/queries";
 import {
 	onCreateUserChat,
 	onDeleteUserChat,
 	onUpdateUserChat,
 } from "../../src/graphql/subscriptions";
-import { LinearGradient } from "expo-linear-gradient";
+import MsgBox from "./MsgBox";
+import NewMatchBox from "./NewMatchBox";
+import { colors, GradientText, Gradient } from "../../visualComponents/colors";
+
+import commonStyles from "../../visualComponents/styles";
+// import { url } from "../../connection";
+import { Session } from "../../nonVisualComponents/SessionVariables";
+
+const { height, width } = Dimensions.get("window");
 
 export default function Messages({ route, navigation }) {
 	const [chatMod, setChatMod] = React.useState([1, 0]);
@@ -76,11 +62,7 @@ export default function Messages({ route, navigation }) {
 
 	const fetchNewUsers = async (myUserID) => {
 		try {
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const data = JSON.parse(dataStr);
-			//console.log(data);
-
-			const userID = data.UserId.toString();
+			const userID = Session.User.UserId.toString();
 
 			const msgBoxData = await API.graphql(
 				graphqlOperation(chatByDate, {
@@ -104,12 +86,8 @@ export default function Messages({ route, navigation }) {
 	React.useEffect(async () => {
 		let abortController = new AbortController();
 		try {
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const data = JSON.parse(dataStr);
-			//console.log(data);
-
-			const userID = data.UserId.toString();
-			const userName = data.Name;
+			const userID = Session.User.UserId.toString();
+			const userName = Session.User.Name;
 			const fetchUser = async () => {
 				const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
 
@@ -135,7 +113,7 @@ export default function Messages({ route, navigation }) {
 				//console.log(chatRooms);
 			};
 
-			fetchUser();
+			await fetchUser();
 		} catch (error) {}
 		return () => {
 			abortController.abort();
@@ -146,11 +124,7 @@ export default function Messages({ route, navigation }) {
 		let abortController = new AbortController();
 
 		try {
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const data = JSON.parse(dataStr);
-			//console.log(data);
-
-			const userID = data.UserId.toString();
+			const userID = Session.User.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onCreateUserChat)).subscribe({
 				next: (data) => {
 					/*
@@ -172,11 +146,10 @@ export default function Messages({ route, navigation }) {
 					// setMessages([newMessage, ...messages]);
 				},
 			});
-
-			return () => subscription.unsubscribe();
 		} catch (error) {}
 		return () => {
 			abortController.abort();
+			subscription.unsubscribe();
 		};
 	}, []);
 
@@ -184,11 +157,7 @@ export default function Messages({ route, navigation }) {
 		let abortController = new AbortController();
 
 		try {
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const data = JSON.parse(dataStr);
-			//console.log(data);
-
-			const userID = data.UserId.toString();
+			const userID = Session.User.UserId.toString();
 			const subscription = API.graphql(graphqlOperation(onUpdateUserChat)).subscribe({
 				next: (data) => {
 					/*
@@ -210,10 +179,9 @@ export default function Messages({ route, navigation }) {
 					// setMessages([newMessage, ...messages]);
 				},
 			});
-
-			return () => subscription.unsubscribe();
 		} catch (error) {}
 		return () => {
+			subscription.unsubscribe();
 			abortController.abort();
 		};
 	}, []);

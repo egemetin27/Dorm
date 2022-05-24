@@ -29,10 +29,10 @@ import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { height, width } = Dimensions.get("window");
 
-import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../nonVisualComponents/Context";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const CategoryList = [
 	{
@@ -78,9 +78,9 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 
 	const age = getAge(bDay);
 
-	React.useEffect(async () => {
-		await Image.prefetch(photoList[0]?.PhotoLink);
-	}, []);
+	// React.useEffect(async () => {
+	// 	await Image.prefetch(photoList[0]?.PhotoLink);
+	// }, []);
 
 	return (
 		<Pressable
@@ -99,14 +99,17 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 			]}
 		>
 			{photoList?.length > 0 ? (
-				// <FastImage
-				// 	source={{ uri: photoList[0]?.PhotoLink }}
-				// 	style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				// />
-				<Image
-					source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
-					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				/>
+				__DEV__ ? (
+					<Image
+						source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
+						style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+					/>
+				) : (
+					<FastImage
+						source={{ uri: photoList[0]?.PhotoLink }}
+						style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+					/>
+				)
 			) : (
 				<Ionicons name="person" color="white" size={60} />
 			)}
@@ -312,11 +315,11 @@ const Category = ({
 const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
 
-	React.useEffect(async () => {
-		if (photos?.length > 0) {
-			await Image.prefetch(photos[0]);
-		}
-	}, []);
+	// React.useEffect(async () => {
+	// 	if (photos?.length > 0) {
+	// 		await Image.prefetch(photos[0]);
+	// 	}
+	// }, []);
 
 	return (
 		<Pressable
@@ -335,10 +338,18 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 				},
 			]}
 		>
-			<Image
-				source={{ uri: photos?.length > 0 ? photos[0] : "AAAA", cache: "force-cache" }}
-				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-			/>
+			{__DEV__ ? (
+				<Image
+					source={{ uri: photos?.length > 0 ? photos[0] : "AAAA", cache: "force-cache" }}
+					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+				/>
+			) : (
+				<FastImage
+					source={{ uri: photos?.length > 0 ? photos[0] : "AAAA" }}
+					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+				/>
+			)}
+
 			<Gradient
 				colors={["rgba(0,0,0,0.001)", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.65)"]}
 				locations={[0, 0.4, 1]}
@@ -635,7 +646,11 @@ export default function MainPage({ navigation }) {
 					console.log(err);
 				});
 			await axios
-				.post(url + "/EventList", { UserId: userID }, { headers: { "access-token": myToken } })
+				.post(
+					url + "/EventList",
+					{ UserId: userID, campus: Session.User.School },
+					{ headers: { "access-token": myToken } }
+				)
 				.then((res) => {
 					setEventList(res.data);
 					setShownEvents(res.data);
