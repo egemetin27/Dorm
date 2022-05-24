@@ -10,7 +10,6 @@ Amplify.configure(awsmobile);
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
-import ImageManipulatorTest from "./ImageManipulatorTest";
 import MatchMode from "./Pages/afterRegisteration/MatchMode";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
