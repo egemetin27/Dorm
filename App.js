@@ -10,6 +10,7 @@ Amplify.configure(awsmobile);
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
+import ImageManipulatorTest from "./ImageManipulatorTest";
 import MatchMode from "./Pages/afterRegisteration/MatchMode";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -47,11 +48,7 @@ export default function App() {
 	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
 	// 	</GestureHandlerRootView>
 	// );
-	// return (
-	// 	<GestureHandlerRootView>
-	// 		<Temp route={{ params: {} }} />
-	// 	</GestureHandlerRootView>
-	// );
+	// return <ImageManipulatorTest route={{ params: {} }} />;
 }
 
 const styles = StyleSheet.create({

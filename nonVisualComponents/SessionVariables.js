@@ -2,6 +2,7 @@ export class Session {
 	static User = {};
 	static ScrollShown = false;
 	static ScrollNumber = 0;
+	static likeCount = 1;
 }
 
 /*{

@@ -19,6 +19,7 @@ import {
 import { Octicons, MaterialCommunityIcons, Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
+import FastImage from "react-native-fast-image";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -77,6 +78,10 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 
 	const age = getAge(bDay);
 
+	React.useEffect(async () => {
+		await Image.prefetch(photoList[0]?.PhotoLink);
+	}, []);
+
 	return (
 		<Pressable
 			onPress={() => {
@@ -94,6 +99,10 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 			]}
 		>
 			{photoList?.length > 0 ? (
+				// <FastImage
+				// 	source={{ uri: photoList[0]?.PhotoLink }}
+				// 	style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+				// />
 				<Image
 					source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
 					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
@@ -302,6 +311,12 @@ const Category = ({
 
 const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
+
+	React.useEffect(async () => {
+		if (photos?.length > 0) {
+			await Image.prefetch(photos[0]);
+		}
+	}, []);
 
 	return (
 		<Pressable
@@ -685,11 +700,7 @@ export default function MainPage({ navigation }) {
 
 	return (
 		<View style={[commonStyles.Container, { justifyContent: "space-between" }]}>
-			<StatusBar
-				style="dark"
-				backgroundColor={"#F4F3F3"}
-				// hidden={Platform.OS == "ios"}
-			/>
+			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 			<View
 				name={"PeopleHeader"}
 				style={[
