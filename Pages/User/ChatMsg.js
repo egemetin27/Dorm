@@ -20,49 +20,73 @@ const ChatMsg = (props) => {
 		return props.data.sentMsgSenderId == props.myUserID;
 	};
 	
+	const [showTime, setShowTime] = React.useState(false);
 
 	return (
 		<View style={styles.container}>
 			{isMyMessage() ? (
 				<View>
-					<LinearGradient
-						colors={["#4136F1", "#8743FF"]}
-						start={{ x: 0, y: 0 }}
-						end={{ x: 1, y: 1 }}
-						style={{
-							borderRadius: 20,
-							borderBottomRightRadius: 0,
-							paddingHorizontal: 12,
-							paddingVertical: 10,
-							alignSelf: "flex-end",
+					<TouchableOpacity
+						onPress={()=>{
+							setShowTime(!showTime);
 						}}
 					>
-						<Text style={{ color: "white", fontFamily: "Poppins" }}>{props.data.text}</Text>
-					</LinearGradient>
-					<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8, marginRight: 8 }}>
-						
-						{moment(props.data.updatedAt).fromNow()}
-					</Text>
+						<LinearGradient
+							colors={["#4136F1", "#8743FF"]}
+							start={{ x: 0, y: 0 }}
+							end={{ x: 1, y: 1 }}
+							style={{
+								borderRadius: 20,
+								borderBottomRightRadius: 0,
+								paddingHorizontal: 12,
+								paddingVertical: 10,
+								alignSelf: "flex-end",
+							}}
+						>
+							<Text style={{ color: "white", fontFamily: "Poppins" }}>{props.data.text}</Text>
+						</LinearGradient>
+						{showTime ? 
+							(
+								<Text style={{ alignSelf: "flex-end", color: "black", fontSize: 8, marginRight: 8 }}>
+									{moment(props.data.updatedAt).fromNow()}
+								</Text>
+							)
+							:
+							(null)
+						}
+					</TouchableOpacity>
 				</View>
 			) : (
 				<View>
-					<View
-						style={[
-							styles.messageBox,
-							{
-								borderRadius: 20,
-								borderBottomLeftRadius: 0,
-								paddingHorizontal: 12,
-								paddingVertical: 10,
-								alignSelf: "flex-start",
-								backgroundColor: colors.white,
-							},
-						]}
+					<TouchableOpacity
+						onPress={()=>{
+							setShowTime(!showTime);
+						}}
 					>
-						<Text style={styles.name}>{props.data.sender.name}</Text>
-						<Text style={styles.message}>{props.data.text}</Text>
-					</View>
-					<Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
+						<View
+							style={[
+								styles.messageBox,
+								{
+									borderRadius: 20,
+									borderBottomLeftRadius: 0,
+									paddingHorizontal: 12,
+									paddingVertical: 10,
+									alignSelf: "flex-start",
+									backgroundColor: colors.white,
+								},
+							]}
+						>
+							<Text style={styles.name}>{props.data.sender.name}</Text>
+							<Text style={styles.message}>{props.data.text}</Text>
+						</View>
+						{showTime ?
+							(
+								<Text style={styles.time}>{moment(props.data.updatedAt).fromNow()}</Text>
+							)
+							:
+							(null)
+						}	
+					</TouchableOpacity>
 				</View>
 			)}
 		</View>

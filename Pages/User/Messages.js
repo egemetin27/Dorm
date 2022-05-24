@@ -86,7 +86,7 @@ export default function Messages({ route, navigation }) {
 				graphqlOperation(chatByDate, {
 					status: "Active",
 					sortDirection: "DESC",
-					limit: 1000,
+					limit: 100000,
 					filter: {
 						or: [{ userChatFirstUserId: { eq: userID } }, { userChatSecondUserId: { eq: userID } }],
 					},
@@ -117,6 +117,7 @@ export default function Messages({ route, navigation }) {
 					graphqlOperation(chatByDate, {
 						status: "Active",
 						sortDirection: "DESC",
+						limit: 100000,
 						filter: {
 							or: [
 								{ userChatFirstUserId: { eq: userID } },

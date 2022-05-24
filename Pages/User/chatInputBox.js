@@ -99,7 +99,7 @@ const InputBox = (props) => {
 					onChangeText={setMessage}
 					onContentSizeChange={(event) => {
 						console.log(event.nativeEvent.contentSize.height);
-						setMsgHeight(event.nativeEvent.contentSize.height + 21);
+						setMsgHeight(event.nativeEvent.contentSize.height + 30);
 					}}
 				/>
 			</View>
