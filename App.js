@@ -14,7 +14,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Temp from "./Pages/Temp";
-import ImageManipulatorTest from "./ImageManipulatorTest";
+//import ImageManipulatorTest from "./ImageManipulatorTest";
 
 export default function App() {
 	let abortController = new AbortController();
