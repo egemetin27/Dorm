@@ -29,6 +29,7 @@ import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 const { height, width } = Dimensions.get("window");
 
+import * as Notifications from "expo-notifications";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../nonVisualComponents/Context";
@@ -36,17 +37,16 @@ import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const CategoryList = [
 	{
-		key: "Tümü",
-		// url: "",
-		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
+		key: "Kaçmaz",
+		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
 	},
 	{
 		key: "Favorilerin",
 		url: require("../../assets/HomeScreenCategoryIcons/Favs.png"),
 	},
 	{
-		key: "Kaçmaz",
-		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
+		key: "Konser",
+		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
 	},
 	{ key: "Gece", url: require("../../assets/HomeScreenCategoryIcons/Gece.png") },
 	{
@@ -58,12 +58,13 @@ const CategoryList = [
 		url: require("../../assets/HomeScreenCategoryIcons/Culture.png"),
 	},
 	{
-		key: "Konser",
-		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
-	},
-	{
 		key: "Filmler",
 		url: require("../../assets/HomeScreenCategoryIcons/Movies.png"),
+	},
+	{
+		key: "Tümü",
+		// url: "",
+		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
 	},
 ];
 
@@ -78,9 +79,9 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 
 	const age = getAge(bDay);
 
-	// React.useEffect(async () => {
-	// 	await Image.prefetch(photoList[0]?.PhotoLink);
-	// }, []);
+	React.useEffect(async () => {
+		await Image.prefetch(photoList[0]?.PhotoLink);
+	}, []);
 
 	return (
 		<Pressable
@@ -99,17 +100,14 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 			]}
 		>
 			{photoList?.length > 0 ? (
-				__DEV__ ? (
-					<Image
-						source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
-						style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-					/>
-				) : (
-					<FastImage
-						source={{ uri: photoList[0]?.PhotoLink }}
-						style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-					/>
-				)
+				// <FastImage
+				// 	source={{ uri: photoList[0]?.PhotoLink }}
+				// 	style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+				// />
+				<Image
+					source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
+					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+				/>
 			) : (
 				<Ionicons name="person" color="white" size={60} />
 			)}
@@ -202,7 +200,8 @@ const Category = ({
 }) => {
 	const filterEvents = async (idx) => {
 		if (idx == 0) {
-			setShownEvents(eventList);
+			const filtered = eventList.filter((item) => item.Kacmaz == 1);
+			setShownEvents(filtered);
 			return;
 		}
 		if (idx == 1) {
@@ -211,7 +210,7 @@ const Category = ({
 			return;
 		}
 		if (idx == 2) {
-			const filtered = eventList.filter((item) => item.Kacmaz == 1);
+			const filtered = eventList.filter((item) => item.Konser == 1);
 			setShownEvents(filtered);
 			return;
 		}
@@ -231,13 +230,12 @@ const Category = ({
 			return;
 		}
 		if (idx == 6) {
-			const filtered = eventList.filter((item) => item.Konser == 1);
+			const filtered = eventList.filter((item) => item.Film == 1);
 			setShownEvents(filtered);
 			return;
 		}
 		if (idx == 7) {
-			const filtered = eventList.filter((item) => item.Film == 1);
-			setShownEvents(filtered);
+			setShownEvents(eventList);
 			return;
 		}
 	};
@@ -315,11 +313,11 @@ const Category = ({
 const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
 
-	// React.useEffect(async () => {
-	// 	if (photos?.length > 0) {
-	// 		await Image.prefetch(photos[0]);
-	// 	}
-	// }, []);
+	React.useEffect(async () => {
+		if (photos?.length > 0) {
+			await Image.prefetch(photos[0]);
+		}
+	}, []);
 
 	return (
 		<Pressable
@@ -338,18 +336,10 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 				},
 			]}
 		>
-			{__DEV__ ? (
-				<Image
-					source={{ uri: photos?.length > 0 ? photos[0] : "AAAA", cache: "force-cache" }}
-					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				/>
-			) : (
-				<FastImage
-					source={{ uri: photos?.length > 0 ? photos[0] : "AAAA" }}
-					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				/>
-			)}
-
+			<Image
+				source={{ uri: photos?.length > 0 ? photos[0] : "AAAA", cache: "force-cache" }}
+				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+			/>
 			<Gradient
 				colors={["rgba(0,0,0,0.001)", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.65)"]}
 				locations={[0, 0.4, 1]}
@@ -600,12 +590,10 @@ export default function MainPage({ navigation }) {
 
 	React.useEffect(async () => {
 		let abortController = new AbortController();
-		const userDataStr = await SecureStore.getItemAsync("userData");
-		const userData = JSON.parse(userDataStr);
-		const userID = userData.UserId.toString();
-		const myToken = userData.sesToken;
-		const myMode = userData.matchMode;
-		const myPhoto = userData.Photo[0].PhotoLink ?? "";
+		const userID = Session.User.UserId.toString();
+		const myToken = Session.User.sesToken;
+		const myMode = Session.User.matchMode;
+		const myPhoto = Session.User.Photo[0].PhotoLink ?? "";
 		setMyID(userID);
 		setSesToken(myToken);
 		setMatchMode(myMode);
@@ -648,12 +636,12 @@ export default function MainPage({ navigation }) {
 			await axios
 				.post(
 					url + "/EventList",
-					{ UserId: userID, campus: Session.User.School },
+					{ UserId: userID, Campus: Session.User.School },
 					{ headers: { "access-token": myToken } }
 				)
 				.then((res) => {
 					setEventList(res.data);
-					setShownEvents(res.data);
+					setShownEvents(res.data.filter((item) => item.Kacmaz == 1));
 				})
 				.catch((err) => {
 					console.log(err);

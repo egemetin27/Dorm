@@ -26,6 +26,7 @@ import { url } from "../../connection";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
 
 const { width, height } = Dimensions.get("window");
 

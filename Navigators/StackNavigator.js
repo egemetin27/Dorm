@@ -1,5 +1,14 @@
 import * as React from "react";
-import { View, Text, Image, Dimensions, Alert, Pressable, AppState } from "react-native";
+import {
+	View,
+	Text,
+	Image,
+	Dimensions,
+	Alert,
+	Pressable,
+	AppState,
+	ActivityIndicator,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer, TabActions } from "@react-navigation/native";
@@ -64,6 +73,7 @@ import { Session } from "../nonVisualComponents/SessionVariables";
 import LikeEndedModal from "../Pages/modals/LikeEndedModal";
 import MatchModal from "../Pages/modals/MatchModal";
 import ListEndedModal from "../Pages/modals/ListEndedModal";
+import styles from "../visualComponents/styles";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -416,7 +426,7 @@ export default function StackNavigator() {
 		},
 	}));
 
-	React.useEffect(async () => {
+	React.useEffect(() => {
 		async function prepare() {
 			try {
 				// Keep the splash screen visible while we fetch resources
@@ -452,6 +462,21 @@ export default function StackNavigator() {
 					setTutorialShown(constants.tutorialShown);
 				});
 
+				// await AsyncStorage.getItem("introShown").then((res) => {
+				// 	if (res != "yes") {
+				// 		// if app is opened for the first time, set scroll not showed to teach user scrolling photos
+				// 		AsyncStorage.setItem("scrollNotShowed", "0");
+				// 		console.log("scroll Not Showed");
+				// 	}
+				// 	// set intro shown value to true or false according to the data in local storage
+				// 	setIntroShown(res == "yes" ? true : false);
+				// });
+
+				// await AsyncStorage.getItem("tutorialShown").then((res) => {
+				// 	// set tutorial shown value to true or false according to the data in local storage
+				// 	setTutorialShown(res == "yes" ? true : false);
+				// });
+
 				await AsyncStorage.getItem("isLoggedIn").then(async (res) => {
 					// set logged in value to true or false according to the data in local storage
 
@@ -470,18 +495,24 @@ export default function StackNavigator() {
 				setAppIsReady(true); // app is ready
 			}
 		}
-		await prepare();
+		prepare();
 	}, []);
 
 	const onLayoutRootView = React.useCallback(async () => {
 		if (appIsReady) {
-			// await SplashScreen.hideAsync(); // hide splash screen if the app is ready
+			await SplashScreen.hideAsync(); // hide splash screen if the app is ready
 		}
 	}, [appIsReady]);
 
 	if (!appIsReady) {
-		console.log("ASD");
-		return <StatusBar stlye={"light"} />;
+		return (
+			<View
+				style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
+			>
+				<StatusBar stlye={"light"} />
+				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
+			</View>
+		);
 	} else {
 		return (
 			<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>

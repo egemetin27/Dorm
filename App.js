@@ -9,12 +9,10 @@ Amplify.configure(awsmobile);
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
+import Temp from "./Pages/Temp";
 import MatchMode from "./Pages/afterRegisteration/MatchMode";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
-import Temp from "./Pages/Temp";
-//import ImageManipulatorTest from "./ImageManipulatorTest";
 
 export default function App() {
 	let abortController = new AbortController();
@@ -22,9 +20,9 @@ export default function App() {
 	const [appStateVisible, setAppStateVisible] = React.useState(appState.current);
 
 	React.useEffect(() => {
-		const appStateListener = AppState.addEventListener("change", _handleAppStateChange);
+		const subscription = AppState.addEventListener("change", _handleAppStateChange);
 		return () => {
-			appStateListener.remove();
+			subscription.remove();
 			abortController.abort();
 		};
 	}, []);
