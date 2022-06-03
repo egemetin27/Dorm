@@ -152,7 +152,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 				if (res.data == "Unauthorized Session") {
 					Alert.alert("Oturumunuzun süresi doldu!");
 					signOut();
-				} else if (typeof res.data == Array && res.data.length > 0) {
+				} else if (typeof res.data == "object" && res.data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
 						list: res.data,

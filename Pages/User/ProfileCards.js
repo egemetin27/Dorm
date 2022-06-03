@@ -229,6 +229,10 @@ export default function ProfileCards({ navigation, route }) {
 			>
 				<TouchableOpacity
 					onPress={() => {
+						if (fromEvent) {
+							navigation.goBack();
+							return;
+						}
 						navigation.replace("MainScreen", { screen: "AnaSayfa", props: { screen: "Home" } });
 					}}
 				>

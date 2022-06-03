@@ -36,6 +36,11 @@ import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const CategoryList = [
 	{
+		key: "Tümü",
+		// url: "",
+		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
+	},
+	{
 		key: "Kaçmaz",
 		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
 	},
@@ -59,11 +64,6 @@ const CategoryList = [
 	{
 		key: "Filmler",
 		url: require("../../assets/HomeScreenCategoryIcons/Movies.png"),
-	},
-	{
-		key: "Tümü",
-		// url: "",
-		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
 	},
 ];
 
@@ -202,42 +202,42 @@ const Category = ({
 }) => {
 	const filterEvents = async (idx) => {
 		if (idx == 0) {
+			setShownEvents(eventList);
+			return;
+		}
+		if (idx == 1) {
 			const filtered = eventList.filter((item) => item.Kacmaz == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 1) {
+		if (idx == 2) {
 			const filtered = eventList.filter((item) => item.isLiked == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 2) {
+		if (idx == 3) {
 			const filtered = eventList.filter((item) => item.Konser == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 3) {
+		if (idx == 4) {
 			const filtered = eventList.filter((item) => item.Gece == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 4) {
+		if (idx == 5) {
 			const filtered = eventList.filter((item) => item.Kampus == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 5) {
+		if (idx == 6) {
 			const filtered = eventList.filter((item) => item.Culture == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 6) {
+		if (idx == 7) {
 			const filtered = eventList.filter((item) => item.Film == 1);
 			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 7) {
-			setShownEvents(eventList);
 			return;
 		}
 	};
@@ -446,7 +446,7 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 
 export default function MainPage({ navigation }) {
 	const [isAppReady, setIsAppReady] = React.useState(false);
-	const [selectedCategory, setSelectedCategory] = React.useState(0);
+	const [selectedCategory, setSelectedCategory] = React.useState(1);
 	const [eventList, setEventList] = React.useState([]);
 	const [shownEvents, setShownEvents] = React.useState([]);
 	const [peopleList, setPeopleList] = React.useState([]);
