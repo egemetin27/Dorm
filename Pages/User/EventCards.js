@@ -148,10 +148,11 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 				{ headers: { "access-token": sesToken } }
 			)
 			.then((res) => {
+				console.log(res.data);
 				if (res.data == "Unauthorized Session") {
 					Alert.alert("Oturumunuzun süresi doldu!");
 					signOut();
-				} else if (res.data.length > 0) {
+				} else if (typeof res.data == Array && res.data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
 						list: res.data,

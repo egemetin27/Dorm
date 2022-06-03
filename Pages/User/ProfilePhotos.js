@@ -17,6 +17,8 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
+import FastImage from "react-native-fast-image";
 
 import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -31,11 +33,14 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 
 	return (
 		<View key={index} style={[styles.photo]}>
-			<Image
-				style={{ height: "100%", width: "100%" }}
-				resizeMode="cover"
-				source={{ uri: photo.PhotoLink }}
-			/>
+			{__DEV__ ? (
+				<Image style={{ height: "100%", width: "100%" }} resizeMode="cover" />
+			) : (
+				<FastImage
+					source={{ uri: photo.PhotoLink }}
+					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+				/>
+			)}
 			<View
 				style={{
 					height: "100%",
@@ -142,10 +147,14 @@ export default function ProfilePhotos({ route, navigation }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.25,
+				quality: 0.2,
+			});
+			let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
+				compress: 0.2,
+				format: SaveFormat.JPEG,
 			});
 			if (!result.cancelled) {
-				handleAdd(result);
+				handleAdd(resizedResult);
 			}
 		}
 	};

@@ -22,20 +22,22 @@ import Carousel from "react-native-reanimated-carousel";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import FastImage from "react-native-fast-image";
 
 import { CustomPicker, CustomRadio } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 import { getAge, getChoice } from "../../nonVisualComponents/generalFunctions";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
-	const tabBarHeight = useBottomTabBarHeight();
+	// const tabBarHeight = useBottomTabBarHeight();
 
-	const [progressBarVisible, setVisibility] = React.useState(true);
-	const [progress, setProgress] = React.useState(0);
-	const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
+	// const [progressBarVisible, setVisibility] = React.useState(true);
+	// const [progress, setProgress] = React.useState(0);
+	// const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
 
 	const [isReady, setIsReady] = React.useState(false);
 	const [isEditable, setEditibility] = React.useState(false);
@@ -44,9 +46,6 @@ export default function Profile({ route, navigation }) {
 	const [dietVisible, setDietVisible] = React.useState(false);
 	const [smokeVisible, setSmokeVisible] = React.useState(false);
 	const [drinkVisible, setDrinkVisible] = React.useState(false);
-
-	const [userID, setUserID] = React.useState(null);
-	const [sesToken, setSesToken] = React.useState("");
 
 	const [name, setName] = React.useState("");
 	const [major, setMajor] = React.useState("");
@@ -75,35 +74,35 @@ export default function Profile({ route, navigation }) {
 	const hobbiesRef = React.useRef(new Animated.Value(0)).current;
 	const aboutRef = React.useRef(new Animated.Value(0)).current;
 
-	React.useEffect(() => {
-		const backAction = () => {
-			navigation.replace("MainScreen", { screen: "AnaSayfa" });
-			return true;
-		};
-		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-		return () => backHandler.remove();
-	}, []);
+	// React.useEffect(() => {
+	// 	const backAction = () => {
+	// 		navigation.replace("MainScreen", { screen: "AnaSayfa" });
+	// 		return true;
+	// 	};
+	// 	const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+	// 	return () => backHandler.remove();
+	// }, []);
 
 	React.useEffect(async () => {
 		try {
-			setIsReady(false);
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const data = JSON.parse(dataStr);
+			setName(Session.User.Name + " " + Session.User.Surname);
+			setAge(getAge(Session.User.Birth_date));
+			setSex(Session.User.Gender == "null" ? "" : genderList[Session.User.Gender]);
+			setSchool(Session.User.School);
+			setMajor(Session.User.Major == "null" ? "" : Session.User.Major);
+			setReligion(Session.User.Din == "null" ? "" : Session.User.Din);
+			setFriendMode(Session.User.matchMode == "1" ? true : false);
 
-			setSesToken(data.sesToken);
-			setUserID(data.UserId);
-			setName(data.Name + " " + data.Surname);
-			setAge(getAge(data.Birth_date));
-			setSex(data.Gender == "null" ? "" : genderList[data.Gender]);
-			setSchool(data.School);
-			setMajor(data.Major == "null" ? "" : data.Major);
-			setReligion(data.Din == "null" ? "" : data.Din);
-			setFriendMode(data.matchMode == "1" ? true : false);
-
-			setSign(data.Burc == "null" ? signList[0] : signList[data.Burc]);
-			setDiet(data.Beslenme == "null" ? dietList[0] : dietList[data.Beslenme]);
-			setDrink(data.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Alkol]);
-			setSmoke(data.Sigara == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[data.Sigara]);
+			setSign(Session.User.Burc == "null" ? signList[0] : signList[Session.User.Burc]);
+			setDiet(Session.User.Beslenme == "null" ? dietList[0] : dietList[Session.User.Beslenme]);
+			setDrink(
+				Session.User.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[Session.User.Alkol]
+			);
+			setSmoke(
+				Session.User.Sigara == "null"
+					? smokeAndDrinkList[0]
+					: smokeAndDrinkList[Session.User.Sigara]
+			);
 
 			/*
 			setSign(getChoice(data.Burc, signList));
@@ -112,9 +111,9 @@ export default function Profile({ route, navigation }) {
 			setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
 			*/
 
-			setAbout(data.About == "null" ? "" : data.About);
-			setPhotoList(data.Photo);
-			setHobbies(data.interest);
+			setAbout(Session.User.About == "null" ? "" : Session.User.About);
+			setPhotoList(Session.User.Photo);
+			setHobbies(Session.User.interest);
 			// setUserData({
 			// 	userID: data.UserId,
 			// 	name: data.Name + " " + data.Surname,
@@ -141,7 +140,7 @@ export default function Profile({ route, navigation }) {
 		const fName = name.slice(0, name.lastIndexOf(" "));
 
 		const dataToSend = {
-			UserId: userID,
+			UserId: Session.User.userID,
 			Name: fName,
 			Surname: lName,
 			Gender: sex.key,
@@ -155,7 +154,9 @@ export default function Profile({ route, navigation }) {
 		};
 
 		await axios
-			.post(url + "/IdentityUpdate", dataToSend, { headers: { "access-token": sesToken } })
+			.post(url + "/IdentityUpdate", dataToSend, {
+				headers: { "access-token": Session.User.sesToken },
+			})
 			.then(async (res) => {
 				const dataStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(dataStr);
@@ -199,12 +200,13 @@ export default function Profile({ route, navigation }) {
 			return;
 		}
 		setFriendMode(index == 1 ? true : false);
+		Session.User.matchMode = index;
 
 		axios
 			.post(
 				url + "/matchMode",
-				{ userId: userID, matchMode: index.toString() },
-				{ headers: { "access-token": sesToken } }
+				{ userId: Session.User.userID, matchMode: index },
+				{ headers: { "access-token": Session.User.sesToken } }
 			) // There is a typo (not Change but Chage) TODO: make userID variable
 			.then(async (res) => {
 				console.log(res.data);
@@ -292,15 +294,12 @@ export default function Profile({ route, navigation }) {
 					) : (
 						<TouchableOpacity
 							onPress={async () => {
-								const userStr = await SecureStore.getItemAsync("userData");
-								const user = JSON.parse(userStr);
-
 								navigation.navigate("Settings", {
-									invisibility: user.Invisible == "1" ? true : false,
-									campusGhost: user.BlockCampus == "1" ? true : false,
-									schoolLover: user.OnlyCampus == "1" ? true : false,
-									userID: user.UserId,
-									sesToken: user.sesToken,
+									invisibility: Session.User.Invisible == "1" ? true : false,
+									campusGhost: Session.User.BlockCampus == "1" ? true : false,
+									schoolLover: Session.User.OnlyCampus == "1" ? true : false,
+									userID: Session.User.UserId,
+									sesToken: Session.User.sesToken,
 								});
 							}}
 						>
@@ -380,25 +379,35 @@ export default function Profile({ route, navigation }) {
 														setEditibility(false);
 														navigation.navigate("ProfilePhotos", {
 															photoList: PHOTO_LIST,
-															userID: userID,
-															sesToken: sesToken,
+															userID: Session.User.userID,
+															sesToken: Session.User.sesToken,
 														});
 													}
 												}}
 											>
-												<Image
-													style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
-													resizeMode="cover"
-													source={{ uri: item.PhotoLink }}
-												/>
+												{__DEV__ ? (
+													<Image
+														style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
+														resizeMode="cover"
+													/>
+												) : (
+													<FastImage
+														source={{ uri: item.PhotoLink }}
+														style={{
+															height: height / 2.8,
+															aspectRatio: 2 / 3,
+															resizeMode: "cover",
+														}}
+													/>
+												)}
 											</Pressable>
 										) : (
 											<Pressable
 												onPress={() => {
 													navigation.navigate("ProfilePhotos", {
 														photoList: PHOTO_LIST,
-														userID: userID,
-														sesToken: sesToken,
+														userID: Session.User.userID,
+														sesToken: Session.User.sesToken,
 													});
 												}}
 											>
@@ -415,8 +424,8 @@ export default function Profile({ route, navigation }) {
 								onPress={() => {
 									navigation.replace("ProfilePhotos", {
 										photoList: PHOTO_LIST,
-										userID: userID,
-										sesToken: sesToken,
+										userID: Session.User.userID,
+										sesToken: Session.User.sesToken,
 									});
 								}}
 							>
@@ -964,7 +973,7 @@ export default function Profile({ route, navigation }) {
 									handleSave();
 									navigation.push("Hobbies", {
 										hobbyList: hobbies,
-										UserId: userID,
+										UserId: Session.User.userID,
 										isNewUser: false,
 									});
 								}

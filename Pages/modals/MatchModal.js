@@ -13,6 +13,7 @@ import ReactNative, {
 	Pressable,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import FastImage from "react-native-fast-image";
 
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -62,39 +63,78 @@ export default function MatchModal({ navigation, route }) {
 				>
 					{name} {"&"} Sen
 				</Text>
-				<Image
-					source={{
-						uri: firstImg ?? null,
-					}}
-					style={{
-						top: height * 0.25,
-						left: width * 0.12,
-						borderRadius: 20,
-						position: "absolute",
-						aspectRatio: 1 / 1.5,
-						width: width * 0.4,
-						maxHeight: height * 0.7,
-						resizeMode: "cover",
-						transform: [{ rotateZ: "-18deg" }],
-						zIndex: 2,
-					}}
-				/>
-				<Image
-					source={{
-						uri: secondImg ?? null,
-					}}
-					style={{
-						top: height * 0.3,
-						left: width * 0.4,
-						borderRadius: 20,
-						position: "absolute",
-						aspectRatio: 1 / 1.5,
-						width: width * 0.4,
-						maxHeight: height * 0.7,
-						resizeMode: "cover",
-						transform: [{ rotateZ: "23deg" }],
-					}}
-				/>
+				{__DEV__ ? (
+					<Image
+						source={{
+							uri: firstImg ?? null,
+						}}
+						style={{
+							top: height * 0.25,
+							left: width * 0.12,
+							borderRadius: 20,
+							position: "absolute",
+							aspectRatio: 1 / 1.5,
+							width: width * 0.4,
+							maxHeight: height * 0.7,
+							resizeMode: "cover",
+							transform: [{ rotateZ: "-18deg" }],
+							zIndex: 2,
+						}}
+					/>
+				) : (
+					<FastImage
+						source={{
+							uri: firstImg ?? null,
+						}}
+						style={{
+							top: height * 0.25,
+							left: width * 0.12,
+							borderRadius: 20,
+							position: "absolute",
+							aspectRatio: 1 / 1.5,
+							width: width * 0.4,
+							maxHeight: height * 0.7,
+							resizeMode: "cover",
+							transform: [{ rotateZ: "-18deg" }],
+							zIndex: 2,
+						}}
+					/>
+				)}
+				{__DEV__ ? (
+					<Image
+						source={{
+							uri: secondImg ?? null,
+						}}
+						style={{
+							top: height * 0.3,
+							left: width * 0.4,
+							borderRadius: 20,
+							position: "absolute",
+							aspectRatio: 1 / 1.5,
+							width: width * 0.4,
+							maxHeight: height * 0.7,
+							resizeMode: "cover",
+							transform: [{ rotateZ: "23deg" }],
+						}}
+					/>
+				) : (
+					<FastImage
+						source={{
+							uri: secondImg ?? null,
+						}}
+						style={{
+							top: height * 0.3,
+							left: width * 0.4,
+							borderRadius: 20,
+							position: "absolute",
+							aspectRatio: 1 / 1.5,
+							width: width * 0.4,
+							maxHeight: height * 0.7,
+							resizeMode: "cover",
+							transform: [{ rotateZ: "23deg" }],
+						}}
+					/>
+				)}
 				<Text
 					style={{
 						paddingTop: height * 0.425,
@@ -107,7 +147,6 @@ export default function MatchModal({ navigation, route }) {
 				>
 					“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 				</Text>
-
 				<ReactNative.TouchableOpacity
 					onPress={() => {
 						navigation.replace("MainScreen", { screen: "Mesajlar" });

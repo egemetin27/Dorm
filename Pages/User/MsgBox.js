@@ -13,6 +13,8 @@ import { colors } from "../../visualComponents/colors";
 import moment from "moment";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
+import FastImage from "react-native-fast-image";
+
 import { url } from "../../connection";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { Gradient, GradientText } from "../../visualComponents/colors";
@@ -130,12 +132,31 @@ const MsgBox = (props) => {
 					}}
 				>
 					<View style={{ width: "20%" }}>
-						<Image
-							style={{ resizeMode: "cover", width: width * 0.15, height: "100%", borderRadius: 15 }}
-							source={{
-								uri: imageUri,
-							}}
-						/>
+						{__DEV__ ? (
+							<Image
+								style={{
+									resizeMode: "cover",
+									width: width * 0.15,
+									height: "100%",
+									borderRadius: 15,
+								}}
+								source={{
+									uri: imageUri,
+								}}
+							/>
+						) : (
+							<FastImage
+								style={{
+									resizeMode: "cover",
+									width: width * 0.15,
+									height: "100%",
+									borderRadius: 15,
+								}}
+								source={{
+									uri: imageUri,
+								}}
+							/>
+						)}
 					</View>
 
 					<View

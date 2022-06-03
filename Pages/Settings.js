@@ -612,7 +612,7 @@ export default function Settings({ navigation, route }) {
 					<Text style={{ paddingHorizontal: 20, color: colors.medium_gray }}>
 						İlişki tavsiyesi, yanlış giden bir şeyler ya da sadece selam vermek… İstediğin her şey
 						için bize ulaşabilirsin! {"\n"}{" "}
-						<Text style={{ color: "blue" }}>noreply@meetdorm.com (Geçici mail adresi)</Text>
+						<Text style={{ color: "blue" }}>support@meetdorm.com</Text>
 					</Text>
 				</TouchableOpacity>
 

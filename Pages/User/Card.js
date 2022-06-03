@@ -46,7 +46,9 @@ import { getMsgUser } from "../../src/graphql/queries";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../nonVisualComponents/Context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
-import { normalizeTime, getTimeDiff } from "../../nonVisualComponents/generalFunctions";
+import { getTimeDiff } from "../../nonVisualComponents/generalFunctions";
+import FastImage from "react-native-fast-image";
+import { BlurView } from "expo-blur";
 
 import { ConsoleLogger } from "@aws-amplify/core";
 import { NavigationContainer } from "@react-navigation/native";
@@ -125,13 +127,13 @@ export default Card = React.memo(
 			};
 		});
 
-		React.useEffect(async () => {
-			if (photoList.length > 0) {
-				photoList.map(async (item, index) => {
-					await Image.prefetch(item?.PhotoLink);
-				});
-			}
-		}, []);
+		// React.useEffect(async () => {
+		// 	if (photoList.length > 0) {
+		// 		photoList.map(async (item, index) => {
+		// 			await Image.prefetch(item?.PhotoLink);
+		// 		});
+		// 	}
+		// }, []);
 
 		const scroll = () => {
 			if (photoListRef.current) {
@@ -363,65 +365,25 @@ export default Card = React.memo(
 		const animatedPhotoProgress1 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [0, 1], [24, 8]),
-				backgroundColor: photoList?.length > 0 ? colors.white : "transparent",
-				// elevation: photoList?.length > 0 ? 20 : 0,
-				// shadowOffset:
-				// 	photoList?.length > 0
-				// 		? {
-				// 				width: 0,
-				// 				height: 10,
-				// 		  }
-				// 		: {},
-				// shadowOpacity: photoList?.length > 0 ? 0.51 : 0,
-				// shadowRadius: photoList?.length > 0 ? 13.16 : 0,
+				display: photoList?.length > 0 ? "flex" : "none",
 			};
 		});
 		const animatedPhotoProgress2 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [0, 1, 2], [8, 24, 8]),
-				backgroundColor: photoList?.length > 1 ? colors.white : "transparent",
-				// elevation: photoList?.length > 1 ? 20 : 0,
-				// shadowOffset:
-				// 	photoList?.length > 1
-				// 		? {
-				// 				width: 0,
-				// 				height: 10,
-				// 		  }
-				// 		: {},
-				// shadowOpacity: photoList?.length > 1 ? 0.51 : 0,
-				// shadowRadius: photoList?.length > 1 ? 13.16 : 0,
+				display: photoList?.length > 1 ? "flex" : "none",
 			};
 		});
 		const animatedPhotoProgress3 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [1, 2, 3], [8, 24, 8]),
-				backgroundColor: photoList?.length > 2 ? colors.white : "transparent",
-				// elevation: photoList?.length > 2 ? 20 : 0,
-				// shadowOffset:
-				// 	photoList?.length > 2
-				// 		? {
-				// 				width: 0,
-				// 				height: 10,
-				// 		  }
-				// 		: {},
-				// shadowOpacity: photoList?.length > 2 ? 0.51 : 0,
-				// shadowRadius: photoList?.length > 2 ? 13.16 : 0,
+				display: photoList?.length > 2 ? "flex" : "none",
 			};
 		});
 		const animatedPhotoProgress4 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [2, 3], [8, 24]),
-				backgroundColor: photoList?.length > 3 ? colors.white : "transparent",
-				// elevation: photoList?.length > 3 ? 20 : 0,
-				// shadowOffset:
-				// 	photoList?.length > 3
-				// 		? {
-				// 				width: 0,
-				// 				height: 10,
-				// 		  }
-				// 		: {},
-				// shadowOpacity: photoList?.length > 3 ? 0.51 : 0,
-				// shadowRadius: photoList?.length > 3 ? 13.16 : 0,
+				display: photoList?.length > 3 ? "flex" : "none",
 			};
 		});
 
@@ -463,6 +425,7 @@ export default Card = React.memo(
 		// };
 
 		const composedGesture = Gesture.Race(tapHandler, panHandler);
+		// const composedGesture = Gesture.Race(tapHandler);
 		return (
 			<Animated.View key={index} style={[{ width: "100%" }, animatedWrapper]}>
 				{/* {indexOfFrontCard.value <= index + 1 &&
@@ -483,7 +446,8 @@ export default Card = React.memo(
 										commonStyles.photo,
 										{
 											height: Math.min(width * 1.35, height * 0.7),
-											backfaceVisibility: "hidden",
+											backfaceVisibility: "visible",
+											// backfaceVisibility: "hidden",
 											elevation: 0,
 										},
 										animatedFrontFace,
@@ -502,19 +466,35 @@ export default Card = React.memo(
 											renderItem={({ item }) => {
 												return (
 													<View>
-														<Image
-															// key={item.index}
-															source={{
-																uri: item?.PhotoLink ?? "AAA",
-																cache: "force-cache",
-															}}
-															style={{
-																aspectRatio: 1 / 1.5,
-																height: Math.min(height * 0.7, width * 1.35),
-																resizeMode: "cover",
-																backgroundColor: colors.cool_gray,
-															}}
-														/>
+														{__DEV__ ? (
+															<Image
+																// key={item.index}
+																source={{
+																	uri: item?.PhotoLink ?? "AAA",
+																	cache: "force-cache",
+																}}
+																style={{
+																	aspectRatio: 1 / 1.5,
+																	height: Math.min(height * 0.7, width * 1.35),
+																	resizeMode: "cover",
+																	backgroundColor: colors.cool_gray,
+																}}
+															/>
+														) : (
+															<FastImage
+																key={item.index}
+																source={{
+																	uri: item?.PhotoLink ?? "AAA",
+																	priority: FastImage.priority.high,
+																}}
+																style={{
+																	aspectRatio: 1 / 1.5,
+																	height: Math.min(height * 0.7, width * 1.35),
+																	resizeMode: "cover",
+																	backgroundColor: colors.cool_gray,
+																}}
+															/>
+														)}
 													</View>
 												);
 											}}
@@ -535,16 +515,22 @@ export default Card = React.memo(
 											<Ionicons name="person" color="white" size={width * 0.5} />
 										</View>
 									)}
-									<View
-										style={{
-											position: "absolute",
-											left: 20,
-											top: 20,
-										}}
+									<Animated.View
+										style={[
+											{
+												backfaceVisibility: "hidden",
+												position: "absolute",
+												left: 20,
+												top: 20,
+											},
+											animatedFrontFace,
+										]}
 									>
 										<Animated.View
 											style={[
 												{
+													backgroundColor: colors.white,
+													elevation: 10,
 													minHeight: 8,
 													maxHeight: 24,
 													width: 8,
@@ -556,6 +542,8 @@ export default Card = React.memo(
 										<Animated.View
 											style={[
 												{
+													backgroundColor: colors.white,
+													elevation: 10,
 													minHeight: 8,
 													maxHeight: 24,
 													width: 8,
@@ -568,6 +556,8 @@ export default Card = React.memo(
 										<Animated.View
 											style={[
 												{
+													backgroundColor: colors.white,
+													elevation: 10,
 													minHeight: 8,
 													maxHeight: 24,
 													width: 8,
@@ -580,6 +570,8 @@ export default Card = React.memo(
 										<Animated.View
 											style={[
 												{
+													backgroundColor: colors.white,
+													elevation: 10,
 													minHeight: 8,
 													maxHeight: 24,
 													width: 8,
@@ -589,8 +581,13 @@ export default Card = React.memo(
 												animatedPhotoProgress4,
 											]}
 										/>
-									</View>
-									<View style={{ position: "absolute", top: 20, right: 20 }}>
+									</Animated.View>
+									<Animated.View
+										style={[
+											{ position: "absolute", top: 20, right: 20, backfaceVisibility: "hidden" },
+											animatedFrontFace,
+										]}
+									>
 										<TouchableOpacity
 											onPress={() => {
 												showReportPage(id);
@@ -614,7 +611,7 @@ export default Card = React.memo(
 												source={require("../../assets/report.png")}
 											/>
 										</TouchableOpacity>
-									</View>
+									</Animated.View>
 									<LinearGradient
 										colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.7)"]}
 										locations={[0, 0.1, 1]}
@@ -628,15 +625,19 @@ export default Card = React.memo(
 											paddingVertical: 10,
 										}}
 									>
-										<View
-											style={{
-												width: "100%",
-												height: "100%",
-												flexDirection: "row",
-												alignItems: "center",
-												justifyContent: "space-between",
-												paddingHorizontal: 20,
-											}}
+										<Animated.View
+											style={[
+												{
+													width: "100%",
+													height: "100%",
+													flexDirection: "row",
+													alignItems: "center",
+													justifyContent: "space-between",
+													paddingHorizontal: 20,
+													backfaceVisibility: "hidden",
+												},
+												animatedFrontFace,
+											]}
 										>
 											<View style={{ flexShrink: 1 }}>
 												<Text
@@ -703,7 +704,7 @@ export default Card = React.memo(
 											</View>
 										</TouchableOpacity>
 									</View> */}
-										</View>
+										</Animated.View>
 									</LinearGradient>
 								</Animated.View>
 
@@ -717,38 +718,17 @@ export default Card = React.memo(
 											height: Math.min(width * 1.35, height * 0.7),
 											position: "absolute",
 											backfaceVisibility: "hidden",
-											backgroundColor: colors.cool_gray,
+											backgroundColor: "transparent",
+											// backgroundColor: colors.cool_gray,
 											elevation: 0,
 										},
 										animatedBackFace,
 									]}
 								>
-									<Image
-										source={{
-											uri:
-												photoList?.length > 0
-													? photoList[backfaceIndex]?.PhotoLink
-													: "Nothing to see here",
-											cache: "force-cache",
-										}}
-										blurRadius={20}
-										style={{
-											position: "absolute",
-											aspectRatio: 1 / 1.5,
-											width: width * 0.9,
-											maxHeight: height * 0.7,
-											resizeMode: "cover",
-											transform: [{ rotateY: "180deg" }],
-										}}
-									/>
-									<View
-										name={"colorFilter"}
-										style={{
-											width: "100%",
-											height: "100%",
-											position: "absolute",
-											backgroundColor: "rgba(0,0,0,0.25)",
-										}}
+									<BlurView
+										intensity={100}
+										tint="dark"
+										style={{ width: "100%", height: "100%", position: "absolute" }}
 									/>
 									{/* <ReactNative.ScrollView */}
 									<ScrollView

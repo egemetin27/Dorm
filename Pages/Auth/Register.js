@@ -22,6 +22,7 @@ import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import { univList } from "../../nonVisualComponents/Lists";
+import { set } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window");
 
@@ -128,7 +129,7 @@ export default function Register({ navigation }) {
 			Alert.alert("Hata!", "Lütfen okuduğunuz üniversiteyi seçin!", [{ text: "Kontrol Edeyim" }]);
 			return;
 		}
-		if (counter == 4 && email.trim().split("@")[1] != university.mailExt) {
+		if (counter == 4 && email.toLocaleLowerCase().trim().split("@")[1] != university.mailExt) {
 			Alert.alert("Hata!", "Mail adresin ile seçtiğin üniversite eşleşmiyor!", [
 				{ text: "Kontrol Edeyim" },
 			]);

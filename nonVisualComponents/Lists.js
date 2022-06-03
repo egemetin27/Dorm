@@ -14,11 +14,13 @@ export const univList = [
 	{ key: 5, choice: "Galatasaray Üniversitesi", mailExt: "ogr.gsu.edu.tr" },
 	{ key: 6, choice: "İstanbul Teknik Üniversitesi", mailExt: "itu.edu.tr" },
 	{ key: 7, choice: "Koç Üniversitesi", mailExt: "ku.edu.tr" },
-	{ key: 8, choice: "Mimar Sinan Üniversitesi", mailExt: "ogr.msgsu.edu.tr" },
-	{ key: 9, choice: "Özyeğin Üniversitesi", mailExt: "ozu.edu.tr" },
-	{ key: 10, choice: "Sabancı Üniversitesi", mailExt: "sabanciuniv.edu" },
-	{ key: 11, choice: "Yeditepe Üniversitesi", mailExt: "std.yeditepe.edu.tr" },
-	{ key: 12, choice: "Yıldız Teknik Üniversitesi", mailExt: "std.yildiz.edu.tr" },
+	{ key: 8, choice: "Marmara Üniversitesi", mailExt: "marun.edu.tr" },
+	{ key: 9, choice: "Mef Üniversitesi", mailExt: "mef.edu.tr" },
+	{ key: 10, choice: "Mimar Sinan Üniversitesi", mailExt: "ogr.msgsu.edu.tr" },
+	{ key: 11, choice: "Özyeğin Üniversitesi", mailExt: "ozu.edu.tr" },
+	{ key: 12, choice: "Sabancı Üniversitesi", mailExt: "sabanciuniv.edu" },
+	{ key: 13, choice: "Yeditepe Üniversitesi", mailExt: "std.yeditepe.edu.tr" },
+	{ key: 14, choice: "Yıldız Teknik Üniversitesi", mailExt: "std.yildiz.edu.tr" },
 ];
 
 export const religionList = [

@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import * as SecureStore from "expo-secure-store";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
@@ -41,10 +42,14 @@ export default function PhotoUpload({ navigation, route }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.25,
+				quality: 0.2,
+			});
+			let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
+				compress: 0.2,
+				format: SaveFormat.JPEG,
 			});
 			if (!result.cancelled) {
-				handleAdd(result);
+				handleAdd(resizedResult);
 			}
 		}
 	};

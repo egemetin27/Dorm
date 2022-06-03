@@ -434,6 +434,7 @@ export default function StackNavigator() {
 
 				await loadAsync({
 					Now: require("../assets/Fonts/now.otf"),
+
 					NowBold: require("../assets/Fonts/now_bold.otf"),
 					Poppins: require("../assets/Fonts/Poppins.ttf"),
 					PoppinsItalic: require("../assets/Fonts/Poppins_Italic.ttf"),

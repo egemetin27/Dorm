@@ -21,6 +21,7 @@ import Animated, {
 import { snapPoint } from "react-native-redash";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import FastImage from "react-native-fast-image";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
@@ -135,8 +136,21 @@ const ChatProfile = (props) => {
 									onScroll={handleScroll}
 								>
 									{props.data.photos.map((item, idx) => {
-										return (
+										return __DEV__ ? (
 											<Image
+												key={idx}
+												source={{
+													uri: item?.PhotoLink ?? "AAA",
+												}}
+												style={{
+													height: width * 1.35,
+													maxHeight: height * 0.7,
+													resizeMode: "cover",
+													backgroundColor: colors.cool_gray,
+												}}
+											/>
+										) : (
+											<FastImage
 												key={idx}
 												source={{
 													uri: item?.PhotoLink ?? "AAA",
