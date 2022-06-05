@@ -34,7 +34,7 @@ export default function Verification({ navigation, route }) {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
 
 				if (res.data?.Verification > 0) {
-					navigation.replace("NewPassword", { email: email });
+					navigation.replace("NewPassword", { email: email, verCode: strCode });
 				} else {
 					setWrongInput(true);
 					input0.current.clear();

@@ -1,6 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Dimensions } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	TextInput,
+	Dimensions,
+	Alert,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -41,14 +49,20 @@ export default function Verification({ navigation, route }) {
 
 				if (res.data?.Verification > 0) {
 					axios
-						.post(url + "/register", { ...dataToBeSent, password: encryptedPassword })
+						.post(url + "/register", {
+							...dataToBeSent,
+							password: encryptedPassword,
+							verification: strCode,
+						})
 						.then(async (res) => {
+							console.log(res.data);
 							navigation.replace("PhotoUpload", {
 								...dataToBeSent,
 								...res.data,
 							});
 						})
 						.catch((error) => {
+							Alert.alert("Hata");
 							console.log("register error: ", error);
 						});
 				} else {

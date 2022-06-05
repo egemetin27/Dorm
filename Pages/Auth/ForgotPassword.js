@@ -29,11 +29,14 @@ export default function ForgotPassword({ navigation }) {
 		axios
 			.post(url + "/SendVerification", { Mail: email, isNewUser: false })
 			.then((res) => {
+				console.log(res);
 				navigation.replace("Verification2", { email: email });
 			})
 			.catch((error) => {
 				if (error.response) {
 					console.log(error.response);
+				} else {
+					console.log({ error });
 				}
 			});
 	};

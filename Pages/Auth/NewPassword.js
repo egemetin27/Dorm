@@ -31,7 +31,7 @@ export default function FirstPassword({ navigation, route }) {
 	const animRef2 = React.useRef(new Animated.Value(0)).current;
 
 	const handleSubmit = async () => {
-		const { email } = route.params;
+		const { email, verCode } = route.params;
 
 		if (password.length < 8) {
 			Alert.alert("Şifren en az 8 karakterli olmalı");
@@ -44,7 +44,7 @@ export default function FirstPassword({ navigation, route }) {
 
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 
-		const dataToBeSent = { password: encryptedPassword, mail: email }; //TODO: userID should be come from route.params.id
+		const dataToBeSent = { password: encryptedPassword, mail: email, verification: verCode }; //TODO: userID should be come from route.params.id
 
 		axios
 			.post(url + "/PasswordRegister", dataToBeSent)
