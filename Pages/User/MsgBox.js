@@ -22,25 +22,21 @@ import { Gradient, GradientText } from "../../visualComponents/colors";
 import { updateUserChat } from "../../src/graphql/mutations";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { LinearGradient } from "expo-linear-gradient";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { height, width } = Dimensions.get("window");
 
 const MsgBox = (props) => {
 	const [deleteChatModal, setDeleteChatModal] = React.useState(false);
 	const [imageUri, setImageUri] = React.useState();
-	const [myID, setMyID] = React.useState();
 
 	const fetchImageUri = async () => {
 		try {
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			setMyID(userData.UserId.toString());
-			const myToken = userData.sesToken;
 			await axios
 				.post(
 					url + "/getProfilePic",
-					{ UserId: props.data.id },
-					{ headers: { "access-token": myToken } }
+					{ UserId: Session.User.UserId, UserIdPic: props.data.id },
+					{ headers: { "access-token": Session.User.sesToken } }
 				)
 				.then((res) => {
 					//setPeopleList(res.data);

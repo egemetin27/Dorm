@@ -43,6 +43,7 @@ import ChatMsg from "./ChatMsg";
 import { decompose2d } from "react-native-redash";
 import { CustomModal } from "../../visualComponents/customComponents";
 import ChatProfile from "./ChatProfile";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 export default function Chat({ navigation, route }) {
 	const [chatMessages, setChatMessages] = useState([]);
@@ -131,7 +132,7 @@ export default function Chat({ navigation, route }) {
 			await axios
 				.post(
 					url + "/getProfilePic",
-					{ UserId: otherUser.id },
+					{ UserId: Session.User.UserId, UserIdPic: otherUser.id },
 					{ headers: { "access-token": myToken } }
 				)
 				.then((res) => {

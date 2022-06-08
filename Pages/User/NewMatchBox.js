@@ -13,6 +13,7 @@ import { colors } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import * as SecureStore from "expo-secure-store";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,15 +22,11 @@ const NewMatchBox = (props) => {
 
 	const fetchImageUri = async () => {
 		try {
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const userID = userData.UserId.toString();
-			const myToken = userData.sesToken;
 			await axios
 				.post(
 					url + "/getProfilePic",
-					{ UserId: props.data.id },
-					{ headers: { "access-token": myToken } }
+					{ UserId: Session.User.UserId, UserIdPic: props.data.id },
+					{ headers: { "access-token": Session.User.sesToken } }
 				)
 				.then((res) => {
 					//setPeopleList(res.data);
