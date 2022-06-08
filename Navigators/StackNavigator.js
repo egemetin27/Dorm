@@ -373,8 +373,8 @@ export default function StackNavigator() {
 						}
 						// If signed in
 
-						const token = await registerForPushNotificationAsync();
-						await fetchUser(res.data.Name, res.data.UserId, token);
+						// const token = await registerForPushNotificationAsync();
+						// await fetchUser(res.data.Name, res.data.UserId, token);
 
 						const photoList = res.data.Photo.map((item) => {
 							return {
@@ -462,21 +462,6 @@ export default function StackNavigator() {
 					setIntroShown(constants.introShown);
 					setTutorialShown(constants.tutorialShown);
 				});
-
-				// await AsyncStorage.getItem("introShown").then((res) => {
-				// 	if (res != "yes") {
-				// 		// if app is opened for the first time, set scroll not showed to teach user scrolling photos
-				// 		AsyncStorage.setItem("scrollNotShowed", "0");
-				// 		console.log("scroll Not Showed");
-				// 	}
-				// 	// set intro shown value to true or false according to the data in local storage
-				// 	setIntroShown(res == "yes" ? true : false);
-				// });
-
-				// await AsyncStorage.getItem("tutorialShown").then((res) => {
-				// 	// set tutorial shown value to true or false according to the data in local storage
-				// 	setTutorialShown(res == "yes" ? true : false);
-				// });
 
 				await AsyncStorage.getItem("isLoggedIn").then(async (res) => {
 					// set logged in value to true or false according to the data in local storage

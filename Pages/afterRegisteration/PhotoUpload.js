@@ -139,7 +139,7 @@ export default function PhotoUpload({ navigation, route }) {
 					{ headers: { "access-token": sesToken } }
 				)
 				.then(async (res) => {
-					// setPhotoList(newList);
+					setPhotoList(newList);
 
 					const storedValue = JSON.stringify({
 						Photo: newList,

@@ -24,6 +24,7 @@ import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { url } from "../../connection";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,7 +35,11 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 	return (
 		<View key={index} style={[styles.photo]}>
 			{__DEV__ ? (
-				<Image style={{ height: "100%", width: "100%" }} resizeMode="cover" />
+				<Image
+					source={{ uri: photo.PhotoLink }}
+					style={{ height: "100%", width: "100%" }}
+					resizeMode="cover"
+				/>
 			) : (
 				<FastImage
 					source={{ uri: photo.PhotoLink }}
@@ -177,9 +182,16 @@ export default function ProfilePhotos({ route, navigation }) {
 				PHOTO_LIST.map(async (item, index) => {
 					if (item?.photo ?? false) {
 						const returnVal = await axios
-							.get(url + "/SecurePhotoLink", { headers: { "access-token": sesToken } })
+							.post(
+								url + "/SecurePhotoLink",
+								{ userId: Session.User.UserId },
+								{
+									headers: { "access-token": sesToken },
+								}
+							)
 							.then(async (res) => {
 								const uploadUrl = res.data.url;
+								console.log(uploadUrl);
 								const returned = await fetch(uploadUrl, {
 									method: "PUT",
 									body: item.photo,
@@ -206,7 +218,7 @@ export default function ProfilePhotos({ route, navigation }) {
 								return returned;
 							})
 							.catch((error) => {
-								console.log({ error });
+								console.log("catched secure photo link:\n", error);
 							});
 						return returnVal;
 					}
@@ -217,13 +229,14 @@ export default function ProfilePhotos({ route, navigation }) {
 				.post(
 					url + "/addPhotoLink",
 					{
-						UserId: userID,
+						UserId: Session.User.UserId,
 						userPhoto: 1,
 						photos: newList,
 					},
-					{ headers: { "access-token": sesToken } }
+					{ headers: { "access-token": Session.User.sesToken } }
 				)
 				.then(async (res) => {
+					console.log(res.data);
 					// setPhotoList(newList);
 
 					const dataStr = await SecureStore.getItemAsync("userData");
@@ -232,6 +245,7 @@ export default function ProfilePhotos({ route, navigation }) {
 						...userData,
 						Photo: newList,
 					});
+					Session.User.Photo = newList;
 					await SecureStore.setItemAsync("userData", storedValue);
 					setIsLoading(false);
 					navigation.replace("MainScreen", {

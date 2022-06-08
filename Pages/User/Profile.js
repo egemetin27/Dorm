@@ -205,11 +205,12 @@ export default function Profile({ route, navigation }) {
 		axios
 			.post(
 				url + "/matchMode",
-				{ userId: Session.User.userID, matchMode: index },
+				{ userId: Session.User.UserId, matchMode: index },
 				{ headers: { "access-token": Session.User.sesToken } }
 			) // There is a typo (not Change but Chage) TODO: make userID variable
 			.then(async (res) => {
 				console.log(res.data);
+				console.log("AA");
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, matchMode: index };
@@ -358,7 +359,7 @@ export default function Profile({ route, navigation }) {
 					keyboardShouldPersistTaps="handled"
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
-						{PHOTO_LIST && PHOTO_LIST.length != 0 ? (
+						{Session.User.Photo && Session.User.Photo.length != 0 ? (
 							// TODO: styling should be implemented more resiliently
 							<Carousel
 								loop={false}
@@ -369,7 +370,11 @@ export default function Profile({ route, navigation }) {
 								}}
 								style={{ overflow: "visible", transform: [{ scale: 1.1 }] }}
 								width={width * 0.7}
-								data={PHOTO_LIST.length < 4 ? [...PHOTO_LIST, "Add Photo"] : PHOTO_LIST}
+								data={
+									Session.User.Photo.length < 4
+										? [...Session.User.Photo, "Add Photo"]
+										: Session.User.Photo
+								}
 								renderItem={({ item }) => (
 									<View style={[styles.photo]}>
 										{item != "Add Photo" ? (
@@ -378,7 +383,7 @@ export default function Profile({ route, navigation }) {
 													if (isEditable) {
 														setEditibility(false);
 														navigation.navigate("ProfilePhotos", {
-															photoList: PHOTO_LIST,
+															photoList: Session.User.Photo,
 															userID: Session.User.userID,
 															sesToken: Session.User.sesToken,
 														});
@@ -387,6 +392,7 @@ export default function Profile({ route, navigation }) {
 											>
 												{__DEV__ ? (
 													<Image
+														source={{ uri: item.PhotoLink }}
 														style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
 														resizeMode="cover"
 													/>
