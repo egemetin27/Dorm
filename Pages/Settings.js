@@ -9,6 +9,7 @@ import {
 	Dimensions,
 	Image,
 	BackHandler,
+	Linking,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
@@ -464,6 +465,10 @@ export default function Settings({ navigation, route }) {
 		setPushNotifications(value);
 	};
 
+	const handleNonWorkingButton = () => {
+		Alert.alert("Üzgünüz", "Bu buton henüz implemente edilmedi :(", [{ text: "Tamamdır..." }]);
+	};
+
 	return (
 		<View style={[commonStyles.Container, { marginTop: insets.top, marginBottom: insets.bottom }]}>
 			<StatusBar style="dark" backgroundColor={colors.white} />
@@ -503,12 +508,12 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity> */}
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Filtreleme</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Konum</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -599,12 +604,17 @@ export default function Settings({ navigation, route }) {
 
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} />
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Yardım ve Destek</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={{ paddingBottom: 16 }}>
+				<TouchableOpacity
+					onPress={() => {
+						Linking.openURL("mailto:support@meetdorm.com");
+					}}
+					style={{ paddingBottom: 16 }}
+				>
 					<View style={[styles.buttonContainer, {}]}>
 						<Text style={styles.buttonText}>Bize Ulaş</Text>
 						<Feather name="chevron-down" size={20} color="#4A4A4A" />
@@ -616,12 +626,7 @@ export default function Settings({ navigation, route }) {
 					</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}>
-					<Text style={styles.buttonText}>Topluluk Kuralları</Text>
-					<Feather name="chevron-right" size={20} color="#4A4A4A" />
-				</TouchableOpacity>
-
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Güvenlik İpuçları</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -634,7 +639,7 @@ export default function Settings({ navigation, route }) {
 					</Text>
 				</View>
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Gizlilik Tercihleri</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -669,7 +674,7 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.buttonContainer}>
+				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Lisanslar</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
