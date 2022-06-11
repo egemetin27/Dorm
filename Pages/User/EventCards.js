@@ -159,6 +159,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 						myID: myID,
 						sesToken: sesToken,
 						fromEvent: true,
+						eventID: EventId,
 					});
 				} else {
 					Alert.alert("Etkinliği Beğenen Kimse Yok :/");

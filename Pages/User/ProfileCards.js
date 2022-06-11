@@ -50,6 +50,8 @@ export default function ProfileCards({ navigation, route }) {
 	// const [endOfLikesTimer, setEndOfLikesTimer] = React.useState({ hour: 0, minute: 0 });
 	// const [isScrollShowed, setIsScrollShowed] = React.useState(false);
 
+	const eventID = route.params.eventID ?? 0;
+
 	// const [myProfilePicture, setMyProfilePicture] = React.useState();
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
@@ -275,6 +277,7 @@ export default function ProfileCards({ navigation, route }) {
 								key={index}
 								// index={9 - index}
 								// index={peopleList.length - index - 1}
+								eventID={eventID}
 								index={index}
 								card={item}
 								backFace={backFace}

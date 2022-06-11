@@ -50,9 +50,6 @@ import { getTimeDiff } from "../../nonVisualComponents/generalFunctions";
 import FastImage from "react-native-fast-image";
 import { BlurView } from "expo-blur";
 
-import { ConsoleLogger } from "@aws-amplify/core";
-import { NavigationContainer } from "@react-navigation/native";
-
 export default Card = React.memo(
 	({
 		card,
@@ -71,6 +68,7 @@ export default Card = React.memo(
 		showMatchScreen,
 		length,
 		refreshList,
+		eventID,
 	}) => {
 		const progress = useSharedValue(0);
 		const x = useSharedValue(0);
@@ -209,6 +207,7 @@ export default Card = React.memo(
 						userSwiped: myID,
 						otherUser: id,
 						matchMode: matchMode,
+						eventId: eventID,
 					},
 					{ headers: { "access-token": sesToken } }
 				)
