@@ -92,7 +92,11 @@ export default function PhotoUpload({ navigation, route }) {
 				photoList.map(async (item, index) => {
 					if (item?.photo ?? false) {
 						const returnVal = await axios
-							.get(url + "/SecurePhotoLink", { headers: { "access-token": sesToken } })
+							.post(
+								url + "/SecurePhotoLink",
+								{ userId: UserId },
+								{ headers: { "access-token": sesToken } }
+							)
 							.then(async (res) => {
 								const uploadUrl = res.data.url;
 								const returned = await fetch(uploadUrl, {
