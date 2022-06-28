@@ -16,6 +16,7 @@ import axios from "axios";
 
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -26,17 +27,15 @@ export default function ForgotPassword({ navigation }) {
 	const animRef = React.useRef(new Animated.Value(0)).current;
 
 	const HandleButton = () => {
+		const verData = crypto.encrypt({ mail: email, isNewUser: false });
 		axios
-			.post(url + "/SendVerification", { Mail: email, isNewUser: false })
+			.post(url + "/SendVerification", verData)
 			.then((res) => {
-				console.log(res);
 				navigation.replace("Verification2", { email: email });
 			})
 			.catch((error) => {
 				if (error.response) {
 					console.log(error.response);
-				} else {
-					console.log({ error });
 				}
 			});
 	};

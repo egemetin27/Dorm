@@ -15,6 +15,7 @@ import MatchMode from "../afterRegisteration/MatchMode";
 import Expectation from "../afterRegisteration/Expectation";
 import SexOrientation from "../afterRegisteration/SexOrientation";
 import Interested from "../afterRegisteration/Interested";
+import crypto from "../../functions/crypto";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -37,21 +38,23 @@ export default function AfterRegister({ route, navigation }) {
 		// TODO: send the choices to database
 
 		const choices = {
-			UserId: profile.UserId,
+			userId: profile.userId,
 			gender: gender - 1,
 			matchMode: matchMode - 1,
 			expectation: expectation - 1,
-			InterestedSex: interested - 1,
-			SexualOrientation: sexualOrientation - 1,
+			interestedSex: interested - 1,
+			sexualOrientation: sexualOrientation - 1,
 			SOVisibility: orientationSwitch.value ? "1" : "0",
-			GenderVisibility: genderSwitch.value ? "1" : "0",
+			genderVisibility: genderSwitch.value ? "1" : "0",
 		};
 
 		// console.log(choices);
+		const encryptedData = crypto.encrypt(choices);
 		await axios
-			.post(url + "/AfterRegister", choices, { headers: { "access-token": profile.sesToken } })
+			.post(url + "/AfterRegister", encryptedData, {
+				headers: { "access-token": profile.sesToken },
+			})
 			.then((res) => {
-				console.log(res.data);
 				navigation.replace("Hobbies", { ...profile, isNewUser: true });
 			})
 			.catch((error) => {

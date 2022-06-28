@@ -22,10 +22,12 @@ import { CustomModal } from "../../visualComponents/customComponents";
 import axios from "axios";
 import { url } from "../../connection";
 
+import crypto from "../../functions/crypto";
+
 const { width, height } = Dimensions.get("screen");
 
 export default function PhotoUpload({ navigation, route }) {
-	const { UserId, sesToken } = route.params;
+	const { userId, sesToken } = route.params;
 	const [initial, setInitial] = React.useState(true);
 	const [isLoading, setIsLoading] = React.useState(false);
 
@@ -91,14 +93,13 @@ export default function PhotoUpload({ navigation, route }) {
 			const newList = await Promise.all(
 				photoList.map(async (item, index) => {
 					if (item?.photo ?? false) {
+						const dataToBeSent = crypto.encrypt({ userId: userId });
 						const returnVal = await axios
-							.post(
-								url + "/SecurePhotoLink",
-								{ userId: UserId },
-								{ headers: { "access-token": sesToken } }
-							)
+							.post(url + "/SecurePhotoLink", dataToBeSent, {
+								headers: { "access-token": sesToken },
+							})
 							.then(async (res) => {
-								const uploadUrl = res.data.url;
+								const uploadUrl = crypto.decrypt(res.data).url;
 								const returned = await fetch(uploadUrl, {
 									method: "PUT",
 									body: item.photo,
@@ -132,18 +133,14 @@ export default function PhotoUpload({ navigation, route }) {
 					return item;
 				})
 			);
+			const photoData = crypto.encrypt({
+				userId: userId,
+				photos: newList,
+			});
 			await axios
-				.post(
-					url + "/addPhotoLink",
-					{
-						UserId: UserId,
-						userPhoto: 1,
-						photos: newList,
-					},
-					{ headers: { "access-token": sesToken } }
-				)
+				.post(url + "/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
-					setPhotoList(newList);
+					// setPhotoList(newList);
 
 					const storedValue = JSON.stringify({
 						Photo: newList,

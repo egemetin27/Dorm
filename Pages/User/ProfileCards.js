@@ -36,6 +36,9 @@ import { AuthContext } from "../../nonVisualComponents/Context";
 import Card from "./Card";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
+import abortController from "../../components/custom_hooks/abortController";
+import crypto from "../../functions/crypto";
+
 const { width, height, fontScale } = Dimensions.get("window");
 
 export default function ProfileCards({ navigation, route }) {
@@ -81,17 +84,16 @@ export default function ProfileCards({ navigation, route }) {
 		} else {
 			setReportPage(false);
 			try {
+				const encryptedData = crypto.encrypt({
+					userId: route.params.myID,
+					sikayetEdilen: reportUserID,
+					sikayetKodu: chosenReport,
+					aciklama: "",
+				});
 				await axios
-					.post(
-						url + "/report",
-						{
-							UserId: route.params.myID,
-							sikayetEdilen: reportUserID,
-							sikayetKodu: chosenReport,
-							aciklama: "",
-						},
-						{ headers: { "access-token": route.params.sesToken } }
-					)
+					.post(url + "/report", encryptedData, {
+						headers: { "access-token": Session.User.sesToken },
+					})
 					.then((res) => {
 						if (res.data == "Unauthorized Session") {
 							Alert.alert("Oturumunuzun süresi doldu!");
@@ -171,7 +173,7 @@ export default function ProfileCards({ navigation, route }) {
 	// 		await axios
 	// 			.post(
 	// 				url + "/getProfilePic",
-	// 				{ UserId: route.params.myID },
+	// 				{ userId: route.params.myID },
 	// 				{ headers: { "access-token": route.params.sesToken } }
 	// 			)
 	// 			.then((res) => {
@@ -277,7 +279,7 @@ export default function ProfileCards({ navigation, route }) {
 								key={index}
 								// index={9 - index}
 								// index={peopleList.length - index - 1}
-								eventID={eventID}
+								eventId={route.params?.eventId ?? 0}
 								index={index}
 								card={item}
 								backFace={backFace}

@@ -293,7 +293,7 @@ export default function ProfilePhotos({ route, navigation }) {
 		// 		.post(
 		// 			url + "/addPhotoLink",
 		// 			{
-		// 				UserId: userID,
+		// 				userId: userId,
 		// 				userPhoto: 1,
 		// 				photos: newList,
 		// 			},

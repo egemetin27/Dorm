@@ -23,6 +23,9 @@ import { CustomModal, Switch, CustomRadio } from "../visualComponents/customComp
 import { url } from "../connection";
 
 import { AuthContext } from "../nonVisualComponents/Context";
+import { Session } from "../nonVisualComponents/SessionVariables";
+
+import crypto from "../functions/crypto";
 
 const { width, height } = Dimensions.get("window");
 
@@ -111,7 +114,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 	);
 };
 
-const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => {
+const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => {
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -160,17 +163,15 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userID, sesToken }) => 
 
 				<TouchableOpacity
 					onPress={async () => {
+						const myJson = crypto.encrypt({ userId: userId });
+
 						await axios
-							.post(
-								url + "/FreezeAccount",
-								{ UserId: userID },
-								{ headers: { "access-token": sesToken } }
-							)
+							.post(url + "/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
 							.then(() => {
 								signOut();
 							})
 							.catch((err) => {
-								console.log(err);
+								console.log("error on freeze account");
 							});
 					}}
 					style={{
@@ -232,7 +233,7 @@ const DeleteAccountModal = ({
 	showFreezeAccountModal,
 	signOut,
 	sesToken,
-	userID,
+	userId,
 }) => {
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
@@ -311,12 +312,11 @@ const DeleteAccountModal = ({
 
 				<TouchableOpacity
 					onPress={() => {
+						const encryptedData = crypto.encrypt({ userId: userId });
 						axios
-							.post(
-								url + "/deleteAccount",
-								{ UserId: userID },
-								{ headers: { "access-token": sesToken } }
-							)
+							.post(url + "/deleteAccount", encryptedData, {
+								headers: { "access-token": sesToken },
+							})
 							.then((res) => {
 								console.log(res.data);
 								signOut();
@@ -351,7 +351,7 @@ export default function Settings({ navigation, route }) {
 		invisibility: invis,
 		campusGhost: ghost,
 		schoolLover: onlyCampus,
-		userID,
+		userId,
 		sesToken,
 	} = route.params || { invisibility: true, campusGhost: true, schoolLover: true };
 
@@ -391,18 +391,18 @@ export default function Settings({ navigation, route }) {
 	const handleInvisibility = (value) => {
 		setInvisibility(value);
 
+		const invisSent = crypto.encrypt({ invisible: value ? "1" : "0", userId: userId });
+
 		axios
-			.post(
-				url + "/ChangeVisibility",
-				{ invisible: value ? "1" : "0", UserId: userID },
-				{ headers: { "access-token": sesToken } }
-			) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(url + "/ChangeVisibility", invisSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, Invisible: value ? "1" : "0" };
 				userStr = JSON.stringify(newUser);
 				SecureStore.setItemAsync("userData", userStr);
+
+				Session.User.Invisible = value ? "1" : "0";
 			})
 			.catch((error) => {
 				console.log("Visibility Error: ", error);
@@ -414,19 +414,18 @@ export default function Settings({ navigation, route }) {
 		if (schoolLover) {
 			handleSchoolLover(false);
 		}
+		const blockCampusSent = crypto.encrypt({ BlockCampus: value ? "1" : "0", userId: userId });
 
 		axios
-			.post(
-				url + "/BlockCampus",
-				{ BlockCampus: value ? "1" : "0", UserId: userID },
-				{ headers: { "access-token": sesToken } }
-			) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(url + "/BlockCampus", blockCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, BlockCampus: value ? "1" : "0" };
 				userStr = JSON.stringify(newUser);
 				SecureStore.setItemAsync("userData", userStr);
+
+				Session.User.BlockCampus = value ? "1" : "0";
 			})
 			.catch((error) => {
 				console.log("Ghost Error: ", error);
@@ -439,18 +438,18 @@ export default function Settings({ navigation, route }) {
 			handleCampusGhost(false);
 		}
 
+		const onlyCampusSent = crypto.encrypt({ OnlyCampus: value ? "1" : "0", userId: userId });
+
 		axios
-			.post(
-				url + "/OnlyCampus",
-				{ OnlyCampus: value ? "1" : "0", UserId: userID },
-				{ headers: { "access-token": sesToken } }
-			) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(url + "/OnlyCampus", onlyCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, OnlyCampus: value ? "1" : "0" };
 				userStr = JSON.stringify(newUser);
 				SecureStore.setItemAsync("userData", userStr);
+
+				Session.User.OnlyCampus = value ? "1" : "0";
 			})
 			.catch((error) => {
 				console.log("Only Campus Error: ", error);
@@ -463,10 +462,6 @@ export default function Settings({ navigation, route }) {
 
 	const handlePushNotifications = (value) => {
 		setPushNotifications(value);
-	};
-
-	const handleNonWorkingButton = () => {
-		Alert.alert("Üzgünüz", "Bu buton henüz implemente edilmedi :(", [{ text: "Tamamdır..." }]);
 	};
 
 	return (
@@ -508,12 +503,12 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity> */}
 
-				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Filtreleme</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Konum</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -626,7 +621,12 @@ export default function Settings({ navigation, route }) {
 					</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}>
+					<Text style={styles.buttonText}>Topluluk Kuralları</Text>
+					<Feather name="chevron-right" size={20} color="#4A4A4A" />
+				</TouchableOpacity>
+
+				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Güvenlik İpuçları</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -724,7 +724,7 @@ export default function Settings({ navigation, route }) {
 				visible={freezeAccountModal}
 				dismiss={() => setFreezeAccountModal(false)}
 				sesToken={sesToken}
-				userID={userID}
+				userId={userId}
 			/>
 			<DeleteAccountModal
 				visible={deleteAccountModal}
@@ -732,7 +732,7 @@ export default function Settings({ navigation, route }) {
 				showFreezeAccountModal={() => setFreezeAccountModal(true)}
 				signOut={signOut}
 				sesToken={sesToken}
-				userID={userID}
+				userId={userId}
 			/>
 
 			{/* <CustomModal

@@ -1,14 +1,5 @@
 import * as React from "react";
-import {
-	View,
-	Text,
-	Image,
-	Dimensions,
-	Alert,
-	Pressable,
-	AppState,
-	ActivityIndicator,
-} from "react-native";
+import { View, Text, Image, Dimensions, Alert, Pressable, AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer, TabActions } from "@react-navigation/native";
@@ -73,7 +64,9 @@ import { Session } from "../nonVisualComponents/SessionVariables";
 import LikeEndedModal from "../Pages/modals/LikeEndedModal";
 import MatchModal from "../Pages/modals/MatchModal";
 import ListEndedModal from "../Pages/modals/ListEndedModal";
-import styles from "../visualComponents/styles";
+
+import useKeyGenerator from "../components/custom_hooks/useKeyGenerator";
+import crypto from "../functions/crypto";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -314,20 +307,20 @@ async function registerForPushNotificationAsync() {
 	return token;
 }
 
-async function fetchUser(userName, userID, token) {
+async function fetchUser(userName, userId, token) {
 	const newUser = {
-		id: userID,
+		id: userId,
 		name: userName,
 		pushToken: null,
 	};
 
-	const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userID }));
+	const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userId }));
 	if (userData.data.getMsgUser) {
 		console.log("User is already registered in database");
 
 		await API.graphql(
 			graphqlOperation(updateMsgUser, {
-				input: { id: userID, name: userName, pushToken: token },
+				input: { id: userId, name: userName, pushToken: token },
 			})
 		);
 
@@ -350,49 +343,52 @@ export default function StackNavigator() {
 	const [newUser, setNewUser] = React.useState(false);
 	// const navigation = React.useContext(NavigationContext);
 
+	useKeyGenerator();
+
 	const authContext = React.useMemo(() => ({
 		signIn: async ({ email, password, isNewUser, navigation = null, notLoading = () => {} }) => {
 			if (isNewUser) setNewUser(true);
 			else setNewUser(false);
 
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
-			const dataToBeSent = { Mail: email, password: encryptedPassword };
-
+			const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
+			console.log({ dataToBeSent });
 			await axios
 				.post(url + "/Login", dataToBeSent)
 				.then(async (res) => {
-					if (res.data.authentication == "true") {
-						if (navigation != null && res.data.onBoardingComplete == 0) {
+					const data = crypto.decrypt(res.data);
+					if (data.authentication == "true") {
+						if (navigation != null && data.onBoardingComplete == 0) {
 							navigation.replace("PhotoUpload", {
 								mail: email,
 								password: password,
-								UserId: res.data.UserId,
-								sesToken: res.data.sesToken,
+								userId: data.userId,
+								sesToken: data.sesToken,
 							});
 							return;
 						}
 						// If signed in
 
-						// const token = await registerForPushNotificationAsync();
-						// await fetchUser(res.data.Name, res.data.UserId, token);
+						const token = await registerForPushNotificationAsync();
+						await fetchUser(data.Name, data.userId, token);
 
-						const photoList = res.data.Photo.map((item) => {
+						const photoList = data.Photo.map((item) => {
 							return {
 								PhotoLink: item.PhotoLink,
 								Photo_Order: item.Photo_Order,
 							};
 						});
 						const userData = JSON.stringify({
-							...res.data,
+							...data,
 							password: password,
 							email: email,
 							Photo: photoList,
 						});
 
 						await SecureStore.setItemAsync("userData", userData);
-						await SecureStore.setItemAsync("userID", res.data.UserId.toString());
+						await SecureStore.setItemAsync("userId", data.userId.toString());
 						Session.User = {
-							...res.data,
+							...data,
 							email: email,
 							Photo: photoList,
 						};
@@ -400,8 +396,8 @@ export default function StackNavigator() {
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
 					} else {
-						console.log("else:", res.data);
-						alert(res.data);
+						console.log("else:", data);
+						alert(data);
 						notLoading();
 					}
 				})
@@ -426,7 +422,7 @@ export default function StackNavigator() {
 		},
 	}));
 
-	React.useEffect(() => {
+	React.useEffect(async () => {
 		async function prepare() {
 			try {
 				// Keep the splash screen visible while we fetch resources
@@ -434,7 +430,6 @@ export default function StackNavigator() {
 
 				await loadAsync({
 					Now: require("../assets/Fonts/now.otf"),
-
 					NowBold: require("../assets/Fonts/now_bold.otf"),
 					Poppins: require("../assets/Fonts/Poppins.ttf"),
 					PoppinsItalic: require("../assets/Fonts/Poppins_Italic.ttf"),
@@ -481,24 +476,17 @@ export default function StackNavigator() {
 				setAppIsReady(true); // app is ready
 			}
 		}
-		prepare();
+		await prepare();
 	}, []);
 
 	const onLayoutRootView = React.useCallback(async () => {
 		if (appIsReady) {
-			await SplashScreen.hideAsync(); // hide splash screen if the app is ready
+			// await SplashScreen.hideAsync(); // hide splash screen if the app is ready
 		}
 	}, [appIsReady]);
 
 	if (!appIsReady) {
-		return (
-			<View
-				style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
-			>
-				<StatusBar stlye={"light"} />
-				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
-			</View>
-		);
+		return <StatusBar stlye={"light"} />;
 	} else {
 		return (
 			<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>

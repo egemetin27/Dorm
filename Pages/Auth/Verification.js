@@ -17,11 +17,12 @@ import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function Verification({ navigation, route }) {
-	const { dataToBeSent } = route?.params ?? { dataToBeSent: { mail: "Testing" } }; //TODO: UserId also should be extracted from params
+	const { dataToBeSent } = route?.params ?? { dataToBeSent: { mail: "Testing" } }; //TODO: userId also should be extracted from params
 	const verification = React.useRef([-1, -1, -1, -1]);
 
 	const [wrongInput, setWrongInput] = React.useState(false);
@@ -40,25 +41,28 @@ export default function Verification({ navigation, route }) {
 			dataToBeSent.password
 		);
 
-		const ver = { Mail: dataToBeSent.mail, VerCode: strCode };
+		const ver = { mail: dataToBeSent.mail, verCode: strCode };
+		const encryptedVerification = crypto.encrypt(ver);
 
 		axios
-			.post(url + "/CheckVerification", ver)
+			.post(url + "/CheckVerification", encryptedVerification)
 			.then((res) => {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
+				const encryptedData = crypto.encrypt({
+					...dataToBeSent,
+					password: encryptedPassword,
+					verification: strCode,
+				});
 
 				if (res.data?.Verification > 0) {
 					axios
-						.post(url + "/register", {
-							...dataToBeSent,
-							password: encryptedPassword,
-							verification: strCode,
-						})
-						.then(async (res) => {
+						.post(url + "/register", encryptedData)
+						.then((res) => {
 							console.log(res.data);
+							const data = crypto.decrypt(res.data);
 							navigation.replace("PhotoUpload", {
 								...dataToBeSent,
-								...res.data,
+								...data,
 							});
 						})
 						.catch((error) => {
@@ -78,16 +82,24 @@ export default function Verification({ navigation, route }) {
 				}
 			})
 			.catch((error) => {
-				console.log({ error });
+				console.log("verification error: ", error);
+				setWrongInput(true);
+				input0.current.clear();
+				input1.current.clear();
+				input2.current.clear();
+				input3.current.clear();
+
+				input0.current.focus();
+				verification.current = [-1, -1, -1, -1];
+				setIsAllEntered(false);
 			});
 	};
 
 	const resendCode = () => {
-		axios
-			.post(url + "/SendVerification", { Mail: dataToBeSent.mail, isNewUser: true })
-			.catch((error) => {
-				console.log({ error });
-			});
+		const verData = crypto.encrypt({ mail: profile.mail, isNewUser: true });
+		axios.post(url + "/SendVerification", verData).catch((error) => {
+			console.log({ error });
+		});
 	};
 
 	const checkIfDone = () => {

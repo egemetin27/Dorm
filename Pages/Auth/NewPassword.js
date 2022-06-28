@@ -18,6 +18,7 @@ import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -31,7 +32,7 @@ export default function FirstPassword({ navigation, route }) {
 	const animRef2 = React.useRef(new Animated.Value(0)).current;
 
 	const handleSubmit = async () => {
-		const { email, verCode } = route.params;
+		const { email, verification } = route.params;
 
 		if (password.length < 8) {
 			Alert.alert("Şifren en az 8 karakterli olmalı");
@@ -44,10 +45,10 @@ export default function FirstPassword({ navigation, route }) {
 
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 
-		const dataToBeSent = { password: encryptedPassword, mail: email, verification: verCode }; //TODO: userID should be come from route.params.id
-
+		const dataToBeSent = { password: encryptedPassword, mail: email, verification: verification }; //TODO: userId should be come from route.params.id
+		const encryptedData = crypto.encrypt(dataToBeSent);
 		axios
-			.post(url + "/PasswordRegister", dataToBeSent)
+			.post(url + "/PasswordRegister", encryptedData)
 			.then((res) => {
 				console.log(res.data);
 				console.log("Password Updated Successfully");

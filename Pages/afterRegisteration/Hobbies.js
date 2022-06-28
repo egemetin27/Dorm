@@ -18,6 +18,7 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { url } from "../../connection";
 import { AuthContext } from "../../nonVisualComponents/Context";
+import crypto from "../../functions/crypto";
 
 const { height, width } = Dimensions.get("window");
 
@@ -27,7 +28,7 @@ export default function Hobbies({ navigation, route }) {
 		route.params?.hobbyList?.map((item) => item.InterestName) || []
 	);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const { UserId, isNewUser } = route.params;
+	const { userId, isNewUser } = route.params;
 
 	const { signIn } = React.useContext(AuthContext);
 
@@ -37,16 +38,17 @@ export default function Hobbies({ navigation, route }) {
 			const dataStr = await SecureStore.getItemAsync("userData");
 			const data = JSON.parse(dataStr);
 
+			const encryptedData = crypto.encrypt({
+				userId: userId,
+				hobbies: hobbies,
+			});
+
 			axios
-				.post(
-					url + "/interests",
-					{
-						UserId: UserId,
-						hobbies: hobbies,
-					},
-					{ headers: { "access-token": route.params?.sesToken ?? data.sesToken } }
-				)
+				.post(url + "/interests", encryptedData, {
+					headers: { "access-token": route.params?.sesToken ?? data.sesToken },
+				})
 				.then(async (res) => {
+					console.log(res.data);
 					const newHobbyList = hobbies.map((item) => {
 						return { InterestName: item };
 					});

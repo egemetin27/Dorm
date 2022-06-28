@@ -147,6 +147,7 @@ export default function MatchModal({ navigation, route }) {
 				>
 					“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 				</Text>
+
 				<ReactNative.TouchableOpacity
 					onPress={() => {
 						navigation.replace("MainScreen", { screen: "Mesajlar" });

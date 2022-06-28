@@ -27,13 +27,14 @@ import axios from "axios";
 import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 
-const { height, width } = Dimensions.get("window");
-
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../nonVisualComponents/Context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
+import crypto from "../../functions/crypto";
+
+const { height, width } = Dimensions.get("window");
 const CategoryList = [
 	{
 		key: "Tümü",
@@ -41,16 +42,12 @@ const CategoryList = [
 		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
 	},
 	{
-		key: "Kaçmaz",
-		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
-	},
-	{
 		key: "Favorilerin",
 		url: require("../../assets/HomeScreenCategoryIcons/Favs.png"),
 	},
 	{
-		key: "Konser",
-		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
+		key: "Kaçmaz",
+		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
 	},
 	{ key: "Gece", url: require("../../assets/HomeScreenCategoryIcons/Gece.png") },
 	{
@@ -60,6 +57,10 @@ const CategoryList = [
 	{
 		key: "Kültür",
 		url: require("../../assets/HomeScreenCategoryIcons/Culture.png"),
+	},
+	{
+		key: "Konser",
+		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
 	},
 	{
 		key: "Filmler",
@@ -193,7 +194,7 @@ const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
 
 const Category = ({
 	index,
-	userID,
+	userId,
 	selectedCategory,
 	setSelectedCategory,
 	setShownEvents,
@@ -206,32 +207,32 @@ const Category = ({
 			return;
 		}
 		if (idx == 1) {
-			const filtered = eventList.filter((item) => item.Kacmaz == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 2) {
 			const filtered = eventList.filter((item) => item.isLiked == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 3) {
-			const filtered = eventList.filter((item) => item.Konser == 1);
+		if (idx == 2) {
+			const filtered = eventList.filter((item) => item.Kacmaz == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 4) {
+		if (idx == 3) {
 			const filtered = eventList.filter((item) => item.Gece == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 5) {
+		if (idx == 4) {
 			const filtered = eventList.filter((item) => item.Kampus == 1);
 			setShownEvents(filtered);
 			return;
 		}
-		if (idx == 6) {
+		if (idx == 5) {
 			const filtered = eventList.filter((item) => item.Culture == 1);
+			setShownEvents(filtered);
+			return;
+		}
+		if (idx == 6) {
+			const filtered = eventList.filter((item) => item.Konser == 1);
 			setShownEvents(filtered);
 			return;
 		}
@@ -446,12 +447,10 @@ const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
 
 export default function MainPage({ navigation }) {
 	const [isAppReady, setIsAppReady] = React.useState(false);
-	const [selectedCategory, setSelectedCategory] = React.useState(1);
+	const [selectedCategory, setSelectedCategory] = React.useState(0);
 	const [eventList, setEventList] = React.useState([]);
 	const [shownEvents, setShownEvents] = React.useState([]);
 	const [peopleList, setPeopleList] = React.useState([]);
-	const [myID, setMyID] = React.useState(null);
-	const [sesToken, setSesToken] = React.useState("");
 	const [myPP, setMyPP] = React.useState("");
 	const [matchMode, setMatchMode] = React.useState(0);
 	const [listEmptyMessage, setLisetEmptyMessage] = React.useState(
@@ -488,10 +487,7 @@ export default function MainPage({ navigation }) {
 	const applyFilter = async () => {
 		const userDataStr = await SecureStore.getItemAsync("userData");
 		const userData = JSON.parse(userDataStr);
-		const userID = userData.UserId.toString();
-		const myToken = userData.sesToken;
-		setMyID(userID);
-		setSesToken(myToken);
+		const userId = userData.userId.toString();
 
 		var applyCinsiyet = filterCinsiyet;
 		var applyEgsersiz = filterEgsersiz;
@@ -548,36 +544,21 @@ export default function MainPage({ navigation }) {
 		console.log(applyYemek);
 		console.log(numberOfFilters);
 
-		/*
-		const [minAge, setMinAge] = React.useState(18);
-		const [maxAge, setMaxAge] = React.useState(99);
-		const [filterCinsiyet, setFilterCinsiyet] = React.useState([1,1,1]);
-		const [filterEgsersiz, setFilterEgsersiz] = React.useState([1,1,1]);
-		const [filterUniversite, setFilterUniversite] = React.useState();
-		const [filterAlkol, setFilterAlkol] = React.useState([1,1,1]);
-		const [filterSigara, setFilterSigara] = React.useState([1,1,1]);
-		const [filterBurc, setFilterBurc] = React.useState([1,1,1,1,1,1,1,1,1,1,1,1]);
-		const [filterDin, setFilterDin] = React.useState([1,1,1]);
-		const [filterYemek, setFilterYemek] = React.useState([1,1,1,1,1]);
-		const [filterHobi, setFilterHobi] = React.useState();
-		*/
-
 		async function prepare() {
+			const swipeListData = crypto.encrypt({
+				userId: userId,
+				minyas: minAge,
+				maxyas: maxAge,
+				cinsiyet: applyCinsiyet,
+				egsersiz: applyEgsersiz,
+				alkol: applyAlkol,
+				sigara: applySigara,
+				yemek: applyYemek,
+			});
 			await axios
-				.post(
-					url + "/Swipelist",
-					{
-						UserId: userID,
-						Minyas: minAge,
-						Maxyas: maxAge,
-						Cinsiyet: applyCinsiyet,
-						Egsersiz: applyEgsersiz,
-						Alkol: applyAlkol,
-						Sigara: applySigara,
-						Yemek: applyYemek,
-					},
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/Swipelist", swipeListData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
 					if (res.data == "Invisible") {
 						setPeopleList([]);
@@ -600,61 +581,61 @@ export default function MainPage({ navigation }) {
 
 	React.useEffect(async () => {
 		let abortController = new AbortController();
-		const userID = Session.User.UserId.toString();
-		const myToken = Session.User.sesToken;
-		const myMode = Session.User.matchMode;
-		const myPhoto = Session.User.Photo[0].PhotoLink ?? "";
-
-		setMyID(userID);
-		setSesToken(myToken);
+		const userDataStr = await SecureStore.getItemAsync("userData");
+		const userData = JSON.parse(userDataStr);
+		const userId = userData.userId.toString();
+		const myMode = userData.matchMode;
+		const myPhoto = userData.Photo[0].PhotoLink ?? "";
 		setMatchMode(myMode);
 		setMyPP(myPhoto);
 
 		async function prepare() {
+			const swipeListData = crypto.encrypt({
+				userId: userId,
+				minYas: 18,
+				maxYas: 99,
+				cinsiyet: [1, 1, 1],
+				egsersiz: [1, 1, 1],
+				alkol: [1, 1, 1],
+				sigara: [1, 1, 1],
+				yemek: [1, 1, 1, 1, 1],
+			});
+
 			await axios
-				.post(
-					url + "/Swipelist",
-					{
-						UserId: userID,
-						Minyas: 18,
-						Maxyas: 99,
-						Cinsiyet: [1, 1, 1],
-						Egsersiz: [1, 1, 1],
-						Alkol: [1, 1, 1],
-						Sigara: [1, 1, 1],
-						Yemek: [1, 1, 1, 1, 1],
-					},
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/Swipelist", swipeListData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
-					if (res.data == "Unauthorized Session") {
+					const data = crypto.decrypt(res.data);
+
+					setPeopleList(data);
+				})
+				.catch((err) => {
+					if (err.response.status == 410) {
 						Alert.alert("Oturumunuzun süresi doldu!");
 						signOut();
 					}
-					if (res.data == "Invisible") {
+					if (err.response.status == 411) {
 						setPeopleList([]);
 						setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
 						return;
 					}
-					setPeopleList(res.data);
-				})
-				.catch((err) => {
-					// if (err.response.status == 410) {
-					// 	// Alert.alert("HATA");
-					// }
+					console.log("error on swipelist");
 					console.log(err);
 				});
+
+			const eventListData = crypto.encrypt({ userId: userId, campus: Session.User.School });
 			await axios
-				.post(
-					url + "/EventList",
-					{ UserId: userID, Campus: Session.User.School },
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/EventList", eventListData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
-					setEventList(res.data);
-					setShownEvents(res.data.filter((item) => item.Kacmaz == 1));
+					const data = crypto.decrypt(res.data);
+					setEventList(data);
+					setShownEvents(data);
 				})
 				.catch((err) => {
+					console.log("error on event list");
 					console.log(err);
 				});
 		}
@@ -769,7 +750,7 @@ export default function MainPage({ navigation }) {
 				{peopleList?.length > 0 ? (
 					<FlatList
 						ref={peopleFlatListRef}
-						keyExtractor={(item) => item?.UserId?.toString() ?? index}
+						keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
 						data={peopleList.slice(0, 5)}
@@ -784,8 +765,8 @@ export default function MainPage({ navigation }) {
 										idx: idx,
 										list: peopleList.slice(0, 45),
 										matchMode: matchMode,
-										myID: myID,
-										sesToken: sesToken,
+										myID: Session.User.userId,
+										sesToken: Session.User.sesToken,
 										myPP: myPP,
 									});
 								}}
@@ -830,7 +811,7 @@ export default function MainPage({ navigation }) {
 					renderItem={({ item, index }) => (
 						<Category
 							index={index}
-							userID={myID}
+							userId={Session.User.sesToken}
 							selectedCategory={selectedCategory}
 							setSelectedCategory={setSelectedCategory}
 							setShownEvents={setShownEvents}
@@ -859,8 +840,8 @@ export default function MainPage({ navigation }) {
 									navigation.navigate("EventCards", {
 										idx: idx,
 										list: shownEvents,
-										myID: myID,
-										sesToken: sesToken,
+										myID: Session.User.userId,
+										sesToken: Session.User.sesToken,
 									});
 								}}
 							/>

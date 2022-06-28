@@ -92,7 +92,7 @@ const InputBox = (props) => {
 				}}
 			>
 				<TextInput
-					style={{ paddingHorizontal: 10, width: "100%" }}
+					style={{ marginHorizontal: 10, width: "100%" }}
 					multiline
 					placeholder={"Mesajın..."}
 					value={message}

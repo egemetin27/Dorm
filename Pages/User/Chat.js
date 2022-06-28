@@ -44,6 +44,7 @@ import { decompose2d } from "react-native-redash";
 import { CustomModal } from "../../visualComponents/customComponents";
 import ChatProfile from "./ChatProfile";
 import { Session } from "../../nonVisualComponents/SessionVariables";
+import crypto from "../../functions/crypto";
 
 export default function Chat({ navigation, route }) {
 	const [chatMessages, setChatMessages] = useState([]);
@@ -75,24 +76,20 @@ export default function Chat({ navigation, route }) {
 	}, []);
 
 	const deleteChat = async () => {
-		console.log(chatID);
-		const userDataStr = await SecureStore.getItemAsync("userData");
-		const userData = JSON.parse(userDataStr);
-		const myToken = userData.sesToken;
 		try {
 			API.graphql(
 				graphqlOperation(updateUserChat, {
 					input: { id: chatID, status: "Deactive" },
 				})
 			);
+			const encryptedData = crypto.encrypt({
+				userId: myUserID,
+				unmatchId: chatID,
+			});
 			axios
-				.post(
-					url + "/unmatch",
-					{
-						UserId: myUserID,
-					},
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/unmatch", encryptedData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.catch((error) => {
 					console.log(error);
 				});
@@ -123,33 +120,6 @@ export default function Chat({ navigation, route }) {
 		}
 	};
 
-	const fetchImageUri = async () => {
-		try {
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const userID = userData.UserId.toString();
-			const myToken = userData.sesToken;
-			await axios
-				.post(
-					url + "/getProfilePic",
-					{ UserId: Session.User.UserId, UserIdPic: otherUser.id },
-					{ headers: { "access-token": myToken } }
-				)
-				.then((res) => {
-					//setPeopleList(res.data);
-					//console.log(res.data);
-					//console.log(res.data[0].PhotoLink);
-					setImageUri(res.data[0].PhotoLink);
-					//console.log(res);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
 	const updateChat = async () => {
 		try {
 			const newMessageData = await API.graphql(
@@ -167,27 +137,22 @@ export default function Chat({ navigation, route }) {
 
 	const fetchProfile = async () => {
 		try {
-			const userDataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(userDataStr);
-			const myToken = userData.sesToken;
-			console.log(otherUser.id);
-			console.log(myToken);
+			const dataToBeSent = crypto.encrypt({ userId: Session.User.userId, otherId: otherUser.id });
 			await axios
-				.post(
-					url + "/profileinfo",
-					{ userId: otherUser.id },
-					//{ userId: "5" },
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/profileinfo", dataToBeSent, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
-					//setPeopleList(res.data);
-					setCardData(res.data);
+					const data = crypto.decrypt(res.data);
+					setCardData(data);
+					setImageUri(data.photos[0].PhotoLink);
 
 					//console.log(res.data[0].PhotoLink);
 					//console.log(res);
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log(err.response);
+					console.log("error on /profileInfo");
 				});
 		} catch (error) {
 			console.log(error);
@@ -200,7 +165,6 @@ export default function Chat({ navigation, route }) {
 		console.log(otherUser);
 		console.log("+++++++++++++++++++++++++++");
 		*/
-		await fetchImageUri();
 		await fetchProfile();
 		await fetchNewMessages();
 		//console.log(lastMsgSender);
@@ -238,7 +202,6 @@ export default function Chat({ navigation, route }) {
 
 	const openProfile = async () => {
 		try {
-			//console.log(cardData);
 			Keyboard.dismiss();
 			setProfilePage(true);
 		} catch (error) {
@@ -247,26 +210,17 @@ export default function Chat({ navigation, route }) {
 	};
 
 	const reportProfile = async () => {
-		//console.log(chosenReport);
-		//console.log(myUserID);
-		//console.log(otherUser.id);
-		//console.log(chatID);
-		const userDataStr = await SecureStore.getItemAsync("userData");
-		const userData = JSON.parse(userDataStr);
-		const myToken = userData.sesToken;
-
 		try {
+			const encryptedData = crypto.encrypt({
+				userId: myUserID,
+				sikayetEdilen: otherUser.id,
+				sikayetKodu: chosenReport,
+				aciklama: "",
+			});
 			await axios
-				.post(
-					url + "/report",
-					{
-						UserId: myUserID,
-						sikayetEdilen: otherUser.id,
-						sikayetKodu: chosenReport,
-						aciklama: "",
-					},
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/report", encryptedData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.catch((err) => {
 					console.log(err);
 				});
@@ -328,9 +282,11 @@ export default function Chat({ navigation, route }) {
 									}}
 									source={{
 										uri: imageUri,
+										priority: FastImage.priority.high,
 									}}
 								/>
 							)}
+
 							<View style={{ width: "2%" }} />
 							<View
 								style={{

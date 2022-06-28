@@ -24,6 +24,7 @@ import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { url } from "../../connection";
+import crypto from "../../functions/crypto";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { width, height } = Dimensions.get("window");
@@ -82,7 +83,7 @@ export default function ProfilePhotos({ route, navigation }) {
 
 	const insets = useSafeAreaInsets();
 
-	const { userID, sesToken } = route.params;
+	const { userId, sesToken } = route.params;
 
 	React.useEffect(() => {
 		let abortController = new AbortController();
@@ -127,13 +128,12 @@ export default function ProfilePhotos({ route, navigation }) {
 			});
 			await SecureStore.setItemAsync("userData", storedValue);
 
-			const response = await axios.post(
-				url + "/deleteS3Photo",
-				{
-					photoName: toBeDeleted.PhotoLink.split("/")[3],
-				},
-				{ headers: { "access-token": sesToken } }
-			);
+			const encryptedData = crypto.encrypt({
+				photoName: toBeDeleted.PhotoLink.split("/")[3],
+			});
+			const response = await axios.post(url + "/deleteS3Photo", encryptedData, {
+				headers: { "access-token": sesToken },
+			});
 			console.log(response.data);
 		}
 
@@ -181,17 +181,14 @@ export default function ProfilePhotos({ route, navigation }) {
 			const newList = await Promise.all(
 				PHOTO_LIST.map(async (item, index) => {
 					if (item?.photo ?? false) {
+						const dataToBeSent = crypto.encrypt({ userId: userId });
 						const returnVal = await axios
-							.post(
-								url + "/SecurePhotoLink",
-								{ userId: Session.User.UserId },
-								{
-									headers: { "access-token": sesToken },
-								}
-							)
+							.post(url + "/SecurePhotoLink", dataToBeSent, {
+								headers: { "access-token": sesToken },
+							})
 							.then(async (res) => {
-								const uploadUrl = res.data.url;
-								console.log(uploadUrl);
+								const uploadUrl = crypto.decrypt(res.data).url;
+								// const uploadUrl = res.data.url;
 								const returned = await fetch(uploadUrl, {
 									method: "PUT",
 									body: item.photo,
@@ -203,7 +200,6 @@ export default function ProfilePhotos({ route, navigation }) {
 									.then((res) => {
 										if (res.ok) {
 											const photoLink = uploadUrl.split("?")[0];
-
 											return {
 												Photo_Order: item.Photo_Order,
 												PhotoLink: photoLink,
@@ -218,35 +214,28 @@ export default function ProfilePhotos({ route, navigation }) {
 								return returned;
 							})
 							.catch((error) => {
-								console.log("catched secure photo link:\n", error);
+								console.log("error on secure photo link");
 							});
 						return returnVal;
 					}
 					return item;
 				})
 			);
+			const photoData = crypto.encrypt({
+				userId: userId,
+				photos: newList,
+			});
 			await axios
-				.post(
-					url + "/addPhotoLink",
-					{
-						UserId: Session.User.UserId,
-						userPhoto: 1,
-						photos: newList,
-					},
-					{ headers: { "access-token": Session.User.sesToken } }
-				)
+				.post(url + "/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
-					console.log(res.data);
-					// setPhotoList(newList);
-
 					const dataStr = await SecureStore.getItemAsync("userData");
 					const userData = JSON.parse(dataStr);
 					const storedValue = JSON.stringify({
 						...userData,
 						Photo: newList,
 					});
-					Session.User.Photo = newList;
 					await SecureStore.setItemAsync("userData", storedValue);
+					Session.User.Photo = newList;
 					setIsLoading(false);
 					navigation.replace("MainScreen", {
 						screen: "Profile",

@@ -13,6 +13,8 @@ import { colors } from "../../visualComponents/colors";
 import axios from "axios";
 import { url } from "../../connection";
 import * as SecureStore from "expo-secure-store";
+import FastImage from "react-native-fast-image";
+import crypto from "../../functions/crypto";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { height, width } = Dimensions.get("window");
@@ -22,17 +24,14 @@ const NewMatchBox = (props) => {
 
 	const fetchImageUri = async () => {
 		try {
+			const encryptedData = crypto.encrypt({ userId: Session.User.userId, otherId: props.data.id });
 			await axios
-				.post(
-					url + "/getProfilePic",
-					{ UserId: Session.User.UserId, UserIdPic: props.data.id },
-					{ headers: { "access-token": Session.User.sesToken } }
-				)
+				.post(url + "/getProfilePic", encryptedData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
-					//setPeopleList(res.data);
-					//console.log(res.data);
-					//console.log(res.data[0].PhotoLink);
 					setImageUri(res.data[0].PhotoLink);
+					// setImageUri(data.PhotoLink);
 				})
 				.catch((err) => {
 					console.log(err);
@@ -68,12 +67,22 @@ const NewMatchBox = (props) => {
 					borderRadius: 15,
 				}}
 			>
-				<Image
-					style={{ resizeMode: "cover", width: width * 0.15, height: "100%", borderRadius: 15 }}
-					source={{
-						uri: imageUri,
-					}}
-				/>
+				{__DEV__ ? (
+					<Image
+						style={{ resizeMode: "cover", width: width * 0.15, height: "100%", borderRadius: 15 }}
+						source={{
+							uri: imageUri,
+						}}
+					/>
+				) : (
+					<FastImage
+						style={{ resizeMode: "cover", width: width * 0.15, height: "100%", borderRadius: 15 }}
+						source={{
+							uri: imageUri ?? null,
+							priority: FastImage.priority.high,
+						}}
+					/>
+				)}
 			</TouchableOpacity>
 		</View>
 	);

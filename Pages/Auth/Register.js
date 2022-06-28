@@ -22,7 +22,6 @@ import { url } from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import { univList } from "../../nonVisualComponents/Lists";
-import { set } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window");
 

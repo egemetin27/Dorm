@@ -29,7 +29,7 @@ export class Session {
    SuperLikeCount: "",
    Surname: "",
    SwipeRefreshTime: "",
-   UserId: "",
+   userId: "",
    authentication: "",
    email: "",
    interest: [{interestName}]

@@ -8,11 +8,12 @@ import MaskedView from "@react-native-masked-view/masked-view";
 
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function Verification({ navigation, route }) {
-	const { email } = route?.params ?? { email: "Testing" }; //TODO: UserId also should be extracted from params
+	const { email } = route?.params ?? { email: "Testing" }; //TODO: userId also should be extracted from params
 	const verification = React.useRef([-1, -1, -1, -1]);
 
 	const [wrongInput, setWrongInput] = React.useState(false);
@@ -26,7 +27,7 @@ export default function Verification({ navigation, route }) {
 	const handleSubmit = () => {
 		const strCode = verification.current.toString().replace(/,/g, "");
 
-		const ver = { Mail: email, VerCode: strCode };
+		const ver = crypto.encrypt({ mail: email, verCode: strCode });
 
 		axios
 			.post(url + "/CheckVerification", ver)
@@ -34,7 +35,7 @@ export default function Verification({ navigation, route }) {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
 
 				if (res.data?.Verification > 0) {
-					navigation.replace("NewPassword", { email: email, verCode: strCode });
+					navigation.replace("NewPassword", { email: email, verification: strCode });
 				} else {
 					setWrongInput(true);
 					input0.current.clear();
@@ -51,11 +52,12 @@ export default function Verification({ navigation, route }) {
 				console.log({ error });
 			});
 
-		// navigation.replace("FirstPassword", { userID: UserId, email: email });
+		// navigation.replace("FirstPassword", { userId: userId, email: email });
 	};
 
 	const resendCode = () => {
-		axios.post(url + "/SendVerification", { Mail: email, isNewUser: false }).catch((error) => {
+		const verData = crypto.encrypt({ mail: email, isNewUser: false });
+		axios.post(url + "/SendVerification", verData).catch((error) => {
 			console.log({ error });
 		});
 	};

@@ -50,9 +50,12 @@ import { getTimeDiff } from "../../nonVisualComponents/generalFunctions";
 import FastImage from "react-native-fast-image";
 import { BlurView } from "expo-blur";
 
+import crypto from "../../functions/crypto";
+
 export default Card = React.memo(
 	({
 		card,
+		eventId,
 		index,
 		backFace,
 		myID,
@@ -68,7 +71,6 @@ export default Card = React.memo(
 		showMatchScreen,
 		length,
 		refreshList,
-		eventID,
 	}) => {
 		const progress = useSharedValue(0);
 		const x = useSharedValue(0);
@@ -105,7 +107,7 @@ export default Card = React.memo(
 			// School: university = "",
 			// Sigara: smoke = "",
 			// Surname: sName,
-			// UserId: id = 0,
+			// userId: id = 0,
 			// photos: photoList = [],
 			// Birth_Date: bDay = "",
 			// interest: hobbies = [],
@@ -198,20 +200,20 @@ export default Card = React.memo(
 				showLikeEndedModal(time.hour, time.minute);
 				return;
 			}
+			const likeDislike = crypto.encrypt({
+				isLike: val,
+				userSwiped: myID,
+				otherUser: id,
+				matchMode: matchMode,
+				eventId: eventId,
+			});
 
 			axios
-				.post(
-					url + "/LikeDislike",
-					{
-						isLike: val,
-						userSwiped: myID,
-						otherUser: id,
-						matchMode: matchMode,
-						eventId: eventID,
-					},
-					{ headers: { "access-token": sesToken } }
-				)
+				.post(url + "/LikeDislike", likeDislike, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
+					console.log(res.data);
 					// if (res.data.LikeCount == 0) {
 					// 	Session.User.SwipeRefreshTime = normalizeTime(Date.now());
 					// 	Session.LikeCount = 0;
@@ -424,7 +426,6 @@ export default Card = React.memo(
 		// };
 
 		const composedGesture = Gesture.Race(tapHandler, panHandler);
-		// const composedGesture = Gesture.Race(tapHandler);
 		return (
 			<Animated.View key={index} style={[{ width: "100%" }, animatedWrapper]}>
 				{/* {indexOfFrontCard.value <= index + 1 &&

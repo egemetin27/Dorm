@@ -13,15 +13,15 @@ import { colors } from "../../visualComponents/colors";
 import moment from "moment";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { LinearGradient } from "expo-linear-gradient";
 import FastImage from "react-native-fast-image";
 
 import { url } from "../../connection";
-import { API, graphqlOperation, Auth } from "aws-amplify";
 import { Gradient, GradientText } from "../../visualComponents/colors";
-
 import { updateUserChat } from "../../src/graphql/mutations";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { LinearGradient } from "expo-linear-gradient";
+import crypto from "../../functions/crypto";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { height, width } = Dimensions.get("window");
@@ -29,18 +29,20 @@ const { height, width } = Dimensions.get("window");
 const MsgBox = (props) => {
 	const [deleteChatModal, setDeleteChatModal] = React.useState(false);
 	const [imageUri, setImageUri] = React.useState();
+	const [myID, setMyID] = React.useState();
 
 	const fetchImageUri = async () => {
 		try {
+			const userDataStr = await SecureStore.getItemAsync("userData");
+			const userData = JSON.parse(userDataStr);
+			setMyID(userData.userId.toString());
+			const encryptedData = crypto.encrypt({ userId: Session.User.userId, otherId: props.data.id });
 			await axios
-				.post(
-					url + "/getProfilePic",
-					{ UserId: Session.User.UserId, UserIdPic: props.data.id },
-					{ headers: { "access-token": Session.User.sesToken } }
-				)
+				.post(url + "/getProfilePic", encryptedData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.then((res) => {
 					//setPeopleList(res.data);
-					//console.log(res.data);
 					setImageUri(res.data[0].PhotoLink);
 				})
 				.catch((err) => {
@@ -68,12 +70,11 @@ const MsgBox = (props) => {
 					input: { id: props.chatID, status: "Deactive" },
 				})
 			);
+			const encryptedData = crypto.encrypt({ userId: props.userId, unmatchId: props.chatID });
 			axios
-				.post(
-					url + "/unmatch",
-					{ UserId: props.userID, unmatchId: props.chatID },
-					{ headers: { "access-token": myToken } }
-				)
+				.post(url + "/unmatch", encryptedData, {
+					headers: { "access-token": Session.User.sesToken },
+				})
 				.catch((err) => {
 					console.log(err);
 				});
@@ -142,14 +143,15 @@ const MsgBox = (props) => {
 							/>
 						) : (
 							<FastImage
+								source={{
+									uri: imageUri,
+									priority: FastImage.priority.high,
+								}}
 								style={{
 									resizeMode: "cover",
 									width: width * 0.15,
 									height: "100%",
 									borderRadius: 15,
-								}}
-								source={{
-									uri: imageUri,
 								}}
 							/>
 						)}
@@ -168,7 +170,7 @@ const MsgBox = (props) => {
 							{props.lastMsg}
 						</Text>
 					</View>
-					{props.lastMsgSender != props.userID && props.unreadMsg != 0 ? (
+					{props.lastMsgSender != props.userId && props.unreadMsg != 0 ? (
 						<LinearGradient
 							colors={["#4136F1", "#8743FF"]}
 							start={{ x: 0, y: 0 }}

@@ -17,6 +17,7 @@ import axios from "axios";
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { url } from "../../connection";
+import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -41,9 +42,10 @@ export default function FirstPassword({ navigation, route }) {
 			return;
 		}
 
-		const dataToBeSent = { ...profile, password: password }; //TODO: userID should be come from route.params.id
+		const dataToBeSent = { ...profile, password: password }; //TODO: userId should be come from route.params.id
+		const verData = crypto.encrypt({ mail: profile.mail, isNewUser: true });
 		await axios
-			.post(url + "/SendVerification", { Mail: profile.mail, isNewUser: true })
+			.post(url + "/SendVerification", verData)
 			.then(() => {
 				navigation.replace("Verification", { dataToBeSent: dataToBeSent });
 			})

@@ -36,6 +36,9 @@ import axios from "axios";
 import { url } from "../../connection";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../nonVisualComponents/Context";
+import { Session } from "../../nonVisualComponents/SessionVariables";
+
+import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("window");
 
@@ -99,15 +102,12 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
 	const handleLikeButton = async () => {
-		const id = await SecureStore.getItemAsync("userID");
+		const id = Session.User.userId;
+		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId });
 
 		if (favFlag) {
 			await axios
-				.post(
-					url + "/dislikeEvent",
-					{ UserId: id, eventId: EventId },
-					{ headers: { "access-token": sesToken } }
-				)
+				.post(url + "/dislikeEvent", encryptedData, { headers: { "access-token": sesToken } })
 				.then((res) => setFavFlag(false))
 				.catch((err) => console.log(err));
 			return;
@@ -116,14 +116,10 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	};
 
 	const likeEvent = async (likeMode) => {
-		const id = await SecureStore.getItemAsync("userID");
-
+		const id = Session.User.userId;
+		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: likeMode });
 		await axios
-			.post(
-				url + "/likeEvent",
-				{ UserId: id, eventId: EventId, likeMode: likeMode },
-				{ headers: { "access-token": sesToken } }
-			)
+			.post(url + "/likeEvent", encryptedData, { headers: { "access-token": sesToken } })
 			.then((res) => {
 				setFavFlag(true);
 				// Alert.alert("RES " + res.data);
@@ -138,35 +134,31 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 			setSeeWhoLikedModal(true);
 			return;
 		}
+		const encryptedData = crypto.encrypt({
+			eventId: EventId,
+			userId: myID,
+		});
 		await axios
-			.post(
-				url + "/eventParticipants",
-				{
-					eventId: EventId,
-					UserId: myID,
-				},
-				{ headers: { "access-token": sesToken } }
-			)
+			.post(url + "/eventParticipants", encryptedData, { headers: { "access-token": sesToken } })
 			.then((res) => {
-				console.log(res.data);
-				if (res.data == "Unauthorized Session") {
-					Alert.alert("Oturumunuzun süresi doldu!");
-					signOut();
-				} else if (typeof res.data == "object" && res.data.length > 0) {
+				if (res.data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
 						list: res.data,
 						myID: myID,
 						sesToken: sesToken,
 						fromEvent: true,
-						eventID: EventId,
+						eventId: EventId,
 					});
 				} else {
 					Alert.alert("Etkinliği Beğenen Kimse Yok :/");
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				if (err.response.status == 410) {
+					Alert.alert("Oturumunuzun süresi doldu!");
+					signOut();
+				}
 			});
 	};
 
@@ -555,12 +547,16 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 									<Pressable
 										onPress={async () => {
 											if (turn.value != -1) return;
+
+											const data = crypto.encrypt({
+												EventId: EventId,
+												userId: Session.User.userId,
+											});
+
 											await axios
-												.post(
-													url + "/eventLinkClick",
-													{ EventId: EventId },
-													{ headers: { "access-token": sesToken } }
-												)
+												.post(url + "/eventLinkClick", data, {
+													headers: { "access-token": sesToken },
+												})
 												.catch((err) => console.log(err));
 
 											await Linking.openURL(buyLink);

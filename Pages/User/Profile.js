@@ -30,6 +30,7 @@ import { url } from "../../connection";
 import { getAge, getChoice } from "../../nonVisualComponents/generalFunctions";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 import { Session } from "../../nonVisualComponents/SessionVariables";
+import crypto from "../../functions/crypto";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
@@ -115,7 +116,7 @@ export default function Profile({ route, navigation }) {
 			setPhotoList(Session.User.Photo);
 			setHobbies(Session.User.interest);
 			// setUserData({
-			// 	userID: data.UserId,
+			// 	userId: data.userId,
 			// 	name: data.Name + " " + data.Surname,
 			// 	major: data.Major,
 			// 	age: getAge(data.Birth_date),
@@ -139,8 +140,8 @@ export default function Profile({ route, navigation }) {
 		const lName = name.slice(name.lastIndexOf(" ") + 1);
 		const fName = name.slice(0, name.lastIndexOf(" "));
 
-		const dataToSend = {
-			UserId: Session.User.userID,
+		const dataRaw = {
+			userId: Session.User.userId,
 			Name: fName,
 			Surname: lName,
 			Gender: sex.key,
@@ -153,6 +154,8 @@ export default function Profile({ route, navigation }) {
 			About: about,
 		};
 
+		const dataToSend = crypto.encrypt(dataRaw);
+
 		await axios
 			.post(url + "/IdentityUpdate", dataToSend, {
 				headers: { "access-token": Session.User.sesToken },
@@ -163,6 +166,8 @@ export default function Profile({ route, navigation }) {
 				const toBeStored = { ...user, ...dataToSend };
 				const toBeStoredStr = JSON.stringify(toBeStored);
 				await SecureStore.setItemAsync("userData", toBeStoredStr);
+
+				Session.User = { ...Session.User, ...dataRaw };
 			})
 			.catch((err) => {
 				console.log(err);
@@ -200,22 +205,24 @@ export default function Profile({ route, navigation }) {
 			return;
 		}
 		setFriendMode(index == 1 ? true : false);
-		Session.User.matchMode = index;
+
+		const dataToBeSent = crypto.encrypt({
+			userId: Session.User.userId,
+			matchMode: index.toString(),
+		});
 
 		axios
-			.post(
-				url + "/matchMode",
-				{ userId: Session.User.UserId, matchMode: index },
-				{ headers: { "access-token": Session.User.sesToken } }
-			) // There is a typo (not Change but Chage) TODO: make userID variable
+			.post(url + "/matchMode", dataToBeSent, {
+				headers: { "access-token": Session.User.sesToken },
+			}) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				console.log(res.data);
-				console.log("AA");
 				let userStr = await SecureStore.getItemAsync("userData");
 				const user = JSON.parse(userStr);
 				const newUser = { ...user, matchMode: index };
 				userStr = JSON.stringify(newUser);
 				SecureStore.setItemAsync("userData", userStr);
+				Session.User.matchMode = index.toString();
 			})
 			.catch((error) => {
 				console.log("Match Mode Error: ", error);
@@ -299,7 +306,7 @@ export default function Profile({ route, navigation }) {
 									invisibility: Session.User.Invisible == "1" ? true : false,
 									campusGhost: Session.User.BlockCampus == "1" ? true : false,
 									schoolLover: Session.User.OnlyCampus == "1" ? true : false,
-									userID: Session.User.UserId,
+									userId: Session.User.userId,
 									sesToken: Session.User.sesToken,
 								});
 							}}
@@ -384,7 +391,7 @@ export default function Profile({ route, navigation }) {
 														setEditibility(false);
 														navigation.navigate("ProfilePhotos", {
 															photoList: Session.User.Photo,
-															userID: Session.User.userID,
+															userId: Session.User.userId,
 															sesToken: Session.User.sesToken,
 														});
 													}
@@ -412,7 +419,7 @@ export default function Profile({ route, navigation }) {
 												onPress={() => {
 													navigation.navigate("ProfilePhotos", {
 														photoList: PHOTO_LIST,
-														userID: Session.User.userID,
+														userId: Session.User.userId,
 														sesToken: Session.User.sesToken,
 													});
 												}}
@@ -430,7 +437,7 @@ export default function Profile({ route, navigation }) {
 								onPress={() => {
 									navigation.replace("ProfilePhotos", {
 										photoList: PHOTO_LIST,
-										userID: Session.User.userID,
+										userId: Session.User.userId,
 										sesToken: Session.User.sesToken,
 									});
 								}}
@@ -979,7 +986,7 @@ export default function Profile({ route, navigation }) {
 									handleSave();
 									navigation.push("Hobbies", {
 										hobbyList: hobbies,
-										UserId: Session.User.userID,
+										userId: Session.User.userId,
 										isNewUser: false,
 									});
 								}
