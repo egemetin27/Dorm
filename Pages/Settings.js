@@ -164,7 +164,6 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => 
 				<TouchableOpacity
 					onPress={async () => {
 						const myJson = crypto.encrypt({ userId: userId });
-
 						await axios
 							.post(url + "/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
 							.then(() => {
@@ -599,7 +598,7 @@ export default function Settings({ navigation, route }) {
 
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} />
 
-				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Yardım ve Destek</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -639,7 +638,7 @@ export default function Settings({ navigation, route }) {
 					</Text>
 				</View>
 
-				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Gizlilik Tercihleri</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
@@ -674,7 +673,7 @@ export default function Settings({ navigation, route }) {
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={handleNonWorkingButton} style={styles.buttonContainer}>
+				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Lisanslar</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity>

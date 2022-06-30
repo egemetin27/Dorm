@@ -67,6 +67,7 @@ import ListEndedModal from "../Pages/modals/ListEndedModal";
 
 import useKeyGenerator from "../components/custom_hooks/useKeyGenerator";
 import crypto from "../functions/crypto";
+import UpdateNeededModal from "../Pages/modals/UpdateNeededModal";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -343,12 +344,15 @@ export default function StackNavigator() {
 	const [newUser, setNewUser] = React.useState(false);
 	// const navigation = React.useContext(NavigationContext);
 
-	useKeyGenerator();
+	const updateNeeded = useKeyGenerator();
 
 	const authContext = React.useMemo(() => ({
 		signIn: async ({ email, password, isNewUser, navigation = null, notLoading = () => {} }) => {
-			if (isNewUser) setNewUser(true);
-			else setNewUser(false);
+			if (isNewUser) {
+				setNewUser(true);
+			} else {
+				setNewUser(false);
+			}
 
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 			const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
@@ -358,6 +362,7 @@ export default function StackNavigator() {
 				.then(async (res) => {
 					const data = crypto.decrypt(res.data);
 					if (data.authentication == "true") {
+						console.log(data);
 						if (navigation != null && data.onBoardingComplete == 0) {
 							navigation.replace("PhotoUpload", {
 								mail: email,
@@ -423,10 +428,10 @@ export default function StackNavigator() {
 	}));
 
 	React.useEffect(async () => {
+		await SplashScreen.preventAutoHideAsync();
 		async function prepare() {
 			try {
 				// Keep the splash screen visible while we fetch resources
-				await SplashScreen.preventAutoHideAsync();
 
 				await loadAsync({
 					Now: require("../assets/Fonts/now.otf"),
@@ -481,7 +486,7 @@ export default function StackNavigator() {
 
 	const onLayoutRootView = React.useCallback(async () => {
 		if (appIsReady) {
-			// await SplashScreen.hideAsync(); // hide splash screen if the app is ready
+			await SplashScreen.hideAsync(); // hide splash screen if the app is ready
 		}
 	}, [appIsReady]);
 
@@ -494,7 +499,15 @@ export default function StackNavigator() {
 				<NavigationContainer>
 					<AuthContext.Provider value={authContext}>
 						<Stack.Navigator mode={"modal"}>
-							{isLoggedIn ? (
+							{updateNeeded ? (
+								<Stack.Group screenOptions={{ headerShown: false }}>
+									<Stack.Screen
+										name="UpdateNeededModal"
+										component={UpdateNeededModal}
+										// options={{ presentation: "transparentModal" }}
+									/>
+								</Stack.Group>
+							) : isLoggedIn ? (
 								// Screens for logged in users
 								<Stack.Group
 									screenOptions={{ headerShown: false }}
@@ -531,6 +544,7 @@ export default function StackNavigator() {
 									<Stack.Screen name="Hobbies" component={Hobbies} />
 								</Stack.Group>
 							)}
+
 							<Stack.Group name={"Modals"} screenOptions={{ headerShown: false }}>
 								<Stack.Screen
 									name="LikeEndedModal"

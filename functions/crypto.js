@@ -15,11 +15,11 @@ class crypto {
 	static #key;
 	static #iv;
 
-	constructor({ deviceId, key, iv }) {
-		crypto.#deviceId = deviceId;
-		crypto.#key = key;
-		crypto.#iv = iv;
-	}
+	// constructor({ deviceId, key, iv }) {
+	// 	crypto.#deviceId = deviceId;
+	// 	crypto.#key = key;
+	// 	crypto.#iv = iv;
+	// }
 
 	static appVersionChecker(message) {
 		let encrypted = CryptoES.AES.encrypt(message, "O7SzQkunl5HUBl3dgbWPBRJpxAyGA2Y9", {
@@ -32,6 +32,10 @@ class crypto {
 		const newSecuritykey = randomString(32);
 		const newInitVector = randomString(16);
 		const deviceId = randomString(32);
+
+		this.#key = newSecuritykey;
+		this.#iv = newInitVector;
+		this.#deviceId = deviceId;
 
 		return [randomString(16), { deviceId, newSecuritykey, newInitVector }];
 	}

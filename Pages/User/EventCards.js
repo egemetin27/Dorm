@@ -79,9 +79,19 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 		};
 	});
 
+	const handleDoubleTab = () => {
+		const encryptedData = crypto.encrypt({ userId: Session.User.userId, eventId: EventId });
+		axios.post(url + "/detailEventClick", encryptedData, {
+			headers: { "access-token": Session.User.sesToken },
+		});
+	};
+
 	const tapHandler = Gesture.Tap()
 		.numberOfTaps(2)
 		.onEnd(() => {
+			if (turn.value == 1) {
+				runOnJS(handleDoubleTab)();
+			}
 			turn.value = withTiming(-turn.value);
 		});
 
@@ -549,7 +559,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 											if (turn.value != -1) return;
 
 											const data = crypto.encrypt({
-												EventId: EventId,
+												eventId: EventId,
 												userId: Session.User.userId,
 											});
 
@@ -789,6 +799,10 @@ export default function EventCards({ navigation, route }) {
 	const { idx, list, myID, sesToken } = route.params;
 
 	React.useEffect(() => {
+		sendEventSeen(idx);
+	}, []);
+
+	React.useEffect(() => {
 		const backAction = () => {
 			navigation.replace("MainScreen", { screen: "AnaSayfa" });
 			return true;
@@ -798,6 +812,17 @@ export default function EventCards({ navigation, route }) {
 
 		return () => backHandler.remove();
 	}, []);
+
+	const sendEventSeen = (index) => {
+		console.log(index);
+		const encryptedData = crypto.encrypt({
+			userId: Session.User.userId,
+			eventId: list[index].EventId,
+		});
+		axios.post(url + "/EventClick", encryptedData, {
+			headers: { "access-token": Session.User.sesToken },
+		});
+	};
 
 	return (
 		<View style={commonStyles.Container}>
@@ -839,7 +864,8 @@ export default function EventCards({ navigation, route }) {
 			{list.length > 0 && (
 				<View style={{ flex: 1 }}>
 					<Carousel
-						windowSize={list.length > 7 ? 7 : list.length}
+						onSnapToItem={sendEventSeen}
+						windowSize={list.length > 5 ? 5 : list.length}
 						defaultIndex={idx}
 						width={width}
 						loop={false}

@@ -585,7 +585,7 @@ export default function MainPage({ navigation }) {
 		const userData = JSON.parse(userDataStr);
 		const userId = userData.userId.toString();
 		const myMode = userData.matchMode;
-		const myPhoto = userData.Photo[0].PhotoLink ?? "";
+		const myPhoto = userData.Photo[0]?.PhotoLink ?? "";
 		setMatchMode(myMode);
 		setMyPP(myPhoto);
 
@@ -611,14 +611,18 @@ export default function MainPage({ navigation }) {
 					setPeopleList(data);
 				})
 				.catch((err) => {
-					if (err.response.status == 410) {
-						Alert.alert("Oturumunuzun süresi doldu!");
-						signOut();
-					}
-					if (err.response.status == 411) {
-						setPeopleList([]);
-						setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
-						return;
+					if (err.response) {
+						if (err.response.status == 410) {
+							Alert.alert("Oturumunuzun süresi doldu!");
+							signOut();
+						}
+						if (err.response.status == 411) {
+							setPeopleList([]);
+							setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
+							return;
+						}
+					} else {
+						console.log(err);
 					}
 					console.log("error on swipelist");
 					console.log(err);
@@ -639,7 +643,6 @@ export default function MainPage({ navigation }) {
 					console.log(err);
 				});
 		}
-
 		try {
 			await prepare();
 		} catch (err) {
