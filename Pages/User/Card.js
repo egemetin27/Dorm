@@ -162,20 +162,30 @@ export default Card = React.memo(
 
 		const sendNotification = async () => {
 			try {
-				const userData = await API.graphql(graphqlOperation(getMsgUser, { id: id }));
-				let response = fetch("https://exp.host/--/api/v2/push/send", {
-					method: "POST",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						to: userData.data.getMsgUser.pushToken,
-						sound: "default",
-						title: "Dorm",
-						body: "Yeni bir eşleşmeniz var!",
-					}),
-				});
+				const encryptedId = crypto.encrypt({ userId: id });
+				axios
+					.post(url + "/getToken", encryptedId, {
+						headers: { "access-token": Session.User.sesToken },
+					})
+					.then((res) => {
+						const token = crypto.decrypt(res.data);
+						fetch("https://exp.host/--/api/v2/push/send", {
+							method: "POST",
+							headers: {
+								Accept: "application/json",
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								to: token,
+								sound: "default",
+								title: "Dorm",
+								body: "Yeni bir eşleşmeniz var!",
+							}),
+						});
+					})
+					.catch((err) => {
+						console.error(err);
+					});
 			} catch (e) {
 				console.log(e);
 			}

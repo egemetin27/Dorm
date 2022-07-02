@@ -8,6 +8,9 @@ import * as SecureStore from "expo-secure-store";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 
+import crypto from "../../functions/crypto";
+import { Session } from "../../nonVisualComponents/SessionVariables";
+
 const InputBox = (props) => {
 	const [message, setMessage] = React.useState("");
 	const [newNumber, setNewNumber] = React.useState(1);
@@ -51,22 +54,32 @@ const InputBox = (props) => {
 			const userDataStr = await SecureStore.getItemAsync("userData");
 			const userData = JSON.parse(userDataStr);
 			const userName = userData.Name;
-			console.log(userName);
-			console.log(message);
 			console.log(props.otherUser.pushToken);
-			let response = fetch("https://exp.host/--/api/v2/push/send", {
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					to: props.otherUser.pushToken,
-					sound: "default",
-					title: userName,
-					body: message,
-				}),
-			});
+
+			const encryptedId = crypto.encrypt({ userId: props.otherUser.id });
+			axios
+				.post(url + "/getToken", encryptedId, {
+					headers: { "access-token": Session.User.sesToken },
+				})
+				.then((res) => {
+					const token = crypto.decrypt(res.data);
+					fetch("https://exp.host/--/api/v2/push/send", {
+						method: "POST",
+						headers: {
+							Accept: "application/json",
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							to: token,
+							sound: "default",
+							title: userName,
+							body: message,
+						}),
+					});
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 		} catch (e) {
 			console.log(e);
 		}

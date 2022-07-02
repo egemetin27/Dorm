@@ -37,7 +37,7 @@ export default function Register({ navigation }) {
 	const [date, setDate] = React.useState(new Date());
 	const [parsedDate, setParsedDate] = React.useState("gg/aa/yyyy");
 	const [city, setCity] = React.useState("İstanbul");
-	const [university, setUniversity] = React.useState("");
+	const [university, setUniversity] = React.useState({ key: 0, choice: "" });
 	const [email, setEmail] = React.useState("");
 
 	const [univListVisible, setUnivListVisible] = React.useState(false);
@@ -323,12 +323,12 @@ export default function Register({ navigation }) {
 								<Text
 									style={[
 										{
-											color: university != "" ? colors.black : colors.medium_gray,
+											color: university.choice != "" ? colors.black : colors.medium_gray,
 											fontSize: 20,
 										},
 									]}
 								>
-									{university.choice ?? "Üniversiteni Seç"}
+									{university.choice != "" ? university.choice : "Üniversiteni Seç"}
 								</Text>
 							</View>
 						</Pressable>

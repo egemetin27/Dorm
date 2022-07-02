@@ -1,16 +1,17 @@
 import React from "react";
 import { Alert } from "react-native";
-
 import axios from "axios";
-import { url } from "../../connection";
-import crypto from "../../functions/crypto";
 import Constants from "expo-constants";
+
+import crypto from "../../functions/crypto";
+import { url } from "../../connection";
 
 const useKeyGenerator = () => {
 	const [initializationError, setInitializationError] = React.useState(false);
 	// const initializationError = React.useRef(false);
 	React.useEffect(() => {
 		let controller = new AbortController();
+
 		(async () => {
 			const [dormId, myJson] = crypto.generateKey();
 			const strJson = JSON.stringify(myJson);
@@ -27,9 +28,11 @@ const useKeyGenerator = () => {
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}
+					console.log("no problem on app version");
 				})
 				.catch((err) => {
 					console.log("error on /appversion");
+					console.log(err);
 					// initializationError.current = true;
 				});
 		})();

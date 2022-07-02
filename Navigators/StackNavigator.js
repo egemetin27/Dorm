@@ -284,8 +284,6 @@ async function registerForPushNotificationAsync() {
 	let token;
 	const { status: existingStatus } = await Notifications.getPermissionsAsync();
 	let finalStatus = existingStatus;
-	console.log(existingStatus);
-	console.log(finalStatus);
 	if (existingStatus != "granted") {
 		const { status } = await Notifications.requestPermissionsAsync();
 		finalStatus = status;
@@ -294,7 +292,6 @@ async function registerForPushNotificationAsync() {
 		return null;
 	}
 	token = (await Notifications.getExpoPushTokenAsync()).data;
-	console.log(token);
 
 	if (Platform.OS == "android") {
 		Notifications.setNotificationChannelAsync("default", {
@@ -308,7 +305,7 @@ async function registerForPushNotificationAsync() {
 	return token;
 }
 
-async function fetchUser(userName, userId, token) {
+async function fetchUser(userName, userId, token, sesToken) {
 	const newUser = {
 		id: userId,
 		name: userName,
@@ -316,21 +313,24 @@ async function fetchUser(userName, userId, token) {
 	};
 
 	const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userId }));
+
 	if (userData.data.getMsgUser) {
 		console.log("User is already registered in database");
 
-		await API.graphql(
-			graphqlOperation(updateMsgUser, {
-				input: { id: userId, name: userName, pushToken: token },
+		const encryptedToken = crypto.encrypt({ userId: userId, token: token });
+		await axios
+			.post(url + "/registerToken", encryptedToken, { headers: { "access-token": sesToken } })
+			.then((res) => {
+				// console.log(res.data);
 			})
-		);
+			.catch((err) => {
+				console.log(err);
+			});
 
 		return;
 	} else {
 		console.log("User does not exists");
 	}
-
-	console.log(newUser);
 	await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
 
 	console.log("New user created");
@@ -344,8 +344,6 @@ export default function StackNavigator() {
 	const [newUser, setNewUser] = React.useState(false);
 	// const navigation = React.useContext(NavigationContext);
 
-	const updateNeeded = useKeyGenerator();
-
 	const authContext = React.useMemo(() => ({
 		signIn: async ({ email, password, isNewUser, navigation = null, notLoading = () => {} }) => {
 			if (isNewUser) {
@@ -355,6 +353,7 @@ export default function StackNavigator() {
 			}
 
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
+			console.log({ mail: email, password: encryptedPassword });
 			const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
 			console.log({ dataToBeSent });
 			await axios
@@ -362,7 +361,7 @@ export default function StackNavigator() {
 				.then(async (res) => {
 					const data = crypto.decrypt(res.data);
 					if (data.authentication == "true") {
-						console.log(data);
+						// console.log(data);
 						if (navigation != null && data.onBoardingComplete == 0) {
 							navigation.replace("PhotoUpload", {
 								mail: email,
@@ -374,8 +373,9 @@ export default function StackNavigator() {
 						}
 						// If signed in
 
-						const token = await registerForPushNotificationAsync();
-						await fetchUser(data.Name, data.userId, token);
+						registerForPushNotificationAsync().then((token) => {
+							fetchUser(data.Name, data.userId, token, data.sesToken);
+						});
 
 						const photoList = data.Photo.map((item) => {
 							return {
@@ -407,7 +407,11 @@ export default function StackNavigator() {
 					}
 				})
 				.catch(async (error) => {
-					console.log("catch: ", error);
+					// if (error.response.status == 420) {
+					// 	console.log(420);
+					// }
+					console.log("error on /login: ");
+					console.log(error);
 					Alert.alert("Hata", error?.response?.data, [{ text: "Kontrol Edeyim" }]);
 					await SecureStore.deleteItemAsync("userData");
 					await AsyncStorage.removeItem("isLoggedIn");
@@ -427,8 +431,31 @@ export default function StackNavigator() {
 		},
 	}));
 
+	const updateNeeded = useKeyGenerator();
+
 	React.useEffect(async () => {
 		await SplashScreen.preventAutoHideAsync();
+
+		axios.interceptors.response.use(
+			function (response) {
+				// Any status code that lie within the range of 2xx cause this function to trigger
+				// Do something with response data
+				return response;
+			},
+			async (error) => {
+				const status = error?.response?.status;
+				if (status === 420) {
+					// await refreshToken(store);
+					//   error.config.headers[
+					// 	 "Authorization"
+					//   ] = `Bearer ${store.state.auth.token}`;
+					// error.config.baseURL = url;
+					return axios.request(error.config);
+				}
+				return Promise.reject(error);
+			}
+		);
+
 		async function prepare() {
 			try {
 				// Keep the splash screen visible while we fetch resources
@@ -445,10 +472,11 @@ export default function StackNavigator() {
 
 				setCustomText({ style: { fontFamily: "Poppins" } });
 				setCustomTextInput({ style: { fontFamily: "Poppins" } });
+
 				await AsyncStorage.getItem("Constants").then(async (res) => {
-					let constantDictStr = res;
+					var constants = JSON.parse(res);
 					if (res == null) {
-						constantDictStr = { introShown: false, tutorialShown: false };
+						constants = { introShown: false, tutorialShown: false };
 						AsyncStorage.setItem("scrollNotShowed", "0"); //scroll not shown
 					}
 					await AsyncStorage.getItem("scrollNotShowed").then((res) => {
@@ -458,14 +486,12 @@ export default function StackNavigator() {
 							Session.ScrollNumber = parseInt(res);
 						}
 					});
-					const constants = JSON.parse(constantDictStr);
 					setIntroShown(constants.introShown);
 					setTutorialShown(constants.tutorialShown);
 				});
 
 				await AsyncStorage.getItem("isLoggedIn").then(async (res) => {
 					// set logged in value to true or false according to the data in local storage
-
 					if (res == "yes") {
 						const { signIn } = authContext;
 						const userStr = await SecureStore.getItemAsync("userData");

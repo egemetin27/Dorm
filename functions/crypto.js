@@ -63,6 +63,18 @@ class crypto {
 		// return decrypted.toString(CryptoES.enc.Utf8);
 	}
 
+	static testDecrypt(toBeDecrypted) {
+		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, "W42bqJdPLQrW07JpcPCZfO5hm4oYQmTg", {
+			iv: "nfK2DgUUVZzDptuB",
+		});
+		// console.log("AAA\n\n\n\n\n\n\n\n\n\n");
+		// console.log(decrypted.toString(CryptoES.enc.Utf8));
+
+		const data = JSON.parse(decrypted.toString(CryptoES.enc.Utf8));
+		return data;
+		// return decrypted.toString(CryptoES.enc.Utf8);
+	}
+
 	static decryptString(toBeDecrypted) {
 		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, this.#key, {
 			iv: this.#iv,
