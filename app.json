@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "Dorm",
 		"slug": "Dorm",
-		"version": "1.2.1",
+		"version": "1.2.2",
 		"orientation": "portrait",
 		"icon": "./assets/DormIcon.png",
 		"owner": "berkeodaci",
@@ -22,7 +22,7 @@
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 79
+			"versionCode": 80
 		},
 		"web": {
 			"favicon": "./assets/DormIcon.png"
