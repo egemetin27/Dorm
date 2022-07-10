@@ -15,6 +15,7 @@ import {
 	Platform,
 	TextInput,
 	SafeAreaView,
+	RefreshControlBase,
 } from "react-native";
 import { Octicons, MaterialCommunityIcons, Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
@@ -537,36 +538,42 @@ export default function MainPage({ navigation }) {
 			numberOfFilters = numberOfFilters + 1;
 		}
 
-		console.log(applyCinsiyet);
-		console.log(applyEgsersiz);
-		console.log(applyAlkol);
-		console.log(applySigara);
-		console.log(applyYemek);
-		console.log(numberOfFilters);
-
 		async function prepare() {
 			const swipeListData = crypto.encrypt({
 				userId: userId,
-				minyas: minAge,
-				maxyas: maxAge,
+				minYas: minAge,
+				maxYas: maxAge,
 				cinsiyet: applyCinsiyet,
 				egsersiz: applyEgsersiz,
 				alkol: applyAlkol,
 				sigara: applySigara,
 				yemek: applyYemek,
 			});
+
 			await axios
 				.post(url + "/Swipelist", swipeListData, {
 					headers: { "access-token": Session.User.sesToken },
 				})
 				.then((res) => {
-					if (res.data == "Invisible") {
-						setPeopleList([]);
-						return;
-					}
-					setPeopleList(res.data);
+					const data = crypto.decrypt(res.data);
+
+					setPeopleList(data);
 				})
 				.catch((err) => {
+					if (err.response) {
+						if (err.response.status == 410) {
+							Alert.alert("Oturumunuzun süresi doldu!");
+							signOut();
+						}
+						if (err.response.status == 411) {
+							setPeopleList([]);
+							setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
+							return;
+						}
+					} else {
+						console.log(err);
+					}
+					console.log("error on swipelist");
 					console.log(err);
 				});
 		}
@@ -600,6 +607,8 @@ export default function MainPage({ navigation }) {
 				sigara: [1, 1, 1],
 				yemek: [1, 1, 1, 1, 1],
 			});
+
+			console.log(swipeListData);
 
 			await axios
 				.post(url + "/Swipelist", swipeListData, {

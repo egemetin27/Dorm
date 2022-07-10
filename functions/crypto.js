@@ -15,12 +15,6 @@ class crypto {
 	static #key;
 	static #iv;
 
-	// constructor({ deviceId, key, iv }) {
-	// 	crypto.#deviceId = deviceId;
-	// 	crypto.#key = key;
-	// 	crypto.#iv = iv;
-	// }
-
 	static appVersionChecker(message) {
 		let encrypted = CryptoES.AES.encrypt(message, "O7SzQkunl5HUBl3dgbWPBRJpxAyGA2Y9", {
 			iv: "O7SzQkunl5HUBl3d",
@@ -37,6 +31,8 @@ class crypto {
 		this.#iv = newInitVector;
 		this.#deviceId = deviceId;
 
+		console.log({ deviceId, newSecuritykey, newInitVector });
+
 		return [randomString(16), { deviceId, newSecuritykey, newInitVector }];
 	}
 
@@ -45,6 +41,8 @@ class crypto {
 		let encrypted = CryptoES.AES.encrypt(JSON.stringify(toBeEncrypted), this.#key, {
 			iv: this.#iv,
 		});
+
+		console.log({ dormId: this.#deviceId, message: encrypted.toString() });
 
 		const dataToBeSent = { dormId: this.#deviceId, message: encrypted.toString() };
 		// return {dormId: _device id_, message: _encrypted message_}

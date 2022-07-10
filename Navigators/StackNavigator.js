@@ -353,7 +353,6 @@ export default function StackNavigator() {
 			}
 
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
-			console.log({ mail: email, password: encryptedPassword });
 			const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
 			console.log({ dataToBeSent });
 			await axios
