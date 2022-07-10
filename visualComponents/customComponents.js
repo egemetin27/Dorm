@@ -23,7 +23,7 @@ import { Gradient, colors } from "./colors";
 const { width, height } = Dimensions.get("screen");
 
 export const CustomModal = (props) => {
-	const { visible, transparent = true, dismiss, animationType = "fade", children } = props;
+	const { visible, transparent = true, dismiss, animationType = "none", children } = props;
 	return (
 		<Modal
 			visible={visible}
@@ -31,10 +31,9 @@ export const CustomModal = (props) => {
 			onRequestClose={dismiss}
 			animationType={animationType}
 		>
-			<TouchableWithoutFeedback onPress={dismiss}>
-				<View style={[styles.modalOverlay, props?.overlay]} />
-			</TouchableWithoutFeedback>
-			<View style={styles.modalContent}>{children}</View>
+			<Pressable style={styles.modalContent} onPress={dismiss}>
+				<Pressable onPress={() => {}}>{children}</Pressable>
+			</Pressable>
 		</Modal>
 	);
 };
@@ -250,6 +249,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: "rgba(0,0,0,0.6)",
 	},
 	modalOverlay: {
 		position: "absolute",
