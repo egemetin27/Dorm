@@ -7,18 +7,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { url } from "../connection";
+import url from "../connection";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 import { loadAsync } from "expo-font";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as Notifications from "expo-notifications";
 
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../src/graphql/queries";
 import { createMsgUser, updateMsgUser } from "../src/graphql/mutations";
-import * as Notifications from "expo-notifications";
 
 import { colors, GradientText } from "../visualComponents/colors";
 
@@ -43,7 +43,8 @@ import Hobbies from "../Pages/afterRegisteration/Hobbies";
 // USER PAGES
 import Profile from "../Pages/User/Profile";
 import Home from "../Pages/User/Home";
-import Messages from "../Pages/User/Messages";
+import Messages from "../Pages/User/messages/messages.route";
+// import Messages from "../Pages/User/Messages";
 import ProfilePhotos from "../Pages/User/ProfilePhotos";
 import ProfileCards from "../Pages/User/ProfileCards";
 import EventCards from "../Pages/User/EventCards";
@@ -57,7 +58,8 @@ import KullaniciSozlesmesi from "../Pages/KullaniciSozlesmesi";
 import ToplulukKurallari from "../Pages/ToplulukKurallari";
 /////
 // COMPONENTS
-import { AuthContext } from "../nonVisualComponents/Context";
+import { AuthContext } from "../contexts/auth.context";
+import { SocketContext } from "../contexts/socket.context";
 import { Session } from "../nonVisualComponents/SessionVariables";
 /////
 
@@ -342,6 +344,8 @@ export default function StackNavigator() {
 	const [introShown, setIntroShown] = React.useState(); // is this the firs time the app is opened
 	const [tutorialShown, setTutorialShown] = React.useState(); // is the tutorial screen shown before
 	const [newUser, setNewUser] = React.useState(false);
+
+	const { connect } = React.useContext(SocketContext);
 	// const navigation = React.useContext(NavigationContext);
 
 	const authContext = React.useMemo(() => ({
@@ -354,7 +358,6 @@ export default function StackNavigator() {
 
 			const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 			const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
-			console.log({ dataToBeSent });
 			await axios
 				.post(url + "/Login", dataToBeSent)
 				.then(async (res) => {
@@ -396,6 +399,7 @@ export default function StackNavigator() {
 							email: email,
 							Photo: photoList,
 						};
+						connect();
 
 						await AsyncStorage.setItem("isLoggedIn", "yes");
 						setIsLoggedIn(true);
@@ -460,13 +464,13 @@ export default function StackNavigator() {
 				// Keep the splash screen visible while we fetch resources
 
 				await loadAsync({
-					Now: require("../assets/Fonts/now.otf"),
-					NowBold: require("../assets/Fonts/now_bold.otf"),
-					Poppins: require("../assets/Fonts/Poppins.ttf"),
-					PoppinsItalic: require("../assets/Fonts/Poppins_Italic.ttf"),
-					PoppinsSemiBold: require("../assets/Fonts/Poppins-SemiBold.ttf"),
-					PoppinsBold: require("../assets/Fonts/Poppins_bold.ttf"),
-					PoppinsExtraBold: require("../assets/Fonts/Poppins-ExtraBold.ttf"),
+					Now: require("../assets/fonts/now.otf"),
+					NowBold: require("../assets/fonts/now_bold.otf"),
+					Poppins: require("../assets/fonts/Poppins.ttf"),
+					PoppinsItalic: require("../assets/fonts/Poppins_Italic.ttf"),
+					PoppinsSemiBold: require("../assets/fonts/Poppins-SemiBold.ttf"),
+					PoppinsBold: require("../assets/fonts/Poppins_bold.ttf"),
+					PoppinsExtraBold: require("../assets/fonts/Poppins-ExtraBold.ttf"),
 				});
 
 				setCustomText({ style: { fontFamily: "Poppins" } });

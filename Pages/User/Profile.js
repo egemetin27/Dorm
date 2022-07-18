@@ -26,7 +26,7 @@ import FastImage from "react-native-fast-image";
 
 import { CustomPicker, CustomRadio } from "../../visualComponents/customComponents";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 import { getAge, getChoice } from "../../nonVisualComponents/generalFunctions";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 import { Session } from "../../nonVisualComponents/SessionVariables";

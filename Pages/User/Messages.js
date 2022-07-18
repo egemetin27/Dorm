@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
 	Text,
 	View,
@@ -23,8 +23,9 @@ import NewMatchBox from "./NewMatchBox";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 
 import commonStyles from "../../visualComponents/styles";
-// import { url } from "../../connection";
+// import url from "../../connection";
 import { Session } from "../../nonVisualComponents/SessionVariables";
+import { SocketContext } from "../../contexts/socket.context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -33,6 +34,7 @@ export default function Messages({ route, navigation }) {
 	const [imgUri, setImgUri] = React.useState();
 	const [noMatch, setNoMatch] = React.useState(false);
 	const [msgBoxHeight, setMsgBoxHeight] = React.useState(0);
+	const { matchList } = useContext(SocketContext);
 
 	const [unreadMsgInFlirt, setUnreadMsgInFlirt] = React.useState(0);
 	const [unreadMsgInFriend, setUnreadMsgInFriend] = React.useState(0);
@@ -51,7 +53,9 @@ export default function Messages({ route, navigation }) {
 	const [myUserID, setmyUserID] = useState("");
 	const [otherUser, setotherUser] = useState([]);
 
-	React.useEffect(() => {
+	// console.log(chatRooms);
+
+	useEffect(() => {
 		const backAction = () => {
 			navigation.replace("MainScreen", { screen: "AnaSayfa" });
 			return true;
@@ -76,14 +80,14 @@ export default function Messages({ route, navigation }) {
 			);
 			//console.log(msgBoxData.data.chatByDate.items);
 			setNoMatch(false);
-			await setChatRooms(msgBoxData.data.chatByDate.items);
+			setChatRooms(msgBoxData.data.chatByDate.items);
 			//console.log(chatRooms);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	React.useEffect(async () => {
+	useEffect(async () => {
 		let abortController = new AbortController();
 		try {
 			const userId = Session.User.userId.toString();
@@ -105,11 +109,16 @@ export default function Messages({ route, navigation }) {
 					})
 				);
 				//console.log(msgBoxData.data.chatByDate.items.length);
+
+				// console.log(msgBoxData);
+				console.log({ matchList });
+
 				if (msgBoxData.data.chatByDate.items.length == 0) {
 					setNoMatch(true);
 				}
-				await setChatRooms(msgBoxData.data.chatByDate.items);
-				await setmyUserID(userId);
+				setChatRooms(matchList);
+				// setChatRooms(msgBoxData.data.chatByDate.items);
+				setmyUserID(userId);
 				//console.log(chatRooms);
 			};
 
@@ -120,7 +129,7 @@ export default function Messages({ route, navigation }) {
 		};
 	}, []);
 
-	React.useEffect(async () => {
+	useEffect(async () => {
 		let abortController = new AbortController();
 
 		try {
@@ -150,39 +159,6 @@ export default function Messages({ route, navigation }) {
 		return () => {
 			abortController.abort();
 			subscription.unsubscribe();
-		};
-	}, []);
-
-	React.useEffect(async () => {
-		let abortController = new AbortController();
-
-		try {
-			const userId = Session.User.userId.toString();
-			const subscription = API.graphql(graphqlOperation(onUpdateUserChat)).subscribe({
-				next: (data) => {
-					/*
-					console.log("++++++++++++++++++++++++");
-					console.log(data.value.data.onUpdateUserChat.firstUser.id);
-					console.log("++++++++++++++++++++++++");
-					*/
-					if (
-						data.value.data.onUpdateUserChat.firstUser.id != userId &&
-						data.value.data.onUpdateUserChat.secondUser.id != userId
-					) {
-						console.log("Message is in another chat");
-						return;
-					} else {
-						console.log("Message is in your chat");
-					}
-
-					fetchNewUsers();
-					// setMessages([newMessage, ...messages]);
-				},
-			});
-		} catch (error) {}
-		return () => {
-			subscription.unsubscribe();
-			abortController.abort();
 		};
 	}, []);
 
@@ -362,17 +338,7 @@ export default function Messages({ route, navigation }) {
 									if (
 										item.mod == 1 &&
 										item.lastMsg != null &&
-										item.firstUser.id == myUserID &&
-										item.status == "Active" &&
-										item.unreadMsg != 0 &&
-										item.lastMsgSender != myUserID
-									) {
-										setUnreadMsgInFriend(1);
-									}
-									if (
-										item.mod == 1 &&
-										item.lastMsg != null &&
-										item.secondUser.id == myUserID &&
+										(item.firstUser.id == myUserID || item.secondUser.id == myUserID) &&
 										item.status == "Active" &&
 										item.unreadMsg != 0 &&
 										item.lastMsgSender != myUserID

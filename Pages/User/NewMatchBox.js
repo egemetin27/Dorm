@@ -11,7 +11,7 @@ import {
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { colors } from "../../visualComponents/colors";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 import * as SecureStore from "expo-secure-store";
 import FastImage from "react-native-fast-image";
 import crypto from "../../functions/crypto";
@@ -30,7 +30,7 @@ const NewMatchBox = (props) => {
 					headers: { "access-token": Session.User.sesToken },
 				})
 				.then((res) => {
-					setImageUri(res.data[0].PhotoLink);
+					setImageUri(res.data[0]?.PhotoLink);
 					// setImageUri(data.PhotoLink);
 				})
 				.catch((err) => {

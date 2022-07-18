@@ -25,12 +25,12 @@ import FastImage from "react-native-fast-image";
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import { AuthContext } from "../../contexts/auth.context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
 import crypto from "../../functions/crypto";
@@ -607,8 +607,6 @@ export default function MainPage({ navigation }) {
 				sigara: [1, 1, 1],
 				yemek: [1, 1, 1, 1, 1],
 			});
-
-			console.log(swipeListData);
 
 			await axios
 				.post(url + "/Swipelist", swipeListData, {

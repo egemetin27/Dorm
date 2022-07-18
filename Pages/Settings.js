@@ -20,9 +20,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
 import { CustomModal, Switch, CustomRadio } from "../visualComponents/customComponents";
-import { url } from "../connection";
+import url from "../connection";
 
-import { AuthContext } from "../nonVisualComponents/Context";
+import { AuthContext } from "../contexts/auth.context";
 import { Session } from "../nonVisualComponents/SessionVariables";
 
 import crypto from "../functions/crypto";

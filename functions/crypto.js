@@ -11,6 +11,9 @@ function randomString(length) {
 }
 
 class crypto {
+	// static #deviceId = "avXB0JH12ZzsoihRdZREMz6J3UyDSVZm";
+	// static #key = "mrpK2IVh4HgvLWl8AdtunLUHR7OWMbzP";
+	// static #iv = "btf0jfdRoyol3QiF";
 	static #deviceId;
 	static #key;
 	static #iv;
@@ -31,8 +34,6 @@ class crypto {
 		this.#iv = newInitVector;
 		this.#deviceId = deviceId;
 
-		console.log({ deviceId, newSecuritykey, newInitVector });
-
 		return [randomString(16), { deviceId, newSecuritykey, newInitVector }];
 	}
 
@@ -42,8 +43,6 @@ class crypto {
 			iv: this.#iv,
 		});
 
-		console.log({ dormId: this.#deviceId, message: encrypted.toString() });
-
 		const dataToBeSent = { dormId: this.#deviceId, message: encrypted.toString() };
 		// return {dormId: _device id_, message: _encrypted message_}
 		return dataToBeSent;
@@ -52,18 +51,6 @@ class crypto {
 	static decrypt(toBeDecrypted) {
 		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, this.#key, {
 			iv: this.#iv,
-		});
-		// console.log("AAA\n\n\n\n\n\n\n\n\n\n");
-		// console.log(decrypted.toString(CryptoES.enc.Utf8));
-
-		const data = JSON.parse(decrypted.toString(CryptoES.enc.Utf8));
-		return data;
-		// return decrypted.toString(CryptoES.enc.Utf8);
-	}
-
-	static testDecrypt(toBeDecrypted) {
-		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, "W42bqJdPLQrW07JpcPCZfO5hm4oYQmTg", {
-			iv: "nfK2DgUUVZzDptuB",
 		});
 		// console.log("AAA\n\n\n\n\n\n\n\n\n\n");
 		// console.log(decrypted.toString(CryptoES.enc.Utf8));

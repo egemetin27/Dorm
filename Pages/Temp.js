@@ -122,18 +122,6 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility, list }) => {
 const myList = [
 	{
 		PhotoLink:
-			"file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540dorm%252FDorm/ImagePicker/ed218c1b-c4b9-496b-9870-26c5b1df2462.jpg",
-		Photo_Order: 1,
-		photo: {
-			cancelled: false,
-			height: 1200,
-			type: "image",
-			uri: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540dorm%252FDorm/ImagePicker/ed218c1b-c4b9-496b-9870-26c5b1df2462.jpg",
-			width: 800,
-		},
-	},
-	{
-		PhotoLink:
 			"file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540dorm%252FDorm/ImagePicker/18e1f3a1-a289-4725-9be6-e3badf41eeec.jpg",
 		Photo_Order: 2,
 		photo: {
@@ -173,7 +161,7 @@ const myList = [
 export default function ProfilePhotos({ route, navigation }) {
 	const [modalVisible, setModalVisibility] = React.useState(false);
 	const [toBeDeleted, setToBeDeleted] = React.useState(null);
-	const [PHOTO_LIST, setPhotoList] = React.useState(route.params?.photoList || myList);
+	const [PHOTO_LIST, setPhotoList] = React.useState(myList);
 	const [isLoading, setIsLoading] = React.useState(false);
 	const photoListShared = useSharedValue(myList);
 

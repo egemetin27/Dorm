@@ -16,7 +16,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 
 import commonStyles from "../../visualComponents/styles";
-import { url } from "../../connection";
+import url from "../../connection";
 import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");

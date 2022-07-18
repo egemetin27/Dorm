@@ -33,9 +33,9 @@ import * as SecureStore from "expo-secure-store";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import { AuthContext } from "../../contexts/auth.context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
 import crypto from "../../functions/crypto";

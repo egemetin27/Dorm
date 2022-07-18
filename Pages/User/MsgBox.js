@@ -17,7 +17,7 @@ import { API, graphqlOperation, Auth } from "aws-amplify";
 import { LinearGradient } from "expo-linear-gradient";
 import FastImage from "react-native-fast-image";
 
-import { url } from "../../connection";
+import url from "../../connection";
 import { Gradient, GradientText } from "../../visualComponents/colors";
 import { updateUserChat } from "../../src/graphql/mutations";
 import { CustomModal } from "../../visualComponents/customComponents";
@@ -43,7 +43,7 @@ const MsgBox = (props) => {
 				})
 				.then((res) => {
 					//setPeopleList(res.data);
-					setImageUri(res.data[0].PhotoLink);
+					setImageUri(res.data[0]?.PhotoLink);
 				})
 				.catch((err) => {
 					console.log(err);

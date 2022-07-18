@@ -27,11 +27,11 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { normalize } from "../../nonVisualComponents/generalFunctions";
 
-import { url } from "../../connection";
+import url from "../../connection";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { AnimatedModal, CustomModal } from "../../visualComponents/customComponents";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import { AuthContext } from "../../contexts/auth.context";
 
 import Card from "./Card";
 import { Session } from "../../nonVisualComponents/SessionVariables";

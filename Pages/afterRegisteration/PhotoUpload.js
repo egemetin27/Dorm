@@ -20,7 +20,7 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import { CustomModal } from "../../visualComponents/customComponents";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 
 import crypto from "../../functions/crypto";
 

@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import commonStyles from "../../visualComponents/styles";
 import { Gradient, colors } from "../../visualComponents/colors";
-import { url } from "../../connection";
+import url from "../../connection";
 import { getAge } from "../../nonVisualComponents/generalFunctions";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import { univList } from "../../nonVisualComponents/Lists";

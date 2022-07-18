@@ -15,7 +15,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import axios from "axios";
 
 import commonStyles from "../../visualComponents/styles";
-import { url } from "../../connection";
+import url from "../../connection";
 import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");

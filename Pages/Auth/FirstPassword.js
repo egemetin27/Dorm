@@ -16,7 +16,7 @@ import axios from "axios";
 
 import { GradientText } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
-import { url } from "../../connection";
+import url from "../../connection";
 import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");

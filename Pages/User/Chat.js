@@ -24,7 +24,7 @@ import * as SecureStore from "expo-secure-store";
 import FastImage from "react-native-fast-image";
 
 import KeyboardSpacer from "react-native-keyboard-spacer";
-import { url } from "../../connection";
+import url from "../../connection";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";

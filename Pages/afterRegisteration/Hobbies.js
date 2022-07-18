@@ -16,8 +16,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
-import { url } from "../../connection";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import url from "../../connection";
+import { AuthContext } from "../../contexts/auth.context";
 import crypto from "../../functions/crypto";
 
 const { height, width } = Dimensions.get("window");

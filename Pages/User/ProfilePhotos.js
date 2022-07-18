@@ -23,7 +23,7 @@ import FastImage from "react-native-fast-image";
 import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { url } from "../../connection";
+import url from "../../connection";
 import crypto from "../../functions/crypto";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 

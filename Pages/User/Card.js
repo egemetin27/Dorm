@@ -34,7 +34,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 import * as SecureStore from "expo-secure-store";
@@ -44,7 +44,7 @@ const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../../src/graphql/queries";
 import { CustomModal } from "../../visualComponents/customComponents";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import { AuthContext } from "../../contexts/auth.context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 import { getTimeDiff } from "../../nonVisualComponents/generalFunctions";
 import FastImage from "react-native-fast-image";
@@ -213,7 +213,7 @@ export default Card = React.memo(
 			const likeDislike = crypto.encrypt({
 				isLike: val,
 				userSwiped: myID,
-				otherUser: id,
+				otherUser: 192,
 				matchMode: matchMode,
 				eventId: eventId,
 			});

@@ -26,7 +26,7 @@ import FastImage from "react-native-fast-image";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
-import { url } from "../../connection";
+import url from "../../connection";
 import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 

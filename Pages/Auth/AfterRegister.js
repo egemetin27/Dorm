@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
 import { GradientText, colors } from "../../visualComponents/colors";
-import { url } from "../../connection";
+import url from "../../connection";
 
 import Gender from "../afterRegisteration/Gender";
 import MatchMode from "../afterRegisteration/MatchMode";

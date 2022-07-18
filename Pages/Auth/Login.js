@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import commonStyles from "../../visualComponents/styles";
 
 import { useFonts } from "@expo-google-fonts/inter";
-import { AuthContext } from "../../nonVisualComponents/Context";
+import { AuthContext } from "../../contexts/auth.context";
 
 const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
 const { width, height } = Dimensions.get("window");
