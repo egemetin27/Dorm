@@ -16,10 +16,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
-import commonStyles from "../../visualComponents/styles";
 import { Gradient, colors } from "../../visualComponents/colors";
-import url from "../../connection";
-import { getAge } from "../../nonVisualComponents/generalFunctions";
+import { getAge } from "../../utils/date.utils";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import { univList } from "../../nonVisualComponents/Lists";
 

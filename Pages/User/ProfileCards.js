@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactNative, {
 	View,
 	Text,
@@ -22,7 +22,6 @@ import Animated, {
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
 import { Octicons, Feather } from "@expo/vector-icons";
-import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { normalize } from "../../nonVisualComponents/generalFunctions";
@@ -36,12 +35,13 @@ import { AuthContext } from "../../contexts/auth.context";
 import Card from "./Card";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
-import abortController from "../../components/custom_hooks/abortController";
 import crypto from "../../functions/crypto";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
 export default function ProfileCards({ navigation, route }) {
+	const { user, signOut } = useContext(AuthContext);
+
 	const [isLoading, setIsLoading] = React.useState(true);
 	// const [peopleList, setPeopleList] = React.useState(route.params.list);
 	const [peopleList, setPeopleList] = React.useState([]);
@@ -63,8 +63,6 @@ export default function ProfileCards({ navigation, route }) {
 	// const [firstImg, setFirstImg] = React.useState("");
 	// const [secondImg, setSecondImg] = React.useState("");
 	const [reportUserID, setReportUserID] = React.useState("");
-
-	const { signOut } = React.useContext(AuthContext);
 
 	// const showMatchScreen = (otherName, otherPicture, myPicture) => {
 	// 	// setMatchPage(true);
@@ -92,7 +90,7 @@ export default function ProfileCards({ navigation, route }) {
 				});
 				await axios
 					.post(url + "/report", encryptedData, {
-						headers: { "access-token": Session.User.sesToken },
+						headers: { "access-token": user.sesToken },
 					})
 					.then((res) => {
 						if (res.data == "Unauthorized Session") {

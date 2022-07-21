@@ -3,8 +3,8 @@ import { Alert } from "react-native";
 import axios from "axios";
 import Constants from "expo-constants";
 
-import crypto from "../../functions/crypto";
-import url from "../../connection";
+import crypto from "../functions/crypto";
+import url from "../connection";
 
 const useKeyGenerator = () => {
 	const [initializationError, setInitializationError] = React.useState(false);

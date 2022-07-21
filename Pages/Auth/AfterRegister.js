@@ -3,7 +3,6 @@ import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
@@ -33,12 +32,13 @@ export default function AfterRegister({ route, navigation }) {
 	const orientationSwitch = useSharedValue(true);
 
 	const { profile } = route.params;
+	const { userId, sesToken } = profile;
 
 	const handleSubmit = async () => {
 		// TODO: send the choices to database
 
 		const choices = {
-			userId: profile.userId,
+			userId: userId,
 			gender: gender - 1,
 			matchMode: matchMode - 1,
 			expectation: expectation - 1,
@@ -48,16 +48,19 @@ export default function AfterRegister({ route, navigation }) {
 			genderVisibility: genderSwitch.value ? "1" : "0",
 		};
 
+		console.log(sesToken);
 		// console.log(choices);
 		const encryptedData = crypto.encrypt(choices);
 		await axios
 			.post(url + "/AfterRegister", encryptedData, {
-				headers: { "access-token": profile.sesToken },
+				headers: { "access-token": sesToken },
 			})
 			.then((res) => {
+				// console.log(res.data);
 				navigation.replace("Hobbies", { ...profile, isNewUser: true });
 			})
 			.catch((error) => {
+				console.log("error on /afterRegister");
 				console.log({ error });
 			});
 		console.log("Submitting");

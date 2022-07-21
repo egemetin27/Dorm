@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -16,24 +16,23 @@ import {
 	BackHandler,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
-import { colors, GradientText, Gradient } from "../../visualComponents/colors";
-import { Ionicons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+import { colors, GradientText } from "../../visualComponents/colors";
+import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
-import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import FastImage from "react-native-fast-image";
 
 import { CustomPicker, CustomRadio } from "../../visualComponents/customComponents";
 import axios from "axios";
 import url from "../../connection";
-import { getAge, getChoice } from "../../nonVisualComponents/generalFunctions";
+import { getAge } from "../../utils/date.utils";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
-import { Session } from "../../nonVisualComponents/SessionVariables";
 import crypto from "../../functions/crypto";
+import { AuthContext } from "../../contexts/auth.context";
+import CustomImage from "../../components/custom-image.component";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
+	const { user, updateProfile } = useContext(AuthContext);
 	// const tabBarHeight = useBottomTabBarHeight();
 
 	// const [progressBarVisible, setVisibility] = React.useState(true);
@@ -86,24 +85,18 @@ export default function Profile({ route, navigation }) {
 
 	React.useEffect(async () => {
 		try {
-			setName(Session.User.Name + " " + Session.User.Surname);
-			setAge(getAge(Session.User.Birth_date));
-			setSex(Session.User.Gender == "null" ? "" : genderList[Session.User.Gender]);
-			setSchool(Session.User.School);
-			setMajor(Session.User.Major == "null" ? "" : Session.User.Major);
-			setReligion(Session.User.Din == "null" ? "" : Session.User.Din);
-			setFriendMode(Session.User.matchMode == "1" ? true : false);
+			setName(user.Name + " " + user.Surname);
+			setAge(getAge(user.Birth_date));
+			setSex(user.Gender == "null" ? "" : genderList[user.Gender]);
+			setSchool(user.School);
+			setMajor(user.Major == "null" ? "" : user.Major);
+			setReligion(user.Din == "null" ? "" : user.Din);
+			setFriendMode(user.matchMode == "1" ? true : false);
 
-			setSign(Session.User.Burc == "null" ? signList[0] : signList[Session.User.Burc]);
-			setDiet(Session.User.Beslenme == "null" ? dietList[0] : dietList[Session.User.Beslenme]);
-			setDrink(
-				Session.User.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[Session.User.Alkol]
-			);
-			setSmoke(
-				Session.User.Sigara == "null"
-					? smokeAndDrinkList[0]
-					: smokeAndDrinkList[Session.User.Sigara]
-			);
+			setSign(user.Burc == "null" ? signList[0] : signList[user.Burc]);
+			setDiet(user.Beslenme == "null" ? dietList[0] : dietList[user.Beslenme]);
+			setDrink(user.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[user.Alkol]);
+			setSmoke(user.Sigara == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[user.Sigara]);
 
 			/*
 			setSign(getChoice(data.Burc, signList));
@@ -112,9 +105,9 @@ export default function Profile({ route, navigation }) {
 			setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
 			*/
 
-			setAbout(Session.User.About == "null" ? "" : Session.User.About);
-			setPhotoList(Session.User.Photo);
-			setHobbies(Session.User.interest);
+			setAbout(user.About == "null" ? "" : user.About);
+			setPhotoList(user.Photo);
+			setHobbies(user.interest);
 			// setUserData({
 			// 	userId: data.userId,
 			// 	name: data.Name + " " + data.Surname,
@@ -141,7 +134,7 @@ export default function Profile({ route, navigation }) {
 		const fName = name.slice(0, name.lastIndexOf(" "));
 
 		const dataRaw = {
-			userId: Session.User.userId,
+			userId: user.userId,
 			Name: fName,
 			Surname: lName,
 			Gender: sex.key,
@@ -158,16 +151,10 @@ export default function Profile({ route, navigation }) {
 
 		await axios
 			.post(url + "/IdentityUpdate", dataToSend, {
-				headers: { "access-token": Session.User.sesToken },
+				headers: { "access-token": user.sesToken },
 			})
 			.then(async (res) => {
-				const dataStr = await SecureStore.getItemAsync("userData");
-				const user = JSON.parse(dataStr);
-				const toBeStored = { ...user, ...dataToSend };
-				const toBeStoredStr = JSON.stringify(toBeStored);
-				await SecureStore.setItemAsync("userData", toBeStoredStr);
-
-				Session.User = { ...Session.User, ...dataRaw };
+				updateProfile({ ...dataRaw });
 			})
 			.catch((err) => {
 				console.log(err);
@@ -207,22 +194,18 @@ export default function Profile({ route, navigation }) {
 		setFriendMode(index == 1 ? true : false);
 
 		const dataToBeSent = crypto.encrypt({
-			userId: Session.User.userId,
+			userId: user.userId,
 			matchMode: index.toString(),
 		});
 
 		axios
 			.post(url + "/matchMode", dataToBeSent, {
-				headers: { "access-token": Session.User.sesToken },
+				headers: { "access-token": user.sesToken },
 			}) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				console.log(res.data);
-				let userStr = await SecureStore.getItemAsync("userData");
-				const user = JSON.parse(userStr);
-				const newUser = { ...user, matchMode: index };
-				userStr = JSON.stringify(newUser);
-				SecureStore.setItemAsync("userData", userStr);
-				Session.User.matchMode = index.toString();
+
+				updateProfile({ matchMode: index.toString() });
 			})
 			.catch((error) => {
 				console.log("Match Mode Error: ", error);
@@ -302,13 +285,7 @@ export default function Profile({ route, navigation }) {
 					) : (
 						<TouchableOpacity
 							onPress={async () => {
-								navigation.navigate("Settings", {
-									invisibility: Session.User.Invisible == "1" ? true : false,
-									campusGhost: Session.User.BlockCampus == "1" ? true : false,
-									schoolLover: Session.User.OnlyCampus == "1" ? true : false,
-									userId: Session.User.userId,
-									sesToken: Session.User.sesToken,
-								});
+								navigation.navigate("Settings");
 							}}
 						>
 							<MaterialCommunityIcons
@@ -366,7 +343,7 @@ export default function Profile({ route, navigation }) {
 					keyboardShouldPersistTaps="handled"
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
-						{Session.User.Photo && Session.User.Photo.length != 0 ? (
+						{user.Photo && user.Photo.length != 0 ? (
 							// TODO: styling should be implemented more resiliently
 							<Carousel
 								loop={false}
@@ -377,11 +354,7 @@ export default function Profile({ route, navigation }) {
 								}}
 								style={{ overflow: "visible", transform: [{ scale: 1.1 }] }}
 								width={width * 0.7}
-								data={
-									Session.User.Photo.length < 4
-										? [...Session.User.Photo, "Add Photo"]
-										: Session.User.Photo
-								}
+								data={user.Photo.length < 4 ? [...user.Photo, "Add Photo"] : user.Photo}
 								renderItem={({ item }) => (
 									<View style={[styles.photo]}>
 										{item != "Add Photo" ? (
@@ -389,39 +362,19 @@ export default function Profile({ route, navigation }) {
 												onPress={() => {
 													if (isEditable) {
 														setEditibility(false);
-														navigation.navigate("ProfilePhotos", {
-															photoList: Session.User.Photo,
-															userId: Session.User.userId,
-															sesToken: Session.User.sesToken,
-														});
+														navigation.navigate("ProfilePhotos");
 													}
 												}}
 											>
-												{__DEV__ ? (
-													<Image
-														source={{ uri: item.PhotoLink }}
-														style={{ height: height / 2.8, aspectRatio: 2 / 3 }}
-														resizeMode="cover"
-													/>
-												) : (
-													<FastImage
-														source={{ uri: item.PhotoLink }}
-														style={{
-															height: height / 2.8,
-															aspectRatio: 2 / 3,
-															resizeMode: "cover",
-														}}
-													/>
-												)}
+												<CustomImage
+													url={item.PhotoLink}
+													style={{ height: height / 2.8, aspectRatio: 2 / 3, resizeMode: "cover" }}
+												/>
 											</Pressable>
 										) : (
 											<Pressable
 												onPress={() => {
-													navigation.navigate("ProfilePhotos", {
-														photoList: PHOTO_LIST,
-														userId: Session.User.userId,
-														sesToken: Session.User.sesToken,
-													});
+													navigation.navigate("ProfilePhotos");
 												}}
 											>
 												<View style={styles.photo}>
@@ -435,11 +388,7 @@ export default function Profile({ route, navigation }) {
 						) : (
 							<Pressable
 								onPress={() => {
-									navigation.replace("ProfilePhotos", {
-										photoList: PHOTO_LIST,
-										userId: Session.User.userId,
-										sesToken: Session.User.sesToken,
-									});
+									navigation.replace("ProfilePhotos");
 								}}
 							>
 								<View style={[styles.photo]}>
@@ -985,8 +934,6 @@ export default function Profile({ route, navigation }) {
 								if (isEditable) {
 									handleSave();
 									navigation.push("Hobbies", {
-										hobbyList: hobbies,
-										userId: Session.User.userId,
 										isNewUser: false,
 									});
 								}

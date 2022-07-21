@@ -164,12 +164,13 @@ export default function Messages({ route, navigation }) {
 
 	return (
 		<View style={{ width: width, height: height }}>
-			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
+			{/* <StatusBar style="dark" backgroundColor={"#F4F3F3"} /> */}
 			<View name={"Header"} style={[commonStyles.Header, { marginTop: height * 0.02 }]}>
 				<View style={{ marginLeft: 20 }}>
 					{
 						<GradientText
-							style={{ fontSize: height * 0.035, fontFamily: "NowBold", letterSpacing: 1.2 }}
+							style={{ fontSize: height * 0.035, letterSpacing: 1.2 }}
+							// style={{ fontSize: height * 0.035, fontFamily: "NowBold", letterSpacing: 1.2 }}
 							text={"Sohbetlerim"}
 						/>
 					}

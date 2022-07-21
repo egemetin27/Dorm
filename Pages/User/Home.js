@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -18,15 +18,12 @@ import {
 	RefreshControlBase,
 } from "react-native";
 import { Octicons, MaterialCommunityIcons, Entypo, Feather, Ionicons } from "@expo/vector-icons";
-import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
-import FastImage from "react-native-fast-image";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
 import url from "../../connection";
-import { getAge } from "../../nonVisualComponents/generalFunctions";
 
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { CustomModal } from "../../visualComponents/customComponents";
@@ -34,164 +31,62 @@ import { AuthContext } from "../../contexts/auth.context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 
 import crypto from "../../functions/crypto";
+import { formatDate } from "../../utils/date.utils";
+import CustomImage from "../../components/custom-image.component";
+
+import People from "../../components/person-card-small.component";
+import Event from "../../components/event-card-small.component";
 
 const { height, width } = Dimensions.get("window");
-const CategoryList = [
+
+const categories = [
 	{
 		key: "Tümü",
-		// url: "",
+		databaseKey: "",
+
 		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
 	},
 	{
 		key: "Favorilerin",
+		databaseKey: "isLiked",
 		url: require("../../assets/HomeScreenCategoryIcons/Favs.png"),
 	},
 	{
 		key: "Kaçmaz",
+		databaseKey: "Kacmaz",
 		url: require("../../assets/HomeScreenCategoryIcons/Hot.png"),
 	},
-	{ key: "Gece", url: require("../../assets/HomeScreenCategoryIcons/Gece.png") },
+	{
+		key: "Gece",
+		databaseKey: "Gece",
+		url: require("../../assets/HomeScreenCategoryIcons/Gece.png"),
+	},
+	{
+		key: "Festival",
+		databaseKey: "festival",
+		url: require("../../assets/HomeScreenCategoryIcons/festival.png"),
+	},
+	{
+		key: "Konser",
+		databaseKey: "Konser",
+		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
+	},
 	{
 		key: "Kampüs",
+		databaseKey: "Kampus",
 		url: require("../../assets/HomeScreenCategoryIcons/Campus.png"),
 	},
 	{
 		key: "Kültür",
+		databaseKey: "Culture",
 		url: require("../../assets/HomeScreenCategoryIcons/Culture.png"),
 	},
 	{
-		key: "Konser",
-		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
-	},
-	{
 		key: "Filmler",
+		databaseKey: "Film",
 		url: require("../../assets/HomeScreenCategoryIcons/Movies.png"),
 	},
 ];
-
-const People = ({ person, openProfiles, index, length, setIsAppReady }) => {
-	const {
-		Name: name,
-		Birth_Date: bDay,
-		School: university,
-		Major: major,
-		photos: photoList,
-	} = person;
-
-	const age = getAge(bDay);
-
-	// React.useEffect(async () => {
-	// 	await Image.prefetch(photoList[0]?.PhotoLink);
-	// }, []);
-
-	return (
-		<Pressable
-			onPress={() => {
-				openProfiles(index);
-			}}
-			style={[
-				commonStyles.photo,
-				{
-					height: "95%",
-					backgroundColor: colors.white,
-					marginHorizontal: 0,
-					marginLeft: 15,
-					marginRight: index + 1 == length ? 15 : 0,
-				},
-			]}
-		>
-			{photoList?.length > 0 ? (
-				__DEV__ ? (
-					<Image
-						source={{ uri: photoList[0]?.PhotoLink, cache: "force-cache" }}
-						style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-					/>
-				) : (
-					<FastImage
-						source={{ uri: photoList[0]?.PhotoLink }}
-						style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-					/>
-				)
-			) : (
-				<Ionicons name="person" color="white" size={60} />
-			)}
-
-			<Gradient
-				colors={["rgba(0,0,0,0.01)", "rgba(0,0,0,0.1)", "rgba(0,0,0,0.75)"]}
-				locations={[0, 0.1, 1]}
-				start={{ x: 0.5, y: 0 }}
-				end={{ x: 0.5, y: 1 }}
-				style={{
-					height: height * 0.08,
-					width: "100%",
-					position: "absolute",
-					justifyContent: "flex-end",
-					paddingBottom: height * 0.005,
-					bottom: 0,
-					paddingHorizontal: width * 0.02,
-				}}
-			>
-				<View
-					style={{
-						flexDirection: "row",
-					}}
-				>
-					<View style={{ flexShrink: 1 }}>
-						<Text
-							numberOfLines={1}
-							style={{
-								width: "100%",
-								color: colors.white,
-								fontSize: height * 0.02,
-								lineHeight: height * 0.025,
-								fontFamily: "PoppinsSemiBold",
-								//letterSpacing: 1.05,
-							}}
-						>
-							{name}
-						</Text>
-					</View>
-					<Text
-						style={{
-							color: colors.white,
-							fontSize: height * 0.02,
-							lineHeight: height * 0.025,
-							fontFamily: "PoppinsSemiBold",
-							//letterSpacing: 1.05,
-						}}
-					>
-						{" "}
-						• {age}
-					</Text>
-				</View>
-				<Text
-					numberOfLines={1}
-					style={{
-						paddingTop: height * 0.002,
-						color: colors.white,
-						fontFamily: "PoppinsItalic",
-						fontSize: height * 0.015,
-						lineHeight: height * 0.018,
-					}}
-				>
-					{university}
-				</Text>
-				<Text
-					numberOfLines={1}
-					style={{
-						paddingTop: height * 0.002,
-						color: colors.white,
-						fontFamily: "PoppinsItalic",
-						fontSize: height * 0.015,
-						lineHeight: height * 0.018,
-					}}
-				>
-					{major}
-				</Text>
-			</Gradient>
-		</Pressable>
-	);
-};
 
 const Category = ({
 	index,
@@ -207,41 +102,8 @@ const Category = ({
 			setShownEvents(eventList);
 			return;
 		}
-		if (idx == 1) {
-			const filtered = eventList.filter((item) => item.isLiked == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 2) {
-			const filtered = eventList.filter((item) => item.Kacmaz == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 3) {
-			const filtered = eventList.filter((item) => item.Gece == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 4) {
-			const filtered = eventList.filter((item) => item.Kampus == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 5) {
-			const filtered = eventList.filter((item) => item.Culture == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 6) {
-			const filtered = eventList.filter((item) => item.Konser == 1);
-			setShownEvents(filtered);
-			return;
-		}
-		if (idx == 7) {
-			const filtered = eventList.filter((item) => item.Film == 1);
-			setShownEvents(filtered);
-			return;
-		}
+		const filtered = eventList.filter((item) => item[categories[idx].databaseKey] == 1);
+		setShownEvents(filtered);
 	};
 
 	return (
@@ -254,7 +116,7 @@ const Category = ({
 					aspectRatio: 1 / 1,
 					marginHorizontal: 0,
 					marginLeft: Math.min(20, width * 0.03),
-					marginRight: index + 1 == CategoryList.length ? Math.min(20, width * 0.03) : 0,
+					marginRight: index + 1 == categories.length ? Math.min(20, width * 0.03) : 0,
 					backgroundColor: colors.white,
 					shadowColor: "#000000",
 					shadowOffset: {
@@ -314,139 +176,9 @@ const Category = ({
 	);
 };
 
-const Event = ({ event, openEvents, index, length, setIsAppReady }) => {
-	const { Description, Date, StartTime, Location, photos } = event;
-
-	// React.useEffect(async () => {
-	// 	if (photos?.length > 0) {
-	// 		await Image.prefetch(photos[0]);
-	// 	}
-	// }, []);
-
-	return (
-		<Pressable
-			onPress={() => {
-				setIsAppReady(false);
-				openEvents(index);
-			}}
-			style={[
-				commonStyles.photo,
-				{
-					height: "95%",
-					backgroundColor: colors.cool_gray,
-					marginHorizontal: 0,
-					marginLeft: 15,
-					marginRight: index + 1 == length ? 15 : 0,
-				},
-			]}
-		>
-			{__DEV__ ? (
-				<Image
-					source={{ uri: photos?.length > 0 ? photos[0] : "AAAA", cache: "force-cache" }}
-					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				/>
-			) : (
-				<FastImage
-					source={{ uri: photos?.length > 0 ? photos[0] : "AAAA" }}
-					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				/>
-			)}
-
-			<Gradient
-				colors={["rgba(0,0,0,0.001)", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.65)"]}
-				locations={[0, 0.4, 1]}
-				start={{ x: 0.5, y: 0 }}
-				end={{ x: 0.5, y: 1 }}
-				style={{
-					height: "40%",
-					paddingTop: "25%",
-					// height: height * 0.08,
-					width: "100%",
-					position: "absolute",
-					justifyContent: "flex-start",
-					bottom: 0,
-					paddingBottom: "2%",
-					paddingHorizontal: "5%",
-				}}
-			>
-				<Text
-					numberOfLines={1}
-					style={{
-						color: colors.white,
-						fontSize: height * 0.02,
-						lineHeight: height * 0.025,
-						fontFamily: "PoppinsSemiBold",
-						//letterSpacing: 1.05,
-					}}
-				>
-					{Description}
-				</Text>
-				<View
-					name={"date"}
-					style={{
-						width: "100%",
-						flexDirection: "row",
-						justifyContent: "space-between",
-						paddingTop: height * 0.002,
-					}}
-				>
-					{Date != "NaN/NaN/NaN" && (
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: height * 0.015,
-								lineHeight: height * 0.018,
-							}}
-						>
-							{Date}
-						</Text>
-					)}
-					{StartTime != "" && (
-						<Text
-							style={{
-								color: colors.white,
-								fontSize: height * 0.015,
-								lineHeight: height * 0.018,
-							}}
-						>
-							{StartTime}
-						</Text>
-					)}
-				</View>
-				{Location != "" && (
-					<View
-						name={"location"}
-						style={{
-							width: "100%",
-							flexDirection: "row",
-							alignItems: "flex-end",
-							paddingTop: height * 0.002,
-						}}
-					>
-						<MaterialCommunityIcons
-							name="map-marker-radius"
-							size={height * 0.018}
-							color={colors.white}
-							style={{ paddingRight: width * 0.005 }}
-						/>
-						<Text
-							numberOfLines={1}
-							style={{
-								color: colors.white,
-								fontSize: height * 0.015,
-								lineHeight: height * 0.018,
-							}}
-						>
-							{Location}
-						</Text>
-					</View>
-				)}
-			</Gradient>
-		</Pressable>
-	);
-};
-
 export default function MainPage({ navigation }) {
+	const { user, signOut } = useContext(AuthContext);
+
 	const [isAppReady, setIsAppReady] = React.useState(false);
 	const [selectedCategory, setSelectedCategory] = React.useState(0);
 	const [eventList, setEventList] = React.useState([]);
@@ -486,9 +218,7 @@ export default function MainPage({ navigation }) {
 	//const [filterHobi, setFilterHobi] = React.useState();
 
 	const applyFilter = async () => {
-		const userDataStr = await SecureStore.getItemAsync("userData");
-		const userData = JSON.parse(userDataStr);
-		const userId = userData.userId.toString();
+		const { userId } = user;
 
 		var applyCinsiyet = filterCinsiyet;
 		var applyEgsersiz = filterEgsersiz;
@@ -552,7 +282,7 @@ export default function MainPage({ navigation }) {
 
 			await axios
 				.post(url + "/Swipelist", swipeListData, {
-					headers: { "access-token": Session.User.sesToken },
+					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {
 					const data = crypto.decrypt(res.data);
@@ -567,7 +297,7 @@ export default function MainPage({ navigation }) {
 						}
 						if (err.response.status == 411) {
 							setPeopleList([]);
-							setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
+							setLisetEmptyMessage("Diğer insanları görmek istiyorsan görünmez moddan çıkmalısın!");
 							return;
 						}
 					} else {
@@ -584,15 +314,19 @@ export default function MainPage({ navigation }) {
 		}
 	};
 
-	const { signOut } = React.useContext(AuthContext);
-
 	React.useEffect(async () => {
 		let abortController = new AbortController();
-		const userDataStr = await SecureStore.getItemAsync("userData");
-		const userData = JSON.parse(userDataStr);
-		const userId = userData.userId.toString();
-		const myMode = userData.matchMode;
-		const myPhoto = userData.Photo[0]?.PhotoLink ?? "";
+
+		// console.log("user: ");
+		// console.log({ user });
+
+		// console.log("photo: ");
+		// console.log(user.Photo[0]);
+
+		const userId = user?.userId;
+		const myMode = user?.matchMode;
+		const myPhoto = user?.Photo[0]?.PhotoLink ?? "";
+
 		setMatchMode(myMode);
 		setMyPP(myPhoto);
 
@@ -610,7 +344,7 @@ export default function MainPage({ navigation }) {
 
 			await axios
 				.post(url + "/Swipelist", swipeListData, {
-					headers: { "access-token": Session.User.sesToken },
+					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {
 					const data = crypto.decrypt(res.data);
@@ -625,7 +359,9 @@ export default function MainPage({ navigation }) {
 						}
 						if (err.response.status == 411) {
 							setPeopleList([]);
-							setLisetEmptyMessage("Diğerlerini görmek istiyorsan görünmez moddan çıkmalısın!");
+							setLisetEmptyMessage(
+								"Diğerler insanları görmek istiyorsan görünmez moddan çıkmalısın!"
+							);
 							return;
 						}
 					} else {
@@ -635,10 +371,10 @@ export default function MainPage({ navigation }) {
 					console.log(err);
 				});
 
-			const eventListData = crypto.encrypt({ userId: userId, campus: Session.User.School });
+			const eventListData = crypto.encrypt({ userId: userId, campus: user.School });
 			await axios
 				.post(url + "/EventList", eventListData, {
-					headers: { "access-token": Session.User.sesToken },
+					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {
 					const data = crypto.decrypt(res.data);
@@ -646,7 +382,7 @@ export default function MainPage({ navigation }) {
 					setShownEvents(data);
 				})
 				.catch((err) => {
-					console.log("error on event list");
+					console.log("error on /eventList");
 					console.log(err);
 				});
 		}
@@ -775,8 +511,8 @@ export default function MainPage({ navigation }) {
 										idx: idx,
 										list: peopleList.slice(0, 45),
 										matchMode: matchMode,
-										myID: Session.User.userId,
-										sesToken: Session.User.sesToken,
+										myID: user.userId,
+										sesToken: user.sesToken,
 										myPP: myPP,
 									});
 								}}
@@ -817,11 +553,11 @@ export default function MainPage({ navigation }) {
 				<FlatList
 					horizontal={true}
 					showsHorizontalScrollIndicator={false}
-					data={CategoryList}
+					data={categories}
 					renderItem={({ item, index }) => (
 						<Category
 							index={index}
-							userId={Session.User.sesToken}
+							userId={user.sesToken}
 							selectedCategory={selectedCategory}
 							setSelectedCategory={setSelectedCategory}
 							setShownEvents={setShownEvents}
@@ -850,8 +586,8 @@ export default function MainPage({ navigation }) {
 									navigation.navigate("EventCards", {
 										idx: idx,
 										list: shownEvents,
-										myID: Session.User.userId,
-										sesToken: Session.User.sesToken,
+										myID: user.userId,
+										sesToken: user.sesToken,
 									});
 								}}
 							/>

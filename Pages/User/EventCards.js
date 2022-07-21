@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactNative, {
 	View,
 	Text,
@@ -28,7 +28,6 @@ import Animated, {
 import Carousel from "react-native-reanimated-carousel";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import * as SecureStore from "expo-secure-store";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
@@ -36,13 +35,13 @@ import axios from "axios";
 import url from "../../connection";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../contexts/auth.context";
-import { Session } from "../../nonVisualComponents/SessionVariables";
+import { formatDate } from "../../utils/date.utils";
 
 import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("window");
 
-const Card = ({ event, myID, navigation, sesToken }) => {
+const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
 	const {
 		EventId,
 		BuyLink: buyLink,
@@ -61,8 +60,6 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	const [likeEventModal, setLikeEventModal] = React.useState(false);
 	const [seeWhoLikedModal, setSeeWhoLikedModal] = React.useState(false);
 
-	const { signOut } = React.useContext(AuthContext);
-
 	const progress = useSharedValue(0);
 	const turn = useSharedValue(1); // 1 => front, -1 => back
 
@@ -80,9 +77,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	});
 
 	const handleDoubleTab = () => {
-		const encryptedData = crypto.encrypt({ userId: Session.User.userId, eventId: EventId });
+		const encryptedData = crypto.encrypt({ userId: user.userId, eventId: EventId });
 		axios.post(url + "/detailEventClick", encryptedData, {
-			headers: { "access-token": Session.User.sesToken },
+			headers: { "access-token": user.sesToken },
 		});
 	};
 
@@ -112,7 +109,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
 	const handleLikeButton = async () => {
-		const id = Session.User.userId;
+		const id = user.userId;
 		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId });
 
 		if (favFlag) {
@@ -126,7 +123,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 	};
 
 	const likeEvent = async (likeMode) => {
-		const id = Session.User.userId;
+		const id = user.userId;
 		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: likeMode });
 		await axios
 			.post(url + "/likeEvent", encryptedData, { headers: { "access-token": sesToken } })
@@ -144,6 +141,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 			setSeeWhoLikedModal(true);
 			return;
 		}
+
 		const encryptedData = crypto.encrypt({
 			eventId: EventId,
 			userId: myID,
@@ -151,6 +149,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 		await axios
 			.post(url + "/eventParticipants", encryptedData, { headers: { "access-token": sesToken } })
 			.then((res) => {
+				console.log(res.data);
 				if (res.data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
@@ -168,7 +167,9 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 				if (err.response.status == 410) {
 					Alert.alert("Oturumunuzun süresi doldu!");
 					signOut();
+					return;
 				}
+				console.log(err.response.data);
 			});
 	};
 
@@ -322,7 +323,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 													fontFamily: "PoppinsItalic",
 												}}
 											>
-												{date}
+												{formatDate(date)}
 											</Text>
 										)}
 
@@ -495,7 +496,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 											fontSize: Math.min(height * 0.03, width * 0.048),
 										}}
 									>
-										{date}
+										{formatDate(date)}
 									</Text>
 								</Text>
 							)}
@@ -560,7 +561,7 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 
 											const data = crypto.encrypt({
 												eventId: EventId,
-												userId: Session.User.userId,
+												userId: user.userId,
 											});
 
 											await axios
@@ -796,6 +797,8 @@ const Card = ({ event, myID, navigation, sesToken }) => {
 };
 
 export default function EventCards({ navigation, route }) {
+	const { user, signOut } = useContext(AuthContext);
+
 	const { idx, list, myID, sesToken } = route.params;
 
 	React.useEffect(() => {
@@ -814,13 +817,12 @@ export default function EventCards({ navigation, route }) {
 	}, []);
 
 	const sendEventSeen = (index) => {
-		console.log(index);
 		const encryptedData = crypto.encrypt({
-			userId: Session.User.userId,
+			userId: user.userId,
 			eventId: list[index].EventId,
 		});
 		axios.post(url + "/EventClick", encryptedData, {
-			headers: { "access-token": Session.User.sesToken },
+			headers: { "access-token": user.sesToken },
 		});
 	};
 
@@ -871,7 +873,14 @@ export default function EventCards({ navigation, route }) {
 						loop={false}
 						data={list}
 						renderItem={({ item }) => (
-							<Card event={item} myID={myID} navigation={navigation} sesToken={sesToken} />
+							<Card
+								event={item}
+								myID={myID}
+								navigation={navigation}
+								sesToken={sesToken}
+								user={user}
+								signOut={signOut}
+							/>
 						)}
 					/>
 				</View>

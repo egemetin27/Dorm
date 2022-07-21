@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import { useState, useRef, useContext } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -21,17 +21,19 @@ const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
 const { width, height } = Dimensions.get("window");
 
 export default function Login({ navigation }) {
-	const [loading, setLoading] = React.useState(false);
-	const [email, onChangeEmail] = React.useState("");
-	const [password, onChangePassword] = React.useState("");
-	const [wrongInput, setWrongInput] = React.useState({
+	const { signIn } = useContext(AuthContext);
+
+	const [loading, setLoading] = useState(false);
+	const [email, onChangeEmail] = useState("");
+	const [password, onChangePassword] = useState("");
+	const [wrongInput, setWrongInput] = useState({
 		value: false,
 		message: "",
 	});
-	const [passwordShown, setPasswordShown] = React.useState(false);
+	const [passwordShown, setPasswordShown] = useState(false);
 
-	const animRef1 = React.useRef(new Animated.Value(0)).current;
-	const animRef2 = React.useRef(new Animated.Value(0)).current;
+	const animRef1 = useRef(new Animated.Value(0)).current;
+	const animRef2 = useRef(new Animated.Value(0)).current;
 
 	const handleFocus = (ref) => {
 		Animated.timing(ref, {
@@ -49,14 +51,11 @@ export default function Login({ navigation }) {
 		}).start();
 	};
 
-	const { signIn } = React.useContext(AuthContext);
-
 	const handleLogin = async () => {
 		setLoading(true);
 		signIn({
 			email: email.trim().toLowerCase(),
 			password: password.trim(),
-			isNewUser: false,
 			navigation: navigation,
 			notLoading: () => {
 				setLoading(false);

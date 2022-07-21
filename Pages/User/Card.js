@@ -1,13 +1,5 @@
-import React from "react";
-import ReactNative, {
-	View,
-	Text,
-	Image,
-	Dimensions,
-	Modal,
-	RefreshControlBase,
-	Alert,
-} from "react-native";
+import React, { useContext } from "react";
+import { View, Text, Image, Dimensions, Alert } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -19,7 +11,6 @@ import Animated, {
 	Extrapolate,
 	interpolate,
 	runOnJS,
-	useAnimatedReaction,
 	useAnimatedStyle,
 	useSharedValue,
 	withDelay,
@@ -27,30 +18,27 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { snapPoint } from "react-native-redash";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BlurView } from "expo-blur";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import axios from "axios";
 import url from "../../connection";
-import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
-import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
-import * as SecureStore from "expo-secure-store";
+import { getGender } from "../../nonVisualComponents/generalFunctions";
+import { getAge } from "../../utils/date.utils";
+import { dietList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
-import { API, graphqlOperation } from "aws-amplify";
-import { getMsgUser } from "../../src/graphql/queries";
-import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../contexts/auth.context";
 import { Session } from "../../nonVisualComponents/SessionVariables";
 import { getTimeDiff } from "../../nonVisualComponents/generalFunctions";
-import FastImage from "react-native-fast-image";
-import { BlurView } from "expo-blur";
 
 import crypto from "../../functions/crypto";
+import CustomImage from "../../components/custom-image.component";
 
 export default Card = React.memo(
 	({
@@ -72,6 +60,7 @@ export default Card = React.memo(
 		length,
 		refreshList,
 	}) => {
+		const { user, signOut } = useContext(AuthContext);
 		const progress = useSharedValue(0);
 		const x = useSharedValue(0);
 		const destination = useSharedValue(0);
@@ -118,8 +107,6 @@ export default Card = React.memo(
 
 		const photoListRef = React.useRef();
 
-		const { signOut } = React.useContext(AuthContext);
-
 		React.useEffect(() => {
 			let abortController = new AbortController();
 			return () => {
@@ -165,7 +152,7 @@ export default Card = React.memo(
 				const encryptedId = crypto.encrypt({ userId: id });
 				axios
 					.post(url + "/getToken", encryptedId, {
-						headers: { "access-token": Session.User.sesToken },
+						headers: { "access-token": user.sesToken },
 					})
 					.then((res) => {
 						const token = crypto.decrypt(res.data);
@@ -202,30 +189,30 @@ export default Card = React.memo(
 			// 0 = like, 1 = super like, 2 =  dislike
 			backFace.value = false;
 
-			if (val == 0 && Session.LikeCount == 0 && getTimeDiff(Session.User.SwipeRefreshTime)) {
+			if (val == 0 && Session.LikeCount == 0 && getTimeDiff(user.SwipeRefreshTime)) {
 				x.value = withSpring(0);
 				destination.value = 0;
 
-				const time = getTimeDiff(Session.User.SwipeRefreshTime);
+				const time = getTimeDiff(user.SwipeRefreshTime);
 				showLikeEndedModal(time.hour, time.minute);
 				return;
 			}
 			const likeDislike = crypto.encrypt({
 				isLike: val,
 				userSwiped: myID,
-				otherUser: 192,
+				otherUser: id,
 				matchMode: matchMode,
 				eventId: eventId,
 			});
 
 			axios
 				.post(url + "/LikeDislike", likeDislike, {
-					headers: { "access-token": Session.User.sesToken },
+					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {
 					console.log(res.data);
 					// if (res.data.LikeCount == 0) {
-					// 	Session.User.SwipeRefreshTime = normalizeTime(Date.now());
+					// 	user.SwipeRefreshTime = normalizeTime(Date.now());
 					// 	Session.LikeCount = 0;
 					// }
 
@@ -251,7 +238,7 @@ export default Card = React.memo(
 						}
 						if (error.response.status == 408) {
 							// console.log("swipe count ended response");
-							Session.User.SwipeRefreshTime = error.response.data;
+							user.SwipeRefreshTime = error.response.data;
 							Session.LikeCount = 0;
 
 							const time = getTimeDiff(error.response.data);
@@ -476,35 +463,15 @@ export default Card = React.memo(
 											renderItem={({ item }) => {
 												return (
 													<View>
-														{__DEV__ ? (
-															<Image
-																// key={item.index}
-																source={{
-																	uri: item?.PhotoLink ?? "AAA",
-																	cache: "force-cache",
-																}}
-																style={{
-																	aspectRatio: 1 / 1.5,
-																	height: Math.min(height * 0.7, width * 1.35),
-																	resizeMode: "cover",
-																	backgroundColor: colors.cool_gray,
-																}}
-															/>
-														) : (
-															<FastImage
-																key={item.index}
-																source={{
-																	uri: item?.PhotoLink ?? "AAA",
-																	priority: FastImage.priority.high,
-																}}
-																style={{
-																	aspectRatio: 1 / 1.5,
-																	height: Math.min(height * 0.7, width * 1.35),
-																	resizeMode: "cover",
-																	backgroundColor: colors.cool_gray,
-																}}
-															/>
-														)}
+														<CustomImage
+															url={item?.PhotoLink ?? "AAA"}
+															style={{
+																aspectRatio: 1 / 1.5,
+																height: Math.min(height * 0.7, width * 1.35),
+																resizeMode: "cover",
+																backgroundColor: colors.cool_gray,
+															}}
+														/>
 													</View>
 												);
 											}}

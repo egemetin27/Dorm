@@ -1,33 +1,24 @@
 import { Pressable, Image, StyleSheet, Dimensions } from "react-native";
-import FastImage from "react-native-fast-image";
+import { useNavigation } from "@react-navigation/native";
+import CustomImage from "../../../components/custom-image.component";
 
 const { width, height } = Dimensions.get("screen");
 
-const EmptyChatBox = ({ user }) => {
-	const { imageUrl, otherId } = user;
+const EmptyChatBox = ({ match }) => {
+	const navigation = useNavigation();
+
+	const { otherId } = match;
+	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
 
 	const handlePress = () => {
-		console.log(`opening chat with id: ${otherId}`);
+		navigation.navigate("Chat", { user: match });
 	};
 
 	return (
 		<Pressable style={styles.container} onPress={handlePress}>
-			{__DEV__ ? (
-				<Image
-					source={{
-						uri: imageUrl,
-					}}
-					resizeMode="cover"
-					style={{
-						minHeight: "100%",
-						minWidth: "100%",
-					}}
-				/>
-			) : (
-				<FastImage
-					source={{
-						uri: imageUrl,
-					}}
+			{imageUrl && (
+				<CustomImage
+					url={imageUrl}
 					style={{
 						minHeight: "100%",
 						minWidth: "100%",
@@ -41,12 +32,12 @@ const EmptyChatBox = ({ user }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "gray",
+		backgroundColor: "#653cf8",
 		height: "100%",
 		aspectRatio: 2 / 3,
 		borderRadius: height * 0.01,
 		overflow: "hidden",
-		elevation: 3,
+		elevation: 5,
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,

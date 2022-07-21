@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	Alert,
 	View,
@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -23,7 +22,6 @@ import { CustomModal, Switch, CustomRadio } from "../visualComponents/customComp
 import url from "../connection";
 
 import { AuthContext } from "../contexts/auth.context";
-import { Session } from "../nonVisualComponents/SessionVariables";
 
 import crypto from "../functions/crypto";
 
@@ -345,17 +343,18 @@ const DeleteAccountModal = ({
 	);
 };
 
-export default function Settings({ navigation, route }) {
-	const {
-		invisibility: invis,
-		campusGhost: ghost,
-		schoolLover: onlyCampus,
-		userId,
-		sesToken,
-	} = route.params || { invisibility: true, campusGhost: true, schoolLover: true };
+const x = {};
 
-	const { signOut } = React.useContext(AuthContext);
+export default function Settings({ navigation, route }) {
 	const insets = useSafeAreaInsets();
+
+	const { user, updateProfile, signOut } = useContext(AuthContext);
+
+	const invis = user.Invisible == "1" ? true : false;
+	const ghost = user.BlockCampus == "1" ? true : false;
+	const onlyCampus = user.OnlyCampus == "1" ? true : false;
+	const userId = user.userId;
+	const sesToken = user.sesToken;
 
 	// SWITCHES
 	const [invisibility, setInvisibility] = React.useState(invis);
@@ -366,7 +365,7 @@ export default function Settings({ navigation, route }) {
 	////////////
 
 	// MODALS
-	const [superdormerModal, setSuperdormerModal] = React.useState(false);
+	// const [superdormerModal, setSuperdormerModal] = React.useState(false);
 	const [signoutModal, setSignoutModal] = React.useState(false);
 	const [freezeAccountModal, setFreezeAccountModal] = React.useState(false);
 	const [deleteAccountModal, setDeleteAccountModal] = React.useState(false);
@@ -395,13 +394,13 @@ export default function Settings({ navigation, route }) {
 		axios
 			.post(url + "/ChangeVisibility", invisSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
-				let userStr = await SecureStore.getItemAsync("userData");
-				const user = JSON.parse(userStr);
-				const newUser = { ...user, Invisible: value ? "1" : "0" };
-				userStr = JSON.stringify(newUser);
-				SecureStore.setItemAsync("userData", userStr);
+				// let userStr = await SecureStore.getItemAsync("userData");
+				// const user = JSON.parse(userStr);
+				// const newUser = { ...user, Invisible: value ? "1" : "0" };
+				// userStr = JSON.stringify(newUser);
+				// SecureStore.setItemAsync("userData", userStr);
 
-				Session.User.Invisible = value ? "1" : "0";
+				updateProfile({ Invisible: value ? "1" : "0" });
 			})
 			.catch((error) => {
 				console.log("Visibility Error: ", error);
@@ -418,13 +417,13 @@ export default function Settings({ navigation, route }) {
 		axios
 			.post(url + "/BlockCampus", blockCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
-				let userStr = await SecureStore.getItemAsync("userData");
-				const user = JSON.parse(userStr);
-				const newUser = { ...user, BlockCampus: value ? "1" : "0" };
-				userStr = JSON.stringify(newUser);
-				SecureStore.setItemAsync("userData", userStr);
+				// let userStr = await SecureStore.getItemAsync("userData");
+				// const user = JSON.parse(userStr);
+				// const newUser = { ...user, BlockCampus: value ? "1" : "0" };
+				// userStr = JSON.stringify(newUser);
+				// SecureStore.setItemAsync("userData", userStr);
 
-				Session.User.BlockCampus = value ? "1" : "0";
+				updateProfile({ BlockCampus: value ? "1" : "0" });
 			})
 			.catch((error) => {
 				console.log("Ghost Error: ", error);
@@ -442,13 +441,13 @@ export default function Settings({ navigation, route }) {
 		axios
 			.post(url + "/OnlyCampus", onlyCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
-				let userStr = await SecureStore.getItemAsync("userData");
-				const user = JSON.parse(userStr);
-				const newUser = { ...user, OnlyCampus: value ? "1" : "0" };
-				userStr = JSON.stringify(newUser);
-				SecureStore.setItemAsync("userData", userStr);
+				// let userStr = await SecureStore.getItemAsync("userData");
+				// const user = JSON.parse(userStr);
+				// const newUser = { ...user, OnlyCampus: value ? "1" : "0" };
+				// userStr = JSON.stringify(newUser);
+				// SecureStore.setItemAsync("userData", userStr);
 
-				Session.User.OnlyCampus = value ? "1" : "0";
+				updateProfile({ OnlyCampus: value ? "1" : "0" });
 			})
 			.catch((error) => {
 				console.log("Only Campus Error: ", error);

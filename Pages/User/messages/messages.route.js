@@ -1,61 +1,63 @@
-import { useContext, useEffect, useState } from "react";
-import { View, Text, Image, Dimensions, StyleSheet, Pressable, FlatList } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons";
-import FastImage from "react-native-fast-image";
+import { useCallback, useContext, useEffect, useState } from "react";
+import {
+	View,
+	Text,
+	Dimensions,
+	StyleSheet,
+	Pressable,
+	FlatList,
+	EdgeInsetsPropType,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SocketContext } from "../../../contexts/socket.context";
-import { GradientText, Gradient } from "../../../visualComponents/colors";
+import { GradientText, Gradient, colors } from "../../../visualComponents/colors";
 import Switch from "./switch.component";
 import NewMatchBox from "./new-match-box.component";
 import NonEmptyChatBox from "./non-empty-chat-box.component";
 
+import { SocketContext } from "../../../contexts/socket.context";
+import { MessageContext } from "../../../contexts/message.context";
+import { AuthContext } from "../../../contexts/auth.context";
+import { useFocusEffect } from "@react-navigation/native";
+import { ConsoleLogger } from "@aws-amplify/core";
+
 const { width, height } = Dimensions.get("screen");
 
 const Messages = () => {
-	const { connect, matchList } = useContext(SocketContext);
-	const [matchMode, setMatchMode] = useState(1);
+	const { user, updateProfile } = useContext(AuthContext);
+	const { connect, disconnect } = useContext(SocketContext);
+	const { matchesList } = useContext(MessageContext);
+	const insets = useSafeAreaInsets();
 
-	const [matches, setMatches] = useState({
-		0: {
-			emptyChats: [],
-			nonEmptyChats: [],
-		},
-		1: {
-			emptyChats: [],
-			nonEmptyChats: [],
-		},
-	});
+	const { matchMode } = user || { matchMode: 0 };
+
+	// useFocusEffect(
+	// 	useCallback(() => {
+	// 		console.log("focused");
+
+	// 		return () => {
+	// 			console.log("unfocused");
+	// 		};
+	// 	}, [])
+	// );
 
 	useEffect(() => {
 		connect();
+
+		return disconnect;
 	}, []);
 
-	useEffect(() => {
-		if (matchList.length > 0) {
-			const flirts = matchList.filter((match) => match.matchMode == 0);
-			const friends = matchList.filter((match) => match.matchMode == 1);
+	const handleModeChange = (idx) => {
+		if (matchMode == idx) return;
+		updateProfile({ matchMode: idx });
+	};
 
-			setMatches({
-				0: {
-					emptyChats: flirts.filter((item) => item.ChatEmpty == 1),
-					nonEmptyChats: flirts.filter((item) => item.ChatEmpty != 1),
-				},
-				1: {
-					emptyChats: friends.filter((item) => item.ChatEmpty == 1),
-					nonEmptyChats: friends.filter((item) => item.ChatEmpty != 1),
-				},
-			});
-		}
-	}, [matchList]);
-
-	const handleSearch = () => {
-		console.log("Search Button Pressed");
+	const handleScroll = ({ nativeEvent }) => {
+		console.log(nativeEvent.velocity.y > 0);
 	};
 
 	return (
 		<View style={styles.container}>
-			<StatusBar />
 			<View style={styles.header}>
 				<View
 					style={{
@@ -65,63 +67,50 @@ const Messages = () => {
 					}}
 				>
 					<GradientText text={"Sohbetlerim"} style={styles.header_text} />
-					<Pressable style={styles.search_button} onPress={handleSearch}>
+					{/* <Pressable style={styles.search_button} onPress={handleSearch}>
 						<Ionicons name="search" size={height * 0.04} color="#9D9D9D" />
-					</Pressable>
+					</Pressable> */}
 				</View>
 				<Switch
 					choiceList={["Flört Modu", "Arkadaş Modu"]}
 					choice={matchMode}
-					setChoice={setMatchMode}
+					setChoice={handleModeChange}
 				/>
 			</View>
 			<View>
 				<FlatList
 					horizontal={true}
 					showsHorizontalScrollIndicator={false}
-					data={matches[matchMode].emptyChats}
 					keyExtractor={(item) => item.MatchId}
+					data={matchesList[matchMode].emptyChats}
 					contentContainerStyle={styles.empty_chat_list}
-					ListEmptyComponent={() => (
-						<View
-							style={{
-								width: width * 0.96,
-								paddingHorizontal: width * 0.05,
-							}}
-						>
-							<Text adjustsFontSizeToFit={true} style={{ textAlign: "center", color: "#9D9D9D" }}>
-								Keşfetmeye Başla. Ana sayfaya giderek diğer kullanıcılarla eşleştiğinde buradan
-								onlara mesaj atabileceksin. Sana mesaj atmak isteyen bir sürü kişi var, sadece senin
-								kaydırmanı bekliyorlar.
-							</Text>
-						</View>
-					)}
-					ItemSeparatorComponent={() => {
-						return <View style={{ width: width * 0.02 }} />;
-					}}
-					renderItem={({ item, index }) => {
-						console.log({ item });
-						return <NewMatchBox user={item} />;
-					}}
+					ItemSeparatorComponent={() => <View style={{ width: width * 0.02 }} />}
+					renderItem={({ item, index }) => <NewMatchBox match={item} />}
 				/>
 			</View>
 			<FlatList
+				onScroll={handleScroll}
 				showsVerticalScrollIndicator={false}
-				// data={[
-				// 	...matches[matchMode].emptyChats,
-				// 	...matches[matchMode].emptyChats,
-				// 	...matches[matchMode].emptyChats,
-				// 	...matches[matchMode].emptyChats,
-				// 	...matches[matchMode].emptyChats,
-				// 	...matches[matchMode].emptyChats,
-				// ]}
-				data={matches[matchMode].nonEmptyChats}
 				keyExtractor={(item) => item.MatchId}
+				// data={matchesList[matchMode].emptyChats}
+				data={matchesList[matchMode].nonEmptyChats}
 				contentContainerStyle={styles.non_empty_chat_list}
-				ItemSeparatorComponent={() => {
-					return <View style={{ height: height * 0.02 }} />;
-				}}
-				renderItem={({ item, index }) => <NonEmptyChatBox user={item} />}
+				ListEmptyComponent={() => (
+					<View
+						style={{
+							width: width * 0.96,
+							paddingHorizontal: width * 0.05,
+						}}
+					>
+						<Text adjustsFontSizeToFit={true} style={{ textAlign: "center", color: "#9D9D9D" }}>
+							Keşfetmeye Başla. Ana sayfaya giderek diğer kullanıcılarla eşleştiğinde buradan onlara
+							mesaj atabileceksin. Sana mesaj atmak isteyen bir sürü kişi var, sadece senin
+							kaydırmanı bekliyorlar.
+						</Text>
+					</View>
+				)}
+				ItemSeparatorComponent={() => <View style={{ height: height * 0.02 }} />}
+				renderItem={({ item, index }) => <NonEmptyChatBox match={item} />}
 			/>
 		</View>
 	);
@@ -129,7 +118,7 @@ const Messages = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#F8F8F8",
+		backgroundColor: colors.light_gray2,
 		flex: 1,
 	},
 
@@ -147,8 +136,8 @@ const styles = StyleSheet.create({
 	},
 
 	header_text: {
-		fontSize: height * 0.035,
 		fontFamily: "PoppinsExtraBold",
+		fontSize: height * 0.035,
 		letterSpacing: 1.2,
 	},
 
@@ -157,13 +146,13 @@ const styles = StyleSheet.create({
 	},
 
 	empty_chat_list: {
-		height: height * 0.16,
+		maxHeight: height * 0.16,
+		flexGrow: 1,
 		paddingVertical: height * 0.01,
 		paddingHorizontal: width * 0.02,
-		flexGrow: 1,
 	},
 	non_empty_chat_list: {
-		paddingBottom: height * 0.02,
+		paddingVertical: height * 0.02,
 		paddingHorizontal: width * 0.02,
 	},
 });

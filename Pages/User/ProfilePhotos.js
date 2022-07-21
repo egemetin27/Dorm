@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	StyleSheet,
 	View,
@@ -14,11 +14,9 @@ import {
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
-import FastImage from "react-native-fast-image";
 
 import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -26,6 +24,8 @@ import { CustomModal } from "../../visualComponents/customComponents";
 import url from "../../connection";
 import crypto from "../../functions/crypto";
 import { Session } from "../../nonVisualComponents/SessionVariables";
+import { AuthContext } from "../../contexts/auth.context";
+import CustomImage from "../../components/custom-image.component";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,18 +35,10 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 
 	return (
 		<View key={index} style={[styles.photo]}>
-			{__DEV__ ? (
-				<Image
-					source={{ uri: photo.PhotoLink }}
-					style={{ height: "100%", width: "100%" }}
-					resizeMode="cover"
-				/>
-			) : (
-				<FastImage
-					source={{ uri: photo.PhotoLink }}
-					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
-				/>
-			)}
+			<CustomImage
+				url={photo.PhotoLink}
+				style={{ height: "100%", width: "100%", resizeMode: "cover" }}
+			/>
 			<View
 				style={{
 					height: "100%",
@@ -76,14 +68,16 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 };
 
 export default function ProfilePhotos({ route, navigation }) {
+	const { user, updateProfile } = useContext(AuthContext);
+
 	const [modalVisible, setModalVisibility] = React.useState(false);
 	const [toBeDeleted, setToBeDeleted] = React.useState(null);
-	const [PHOTO_LIST, setPhotoList] = React.useState(route.params?.photoList || []);
+	const [PHOTO_LIST, setPhotoList] = React.useState(user.Photo || []);
 	const [isLoading, setIsLoading] = React.useState(false);
 
 	const insets = useSafeAreaInsets();
 
-	const { userId, sesToken } = route.params;
+	const { userId, sesToken } = user;
 
 	React.useEffect(() => {
 		let abortController = new AbortController();
@@ -120,13 +114,7 @@ export default function ProfilePhotos({ route, navigation }) {
 		}
 
 		if (toBeDeleted?.photo == undefined) {
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const userData = JSON.parse(dataStr);
-			const storedValue = JSON.stringify({
-				...userData,
-				Photo: filtered,
-			});
-			await SecureStore.setItemAsync("userData", storedValue);
+			updateProfile({ Photo: filtered });
 
 			const encryptedData = crypto.encrypt({
 				photoName: toBeDeleted.PhotoLink.split("/")[3],
@@ -228,14 +216,7 @@ export default function ProfilePhotos({ route, navigation }) {
 			await axios
 				.post(url + "/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
-					const dataStr = await SecureStore.getItemAsync("userData");
-					const userData = JSON.parse(dataStr);
-					const storedValue = JSON.stringify({
-						...userData,
-						Photo: newList,
-					});
-					await SecureStore.setItemAsync("userData", storedValue);
-					Session.User.Photo = newList;
+					updateProfile({ Photo: newList });
 					setIsLoading(false);
 					navigation.replace("MainScreen", {
 						screen: "Profile",

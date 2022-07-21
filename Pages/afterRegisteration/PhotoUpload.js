@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	Text,
 	View,
@@ -13,7 +13,6 @@ import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import * as SecureStore from "expo-secure-store";
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 import commonStyles from "../../visualComponents/styles";
@@ -23,6 +22,7 @@ import axios from "axios";
 import url from "../../connection";
 
 import crypto from "../../functions/crypto";
+import { AuthContext } from "../../contexts/auth.context";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -142,12 +142,11 @@ export default function PhotoUpload({ navigation, route }) {
 				.then(async (res) => {
 					// setPhotoList(newList);
 
-					const storedValue = JSON.stringify({
-						Photo: newList,
-					});
+					// const storedValue = JSON.stringify({
+					// 	Photo: newList,
+					// });
 					setIsLoading(false);
 
-					await SecureStore.setItemAsync("userData", storedValue);
 					navigation.replace("AfterRegister", {
 						profile: route.params,
 					});

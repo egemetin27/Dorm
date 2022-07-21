@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	Text,
 	View,
@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
-import * as SecureStore from "expo-secure-store";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
@@ -24,19 +23,20 @@ const { height, width } = Dimensions.get("window");
 
 export default function Hobbies({ navigation, route }) {
 	const insets = useSafeAreaInsets();
+
+	const { user, updateProfile, signIn } = useContext(AuthContext);
+	const { isNewUser } = route.params;
+
+	const userId = (user && user.userId) || route.params.userId;
+
 	const [hobbies, setHobbies] = React.useState(
-		route.params?.hobbyList?.map((item) => item.InterestName) || []
+		(user && user.interest?.map((item) => item.InterestName)) || []
 	);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const { userId, isNewUser } = route.params;
-
-	const { signIn } = React.useContext(AuthContext);
 
 	const handleSubmit = async () => {
 		try {
 			setIsLoading(true);
-			const dataStr = await SecureStore.getItemAsync("userData");
-			const data = JSON.parse(dataStr);
 
 			const encryptedData = crypto.encrypt({
 				userId: userId,
@@ -45,7 +45,7 @@ export default function Hobbies({ navigation, route }) {
 
 			axios
 				.post(url + "/interests", encryptedData, {
-					headers: { "access-token": route.params?.sesToken ?? data.sesToken },
+					headers: { "access-token": route.params?.sesToken ?? user.sesToken },
 				})
 				.then(async (res) => {
 					console.log(res.data);
@@ -53,9 +53,8 @@ export default function Hobbies({ navigation, route }) {
 						return { InterestName: item };
 					});
 
-					const newData = { ...data, interest: newHobbyList };
+					updateProfile({ interest: newHobbyList });
 
-					await SecureStore.setItemAsync("userData", JSON.stringify(newData));
 					if (isNewUser) {
 						signIn({ email: route.params.mail, password: route.params.password, isNewUser: true });
 					} else {

@@ -25,9 +25,8 @@ import FastImage from "react-native-fast-image";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
-import axios from "axios";
-import url from "../../connection";
-import { getAge, getGender } from "../../nonVisualComponents/generalFunctions";
+import { getGender } from "../../nonVisualComponents/generalFunctions";
+import { getAge } from "../../utils/date.utils";
 import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
@@ -136,25 +135,10 @@ const ChatProfile = (props) => {
 									onScroll={handleScroll}
 								>
 									{props.data.photos.map((item, idx) => {
-										return __DEV__ ? (
-											<Image
+										return (
+											<CustomImage
 												key={idx}
-												source={{
-													uri: item?.PhotoLink ?? "AAA",
-												}}
-												style={{
-													height: width * 1.35,
-													maxHeight: height * 0.7,
-													resizeMode: "cover",
-													backgroundColor: colors.cool_gray,
-												}}
-											/>
-										) : (
-											<FastImage
-												key={idx}
-												source={{
-													uri: item?.PhotoLink ?? "AAA",
-												}}
+												url={item?.PhotoLink ?? "AAA"}
 												style={{
 													height: width * 1.35,
 													maxHeight: height * 0.7,

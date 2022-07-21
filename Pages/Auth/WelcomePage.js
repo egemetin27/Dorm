@@ -7,8 +7,6 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 const { width, height } = Dimensions.get("screen");
 
 export default function WelcomePage({ navigation }) {
-	const [counter, counterChanger] = React.useState(0);
-
 	return (
 		<View style={[commonStyles.Container, { height: height }]}>
 			<StatusBar style={"light"} />

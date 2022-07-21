@@ -20,8 +20,6 @@ import { Feather, Octicons, MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
-import FastImage from "react-native-fast-image";
 
 import KeyboardSpacer from "react-native-keyboard-spacer";
 import url from "../../connection";
@@ -260,32 +258,15 @@ export default function Chat({ navigation, route }) {
 					</TouchableOpacity>
 					<TouchableOpacity onPress={openProfile}>
 						<View style={{ height: "100%", flexDirection: "row", alignItems: "center" }}>
-							{__DEV__ ? (
-								<Image
-									style={{
-										resizeMode: "cover",
-										aspectRatio: 2 / 3,
-										height: "90%",
-										borderRadius: 15,
-									}}
-									source={{
-										uri: imageUri,
-									}}
-								/>
-							) : (
-								<FastImage
-									style={{
-										resizeMode: "cover",
-										aspectRatio: 2 / 3,
-										height: "90%",
-										borderRadius: 15,
-									}}
-									source={{
-										uri: imageUri,
-										priority: FastImage.priority.high,
-									}}
-								/>
-							)}
+							<CustomImage
+								uri={imageUri}
+								style={{
+									resizeMode: "cover",
+									aspectRatio: 2 / 3,
+									height: "90%",
+									borderRadius: 15,
+								}}
+							/>
 
 							<View style={{ width: "2%" }} />
 							<View

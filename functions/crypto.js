@@ -11,12 +11,12 @@ function randomString(length) {
 }
 
 class crypto {
-	// static #deviceId = "avXB0JH12ZzsoihRdZREMz6J3UyDSVZm";
-	// static #key = "mrpK2IVh4HgvLWl8AdtunLUHR7OWMbzP";
-	// static #iv = "btf0jfdRoyol3QiF";
-	static #deviceId;
-	static #key;
-	static #iv;
+	static #deviceId = "avXB0JH12ZzsoihRdZREMz6J3UyDSVZm";
+	static #key = "mrpK2IVh4HgvLWl8AdtunLUHR7OWMbzP";
+	static #iv = "btf0jfdRoyol3QiF";
+	// static #deviceId;
+	// static #key;
+	// static #iv;
 
 	static appVersionChecker(message) {
 		let encrypted = CryptoES.AES.encrypt(message, "O7SzQkunl5HUBl3dgbWPBRJpxAyGA2Y9", {
