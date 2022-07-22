@@ -5,8 +5,8 @@ import { AuthContext } from "./auth.context";
 import { MessageContext } from "./message.context";
 
 export const SocketContext = createContext({
-	matchList: [],
 	connect: () => {},
+	disconnect: () => {},
 	sendMessage: () => {},
 });
 

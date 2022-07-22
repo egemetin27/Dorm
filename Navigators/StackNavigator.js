@@ -67,6 +67,7 @@ import ListEndedModal from "../Pages/modals/ListEndedModal";
 import useKeyGenerator from "../hooks/useKeyGenerator";
 import crypto from "../functions/crypto";
 import UpdateNeededModal from "../Pages/modals/UpdateNeededModal";
+import ModalPage from "../components/modal.component";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -271,6 +272,13 @@ export default function StackNavigator() {
 						name="ListEndedModal"
 						component={ListEndedModal}
 						options={{ presentation: "transparentModal" }}
+					/>
+					<Stack.Screen
+						name="CustomModal"
+						component={ModalPage}
+						options={{
+							presentation: "transparentModal",
+						}}
 					/>
 				</Stack.Group>
 			</Stack.Navigator>

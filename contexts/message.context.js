@@ -9,8 +9,8 @@ import crypto from "../functions/crypto";
 export const MessageContext = createContext({
 	matchesList: {},
 	chatsList: {},
-	getLastMessage: () => {},
 	handleNewMessage: () => {},
+	getLastMessage: () => {},
 });
 
 const defaultMatchesList = {

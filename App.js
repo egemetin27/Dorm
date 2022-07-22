@@ -66,14 +66,11 @@ export default function App() {
 	}, []);
 
 	return (
-		// <View style={{ flex: 1, width: "100%", backgroundColor: "pink" }}></View>
 		<NavigationContainer>
 			<AuthProvider>
 				<MessageProvider>
 					<SocketProvider>
 						<SafeAreaProvider style={{ flex: 1 }}>
-							{/* <Chat /> */}
-							{/* <Messages /> */}
 							<Stack />
 						</SafeAreaProvider>
 					</SocketProvider>
@@ -81,10 +78,4 @@ export default function App() {
 			</AuthProvider>
 		</NavigationContainer>
 	);
-	// return (
-	// 	<GestureHandlerRootView style={{ flex: 1 }}>
-	// 		<MatchMode value={0} setValue={(x) => console.log(x)} />
-	// 	</GestureHandlerRootView>
-	// );
-	// return <ImageManipulatorTest route={{ params: {} }} />;
 }

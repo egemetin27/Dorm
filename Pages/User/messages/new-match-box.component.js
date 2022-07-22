@@ -13,9 +13,23 @@ const EmptyChatBox = ({ match }) => {
 	const handlePress = () => {
 		navigation.navigate("Chat", { user: match });
 	};
+	const handleLongPress = () => {
+		// TODO: open popup for delete message / unmatch
+		console.log("handling long press");
+		// navigation.navigate("CustomModal", {
+		// 	buttons: [
+		// 		{
+		// 			text: "Unmatch",
+		// 		},
+		// 		{
+		// 			text: "Delete",
+		// 		},
+		// 	],
+		// });
+	};
 
 	return (
-		<Pressable style={styles.container} onPress={handlePress}>
+		<Pressable style={styles.container} onPress={handlePress} onLongPress={handleLongPress}>
 			{imageUrl && (
 				<CustomImage
 					url={imageUrl}

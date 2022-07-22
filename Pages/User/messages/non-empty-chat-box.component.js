@@ -11,17 +11,7 @@ import CustomImage from "../../../components/custom-image.component";
 
 const { width, height } = Dimensions.get("screen");
 
-const renderRightActions = () => {
-	const handleUnmatch = () => {
-		//TODO: unmatch
-		console.log("unmatching");
-	};
-
-	const handleDeleteChat = () => {
-		//TODO: delete chat
-		console.log("deleting chat");
-	};
-
+const SwipedPanel = ({ handleUnmatch, handleDeleteChat }) => {
 	return (
 		<View style={styles.swipeable_container}>
 			<Pressable onPress={handleUnmatch} style={styles.swipeable_button}>
@@ -54,6 +44,44 @@ const NonEmptyChatBox = ({ match }) => {
 	const { message, date } = getLastMessage(MatchId);
 
 	const isUnreadMessage = false;
+
+	const renderRightActions = () => {
+		const handleUnmatch = () => {
+			//TODO: unmatch
+			navigation.navigate("CustomModal", {
+				image: "remove_match",
+				title: "Emin misin?",
+				body: "Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.",
+				buttons: [
+					{
+						text: "Eşleşmeyi Kaldır",
+						onPress: () => {
+							console.log("Deniyorum");
+						},
+					},
+				],
+			});
+		};
+
+		const handleDeleteChat = () => {
+			//TODO: delete chat
+			navigation.navigate("CustomModal", {
+				image: "trash_can",
+				title: "Emin misin?",
+				body: "Silersen bunu geri alamazsın ancak bu kişiyi “Sohbet Etmek İsteyebilirsin”de bulabilirsin.",
+				buttons: [
+					{
+						text: "Konuşmayı Sil",
+						onPress: () => {
+							console.log("Siliniyor");
+						},
+					},
+				],
+			});
+		};
+
+		return <SwipedPanel handleUnmatch={handleUnmatch} handleDeleteChat={handleDeleteChat} />;
+	};
 
 	const handlePress = () => {
 		navigation.navigate("Chat", { user: match });
