@@ -42,7 +42,6 @@ const AuthProvider = ({ children }) => {
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
 				if (data.authentication == "true") {
-					// console.log(data);
 					if (navigation != null && data.onBoardingComplete == 0) {
 						navigation.reset({
 							index: 0,
@@ -92,8 +91,7 @@ const AuthProvider = ({ children }) => {
 					});
 
 					SecureStore.setItemAsync("credentials", credentials);
-
-					setUser(userData);
+					setUser({ ...userData });
 					setIsLoggedIn(true);
 				} else {
 					console.log("else:", data);

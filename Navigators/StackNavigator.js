@@ -131,12 +131,11 @@ async function fetchUser(userName, userId, token, sesToken) {
 
 export default function StackNavigator() {
 	const [appIsReady, setAppIsReady] = useState(false); // is the background fetching done
-	const [isLoggedIn, setIsLoggedIn] = useState(false); // is the user logged in or not
 	const [introShown, setIntroShown] = useState(); // is this the firs time the app is opened
 	const [tutorialShown, setTutorialShown] = useState(); // is the tutorial screen shown before
 	const [newUser, setNewUser] = useState(false);
 
-	const { user, signIn, signOut } = useContext(AuthContext);
+	const { user, isLoggedIn, signIn, signOut } = useContext(AuthContext);
 
 	const updateNeeded = useKeyGenerator();
 
@@ -182,10 +181,12 @@ export default function StackNavigator() {
 					setTutorialShown(constants.tutorialShown);
 				});
 
-				const credsStr = await SecureStore.getItemAsync("credentials");
-				if (credsStr) {
-					const { email, password } = JSON.parse(credsStr);
-					await signIn({ email, password });
+				if (!isLoggedIn) {
+					const credsStr = await SecureStore.getItemAsync("credentials");
+					if (credsStr) {
+						const { email, password } = JSON.parse(credsStr);
+						await signIn({ email, password });
+					}
 				}
 			} catch (e) {
 				console.warn(e);
@@ -208,8 +209,6 @@ export default function StackNavigator() {
 	}
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-			{/* <NavigationContainer> */}
-			{/* <AuthContext.Provider value={authContext}> */}
 			<Stack.Navigator mode={"modal"}>
 				{updateNeeded ? (
 					<Stack.Group screenOptions={{ headerShown: false }}>
@@ -278,12 +277,11 @@ export default function StackNavigator() {
 						component={ModalPage}
 						options={{
 							presentation: "transparentModal",
+							animation: "fade",
 						}}
 					/>
 				</Stack.Group>
 			</Stack.Navigator>
-			{/* </AuthContext.Provider> */}
-			{/* </NavigationContainer> */}
 		</GestureHandlerRootView>
 	);
 }

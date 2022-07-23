@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import moment from "moment";
@@ -23,7 +23,6 @@ const ChatMessage = ({ message }) => {
 				</Gradient>
 			) : (
 				<View style={styles.received_message_container}>
-					{/* <Text style={styles.received_message_name}>Mehtap</Text> */}
 					<Text style={styles.received_message_text}>{message.message}</Text>
 				</View>
 			)}

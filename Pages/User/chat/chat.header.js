@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Pressable, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,7 +8,7 @@ import CustomImage from "../../../components/custom-image.component";
 
 const { width, height } = Dimensions.get("screen");
 
-const ChatHeader = ({ imageUrl, name }) => {
+const ChatHeader = ({ imageUrl, name, matchId }) => {
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation();
 
@@ -23,8 +23,12 @@ const ChatHeader = ({ imageUrl, name }) => {
 	const handleReport = () => {
 		console.log("Reporting");
 	};
-	const handleDeleteChat = () => {
-		console.log("Deleting");
+
+	const handleUnmatch = () => {
+		navigation.navigate("CustomModal", {
+			modalType: "UNMATCH_MODAL",
+			buttonParamsList: [{ matchId }],
+		});
 	};
 
 	return (
@@ -41,8 +45,17 @@ const ChatHeader = ({ imageUrl, name }) => {
 				</Pressable>
 			</View>
 			<View style={styles.right_side}>
-				<Pressable name={"delete button"} onPress={handleDeleteChat}>
-					<Feather name="trash" size={height * 0.036} color="#4A4A4A" />
+				<Pressable name={"delete button"} onPress={handleUnmatch}>
+					<Image
+						source={require("../../../assets/unmatch.png")}
+						style={{
+							height: height * 0.036,
+							aspectRatio: 1,
+							resizeMode: "contain",
+							tintColor: "#4A4A4A",
+						}}
+					/>
+					{/* <Feather name="trash" size={height * 0.036} color="#4A4A4A" /> */}
 				</Pressable>
 				<View style={{ width: width * 0.02 }} />
 				<Pressable name={"reportButton"} onPress={handleReport}>

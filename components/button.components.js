@@ -28,7 +28,7 @@ const CustomButton = ({
 
 	if (type == BUTTON_TYPES.gradient || type == BUTTON_TYPES.white_selected) {
 		return (
-			<View style={positioning}>
+			<View style={[styles.container, positioning]}>
 				<Gradient style={[styles.base, { borderRadius: 8 }, style]}>
 					<TouchableOpacity style={[styles.base, styles[`${type}`], style]} onPress={pressHandler}>
 						{type == BUTTON_TYPES.gradient ? (
@@ -58,15 +58,7 @@ const CustomButton = ({
 export default CustomButton;
 
 const styles = StyleSheet.create({
-	base: {
-		width: "80%",
-		aspectRatio: 4.5 / 1,
-		alignSelf: "center",
-		backgroundColor: "#F4F3F3",
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: 8,
-
+	container: {
 		shadowColor: "rgba(0, 0, 0, 0.3)",
 		shadowOffset: {
 			width: 0,
@@ -76,6 +68,15 @@ const styles = StyleSheet.create({
 		shadowRadius: 6.27,
 
 		elevation: 10,
+	},
+	base: {
+		width: "80%",
+		aspectRatio: 4.5 / 1,
+		alignSelf: "center",
+		backgroundColor: "#F4F3F3",
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 8,
 	},
 	base_text: {
 		fontSize: Math.min(24, Math.max(width * 0.03, height * 0.03)),

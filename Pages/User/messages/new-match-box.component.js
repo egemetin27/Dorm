@@ -7,25 +7,18 @@ const { width, height } = Dimensions.get("screen");
 const EmptyChatBox = ({ match }) => {
 	const navigation = useNavigation();
 
-	const { otherId } = match;
+	const { MatchId } = match;
 	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
 
 	const handlePress = () => {
-		navigation.navigate("Chat", { user: match });
+		navigation.navigate("Chat", { otherUser: match });
 	};
+
 	const handleLongPress = () => {
-		// TODO: open popup for delete message / unmatch
-		console.log("handling long press");
-		// navigation.navigate("CustomModal", {
-		// 	buttons: [
-		// 		{
-		// 			text: "Unmatch",
-		// 		},
-		// 		{
-		// 			text: "Delete",
-		// 		},
-		// 	],
-		// });
+		navigation.navigate("CustomModal", {
+			modalType: "UNMATCH_MODAL",
+			buttonParamsList: [{ matchId: MatchId }],
+		});
 	};
 
 	return (

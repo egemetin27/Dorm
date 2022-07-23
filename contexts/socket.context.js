@@ -18,9 +18,6 @@ const SocketProvider = ({ children }) => {
 
 	const ws = useRef();
 
-	// const ticket = "mnxA4MpNWDdscI_We8VzmZ9si6BzZDx2";
-	// const userId = 31;
-
 	const handleReceive = ({ data }) => {
 		const pack = JSON.parse(data).package;
 
@@ -55,18 +52,6 @@ const SocketProvider = ({ children }) => {
 	};
 
 	const getTicket = async () => {
-		// const res = await fetch(
-		// 	"message.eba-e2mjn2ef.eu-central-1.elasticbeanstalk.com/connectionTicket",
-		// 	{
-		// 		method: "POST",
-		// 		headers: {
-		// 			"Content-Type": "application/json",
-		// 			"access-token": sesToken,
-		// 		},
-		// 		body: JSON.stringify({ userId }),
-		// 	}
-		// )
-		// 	.then((res) => res.json())
 		const ticket = await axios
 			.post(
 				"https://devmessage.meetdorm.com/connectionTicket",
@@ -96,11 +81,10 @@ const SocketProvider = ({ children }) => {
 			handleReceive(event);
 		};
 		ws.current.onclose = (e) => {
-			console.log("closed");
-			// console.log("Reconnecting: ", e.message);
+			console.log("socket closed:", e);
 		};
 		ws.current.onerror = (e) => {
-			console.log("error");
+			console.log("error on socket:", e);
 			setTimeout(connect, 5000);
 			// console.log(`Error: ${e.message}`);
 		};
@@ -113,9 +97,10 @@ const SocketProvider = ({ children }) => {
 	const sendMessage = (msg, type) => {
 		const messageToSent = organizeOutput(msg, type);
 
-		handleNewMessage(messageToSent.package[1]);
-
 		ws.current.send(JSON.stringify(messageToSent));
+		console.log(messageToSent);
+
+		handleNewMessage(messageToSent.package[1]);
 	};
 
 	const value = { connect, disconnect, sendMessage };

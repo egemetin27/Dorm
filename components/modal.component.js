@@ -1,13 +1,5 @@
-import React from "react";
-import {
-	View,
-	Text,
-	Image,
-	Dimensions,
-	Pressable,
-	StyleSheet,
-	TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, Dimensions, Pressable, StyleSheet } from "react-native";
+import { BlurView } from "expo-blur";
 import { Feather } from "@expo/vector-icons";
 
 import CustomButton from "./button.components";
@@ -24,32 +16,52 @@ const IMAGE_LIST = {
 	dorm_text: require("../assets/dorm_text.png"),
 	dorm_logo: require("../assets/logoGradient.png"),
 	monkey: require("../assets/monkey.png"),
-	remove_match: require("../assets/remove_match.png"),
+	unmatch: require("../assets/unmatch.png"),
 };
 
-// const dismiss = () => {
-// 	console.log("dismissing");
-// };
-
-// const buttons = [
-// 	{
-// 		buttonType: "gradient",
-// 		text: "Deniyorum",
-// 		onPress: () => {
-// 			console.log("Deniyorum");
-// 		},
-// 	},
-// ];
+const MODAL_TYPES = {
+	UNMATCH_MODAL: {
+		image: "unmatch",
+		title: "Emin misin?",
+		body: "Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.",
+		buttons: [
+			{
+				text: "Eşleşmeyi Kaldır",
+				onPress: ({ matchId = 0 }) => {
+					console.log(matchId);
+					console.log("UNMATCH");
+				},
+			},
+		],
+	},
+	NO_LIKES_ON_EVENT: {
+		image: "sad_face",
+		title: "Maalesef Etkinliği Kimse Beğenmemiş",
+		body: "Etkinliği paylaşarak beğenmeleri arttırmamıza yardımcı olabilirsin",
+		buttons: [],
+	},
+	CANNOT_SEE_EVENT_LIKES: {
+		image: "sad_face",
+		title: "Görünmezliği Kapatmalısın",
+		body: "Etkinliğe gidenleri görebilmek için diğer insanlar tarafından görülebilir olmalısın",
+		buttons: [],
+	},
+};
 
 export default function ModalPage({ navigation, route }) {
-	// const { title, body } = route.params;
-	const { title, body, buttons } = { title: null, body: null, buttons: [], ...route.params };
-	const image = route.params?.image ? IMAGE_LIST[route.params.image] : null;
+	// const { title, body, buttons, image } = { title: null, body: null, buttons: [], image: null, ...route.params };
+	const { modalType, buttonParamsList } = {
+		modalType: "NO_LIKES_ON_EVENT",
+		buttonParamsList: [],
+		...route.params,
+	};
+	const { title, body, buttons, image } = MODAL_TYPES[modalType];
+	const imageUrl = image ? IMAGE_LIST[image] : null;
 
 	const handleDismiss = () => {
 		try {
 			// dismiss();
-			route.params.dismiss ? route.params?.dismiss() : navigation.goBack();
+			route.params.dismiss ? route.params.dismiss() : navigation.goBack();
 		} catch (err) {
 			console.log("error on ModalPage > handleDismiss():", err);
 		}
@@ -57,6 +69,7 @@ export default function ModalPage({ navigation, route }) {
 
 	return (
 		<Pressable onPress={handleDismiss} style={styles.wrapper}>
+			{/* <BlurView tint={"dark"} intensity={20} style={styles.wrapper}> */}
 			<Pressable onPress={null}>
 				<View style={styles.modal_container}>
 					<Pressable style={styles.modal_exit_button} onPress={handleDismiss}>
@@ -67,22 +80,24 @@ export default function ModalPage({ navigation, route }) {
 							color="black"
 						/>
 					</Pressable>
-					{image && (
-						<Image
-							source={image}
-							style={{ height: "25%", maxWidth: "50%", marginBottom: 10 }}
-							resizeMode={"contain"}
-						/>
-					)}
+					{imageUrl && <Image source={imageUrl} style={styles.icon} />}
 					{title && <Text style={styles.title}>{title}</Text>}
 					{body && <Text style={styles.body}>{body}</Text>}
 					{buttons.map(({ buttonType, text, onPress }, index) => {
 						return (
-							<CustomButton key={index} buttonType={buttonType} text={text} onPress={onPress} />
+							<CustomButton
+								key={index}
+								buttonType={buttonType}
+								text={text}
+								onPress={() => {
+									onPress(buttonParamsList[index]);
+								}}
+							/>
 						);
 					})}
 				</View>
 			</Pressable>
+			{/* </BlurView> */}
 		</Pressable>
 	);
 }
@@ -91,7 +106,7 @@ const styles = StyleSheet.create({
 	wrapper: {
 		width: "100%",
 		flex: 1,
-		backgroundColor: "rgba(0,0,0, 0.6)",
+		backgroundColor: "rgba(0,0,0,0.5)",
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -107,16 +122,23 @@ const styles = StyleSheet.create({
 	},
 
 	modal_exit_button: {
+		zIndex: 5,
 		position: "absolute",
 		top: "5%",
 		right: "5%",
 	},
+	icon: {
+		height: height * 0.08,
+		maxWidth: "50%",
+		marginBottom: 10,
+		resizeMode: "contain",
+	},
 	title: {
+		textAlign: "center",
 		fontSize: Math.min(24, width * 0.06),
 		fontFamily: "PoppinsExtraBold",
 		color: "#666666",
 	},
-
 	body: {
 		textAlign: "center",
 		color: colors.medium_gray,

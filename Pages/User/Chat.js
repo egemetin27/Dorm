@@ -134,27 +134,26 @@ export default function Chat({ navigation, route }) {
 	};
 
 	const fetchProfile = async () => {
-		try {
-			const dataToBeSent = crypto.encrypt({ userId: Session.User.userId, otherId: otherUser.id });
-			await axios
-				.post(url + "/profileinfo", dataToBeSent, {
-					headers: { "access-token": Session.User.sesToken },
-				})
-				.then((res) => {
-					const data = crypto.decrypt(res.data);
-					setCardData(data);
-					setImageUri(data.photos[0].PhotoLink);
-
-					//console.log(res.data[0].PhotoLink);
-					//console.log(res);
-				})
-				.catch((err) => {
-					console.log(err.response);
-					console.log("error on /profileInfo");
-				});
-		} catch (error) {
-			console.log(error);
-		}
+		// try {
+		// 	const dataToBeSent = crypto.encrypt({ userId: Session.User.userId, otherId: otherUser.id });
+		// 	await axios
+		// 		.post(url + "/profileinfo", dataToBeSent, {
+		// 			headers: { "access-token": Session.User.sesToken },
+		// 		})
+		// 		.then((res) => {
+		// 			const data = crypto.decrypt(res.data);
+		// 			setCardData(data);
+		// 			setImageUri(data.photos[0].PhotoLink);
+		// 			//console.log(res.data[0].PhotoLink);
+		// 			//console.log(res);
+		// 		})
+		// 		.catch((err) => {
+		// 			console.log(err.response);
+		// 			console.log("error on /profileInfo");
+		// 		});
+		// } catch (error) {
+		// 	console.log(error);
+		// }
 	};
 
 	React.useEffect(async () => {

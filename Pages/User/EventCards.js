@@ -15,7 +15,6 @@ import {
 	TouchableOpacity,
 	GestureDetector,
 	Gesture,
-	RectButton,
 } from "react-native-gesture-handler";
 import Animated, {
 	interpolate,
@@ -37,11 +36,13 @@ import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../contexts/auth.context";
 import { formatDate } from "../../utils/date.utils";
 
+import { useNavigation } from "@react-navigation/native";
+
 import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("window");
 
-const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
+const Card = ({ event, user, signOut }) => {
 	const {
 		EventId,
 		BuyLink: buyLink,
@@ -54,6 +55,8 @@ const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
 		photos: photoList,
 		isLiked,
 	} = event;
+
+	const navigation = useNavigation();
 
 	const [favFlag, setFavFlag] = React.useState(isLiked == 1 ? true : false);
 	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
@@ -114,7 +117,7 @@ const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
 
 		if (favFlag) {
 			await axios
-				.post(url + "/dislikeEvent", encryptedData, { headers: { "access-token": sesToken } })
+				.post(url + "/dislikeEvent", encryptedData, { headers: { "access-token": user.sesToken } })
 				.then((res) => setFavFlag(false))
 				.catch((err) => console.log(err));
 			return;
@@ -126,7 +129,7 @@ const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
 		const id = user.userId;
 		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: likeMode });
 		await axios
-			.post(url + "/likeEvent", encryptedData, { headers: { "access-token": sesToken } })
+			.post(url + "/likeEvent", encryptedData, { headers: { "access-token": user.sesToken } })
 			.then((res) => {
 				setFavFlag(true);
 				// Alert.alert("RES " + res.data);
@@ -142,25 +145,36 @@ const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
 			return;
 		}
 
+		if (user.Invisible.toString() == "1") {
+			navigation.navigate("CustomModal", {
+				modalType: "CANNOT_SEE_EVENT_LIKES",
+			});
+			return;
+		}
 		const encryptedData = crypto.encrypt({
 			eventId: EventId,
-			userId: myID,
+			userId: user.userId,
 		});
 		await axios
-			.post(url + "/eventParticipants", encryptedData, { headers: { "access-token": sesToken } })
+			.post(url + "/eventParticipants", encryptedData, {
+				headers: { "access-token": user.sesToken },
+			})
 			.then((res) => {
 				console.log(res.data);
 				if (res.data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
 						list: res.data,
-						myID: myID,
-						sesToken: sesToken,
+						myID: user.userId,
+						sesToken: user.sesToken,
 						fromEvent: true,
 						eventId: EventId,
 					});
 				} else {
-					Alert.alert("Etkinliği Beğenen Kimse Yok :/");
+					navigation.navigate("CustomModal", {
+						modalType: "NO_LIKES_ON_EVENT",
+					});
+					// Alert.alert("Etkinliği Beğenen Kimse Yok :/");
 				}
 			})
 			.catch((err) => {
@@ -566,7 +580,7 @@ const Card = ({ event, myID, navigation, sesToken, user, signOut }) => {
 
 											await axios
 												.post(url + "/eventLinkClick", data, {
-													headers: { "access-token": sesToken },
+													headers: { "access-token": user.sesToken },
 												})
 												.catch((err) => console.log(err));
 
@@ -872,16 +886,7 @@ export default function EventCards({ navigation, route }) {
 						width={width}
 						loop={false}
 						data={list}
-						renderItem={({ item }) => (
-							<Card
-								event={item}
-								myID={myID}
-								navigation={navigation}
-								sesToken={sesToken}
-								user={user}
-								signOut={signOut}
-							/>
-						)}
+						renderItem={({ item }) => <Card event={item} user={user} signOut={signOut} />}
 					/>
 				</View>
 			)}
@@ -911,15 +916,4 @@ export default function EventCards({ navigation, route }) {
 	);
 }
 
-const styles = StyleSheet.create({
-	tabBar: {
-		position: "absolute",
-		bottom: 0,
-		height: height * 0.08,
-		width: "100%",
-		paddingBottom: height * 0.008,
-		backgroundColor: colors.white,
-		flexDirection: "row",
-		elevation: 5,
-	},
-});
+const styles = StyleSheet.create({});

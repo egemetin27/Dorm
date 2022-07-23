@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, FlatList } from "react-native";
 
 import ChatHeader from "./chat.header";
@@ -7,32 +7,116 @@ import ChatMessage from "./chat.message";
 import CustomImage from "../../../components/custom-image.component";
 
 import { MessageContext } from "../../../contexts/message.context";
+import { sort } from "../../../utils/array.utils";
+import { AuthContext } from "../../../contexts/auth.context";
 
 const { width, height } = Dimensions.get("screen");
 
-const url = `https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg`;
-const chatMessages = [];
-// const chatMessages = [1, 2, 3, 4, 4, 5, 5, 5, 7, 8, 0, 1, 2, 1];
+// const defaultChat = [
+// 	{
+// 		date: "2022-07-22T20:34:32.90",
+// 		destId: 31,
+// 		matchId: 900,
+// 		message: "heyyoo",
+// 		sourceId: 32,
+// 		unread: 1,
+// 	},
+// 	{
+// 		date: "2022-07-22T20:33:04.32",
+// 		destId: 32,
+// 		matchId: 900,
+// 		message: "Deneme",
+// 		sourceId: 31,
+// 		unread: 1,
+// 	},
+// 	{
+// 		date: "2022-07-22T20:33:04.32",
+// 		destId: 31,
+// 		matchId: 900,
+// 		message: "Deneme1",
+// 		sourceId: 32,
+// 		unread: 1,
+// 	},
+// 	{
+// 		date: "2022-07-22T20:33:04.32",
+// 		destId: 31,
+// 		matchId: 900,
+// 		message: "Deneme2",
+// 		sourceId: 32,
+// 		unread: 0,
+// 	},
+// 	{
+// 		date: "2022-07-22T20:33:04.32",
+// 		destId: 31,
+// 		matchId: 900,
+// 		message: "Deneme3",
+// 		sourceId: 32,
+// 		unread: 0,
+// 	},
+// 	{
+// 		date: "2022-07-22T20:32:45.52",
+// 		destId: 31,
+// 		matchId: 900,
+// 		message: "Fhjeifiejdj",
+// 		sourceId: 32,
+// 		unread: 0,
+// 	},
+// ];
+
+const getLastReadMessage = (messagesList, myId) => {
+	var lastIndex = -1;
+	if (messagesList[0].sourceId.toString() == myId.toString()) return lastIndex;
+
+	messagesList.every((message, index) => {
+		if (index != 0) lastIndex = index;
+		if (message.unread.toString() == "0" || message.sourceId.toString() == myId.toString())
+			return false;
+		return true;
+	});
+	return lastIndex;
+};
 
 const Chat = ({ route, navigation }) => {
-	const { chatsList } = useContext(MessageContext);
+	const { user } = useContext(AuthContext);
+	const { chatsList, readMessages } = useContext(MessageContext);
+	// const [chat, setChat] = useState(defaultChat);
 	const [chat, setChat] = useState([]);
+	const [lastReadMessageIndex, setLastReadMessageIndex] = useState(-1);
 
-	const { user } = route.params;
-	const { otherId, MatchId } = user;
-	const { Name } = user.userData;
+	const { otherUser } = route.params;
+	const { otherId, MatchId } = otherUser;
+	const { Name } = otherUser.userData;
 
-	const imageUrl = user.userData?.photos[0]?.PhotoLink ?? null;
+	const imageUrl = otherUser.userData?.photos[0]?.PhotoLink ?? null;
 
 	useEffect(() => {
-		setChat(chatsList[MatchId] ?? []);
+		const unsortedChat = chatsList[MatchId] ?? [];
+		const sortedChat = sort(unsortedChat, "date", false);
+		setChat(sortedChat);
 	}, [chatsList[MatchId]]);
 
-	// const chatEmpty = chatMessages.length == 0;
+	useEffect(() => {
+		if (chat.length > 0) {
+			const index = getLastReadMessage(chat, user.userId);
+			setLastReadMessageIndex(index);
+		}
+	}, [chat]);
+
+	useEffect(() => {
+		if (lastReadMessageIndex != -1) {
+			//TODO: send server that message has been read
+		}
+	}, [lastReadMessageIndex]);
+
+	useEffect(() => {
+		return () => {
+			readMessages(MatchId, chat);
+		};
+	}, []);
 
 	return (
 		<View style={[styles.container]}>
-			<ChatHeader name={Name} imageUrl={imageUrl} />
+			<ChatHeader name={Name} imageUrl={imageUrl} matchId={MatchId} />
 			{chat.length == 0 ? (
 				<View style={styles.no_message_container}>
 					{imageUrl && (
@@ -58,7 +142,18 @@ const Chat = ({ route, navigation }) => {
 							return <View style={{ height: height * 0.005 }} />;
 						}}
 						renderItem={({ item, index }) => {
-							return <ChatMessage message={item} />;
+							return (
+								<Fragment>
+									{index == lastReadMessageIndex && (
+										<View style={styles.unread_container}>
+											<View style={styles.unread_line}></View>
+											<Text style={styles.unread_text}>Buradan sonrasını okumadın</Text>
+											<View style={styles.unread_line}></View>
+										</View>
+									)}
+									<ChatMessage message={item} />
+								</Fragment>
+							);
 						}}
 						inverted
 					/>
@@ -116,5 +211,18 @@ const styles = StyleSheet.create({
 	chat_container: {
 		flex: 1,
 		width: width,
+	},
+	unread_container: {
+		width: "100%",
+		alignItems: "center",
+		flexDirection: "row",
+	},
+	unread_line: {
+		flex: 1,
+		height: 1,
+		backgroundColor: "blue",
+	},
+	unread_text: {
+		paddingHorizontal: width * 0.02,
 	},
 });

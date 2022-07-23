@@ -1,14 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import {
-	View,
-	Text,
-	Dimensions,
-	StyleSheet,
-	Pressable,
-	FlatList,
-	EdgeInsetsPropType,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useContext, useEffect, useState } from "react";
+import { View, Text, Dimensions, StyleSheet, FlatList } from "react-native";
 
 import { GradientText, Gradient, colors } from "../../../visualComponents/colors";
 import Switch from "./switch.component";
@@ -18,18 +9,14 @@ import NonEmptyChatBox from "./non-empty-chat-box.component";
 import { SocketContext } from "../../../contexts/socket.context";
 import { MessageContext } from "../../../contexts/message.context";
 import { AuthContext } from "../../../contexts/auth.context";
-import { useFocusEffect } from "@react-navigation/native";
-import { ConsoleLogger } from "@aws-amplify/core";
 
 const { width, height } = Dimensions.get("screen");
 
 const Messages = () => {
-	const { user, updateProfile } = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
 	const { matchesList } = useContext(MessageContext);
-	const insets = useSafeAreaInsets();
-
-	const { matchMode } = user || { matchMode: 0 };
+	const [matchMode, setMatchMode] = useState(user.matchMode || 0);
 
 	// useFocusEffect(
 	// 	useCallback(() => {
@@ -43,13 +30,12 @@ const Messages = () => {
 
 	useEffect(() => {
 		connect();
-
 		return disconnect;
 	}, []);
 
 	const handleModeChange = (idx) => {
 		if (matchMode == idx) return;
-		updateProfile({ matchMode: idx });
+		setMatchMode(idx);
 	};
 
 	const handleScroll = ({ nativeEvent }) => {
@@ -93,7 +79,7 @@ const Messages = () => {
 				showsVerticalScrollIndicator={false}
 				keyExtractor={(item) => item.MatchId}
 				// data={matchesList[matchMode].emptyChats}
-				data={matchesList[matchMode].nonEmptyChats}
+				data={matchesList[matchMode].nonEmptyChats.slice().reverse()}
 				contentContainerStyle={styles.non_empty_chat_list}
 				ListEmptyComponent={() => (
 					<View
@@ -115,6 +101,8 @@ const Messages = () => {
 		</View>
 	);
 };
+
+export default Messages;
 
 const styles = StyleSheet.create({
 	container: {
@@ -156,5 +144,3 @@ const styles = StyleSheet.create({
 		paddingHorizontal: width * 0.02,
 	},
 });
-
-export default Messages;

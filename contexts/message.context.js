@@ -5,12 +5,14 @@ import { AuthContext } from "./auth.context";
 
 import url from "../connection";
 import crypto from "../functions/crypto";
+import { sort } from "../utils/array.utils";
 
 export const MessageContext = createContext({
 	matchesList: {},
 	chatsList: {},
 	handleNewMessage: () => {},
 	getLastMessage: () => {},
+	readMessages: () => {},
 });
 
 const defaultMatchesList = {
@@ -23,8 +25,8 @@ const defaultMatchesList = {
 		nonEmptyChats: [],
 	},
 };
-
-const filterMatchesList = (matchesList, chatsList) => {
+// filter matchesList with respect to match modes and if chatted before
+const filterMatchesList = (matchesList, chatsList = {}) => {
 	const flirts = matchesList.filter((match) => match.matchMode == 0);
 	const friends = matchesList.filter((match) => match.matchMode == 1);
 
@@ -50,8 +52,8 @@ const filterMatchesList = (matchesList, chatsList) => {
 	return categorizedList;
 };
 
-const organizeMatchesList = async (rawList, userId, sesToken, chatList, rawMatchesList) => {
-	// var listWithUserData = [];
+//add user infos to the matchesList items
+const organizeMatchesList = async (rawList, userId, sesToken, setRawMatchesList) => {
 	var encryptedRequest = {};
 
 	const listWithUserDatas = await Promise.all(
@@ -76,12 +78,12 @@ const organizeMatchesList = async (rawList, userId, sesToken, chatList, rawMatch
 			return newMatchInstance;
 		})
 	);
-	rawMatchesList.current = listWithUserDatas;
+	setRawMatchesList(listWithUserDatas);
 
 	// return filterMatchesList(listWithUserDatas, chatList);
 };
 
-const organizeChatsList = async (rawList, userId, sesToken) => {
+const getChatsList = async (userId, sesToken) => {
 	const cList = await axios
 		.post(
 			"https://devmessage.meetdorm.com/oldMessage",
@@ -98,9 +100,9 @@ const organizeChatsList = async (rawList, userId, sesToken) => {
 };
 
 const MessageProvider = ({ children }) => {
-	const rawMatchesList = useRef([]);
+	const [rawMatchesList, setRawMatchesList] = useState([]);
 	const [matchesList, setMatchesList] = useState(defaultMatchesList);
-	const [chatsList, setChatsList] = useState([]);
+	const [chatsList, setChatsList] = useState({});
 
 	/* 
    TODO: template: 
@@ -138,18 +140,18 @@ const MessageProvider = ({ children }) => {
 						console.log(err.response.status);
 						return {};
 					});
-				const mList = await organizeMatchesList(resp, userId, sesToken, cList, rawMatchesList);
-				const cList = await organizeChatsList(resp, userId, sesToken);
+				const cList = await getChatsList(userId, sesToken);
 				setChatsList(cList);
-				// setMatchesList(mList);
+
+				await organizeMatchesList(resp, userId, sesToken, setRawMatchesList);
 			})();
 		}
 	}, [isLoggedIn]);
 
 	useEffect(() => {
-		const newMatchesList = filterMatchesList(rawMatchesList.current, chatsList);
+		const newMatchesList = filterMatchesList(rawMatchesList, chatsList);
 		setMatchesList(newMatchesList);
-	}, [chatsList]);
+	}, [chatsList, rawMatchesList]);
 
 	function handleNewMessage(msg) {
 		const matchId = msg.matchId;
@@ -161,14 +163,24 @@ const MessageProvider = ({ children }) => {
 
 	const getLastMessage = (matchId) => {
 		try {
-			const { message, date } = chatsList[matchId][0];
-			return { message, date };
+			const { message, date, unread, sourceId } = sort(chatsList[matchId], "date", false)[0];
+			return { message, date, unread, sourceId };
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
-	const value = { matchesList, chatsList, handleNewMessage, getLastMessage };
+	const readMessages = (matchId, messages) => {
+		// TODO: send read data to server
+		const updatedMessages = messages[matchId].map((message) => {
+			if (message.sourceId == userId) return message;
+			return { ...message, unread: 0 };
+		});
+		console.log(updatedMessages);
+		setChatsList((oldList) => ({ ...oldList, [matchId]: updatedMessages }));
+	};
+
+	const value = { matchesList, chatsList, handleNewMessage, getLastMessage, readMessages };
 	return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;
 };
 export default MessageProvider;

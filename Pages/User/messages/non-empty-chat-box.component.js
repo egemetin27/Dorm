@@ -1,15 +1,17 @@
-import { useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { View, Text, Image, Dimensions, Pressable, StyleSheet } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-
 import { useNavigation } from "@react-navigation/native";
 
-import { colors, Gradient } from "../../../visualComponents/colors";
-import { MessageContext } from "../../../contexts/message.context";
-import { getWhen } from "../../../utils/date.utils";
 import CustomImage from "../../../components/custom-image.component";
 
-const { width, height } = Dimensions.get("screen");
+import { MessageContext } from "../../../contexts/message.context";
+import { AuthContext } from "../../../contexts/auth.context";
+
+import { getWhen } from "../../../utils/date.utils";
+import { colors, Gradient } from "../../../visualComponents/colors";
+
+const { width, height } = Dimensions.get("window");
 
 const SwipedPanel = ({ handleUnmatch, handleDeleteChat }) => {
 	return (
@@ -21,70 +23,65 @@ const SwipedPanel = ({ handleUnmatch, handleDeleteChat }) => {
 					source={require("../../../assets/Union.png")}
 				/>
 			</Pressable>
-			<View style={{ height: "60%", width: 1.5, backgroundColor: colors.gray }} />
-			<Pressable onPress={handleDeleteChat} style={styles.swipeable_button}>
+			{/*<View style={{ height: "60%", width: 1.5, backgroundColor: colors.gray }} />
+			 <Pressable onPress={handleDeleteChat} style={styles.swipeable_button}>
 				<Image
 					style={styles.swipeable_icon}
 					resizeMode={"contain"}
 					source={require("../../../assets/trashCan.png")}
 				/>
-			</Pressable>
+			</Pressable> */}
 		</View>
 	);
 };
 
 const NonEmptyChatBox = ({ match }) => {
 	const { getLastMessage } = useContext(MessageContext);
+	const { user } = useContext(AuthContext);
 	const navigation = useNavigation();
 
 	const { MatchId } = match;
 	const { Name } = match.userData;
 	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
 
-	const { message, date } = getLastMessage(MatchId);
+	const { message, date, unread, sourceId } = getLastMessage(MatchId);
+	const [isUnreadMessage, setIsUnreadMessage] = useState(false);
 
-	const isUnreadMessage = false;
+	useEffect(() => {
+		if (sourceId != user.userId) setIsUnreadMessage(unread == 1);
+	}, [unread]);
 
-	const renderRightActions = () => {
+	const renderRightActions = useCallback(() => {
 		const handleUnmatch = () => {
 			//TODO: unmatch
 			navigation.navigate("CustomModal", {
-				image: "remove_match",
-				title: "Emin misin?",
-				body: "Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.",
-				buttons: [
-					{
-						text: "Eşleşmeyi Kaldır",
-						onPress: () => {
-							console.log("Deniyorum");
-						},
-					},
-				],
+				modalType: "UNMATCH_MODAL",
+				buttonParamsList: [{ matchId: MatchId }],
 			});
 		};
 
-		const handleDeleteChat = () => {
-			//TODO: delete chat
-			navigation.navigate("CustomModal", {
-				image: "trash_can",
-				title: "Emin misin?",
-				body: "Silersen bunu geri alamazsın ancak bu kişiyi “Sohbet Etmek İsteyebilirsin”de bulabilirsin.",
-				buttons: [
-					{
-						text: "Konuşmayı Sil",
-						onPress: () => {
-							console.log("Siliniyor");
-						},
-					},
-				],
-			});
-		};
+		// const handleDeleteChat = () => {
+		// 	//TODO: delete chat
+		// 	navigation.navigate("CustomModal", {
+		// 		image: "trash_can",
+		// 		title: "Emin misin?",
+		// 		body: "Silersen bunu geri alamazsın ancak bu kişiyi “Sohbet Etmek İsteyebilirsin”de bulabilirsin.",
+		// 		buttons: [
+		// 			{
+		// 				text: "Konuşmayı Sil",
+		// 				onPress: () => {
+		// 					console.log("Siliniyor");
+		// 				},
+		// 			},
+		// 		],
+		// 	});
+		// };
 
-		return <SwipedPanel handleUnmatch={handleUnmatch} handleDeleteChat={handleDeleteChat} />;
-	};
+		return <SwipedPanel handleUnmatch={handleUnmatch} />;
+	}, []);
 
 	const handlePress = () => {
-		navigation.navigate("Chat", { user: match });
+		navigation.navigate("Chat", { otherUser: match });
 	};
 
 	return (
@@ -167,7 +164,7 @@ const styles = StyleSheet.create({
 	},
 	swipeable_container: {
 		backgroundColor: colors.light_gray,
-		width: "32%",
+		width: "20%",
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
