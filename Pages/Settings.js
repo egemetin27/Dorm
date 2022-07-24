@@ -28,6 +28,11 @@ import crypto from "../functions/crypto";
 const { width, height } = Dimensions.get("window");
 
 const SignOutModal = ({ visible, dismiss, signOut }) => {
+	const handleSignOut = async () => {
+		await dismiss();
+		signOut();
+	};
+
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -88,7 +93,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					onPress={signOut}
+					onPress={handleSignOut}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -113,6 +118,21 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 };
 
 const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => {
+	const handleFreeze = async () => {
+		await dismiss();
+
+		const myJson = crypto.encrypt({ userId: userId });
+		axios
+			.post(url + "/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
+			.then(() => {
+				signOut();
+			})
+			.catch((err) => {
+				console.log("error on freeze account");
+			});
+	};
+
+	async () => {};
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -160,17 +180,7 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => 
 				</Text>
 
 				<TouchableOpacity
-					onPress={async () => {
-						const myJson = crypto.encrypt({ userId: userId });
-						await axios
-							.post(url + "/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
-							.then(() => {
-								signOut();
-							})
-							.catch((err) => {
-								console.log("error on freeze account");
-							});
-					}}
+					onPress={handleFreeze}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -232,6 +242,20 @@ const DeleteAccountModal = ({
 	sesToken,
 	userId,
 }) => {
+	const handleDelete = async () => {
+		await dismiss();
+		const encryptedData = crypto.encrypt({ userId: userId });
+		axios
+			.post(url + "/deleteAccount", encryptedData, {
+				headers: { "access-token": sesToken },
+			})
+			.then((res) => {
+				console.log(res.data);
+				signOut();
+			})
+			.catch((err) => console.log(err));
+	};
+
 	return (
 		<CustomModal visible={visible} dismiss={dismiss}>
 			<View
@@ -308,18 +332,7 @@ const DeleteAccountModal = ({
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					onPress={() => {
-						const encryptedData = crypto.encrypt({ userId: userId });
-						axios
-							.post(url + "/deleteAccount", encryptedData, {
-								headers: { "access-token": sesToken },
-							})
-							.then((res) => {
-								console.log(res.data);
-								signOut();
-							})
-							.catch((err) => console.log(err));
-					}}
+					onPress={handleDelete}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -709,16 +722,11 @@ export default function Settings({ navigation, route }) {
 			<SignOutModal
 				visible={signoutModal}
 				dismiss={() => setSignoutModal(false)}
-				signOut={() => {
-					setSignoutModal(false);
-					signOut();
-				}}
+				signOut={signOut}
 			/>
 
 			<FreezeAccountModal
-				signOut={() => {
-					signOut();
-				}}
+				signOut={signOut}
 				visible={freezeAccountModal}
 				dismiss={() => setFreezeAccountModal(false)}
 				sesToken={sesToken}

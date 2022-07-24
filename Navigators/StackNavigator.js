@@ -1,24 +1,12 @@
-import { useContext, useState, useMemo, useEffect, useCallback } from "react";
-import { View, Text, Image, Dimensions, Alert, Pressable, AppState } from "react-native";
+import { useContext, useState, useEffect, useCallback, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
-import { NavigationContainer, TabActions } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import url from "../connection";
 import axios from "axios";
-import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import * as Notifications from "expo-notifications";
-
-import { API, graphqlOperation } from "aws-amplify";
-import { getMsgUser } from "../src/graphql/queries";
-import { createMsgUser, updateMsgUser } from "../src/graphql/mutations";
-
-import { colors, GradientText } from "../visualComponents/colors";
+import * as Device from "expo-device";
 
 // AUTH PAGES
 import Onboarding from "../Pages/Auth/Onboarding";
@@ -39,13 +27,11 @@ import PhotoUpload from "../Pages/afterRegisteration/PhotoUpload";
 import Hobbies from "../Pages/afterRegisteration/Hobbies";
 /////
 // USER PAGES
-// import Messages from "../Pages/User/Messages";
 import ProfilePhotos from "../Pages/User/ProfilePhotos";
 /////
 // OTHER SCREENS
 import Settings from "../Pages/Settings";
 import Chat from "../Pages/User/chat/chat.route";
-// import Chat from "../Pages/User/Chat";
 import Tutorial from "../Pages/Tutorial";
 import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi";
 import KullaniciSozlesmesi from "../Pages/KullaniciSozlesmesi";
@@ -65,69 +51,15 @@ import MatchModal from "../Pages/modals/MatchModal";
 import ListEndedModal from "../Pages/modals/ListEndedModal";
 
 import useKeyGenerator from "../hooks/useKeyGenerator";
-import crypto from "../functions/crypto";
 import UpdateNeededModal from "../Pages/modals/UpdateNeededModal";
 import ModalPage from "../components/modal.component";
+
+import * as Notifications from "expo-notifications";
+import { useNavigation } from "@react-navigation/native";
 
 // SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
-
-async function registerForPushNotificationAsync() {
-	let token;
-	const { status: existingStatus } = await Notifications.getPermissionsAsync();
-	let finalStatus = existingStatus;
-	if (existingStatus != "granted") {
-		const { status } = await Notifications.requestPermissionsAsync();
-		finalStatus = status;
-	}
-	if (finalStatus != "granted") {
-		return null;
-	}
-	token = (await Notifications.getExpoPushTokenAsync()).data;
-
-	if (Platform.OS == "android") {
-		Notifications.setNotificationChannelAsync("default", {
-			name: "default",
-			importance: Notifications.AndroidImportance.MAX,
-			vibrationPattern: [0, 250, 250, 250],
-			lightColor: "#FF231F7C",
-		});
-	}
-
-	return token;
-}
-
-async function fetchUser(userName, userId, token, sesToken) {
-	const newUser = {
-		id: userId,
-		name: userName,
-		pushToken: null,
-	};
-
-	const userData = await API.graphql(graphqlOperation(getMsgUser, { id: userId }));
-
-	if (userData.data.getMsgUser) {
-		console.log("User is already registered in database");
-
-		const encryptedToken = crypto.encrypt({ userId: userId, token: token });
-		await axios
-			.post(url + "/registerToken", encryptedToken, { headers: { "access-token": sesToken } })
-			.then((res) => {
-				// console.log(res.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-
-		return;
-	} else {
-		console.log("User does not exists");
-	}
-	await API.graphql(graphqlOperation(createMsgUser, { input: newUser }));
-
-	console.log("New user created");
-}
 
 export default function StackNavigator() {
 	const [appIsReady, setAppIsReady] = useState(false); // is the background fetching done
@@ -138,6 +70,37 @@ export default function StackNavigator() {
 	const { user, isLoggedIn, signIn, signOut } = useContext(AuthContext);
 
 	const updateNeeded = useKeyGenerator();
+
+	// const notificationListener = useRef();
+	// const responseListener = useRef();
+	// const navigation = useNavigation();
+
+	// useEffect(() => {
+	// 	// if (isLoggedIn) {
+	// 	notificationListener.current =
+	// 		Notifications.addNotificationReceivedListener(handleNotification);
+	// 	responseListener.current = Notifications.addNotificationResponseReceivedListener(
+	// 		handleNotificationResponse
+	// 	);
+	// 	// const subscription = Notifications.addPushTokenListener(registerForPushNotificationsAsync);
+	// 	return () => {
+	// 		Notifications.removeNotificationSubscription(notificationListener.current);
+	// 		Notifications.removeNotificationSubscription(responseListener.current);
+	// 		// subscription.remove();
+	// 	};
+	// 	// }
+	// }, [appIsReady]);
+	// const handleNotification = (notification) => {
+	// 	// console.log({ notification });
+	// };
+
+	// const handleNotificationResponse = (response) => {
+	// 	// console.log(response.notification.request.content.data);
+	// 	const { mesData } = { mesData: null, ...response.notification.request.content.data };
+	// 	navigation?.navigate("MainScreen", {
+	// 		screen: "Mesajlar",
+	// 	});
+	// };
 
 	useEffect(async () => {
 		axios.interceptors.response.use(

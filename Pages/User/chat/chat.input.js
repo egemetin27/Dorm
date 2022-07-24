@@ -16,7 +16,7 @@ const ChatInput = ({ destId, matchId }) => {
 	const handleSend = () => {
 		if (!message.length) return;
 
-		sendMessage({ destId, matchId, message }, "message");
+		sendMessage({ destId, matchId, message: message.trim() }, "message");
 		setMessage("");
 	};
 

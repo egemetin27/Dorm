@@ -1,39 +1,39 @@
 {
-  "project_info": {
-    "project_number": "1040640053404",
-    "project_id": "dorm-77ffa",
-    "storage_bucket": "dorm-77ffa.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1040640053404:android:792cfb1c57bca7a783dd59",
-        "android_client_info": {
-          "package_name": "com.meetdorm.dorm"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1040640053404-4aa0r5f4a8p02gcnjcoeq401m4b285cm.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBzUtnCNuCQKhHwZnapkSN6qwdfM3UuOxI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1040640053404-4aa0r5f4a8p02gcnjcoeq401m4b285cm.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
+	"project_info": {
+		"project_number": "437691600167",
+		"project_id": "dorm-a1b93",
+		"storage_bucket": "dorm-a1b93.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:437691600167:android:37baa304a2b91bd8b26d02",
+				"android_client_info": {
+					"package_name": "com.meetdorm.dorm"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "437691600167-jajqh69kpb1592jgp8rfn878fkj8g2hq.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyDGKPBHsn4QkNL6AnHj_tuyex0i9AukvJk"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "437691600167-jajqh69kpb1592jgp8rfn878fkj8g2hq.apps.googleusercontent.com",
+							"client_type": 3
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
 }

@@ -15,12 +15,18 @@ const ChatMessage = ({ message }) => {
 	const { userId } = user ?? { userId: -1 };
 	const myMessage = message.sourceId == userId;
 
+	useEffect(() => {
+		if (message.sourceId != user.userId) message.unread = 0;
+	}, []);
+
 	return (
 		<View style={[styles.container]}>
 			{myMessage ? (
-				<Gradient style={styles.my_message_container}>
-					<Text style={styles.my_message}>{message.message}</Text>
-				</Gradient>
+				<View style={styles.my_message_container}>
+					<Gradient style={styles.my_message_gradient}>
+						<Text style={styles.my_message}>{message.message}</Text>
+					</Gradient>
+				</View>
 			) : (
 				<View style={styles.received_message_container}>
 					<Text style={styles.received_message_text}>{message.message}</Text>
@@ -42,6 +48,9 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-end",
 		borderRadius: Math.min(width * 0.08, height * 0.024),
 		borderBottomRightRadius: 0,
+		overflow: "hidden",
+	},
+	my_message_gradient: {
 		paddingVertical: height * 0.012,
 		paddingHorizontal: width * 0.04,
 	},

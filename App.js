@@ -1,26 +1,27 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Dimensions, View, AppState } from "react-native";
+import { StyleSheet, KeyboardAvoidingView, Platform, Text } from "react-native";
 import { loadAsync } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
-import Amplify from "aws-amplify";
-import awsmobile from "./src/aws-exports";
+import { NavigationContainer } from "@react-navigation/native";
+import * as Linking from "expo-linking";
+
+import * as Notifications from "expo-notifications";
+
+// import Amplify from "aws-amplify";
+// import awsmobile from "./src/aws-exports";
 
 import AuthProvider from "./contexts/auth.context";
+import NotificationProvider from "./contexts/notification.context";
 import SocketProvider from "./contexts/socket.context";
 import MessageProvider from "./contexts/message.context";
 
-const { width, height } = Dimensions.get("window");
-
-Amplify.configure(awsmobile);
+// Amplify.configure(awsmobile);
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
-
 import Temp from "./Pages/Temp";
-import Messages from "./Pages/User/messages/messages.route";
-import Chat from "./Pages/User/chat/chat.route";
-import { NavigationContainer } from "@react-navigation/native";
+
 //import ImageManipulatorTest from "./ImageManipulatorTest";
 
 const fonts = {
@@ -33,28 +34,27 @@ const fonts = {
 	PoppinsExtraBold: require("./assets/fonts/Poppins-ExtraBold.ttf"),
 };
 
+const prefix = Linking.createURL("/");
+// const prefix = Linking.createURL("dorm://");
+
+const defaultLinkingConfig = {
+	screens: {
+		MainScreen: {
+			initialRouteName: "home",
+			screens: {
+				Profil: "profile",
+				AnaSayfa: "home",
+				Mesajlar: "messages",
+			},
+		},
+	},
+};
+
 export default function App() {
-	let abortController = new AbortController();
-	const appState = React.useRef(AppState.currentState);
-	const [appStateVisible, setAppStateVisible] = React.useState(appState.current);
-
-	const _handleAppStateChange = (nextAppState) => {
-		if (appState.current.match(/inactive|background/) && nextAppState === "active") {
-			console.log("App has come to the foreground!");
-		}
-
-		appState.current = nextAppState;
-		setAppStateVisible(appState.current);
-		console.log("AppState", appState.current);
+	const linking = {
+		prefixes: [prefix],
+		config: defaultLinkingConfig,
 	};
-
-	// useEffect(() => {
-	// 	const appStateListener = AppState.addEventListener("change", _handleAppStateChange);
-	// 	return () => {
-	// 		appStateListener.remove();
-	// 		abortController.abort();
-	// 	};
-	// }, []);
 
 	useEffect(() => {
 		(async () => {
@@ -66,16 +66,61 @@ export default function App() {
 	}, []);
 
 	return (
-		<NavigationContainer>
+		<NavigationContainer
+			// linking={linking}
+			linking={{
+				...linking,
+				async getInitialURL() {
+					const response = await Notifications.getLastNotificationResponseAsync();
+					const url = response?.notification.request.content.data.url;
+
+					return url;
+				},
+				subscribe(listener) {
+					const onReceiveURL = ({ url }) => listener(url);
+
+					// Listen to incoming links from deep linking
+					Linking.addEventListener("url", onReceiveURL);
+
+					// Listen to expo push notifications
+					const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+						const url = response.notification.request.content.data.url;
+
+						// Any custom logic to see whether the URL needs to be handled
+						//...
+
+						// Let React Navigation handle the URL
+						listener(url);
+					});
+
+					return () => {
+						// Clean up the event listeners
+						Linking.removeEventListener("url", onReceiveURL);
+						subscription.remove();
+					};
+				},
+			}}
+		>
 			<AuthProvider>
-				<MessageProvider>
-					<SocketProvider>
-						<SafeAreaProvider style={{ flex: 1 }}>
-							<Stack />
-						</SafeAreaProvider>
-					</SocketProvider>
-				</MessageProvider>
+				<NotificationProvider>
+					<MessageProvider>
+						<SocketProvider>
+							<SafeAreaProvider style={{ flex: 1 }}>
+								<KeyboardAvoidingView
+									behavior={Platform.OS === "ios" ? "padding" : "height"}
+									style={styles.container}
+								>
+									<Stack />
+								</KeyboardAvoidingView>
+							</SafeAreaProvider>
+						</SocketProvider>
+					</MessageProvider>
+				</NotificationProvider>
 			</AuthProvider>
 		</NavigationContainer>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: { flex: 1 },
+});

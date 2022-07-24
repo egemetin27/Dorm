@@ -1,9 +1,9 @@
-import { createContext, useMemo, useState, useContext } from "react";
-import { Alert } from "react-native";
+import { createContext, useState } from "react";
+import { Alert, Platform } from "react-native";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
-import { useNavigation, NavigationContext } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import url from "../connection";
 import crypto from "../functions/crypto";
@@ -22,19 +22,7 @@ const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	const signIn = async ({
-		email,
-		password,
-		isNewUser = false,
-		// navigation = null,
-		notLoading = () => {},
-	}) => {
-		// if (isNewUser) {
-		// 	setNewUser(true);
-		// } else {
-		// 	setNewUser(false);
-		// }
-
+	const signIn = async ({ email, password, notLoading = () => {} }) => {
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 		const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
 		await axios
@@ -57,20 +45,8 @@ const AuthProvider = ({ children }) => {
 								},
 							],
 						});
-
-						// navigation.replace("PhotoUpload", {
-						// 	mail: email,
-						// 	password: password,
-						// 	userId: data.userId,
-						// 	sesToken: data.sesToken,
-						// });
 						return;
 					}
-					// If signed in
-
-					// registerForPushNotificationAsync().then((token) => {
-					// 	fetchUser(data.Name, data.userId, token, data.sesToken);
-					// });
 
 					const photoList = data.Photo.map((item) => {
 						return {
@@ -109,9 +85,21 @@ const AuthProvider = ({ children }) => {
 				notLoading();
 			});
 	};
+
 	const signOut = async () => {
 		try {
-			await SecureStore.deleteItemAsync("credentials");
+			SecureStore.deleteItemAsync("credentials");
+			const encryptedToken = crypto.encrypt({
+				userId: user.userId,
+				token: null,
+			});
+
+			axios
+				.post(url + "/registerToken", encryptedToken, {
+					headers: { "access-token": user.sesToken },
+				})
+				.then((res) => console.log("response of /registerToken: ", res.data))
+				.catch((err) => console.log("error on /registerToken", err));
 			// await AsyncStorage.removeItem("isLoggedIn");
 		} catch (err) {
 			console.log("Error Signing Out: ", err);

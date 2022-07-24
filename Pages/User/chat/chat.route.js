@@ -1,14 +1,25 @@
 import { Fragment, useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, FlatList } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	Dimensions,
+	FlatList,
+	Keyboard,
+	KeyboardAvoidingView,
+} from "react-native";
 
 import ChatHeader from "./chat.header";
 import ChatInput from "./chat.input";
 import ChatMessage from "./chat.message";
 import CustomImage from "../../../components/custom-image.component";
 
-import { MessageContext } from "../../../contexts/message.context";
-import { sort } from "../../../utils/array.utils";
 import { AuthContext } from "../../../contexts/auth.context";
+import { MessageContext } from "../../../contexts/message.context";
+import { SocketContext } from "../../../contexts/socket.context";
+
+import { sort } from "../../../utils/array.utils";
+import { colors } from "../../../visualComponents/colors";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -68,9 +79,9 @@ const getLastReadMessage = (messagesList, myId) => {
 	if (messagesList[0].sourceId.toString() == myId.toString()) return lastIndex;
 
 	messagesList.every((message, index) => {
-		if (index != 0) lastIndex = index;
 		if (message.unread.toString() == "0" || message.sourceId.toString() == myId.toString())
 			return false;
+		lastIndex = index;
 		return true;
 	});
 	return lastIndex;
@@ -78,46 +89,41 @@ const getLastReadMessage = (messagesList, myId) => {
 
 const Chat = ({ route, navigation }) => {
 	const { user } = useContext(AuthContext);
-	const { chatsList, readMessages } = useContext(MessageContext);
-	// const [chat, setChat] = useState(defaultChat);
-	const [chat, setChat] = useState([]);
-	const [lastReadMessageIndex, setLastReadMessageIndex] = useState(-1);
+	const { chatsList, readMessagesLocally } = useContext(MessageContext);
+	const { readMessage } = useContext(SocketContext);
+	const [chatMessages, setChatMessages] = useState([]);
+	const [lastReadMessageIndex, setLastReadMessageIndex] = useState(null);
 
 	const { otherUser } = route.params;
 	const { otherId, MatchId } = otherUser;
 	const { Name } = otherUser.userData;
-
 	const imageUrl = otherUser.userData?.photos[0]?.PhotoLink ?? null;
 
 	useEffect(() => {
 		const unsortedChat = chatsList[MatchId] ?? [];
 		const sortedChat = sort(unsortedChat, "date", false);
-		setChat(sortedChat);
+		setChatMessages(sortedChat);
+		readMessage(MatchId);
+
+		if (lastReadMessageIndex) setLastReadMessageIndex(-2);
+
+		if (lastReadMessageIndex == null && sortedChat.length > 0) {
+			const index = getLastReadMessage(sortedChat, user.userId);
+			setLastReadMessageIndex(index);
+		}
 	}, [chatsList[MatchId]]);
 
 	useEffect(() => {
-		if (chat.length > 0) {
-			const index = getLastReadMessage(chat, user.userId);
-			setLastReadMessageIndex(index);
-		}
-	}, [chat]);
-
-	useEffect(() => {
-		if (lastReadMessageIndex != -1) {
-			//TODO: send server that message has been read
-		}
-	}, [lastReadMessageIndex]);
-
-	useEffect(() => {
 		return () => {
-			readMessages(MatchId, chat);
+			readMessagesLocally(MatchId, chatMessages);
+			console.log("EXITED");
 		};
 	}, []);
 
 	return (
 		<View style={[styles.container]}>
 			<ChatHeader name={Name} imageUrl={imageUrl} matchId={MatchId} />
-			{chat.length == 0 ? (
+			{chatMessages.length == 0 ? (
 				<View style={styles.no_message_container}>
 					{imageUrl && (
 						<CustomImage blurRadius={10} style={styles.background_image} url={imageUrl} />
@@ -132,7 +138,7 @@ const Chat = ({ route, navigation }) => {
 				<View style={styles.chat_container}>
 					<FlatList
 						showsVerticalScrollIndicator={false}
-						data={chat}
+						data={chatMessages}
 						contentContainerStyle={{
 							paddingHorizontal: 15,
 							paddingVertical: height * 0.024,
@@ -144,14 +150,16 @@ const Chat = ({ route, navigation }) => {
 						renderItem={({ item, index }) => {
 							return (
 								<Fragment>
+									<ChatMessage message={item} />
 									{index == lastReadMessageIndex && (
 										<View style={styles.unread_container}>
 											<View style={styles.unread_line}></View>
-											<Text style={styles.unread_text}>Buradan sonrasını okumadın</Text>
+											<Text style={styles.unread_text}>{`Okunmamış ${
+												lastReadMessageIndex + 1
+											} mesajın var`}</Text>
 											<View style={styles.unread_line}></View>
 										</View>
 									)}
-									<ChatMessage message={item} />
 								</Fragment>
 							);
 						}}
@@ -160,7 +168,11 @@ const Chat = ({ route, navigation }) => {
 				</View>
 			)}
 			<View
-				style={chat.length == 0 ? styles.input_container_empty : styles.input_container_not_empty}
+				style={
+					chatMessages.length == 0
+						? styles.input_container_empty_chat
+						: styles.input_container_not_empty_chat
+				}
 			>
 				<ChatInput destId={otherId} matchId={MatchId} />
 			</View>
@@ -197,13 +209,13 @@ const styles = StyleSheet.create({
 		resizeMode: "cover",
 		backgroundColor: "rgba(0,0,0,0.25)",
 	},
-	input_container_empty: {
+	input_container_empty_chat: {
 		position: "absolute",
 		width: "100%",
 		bottom: height * 0.024,
 		paddingTop: height * 0.016,
 	},
-	input_container_not_empty: {
+	input_container_not_empty_chat: {
 		width: "100%",
 		marginBottom: height * 0.024,
 		paddingTop: height * 0.016,
@@ -219,10 +231,12 @@ const styles = StyleSheet.create({
 	},
 	unread_line: {
 		flex: 1,
-		height: 1,
-		backgroundColor: "blue",
+		height: 0.5,
+		backgroundColor: colors.medium_gray,
 	},
 	unread_text: {
+		color: colors.medium_gray,
+		fontSize: Math.min(height * 0.016, 10),
 		paddingHorizontal: width * 0.02,
 	},
 });

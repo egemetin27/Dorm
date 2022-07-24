@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 
 import { AuthContext } from "./auth.context";
@@ -12,7 +12,8 @@ export const MessageContext = createContext({
 	chatsList: {},
 	handleNewMessage: () => {},
 	getLastMessage: () => {},
-	readMessages: () => {},
+	readMessagesLocally: () => {},
+	getMessagesList: () => {},
 });
 
 const defaultMatchesList = {
@@ -55,6 +56,7 @@ const filterMatchesList = (matchesList, chatsList = {}) => {
 //add user infos to the matchesList items
 const organizeMatchesList = async (rawList, userId, sesToken, setRawMatchesList) => {
 	var encryptedRequest = {};
+	if (typeof rawList != "object" || !(rawList.length > 0)) return;
 
 	const listWithUserDatas = await Promise.all(
 		rawList.map(async (element) => {
@@ -100,52 +102,15 @@ const getChatsList = async (userId, sesToken) => {
 };
 
 const MessageProvider = ({ children }) => {
+	const { user, isLoggedIn } = useContext(AuthContext);
+	const { userId, sesToken } = user ?? { userId: -1, sesToken: "" };
+
 	const [rawMatchesList, setRawMatchesList] = useState([]);
 	const [matchesList, setMatchesList] = useState(defaultMatchesList);
 	const [chatsList, setChatsList] = useState({});
 
-	/* 
-   TODO: template: 
-      matchesList = {
-			0: {
-				emptyChats: {
-					otherUserId1 or matchId1: [{fromWho, message, date}, ...],
-				},
-				nonEmptyChats: {
-					otherUserId2 or matchId2: [{fromWho, message, date}, ...]
-				}
-			},
-			1: {
-				emptyChats: {
-					otherUserId1 or matchId1: [{fromWho, message, date}, ...],
-				},
-				nonEmptyChats: {
-					otherUserId2 or matchId2: [{fromWho, message, date}, ...]
-				}
-			}
-      }
-   */
-
-	const { user, isLoggedIn } = useContext(AuthContext);
-	const { userId, sesToken } = user ?? { userId: -1, sesToken: "" };
-
 	useEffect(() => {
-		if (isLoggedIn) {
-			(async () => {
-				const resp = await axios
-					.post(url + "/matchList", { userId }, { headers: { "access-token": sesToken } })
-					.then((res) => res.data)
-					.catch((err) => {
-						console.log("error on /matchList");
-						console.log(err.response.status);
-						return {};
-					});
-				const cList = await getChatsList(userId, sesToken);
-				setChatsList(cList);
-
-				await organizeMatchesList(resp, userId, sesToken, setRawMatchesList);
-			})();
-		}
+		getMessagesList();
 	}, [isLoggedIn]);
 
 	useEffect(() => {
@@ -153,34 +118,52 @@ const MessageProvider = ({ children }) => {
 		setMatchesList(newMatchesList);
 	}, [chatsList, rawMatchesList]);
 
-	function handleNewMessage(msg) {
+	const handleNewMessage = (msg) => {
 		const matchId = msg.matchId;
 		setChatsList((initialList) => {
 			const oldMessageList = initialList[matchId] ?? [];
 			return { ...initialList, [matchId]: [msg, ...oldMessageList] };
 		});
-	}
+	};
+
+	const getMessagesList = async () => {
+		if (isLoggedIn) {
+			const resp = await axios
+				.post(url + "/matchList", { userId }, { headers: { "access-token": sesToken } })
+				.then((res) => res.data)
+				.catch((err) => {
+					console.log("error on /matchList");
+					console.log(err.response.status);
+					return {};
+				});
+			const cList = await getChatsList(userId, sesToken);
+			setChatsList(cList);
+
+			await organizeMatchesList(resp, userId, sesToken, setRawMatchesList);
+		}
+	};
 
 	const getLastMessage = (matchId) => {
 		try {
-			const { message, date, unread, sourceId } = sort(chatsList[matchId], "date", false)[0];
-			return { message, date, unread, sourceId };
+			const lastMessage = sort(chatsList[matchId], "date", false)[0];
+			return lastMessage;
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
-	const readMessages = (matchId, messages) => {
-		// TODO: send read data to server
-		const updatedMessages = messages[matchId].map((message) => {
-			if (message.sourceId == userId) return message;
-			return { ...message, unread: 0 };
-		});
-		console.log(updatedMessages);
-		setChatsList((oldList) => ({ ...oldList, [matchId]: updatedMessages }));
+	const readMessagesLocally = (matchId) => {
+		setChatsList((oldList) => ({ ...oldList, [matchId]: chatsList[matchId] }));
 	};
 
-	const value = { matchesList, chatsList, handleNewMessage, getLastMessage, readMessages };
+	const value = {
+		matchesList,
+		chatsList,
+		handleNewMessage,
+		getLastMessage,
+		readMessagesLocally,
+		getMessagesList,
+	};
 	return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;
 };
 export default MessageProvider;

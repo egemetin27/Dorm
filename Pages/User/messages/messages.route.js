@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { View, Text, Dimensions, StyleSheet, FlatList } from "react-native";
+import { View, Text, Dimensions, StyleSheet, FlatList, Pressable } from "react-native";
 
 import { GradientText, Gradient, colors } from "../../../visualComponents/colors";
 import Switch from "./switch.component";
@@ -10,13 +10,16 @@ import { SocketContext } from "../../../contexts/socket.context";
 import { MessageContext } from "../../../contexts/message.context";
 import { AuthContext } from "../../../contexts/auth.context";
 
+import { sort } from "../../../utils/array.utils";
+
 const { width, height } = Dimensions.get("screen");
 
 const Messages = () => {
 	const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
-	const { matchesList } = useContext(MessageContext);
+	const { matchesList, getLastMessage, getMessagesList } = useContext(MessageContext);
 	const [matchMode, setMatchMode] = useState(user.matchMode || 0);
+	const [sortedNonEmptyChats, setSortedNonEmptyChats] = useState([]);
 
 	// useFocusEffect(
 	// 	useCallback(() => {
@@ -29,9 +32,21 @@ const Messages = () => {
 	// );
 
 	useEffect(() => {
+		// connect to the socket when mounted and disconnect when unmounted
+		getMessagesList();
 		connect();
 		return disconnect;
 	}, []);
+
+	useEffect(() => {
+		// sort increasingly chat boxes with respect to last message date
+		const sortedList = matchesList[matchMode].nonEmptyChats;
+		sortedList.sort((a, b) => {
+			return getLastMessage(a.MatchId).date < getLastMessage(b.MatchId).date ? 1 : -1;
+		});
+
+		setSortedNonEmptyChats(sortedList);
+	}, [matchesList[matchMode].nonEmptyChats]);
 
 	const handleModeChange = (idx) => {
 		if (matchMode == idx) return;
@@ -39,7 +54,24 @@ const Messages = () => {
 	};
 
 	const handleScroll = ({ nativeEvent }) => {
-		console.log(nativeEvent.velocity.y > 0);
+		console.log({ nativeEvent });
+		// console.log(nativeEvent.velocity.y > 0);
+	};
+
+	const handleSearch = () => {
+		// fetch("https://exp.host/--/api/v2/push/send", {
+		// 	method: "POST",
+		// 	headers: {
+		// 		Accept: "application/json",
+		// 		"Content-Type": "application/json",
+		// 	},
+		// 	body: JSON.stringify({
+		// 		to: token,
+		// 		sound: "default",
+		// 		title: "Dorm",
+		// 		body: "Yeni bir eşleşmeniz var!",
+		// 	}),
+		// });
 	};
 
 	return (
@@ -75,11 +107,10 @@ const Messages = () => {
 				/>
 			</View>
 			<FlatList
-				onScroll={handleScroll}
+				// onScroll={handleScroll}
 				showsVerticalScrollIndicator={false}
 				keyExtractor={(item) => item.MatchId}
-				// data={matchesList[matchMode].emptyChats}
-				data={matchesList[matchMode].nonEmptyChats.slice().reverse()}
+				data={sortedNonEmptyChats}
 				contentContainerStyle={styles.non_empty_chat_list}
 				ListEmptyComponent={() => (
 					<View

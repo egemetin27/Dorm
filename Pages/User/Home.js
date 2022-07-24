@@ -360,7 +360,9 @@ export default function MainPage({ navigation }) {
 						if (err.response.status == 411) {
 							setPeopleList([]);
 							setLisetEmptyMessage(
-								"Diğerler insanları görmek istiyorsan görünmez moddan çıkmalısın!"
+								// "Diğerler insanları görmek istiyorsan görünmez moddan çıkmalısın!"
+								// "Görünmez moddayken diğer kişileri göremezsin"
+								"Görünmez modda olduğun için kişileri sana gösteremiyoruz :("
 							);
 							return;
 						}
