@@ -104,8 +104,8 @@ const AuthProvider = ({ children }) => {
 		} catch (err) {
 			console.log("Error Signing Out: ", err);
 		} finally {
-			setUser(null);
 			setIsLoggedIn(false);
+			setUser(null);
 		}
 	};
 

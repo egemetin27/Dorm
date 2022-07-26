@@ -15,6 +15,7 @@ export const MessageContext = createContext({
 	readMessagesLocally: () => {},
 	getMessagesList: () => {},
 	getPreviousMessages: () => {},
+	resetMessages: () => {},
 });
 
 const defaultMatchesList = {
@@ -101,8 +102,9 @@ const getChatsList = async (userId, sesToken) => {
 		.then((res) => crypto.decrypt(res.data))
 		.catch((err) => {
 			console.log("error on /oldMessage", err.response.status);
-			return {};
 		});
+
+	console.log({ cList });
 
 	return cList;
 };
@@ -116,7 +118,11 @@ const MessageProvider = ({ children }) => {
 	const [chatsList, setChatsList] = useState({});
 
 	useEffect(() => {
-		getMessagesList();
+		if (isLoggedIn) {
+			getMessagesList();
+		} else {
+			resetMessages();
+		}
 	}, [isLoggedIn]);
 
 	useEffect(() => {
@@ -136,9 +142,11 @@ const MessageProvider = ({ children }) => {
 		if (isLoggedIn) {
 			const resp = await axios
 				.post(url + "/matchList", { userId }, { headers: { "access-token": sesToken } })
-				.then((res) => res.data)
+				.then((res) => {
+					console.log("response from /matchlist", res.data);
+					return res.data;
+				})
 				.catch((err) => {
-					console.log("error on /matchList");
 					console.log(err.response.status);
 					return {};
 				});
@@ -184,6 +192,13 @@ const MessageProvider = ({ children }) => {
 				return [];
 			});
 		setChatsList((oldList) => ({ ...oldList, [matchId]: [...prevMessages, ...oldList[matchId]] }));
+	};
+
+	const resetMessages = () => {
+		console.log("AAAAA");
+		setRawMatchesList([]);
+		setMatchesList(defaultMatchesList);
+		setChatsList({});
 	};
 
 	const value = {
