@@ -130,6 +130,8 @@ const Chat = ({ route, navigation }) => {
 	}, []);
 
 	const handleOnEndReached = () => {
+		console.log("AAAA");
+		if (chatMessages && chatMessages.length < 10) return;
 		getPreviousMessages(MatchId, chatMessages[chatMessages.length - 1]?.date);
 	};
 

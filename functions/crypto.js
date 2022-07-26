@@ -57,15 +57,6 @@ class crypto {
 		return data;
 	}
 
-	static decrypt2(toBeDecrypted) {
-		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, this.#key, {
-			iv: this.#iv,
-		});
-
-		const data = JSON.parse(decrypted.toString(CryptoES.enc.Utf8));
-		return data;
-	}
-
 	static decryptString(toBeDecrypted) {
 		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, this.#key, {
 			iv: this.#iv,

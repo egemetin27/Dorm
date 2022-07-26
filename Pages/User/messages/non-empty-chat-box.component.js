@@ -44,7 +44,13 @@ const NonEmptyChatBox = ({ match }) => {
 	const { Name } = match.userData;
 	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
 
-	const { message, date, unread, sourceId } = getLastMessage(MatchId);
+	const { message, date, unread, sourceId } = {
+		message: "",
+		date: 0,
+		unread: 0,
+		sourceId: 0,
+		...getLastMessage(MatchId),
+	};
 	const [isUnreadMessage, setIsUnreadMessage] = useState(false);
 
 	useEffect(() => {

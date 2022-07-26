@@ -94,6 +94,7 @@ const organizeMatchesList = async (rawList, userId, sesToken, setRawMatchesList)
 const getChatsList = async (userId, sesToken) => {
 	const encryptedId = crypto.encrypt({ userId });
 	const cList = await axios
+		// .post("http://192.168.1.29:3002/oldMessage", encryptedId, {
 		.post("https://devmessage.meetdorm.com/oldMessage", encryptedId, {
 			headers: { "access-token": sesToken },
 		})
@@ -164,13 +165,22 @@ const MessageProvider = ({ children }) => {
 
 	const getPreviousMessages = async (matchId, lastMessDate) => {
 		const encryptedData = crypto.encrypt({ matchId, lastMessDate, userId });
+		console.log(encryptedData);
 		const prevMessages = await axios
+			// .post("http://192.168.1.29:3002/prevmess", encryptedData, {
 			.post("https://devmessage.meetdorm.com/prevmess", encryptedData, {
 				headers: { "access-token": sesToken },
 			})
-			.then((res) => crypto.decrypt(res.data))
+			.then((res) => {
+				console.log("response from /prevmess:", res.data);
+				const response =
+					typeof res.data == "object" && res.data.length == 0 ? [] : crypto.decrypt(res.data);
+				console.log({ response });
+				return response;
+			})
 			.catch((err) => {
-				console.log("error on /prevmess:", err.response);
+				console.log("error on /prevmess:", err.request);
+				// console.log("error on /prevmess:", err.response);
 				return [];
 			});
 		setChatsList((oldList) => ({ ...oldList, [matchId]: [...prevMessages, ...oldList[matchId]] }));

@@ -266,56 +266,65 @@ const ChatProfile = ({ navigation, route }) => {
 										<AntDesign name="closecircleo" size={25} color="white" />
 									</TouchableOpacity>
 								</Animated.View>
-								<LinearGradient
-									colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
-									locations={[0, 0.1, 1]}
-									start={{ x: 0.5, y: 0 }}
-									end={{ x: 0.5, y: 1 }}
-									style={{
-										minHeight: height * 0.12,
-										width: "100%",
-										position: "absolute",
-										bottom: 0,
-										paddingVertical: 10,
-									}}
-								>
-									<View
-										style={{
+								<Animated.View
+									style={[
+										{
 											width: "100%",
-											height: "100%",
-											flexDirection: "row",
-											alignItems: "center",
-											justifyContent: "space-between",
-											paddingHorizontal: 20,
+											position: "absolute",
 											backfaceVisibility: "hidden",
+											bottom: 0,
+										},
+										animatedFrontFace,
+									]}
+								>
+									<LinearGradient
+										colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+										locations={[0, 0.1, 1]}
+										start={{ x: 0.5, y: 0 }}
+										end={{ x: 0.5, y: 1 }}
+										style={{
+											minHeight: height * 0.12,
+											paddingVertical: 10,
 										}}
 									>
-										<View style={{ flexShrink: 1 }}>
-											<Text
-												style={{
-													color: colors.white,
-													fontSize: Math.min(35, width * 0.06),
-													fontFamily: "PoppinsSemiBold",
-													letterSpacing: 1.05,
-												}}
-											>
-												{props.data.Name} • {age}
-											</Text>
-											<Text
-												style={{
-													color: colors.white,
-													fontSize: Math.min(24, width * 0.045),
-													fontFamily: "PoppinsItalic",
-													lineHeight: Math.min(27, width * 0.05),
-												}}
-											>
-												{props.data.School}
-												{"\n"}
-												{props.data.Major}
-											</Text>
+										<View
+											style={{
+												width: "100%",
+												height: "100%",
+												flexDirection: "row",
+												alignItems: "center",
+												justifyContent: "space-between",
+												paddingHorizontal: 20,
+												backfaceVisibility: "hidden",
+											}}
+										>
+											<View style={{ flexShrink: 1 }}>
+												<Text
+													style={{
+														color: colors.white,
+														fontSize: Math.min(35, width * 0.06),
+														fontFamily: "PoppinsSemiBold",
+														letterSpacing: 1.05,
+													}}
+												>
+													{props.data.Name} • {age}
+												</Text>
+												<Text
+													style={{
+														color: colors.white,
+														fontSize: Math.min(24, width * 0.045),
+														fontFamily: "PoppinsItalic",
+														lineHeight: Math.min(27, width * 0.05),
+													}}
+												>
+													{props.data.School}
+													{"\n"}
+													{props.data.Major}
+												</Text>
+											</View>
 										</View>
-									</View>
-								</LinearGradient>
+									</LinearGradient>
+								</Animated.View>
 							</Animated.View>
 							{/* PART: backface */}
 							<Animated.View

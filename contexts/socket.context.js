@@ -55,6 +55,7 @@ const SocketProvider = ({ children }) => {
 		const encryptedId = crypto.encrypt({ userId });
 		const ticket = await axios
 			.post(
+				// "http://192.168.1.29:3002/connectionTicket",
 				"https://devmessage.meetdorm.com/connectionTicket",
 				// { userId },
 				encryptedId,
@@ -63,7 +64,6 @@ const SocketProvider = ({ children }) => {
 				}
 			)
 			.then((res) => {
-				// return res.data;
 				return crypto.decrypt(res.data);
 			})
 			.catch((err) => {
@@ -75,9 +75,11 @@ const SocketProvider = ({ children }) => {
 	const connect = async () => {
 		const ticket = await getTicket();
 
+		// ws.current = new WebSocket(`ws://192.168.1.29:3002?userId=${userId}&ticket=${ticket}`);
 		ws.current = new WebSocket(`https://devmessage.meetdorm.com?userId=${userId}&ticket=${ticket}`);
 
 		ws.current.onopen = (e) => {
+			console.log({ e });
 			interval.current = setInterval(() => {
 				const encryptedData = crypto.encrypt(organizeOutput("", "ping"));
 				encryptedData.userId = userId;
@@ -85,6 +87,7 @@ const SocketProvider = ({ children }) => {
 			}, 50000);
 		};
 		ws.current.onmessage = (event) => {
+			console.log({ event });
 			if (event.data != "pong") {
 				const decryptedResponse = crypto.decrypt(event.data);
 
@@ -106,14 +109,17 @@ const SocketProvider = ({ children }) => {
 		ws.current.close();
 	};
 
-	const sendMessage = (msg, type) => {
+	const sendMessage = async (msg, type) => {
 		const messageToSent = organizeOutput(msg, type);
 
 		const encryptedMessage = crypto.encrypt(messageToSent);
 		encryptedMessage.userId = userId;
 
-		ws.current.send(JSON.stringify(encryptedMessage));
+		// setTimeout(() => {
+		// 	ws.current.send(JSON.stringify(encryptedMessage));
+		// }, 500);
 
+		ws.current.send(JSON.stringify(encryptedMessage));
 		handleNewMessage(messageToSent.package[1]);
 	};
 

@@ -15,11 +15,11 @@ import { useFocusEffect } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("screen");
 
-const Messages = () => {
+const Messages = ({ route, navigation }) => {
 	const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
 	const { matchesList, getLastMessage, getMessagesList } = useContext(MessageContext);
-	const [matchMode, setMatchMode] = useState(user.matchMode || 0);
+	const [matchMode, setMatchMode] = useState(route.params?.matchMode ?? (user.matchMode || 0));
 	const [sortedNonEmptyChats, setSortedNonEmptyChats] = useState([]);
 
 	useFocusEffect(

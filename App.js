@@ -35,7 +35,6 @@ const fonts = {
 };
 
 const prefix = Linking.createURL("/");
-// const prefix = Linking.createURL("dorm://");
 
 const defaultLinkingConfig = {
 	screens: {
@@ -44,7 +43,7 @@ const defaultLinkingConfig = {
 			screens: {
 				Profil: "profile",
 				AnaSayfa: "home",
-				Mesajlar: "messages",
+				Mesajlar: "messages/:matchMode",
 			},
 		},
 	},
