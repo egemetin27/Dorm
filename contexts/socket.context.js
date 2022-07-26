@@ -79,7 +79,6 @@ const SocketProvider = ({ children }) => {
 		ws.current = new WebSocket(`https://devmessage.meetdorm.com?userId=${userId}&ticket=${ticket}`);
 
 		ws.current.onopen = (e) => {
-			console.log({ e });
 			interval.current = setInterval(() => {
 				const encryptedData = crypto.encrypt(organizeOutput("", "ping"));
 				encryptedData.userId = userId;
@@ -87,7 +86,6 @@ const SocketProvider = ({ children }) => {
 			}, 50000);
 		};
 		ws.current.onmessage = (event) => {
-			console.log({ event });
 			if (event.data != "pong") {
 				const decryptedResponse = crypto.decrypt(event.data);
 
@@ -110,23 +108,22 @@ const SocketProvider = ({ children }) => {
 	};
 
 	const sendMessage = async (msg, type) => {
+		if (ws.current.readyState != WebSocket.OPEN) return false;
+
 		const messageToSent = organizeOutput(msg, type);
 
 		const encryptedMessage = crypto.encrypt(messageToSent);
 		encryptedMessage.userId = userId;
 
-		// setTimeout(() => {
-		// 	ws.current.send(JSON.stringify(encryptedMessage));
-		// }, 500);
-
 		ws.current.send(JSON.stringify(encryptedMessage));
 		handleNewMessage(messageToSent.package[1]);
+		return true;
 	};
 
 	const readMessage = (matchId, destId) => {
-		console.log("READING");
-		const readData = organizeOutput({ matchId, destId, message: "" }, "read");
+		if (ws.current.readyState != WebSocket.OPEN) return;
 
+		const readData = organizeOutput({ matchId, destId, message: "" }, "read");
 		const encryptedReadData = crypto.encrypt(readData);
 		encryptedReadData.userId = userId;
 

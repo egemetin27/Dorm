@@ -106,12 +106,7 @@ export default function App() {
 					<MessageProvider>
 						<SocketProvider>
 							<SafeAreaProvider style={{ flex: 1 }}>
-								<KeyboardAvoidingView
-									behavior={Platform.OS === "ios" ? "padding" : "height"}
-									style={styles.container}
-								>
-									<Stack />
-								</KeyboardAvoidingView>
+								<Stack />
 							</SafeAreaProvider>
 						</SocketProvider>
 					</MessageProvider>

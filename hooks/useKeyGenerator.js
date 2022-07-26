@@ -28,7 +28,6 @@ const useKeyGenerator = () => {
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}
-					console.log("no problem on app version");
 				})
 				.catch((err) => {
 					console.log("error on /appversion");

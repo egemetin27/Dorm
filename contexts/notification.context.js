@@ -92,7 +92,7 @@ const NotificationProvider = ({ children }) => {
 				.post(url + "/registerToken", encryptedToken, {
 					headers: { "access-token": user.sesToken },
 				})
-				.then((res) => console.log("response of /registerToken: ", res.data))
+				.then()
 				.catch((err) => console.log("error on /registerToken", err));
 
 			return token;

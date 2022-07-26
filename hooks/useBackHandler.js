@@ -1,7 +1,7 @@
 import React from "react";
 import { BackHandler } from "react-native";
 
-const backHandler = (action) => {
+const useBackHandler = (action) => {
 	React.useEffect(() => {
 		const backAction = () => {
 			action();
@@ -14,4 +14,4 @@ const backHandler = (action) => {
 	}, []);
 };
 
-export default backHandler;
+export default useBackHandler;

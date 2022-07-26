@@ -104,8 +104,6 @@ const getChatsList = async (userId, sesToken) => {
 			console.log("error on /oldMessage", err.response.status);
 		});
 
-	console.log({ cList });
-
 	return cList;
 };
 
@@ -143,7 +141,6 @@ const MessageProvider = ({ children }) => {
 			const resp = await axios
 				.post(url + "/matchList", { userId }, { headers: { "access-token": sesToken } })
 				.then((res) => {
-					console.log("response from /matchlist", res.data);
 					return res.data;
 				})
 				.catch((err) => {
@@ -180,10 +177,8 @@ const MessageProvider = ({ children }) => {
 				headers: { "access-token": sesToken },
 			})
 			.then((res) => {
-				console.log("response from /prevmess:", res.data);
 				const response =
 					typeof res.data == "object" && res.data.length == 0 ? [] : crypto.decrypt(res.data);
-				console.log({ response });
 				return response;
 			})
 			.catch((err) => {
@@ -195,7 +190,6 @@ const MessageProvider = ({ children }) => {
 	};
 
 	const resetMessages = () => {
-		console.log("AAAAA");
 		setRawMatchesList([]);
 		setMatchesList(defaultMatchesList);
 		setChatsList({});

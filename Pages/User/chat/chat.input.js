@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { View, Text, TextInput, Pressable, Dimensions, StyleSheet } from "react-native";
+import { View, Text, TextInput, Pressable, Dimensions, StyleSheet, Platform } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 
@@ -23,15 +23,19 @@ const ChatInput = ({ destId, matchId }) => {
 	return (
 		<View style={styles.container}>
 			<TextInput
-				style={styles.text_input}
+				style={[
+					styles.text_input,
+					Platform.OS == "ios" && {
+						paddingTop: (Math.min(width * 0.12, 60) - height * 0.027) / 2,
+					},
+				]}
 				placeholder="Mesajın"
 				multiline
 				value={message}
 				onChangeText={setMessage}
 			/>
-			{/* <View /> */}
 			<Pressable style={styles.send_button} onPress={handleSend}>
-				<Ionicons name="send" size={width * 0.06} color="#653cf8" />
+				<Ionicons name="send" size={Math.min(width * 0.06, 30)} color="#653cf8" />
 			</Pressable>
 		</View>
 	);
@@ -49,7 +53,8 @@ const styles = StyleSheet.create({
 	text_input: {
 		backgroundColor: "white",
 		flex: 1,
-		minHeight: width * 0.12,
+		minHeight: Math.min(width * 0.12, 60),
+		fontSize: height * 0.018,
 		paddingHorizontal: width * 0.05,
 		paddingVertical: 5,
 		borderRadius: height * 0.02,
@@ -65,7 +70,7 @@ const styles = StyleSheet.create({
 	},
 	send_button: {
 		backgroundColor: "white",
-		width: width * 0.12,
+		width: Math.min(width * 0.12, 60),
 		justifyContent: "center",
 		alignItems: "center",
 		aspectRatio: 1,

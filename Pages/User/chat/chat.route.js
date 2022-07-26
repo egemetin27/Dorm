@@ -7,6 +7,7 @@ import {
 	FlatList,
 	Keyboard,
 	KeyboardAvoidingView,
+	Platform,
 } from "react-native";
 
 import ChatHeader from "./chat.header";
@@ -21,6 +22,7 @@ import { SocketContext } from "../../../contexts/socket.context";
 import { sort } from "../../../utils/array.utils";
 import { colors } from "../../../visualComponents/colors";
 import { useFocusEffect } from "@react-navigation/native";
+import useBackHandler from "../../../hooks/useBackHandler";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -93,6 +95,8 @@ const Chat = ({ route, navigation }) => {
 	const { chatsList, readMessagesLocally, getPreviousMessages } = useContext(MessageContext);
 	const { connect, disconnect, readMessage } = useContext(SocketContext);
 
+	useBackHandler(() => navigation.goBack());
+
 	const [chatMessages, setChatMessages] = useState([]);
 	const [lastReadMessageIndex, setLastReadMessageIndex] = useState(null);
 
@@ -130,13 +134,16 @@ const Chat = ({ route, navigation }) => {
 	}, []);
 
 	const handleOnEndReached = () => {
-		console.log("AAAA");
 		if (chatMessages && chatMessages.length < 10) return;
 		getPreviousMessages(MatchId, chatMessages[chatMessages.length - 1]?.date);
 	};
 
 	return (
-		<View style={[styles.container]}>
+		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+			style={styles.container}
+		>
+			{/* <View style={[styles.container]}> */}
 			<ChatHeader userData={otherUser.userData} matchId={MatchId} />
 			{chatMessages.length == 0 ? (
 				<View style={styles.no_message_container}>
@@ -192,7 +199,8 @@ const Chat = ({ route, navigation }) => {
 			>
 				<ChatInput destId={otherId} matchId={MatchId} />
 			</View>
-		</View>
+			{/* </View> */}
+		</KeyboardAvoidingView>
 	);
 };
 
