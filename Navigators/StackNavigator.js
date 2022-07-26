@@ -56,6 +56,7 @@ import ModalPage from "../components/modal.component";
 
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "@react-navigation/native";
+import ChatProfile from "../Pages/User/ChatProfile";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -234,6 +235,14 @@ export default function StackNavigator() {
 						name="ListEndedModal"
 						component={ListEndedModal}
 						options={{ presentation: "transparentModal" }}
+					/>
+					<Stack.Screen
+						name="ProfileCardModal"
+						component={ChatProfile}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
 					/>
 					<Stack.Screen
 						name="CustomModal"

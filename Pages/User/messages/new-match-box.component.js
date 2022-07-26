@@ -1,11 +1,14 @@
 import { Pressable, Image, StyleSheet, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomImage from "../../../components/custom-image.component";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/auth.context";
 
 const { width, height } = Dimensions.get("screen");
 
 const EmptyChatBox = ({ match }) => {
 	const navigation = useNavigation();
+	const { user } = useContext(AuthContext);
 
 	const { MatchId } = match;
 	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
@@ -17,7 +20,7 @@ const EmptyChatBox = ({ match }) => {
 	const handleLongPress = () => {
 		navigation.navigate("CustomModal", {
 			modalType: "UNMATCH_MODAL",
-			buttonParamsList: [{ matchId: MatchId }],
+			buttonParamsList: [{ matchId: MatchId, userId: user.userId, sesToken: user.sesToken }],
 		});
 	};
 

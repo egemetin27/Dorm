@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -20,6 +20,7 @@ import { SocketContext } from "../../../contexts/socket.context";
 
 import { sort } from "../../../utils/array.utils";
 import { colors } from "../../../visualComponents/colors";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -89,8 +90,9 @@ const getLastReadMessage = (messagesList, myId) => {
 
 const Chat = ({ route, navigation }) => {
 	const { user } = useContext(AuthContext);
-	const { chatsList, readMessagesLocally } = useContext(MessageContext);
-	const { readMessage } = useContext(SocketContext);
+	const { chatsList, readMessagesLocally, getPreviousMessages } = useContext(MessageContext);
+	const { connect, disconnect, readMessage } = useContext(SocketContext);
+
 	const [chatMessages, setChatMessages] = useState([]);
 	const [lastReadMessageIndex, setLastReadMessageIndex] = useState(null);
 
@@ -99,11 +101,19 @@ const Chat = ({ route, navigation }) => {
 	const { Name } = otherUser.userData;
 	const imageUrl = otherUser.userData?.photos[0]?.PhotoLink ?? null;
 
+	useFocusEffect(
+		useCallback(() => {
+			connect();
+
+			return disconnect;
+		}, [])
+	);
+
 	useEffect(() => {
 		const unsortedChat = chatsList[MatchId] ?? [];
 		const sortedChat = sort(unsortedChat, "date", false);
 		setChatMessages(sortedChat);
-		readMessage(MatchId);
+		readMessage(MatchId, otherId);
 
 		if (lastReadMessageIndex) setLastReadMessageIndex(-2);
 
@@ -116,13 +126,16 @@ const Chat = ({ route, navigation }) => {
 	useEffect(() => {
 		return () => {
 			readMessagesLocally(MatchId, chatMessages);
-			console.log("EXITED");
 		};
 	}, []);
 
+	const handleOnEndReached = () => {
+		getPreviousMessages(MatchId, chatMessages[chatMessages.length - 1]?.date);
+	};
+
 	return (
 		<View style={[styles.container]}>
-			<ChatHeader name={Name} imageUrl={imageUrl} matchId={MatchId} />
+			<ChatHeader userData={otherUser.userData} matchId={MatchId} />
 			{chatMessages.length == 0 ? (
 				<View style={styles.no_message_container}>
 					{imageUrl && (
@@ -137,6 +150,7 @@ const Chat = ({ route, navigation }) => {
 			) : (
 				<View style={styles.chat_container}>
 					<FlatList
+						onEndReached={handleOnEndReached}
 						showsVerticalScrollIndicator={false}
 						data={chatMessages}
 						contentContainerStyle={{

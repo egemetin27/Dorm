@@ -52,7 +52,8 @@ const defaultLinkingConfig = {
 
 export default function App() {
 	const linking = {
-		prefixes: [prefix],
+		prefixes: [prefix, "dorm://"],
+		// exp://192.168.1.29:19000/--/messages
 		config: defaultLinkingConfig,
 	};
 

@@ -1,10 +1,16 @@
+import { useContext } from "react";
 import { View, Text, Image, Dimensions, Pressable, StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
 import { Feather } from "@expo/vector-icons";
+import axios from "axios";
 
 import CustomButton from "./button.components";
 
+import { MessageContext } from "../contexts/message.context";
+
 import { colors } from "../visualComponents/colors";
+import crypto from "../functions/crypto";
+import url from "../connection";
 
 const { width, height } = Dimensions.get("window");
 
@@ -27,9 +33,19 @@ const MODAL_TYPES = {
 		buttons: [
 			{
 				text: "Eşleşmeyi Kaldır",
-				onPress: ({ matchId = 0 }) => {
-					console.log(matchId);
-					console.log("UNMATCH");
+				onPress: ({ matchId = 0, userId = 0, sesToken = "" }, getMessagesList) => {
+					const encryptedData = crypto.encrypt({ userId, unmatchId: matchId });
+					axios
+						.post(url + "/unmatch", encryptedData, {
+							headers: { "access-token": sesToken },
+						})
+						.then((res) => {
+							console.log(res.data);
+							getMessagesList();
+						})
+						.catch((err) => {
+							console.log(err);
+						});
 				},
 			},
 		],
@@ -49,7 +65,8 @@ const MODAL_TYPES = {
 };
 
 export default function ModalPage({ navigation, route }) {
-	// const { title, body, buttons, image } = { title: null, body: null, buttons: [], image: null, ...route.params };
+	const { getMessagesList } = useContext(MessageContext);
+
 	const { modalType, buttonParamsList } = {
 		modalType: "NO_LIKES_ON_EVENT",
 		buttonParamsList: [],
@@ -90,7 +107,7 @@ export default function ModalPage({ navigation, route }) {
 								buttonType={buttonType}
 								text={text}
 								onPress={() => {
-									onPress(buttonParamsList[index]);
+									onPress(buttonParamsList[index], getMessagesList);
 								}}
 							/>
 						);

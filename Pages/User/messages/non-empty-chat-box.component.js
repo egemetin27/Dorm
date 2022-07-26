@@ -56,7 +56,7 @@ const NonEmptyChatBox = ({ match }) => {
 			//TODO: unmatch
 			navigation.navigate("CustomModal", {
 				modalType: "UNMATCH_MODAL",
-				buttonParamsList: [{ matchId: MatchId }],
+				buttonParamsList: [{ matchId: MatchId, userId: user.userId, sesToken: user.sesToken }],
 			});
 		};
 

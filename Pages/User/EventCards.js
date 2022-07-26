@@ -160,11 +160,14 @@ const Card = ({ event, user, signOut }) => {
 				headers: { "access-token": user.sesToken },
 			})
 			.then((res) => {
-				console.log(res.data);
-				if (res.data.length > 0) {
+				const data =
+					typeof res.data == "object" && Object.keys(res.data).length == 0
+						? res.data
+						: crypto.decrypt(res.data);
+				if (data.length > 0) {
 					navigation.push("ProfileCards", {
 						idx: 0,
-						list: res.data,
+						list: data,
 						myID: user.userId,
 						sesToken: user.sesToken,
 						fromEvent: true,
@@ -178,12 +181,12 @@ const Card = ({ event, user, signOut }) => {
 				}
 			})
 			.catch((err) => {
-				if (err.response.status == 410) {
+				if (err?.response?.status == 410) {
 					Alert.alert("Oturumunuzun süresi doldu!");
 					signOut();
 					return;
 				}
-				console.log(err.response.data);
+				console.log(err);
 			});
 	};
 

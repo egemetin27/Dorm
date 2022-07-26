@@ -52,12 +52,18 @@ class crypto {
 		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, this.#key, {
 			iv: this.#iv,
 		});
-		// console.log("AAA\n\n\n\n\n\n\n\n\n\n");
-		// console.log(decrypted.toString(CryptoES.enc.Utf8));
 
 		const data = JSON.parse(decrypted.toString(CryptoES.enc.Utf8));
 		return data;
-		// return decrypted.toString(CryptoES.enc.Utf8);
+	}
+
+	static decrypt2(toBeDecrypted) {
+		const decrypted = CryptoES.AES.decrypt(toBeDecrypted, this.#key, {
+			iv: this.#iv,
+		});
+
+		const data = JSON.parse(decrypted.toString(CryptoES.enc.Utf8));
+		return data;
 	}
 
 	static decryptString(toBeDecrypted) {

@@ -14,6 +14,7 @@ export const MessageContext = createContext({
 	getLastMessage: () => {},
 	readMessagesLocally: () => {},
 	getMessagesList: () => {},
+	getPreviousMessages: () => {},
 });
 
 const defaultMatchesList = {
@@ -33,7 +34,12 @@ const filterMatchesList = (matchesList, chatsList = {}) => {
 
 	const chatIDs = Object.keys(chatsList);
 
-	const nonEmptyChatIDs = chatIDs.filter((chatId) => chatsList[chatId].length > 0);
+	const nonEmptyChatIDs = chatIDs.filter((chatId) => {
+		if (chatId in chatsList) {
+			return chatsList[chatId]?.length > 0;
+		}
+		return false;
+	});
 
 	const categorizedList = {
 		0: {
@@ -86,16 +92,15 @@ const organizeMatchesList = async (rawList, userId, sesToken, setRawMatchesList)
 };
 
 const getChatsList = async (userId, sesToken) => {
+	const encryptedId = crypto.encrypt({ userId });
 	const cList = await axios
-		.post(
-			"https://devmessage.meetdorm.com/oldMessage",
-			{ userId },
-			{ headers: { "access-token": sesToken } }
-		)
-		.then((res) => res.data)
+		.post("https://devmessage.meetdorm.com/oldMessage", encryptedId, {
+			headers: { "access-token": sesToken },
+		})
+		.then((res) => crypto.decrypt(res.data))
 		.catch((err) => {
-			console.log("error on /oldMessage");
-			console.log(err.response.status);
+			console.log("error on /oldMessage", err.response.status);
+			return {};
 		});
 
 	return cList;
@@ -149,11 +154,26 @@ const MessageProvider = ({ children }) => {
 			return lastMessage;
 		} catch (err) {
 			console.log(err);
+			return "";
 		}
 	};
 
 	const readMessagesLocally = (matchId) => {
 		setChatsList((oldList) => ({ ...oldList, [matchId]: chatsList[matchId] }));
+	};
+
+	const getPreviousMessages = async (matchId, lastMessDate) => {
+		const encryptedData = crypto.encrypt({ matchId, lastMessDate, userId });
+		const prevMessages = await axios
+			.post("https://devmessage.meetdorm.com/prevmess", encryptedData, {
+				headers: { "access-token": sesToken },
+			})
+			.then((res) => crypto.decrypt(res.data))
+			.catch((err) => {
+				console.log("error on /prevmess:", err.response);
+				return [];
+			});
+		setChatsList((oldList) => ({ ...oldList, [matchId]: [...prevMessages, ...oldList[matchId]] }));
 	};
 
 	const value = {
@@ -163,6 +183,7 @@ const MessageProvider = ({ children }) => {
 		getLastMessage,
 		readMessagesLocally,
 		getMessagesList,
+		getPreviousMessages,
 	};
 	return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;
 };

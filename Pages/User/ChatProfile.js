@@ -1,5 +1,5 @@
 import React from "react";
-import ReactNative, { View, Text, Image, Dimensions } from "react-native";
+import ReactNative, { View, Text, Image, Dimensions, Pressable, FlatList } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
@@ -33,14 +33,17 @@ const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
 import { API, graphqlOperation } from "aws-amplify";
 import { getMsgUser } from "../../src/graphql/queries";
+import CustomImage from "../../components/custom-image.component";
+import { BlurView } from "expo-blur";
 
-const ChatProfile = (props) => {
+const ChatProfile = ({ navigation, route }) => {
+	const props = route.params;
+
 	const progress = useSharedValue(0);
 	const x = useSharedValue(0);
 	const destination = useSharedValue(0);
 	const turn = useSharedValue(1);
 	const backFace = useSharedValue(false);
-	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
 	const gender = getGender(props.data.Gender);
 	const age = getAge(props.data.Birth_Date);
@@ -60,8 +63,6 @@ const ChatProfile = (props) => {
 		});
 
 	const animatedFrontFace = useAnimatedStyle(() => {
-		// if (index != indexOfFrontCard) return {};
-		// if (index != 0) return {};
 		return {
 			transform: [
 				{
@@ -82,422 +83,474 @@ const ChatProfile = (props) => {
 		};
 	});
 
-	const animatedPhotoProgress = (index) =>
-		useAnimatedStyle(() => {
-			return {
-				height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
-			};
-		});
+	const animatedPhotoProgress1 = useAnimatedStyle(() => {
+		return {
+			height: interpolate(progress.value, [0, 1], [24, 8]),
+			display: props.data.photos?.length > 0 ? "flex" : "none",
+		};
+	});
+	const animatedPhotoProgress2 = useAnimatedStyle(() => {
+		return {
+			height: interpolate(progress.value, [0, 1, 2], [8, 24, 8]),
+			display: props.data.photos?.length > 1 ? "flex" : "none",
+		};
+	});
+	const animatedPhotoProgress3 = useAnimatedStyle(() => {
+		return {
+			height: interpolate(progress.value, [1, 2, 3], [8, 24, 8]),
+			display: props.data.photos?.length > 2 ? "flex" : "none",
+		};
+	});
+	const animatedPhotoProgress4 = useAnimatedStyle(() => {
+		return {
+			height: interpolate(progress.value, [2, 3], [8, 24]),
+			display: props.data.photos?.length > 3 ? "flex" : "none",
+		};
+	});
 
 	const handleScroll = ({ nativeEvent }) => {
 		progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
 	};
 
-	useAnimatedReaction(
-		() => {
-			return progress.value;
-		},
-		() => {
-			runOnJS(setBackfaceIndex)(Math.round(progress.value));
-		}
-	);
-
 	const composedGesture = Gesture.Race(tapHandler);
 
+	const handleDismiss = () => {
+		navigation.goBack();
+	};
+
 	return (
-		<View>
-			<View
-				name={"card"}
-				style={{
-					width: "100%",
-					zIndex: 1,
-				}}
-			>
-				<GestureDetector gesture={composedGesture}>
-					<Animated.View>
-						<Animated.View
-							style={[
-								commonStyles.photo,
-								{
-									width: width * 0.9,
-									maxHeight: height * 0.7,
-									backfaceVisibility: "hidden",
-								},
-								animatedFrontFace,
-							]}
-						>
-							{props.data.photos.length > 0 ? (
-								<ScrollView
-									scrollEventThrottle={16}
-									style={{ width: "100%" }}
-									pagingEnabled={true}
-									showsVerticalScrollIndicator={false}
-									onScroll={handleScroll}
-								>
-									{props.data.photos.map((item, idx) => {
-										return (
-											<CustomImage
-												key={idx}
-												url={item?.PhotoLink ?? "AAA"}
-												style={{
-													height: width * 1.35,
-													maxHeight: height * 0.7,
-													resizeMode: "cover",
-													backgroundColor: colors.cool_gray,
-												}}
-											/>
-										);
-									})}
-								</ScrollView>
-							) : (
-								<View
-									style={{
-										width: "100%",
-										height: "100%",
-										justifyContent: "center",
-										alignItems: "center",
-									}}
-								>
-									<Ionicons name="person" color="white" size={width * 0.5} />
-								</View>
-							)}
-							<View
-								style={{
-									position: "absolute",
-									left: 20,
-									top: 20,
-									justifyContent: "space-between",
-									minHeight: props.data.photos.length * 10 + 16,
-								}}
+		<Pressable
+			onPress={handleDismiss}
+			style={{
+				width: "100%",
+				height: "100%",
+				justifyContent: "center",
+				backgroundColor: "rgba(0,0,0,0.7)",
+			}}
+		>
+			<Pressable onPress={null}>
+				<View
+					name={"card"}
+					style={{
+						// width: "100%",
+						zIndex: 1,
+					}}
+				>
+					<GestureDetector gesture={composedGesture}>
+						<Animated.View>
+							<Animated.View
+								style={[
+									commonStyles.photo,
+									{
+										height: Math.min(width * 1.35, height * 0.7),
+										backfaceVisibility: "visible",
+										elevation: 0,
+									},
+									animatedFrontFace,
+								]}
 							>
-								{props.data.photos.map((_, index) => {
-									return (
-										<Animated.View
-											key={index}
-											style={[
-												{
-													minHeight: 8,
-													width: 8,
-													borderRadius: 4,
-													backgroundColor: colors.white,
-												},
-												animatedPhotoProgress(index),
-											]}
-										/>
-									);
-								})}
-							</View>
-							{
-								<View
-									style={{
-										position: "absolute",
-										top: 20,
-										right: 20,
-									}}
-								>
-									<TouchableOpacity
-										onPress={() => {
-											props.close();
+								{props.data.photos.length > 0 ? (
+									<ScrollView
+										scrollEventThrottle={16}
+										style={{ width: "100%" }}
+										pagingEnabled={true}
+										showsVerticalScrollIndicator={false}
+										onScroll={handleScroll}
+									>
+										{props.data.photos.map((item, idx) => {
+											return (
+												<CustomImage
+													key={idx}
+													url={item?.PhotoLink ?? "AAA"}
+													style={{
+														height: width * 1.35,
+														maxHeight: height * 0.7,
+														resizeMode: "cover",
+														backgroundColor: colors.cool_gray,
+													}}
+												/>
+											);
+										})}
+									</ScrollView>
+								) : (
+									<View
+										style={{
+											width: "100%",
+											height: "100%",
+											justifyContent: "center",
+											alignItems: "center",
 										}}
 									>
+										<Ionicons name="person" color="white" size={width * 0.5} />
+									</View>
+								)}
+								<Animated.View
+									style={[
+										{
+											backfaceVisibility: "hidden",
+											position: "absolute",
+											left: 20,
+											top: 20,
+										},
+										animatedFrontFace,
+									]}
+								>
+									<Animated.View
+										style={[
+											{
+												backgroundColor: colors.white,
+												elevation: 10,
+												minHeight: 8,
+												maxHeight: 24,
+												width: 8,
+												borderRadius: 4,
+											},
+											animatedPhotoProgress1,
+										]}
+									/>
+									<Animated.View
+										style={[
+											{
+												backgroundColor: colors.white,
+												elevation: 10,
+												minHeight: 8,
+												maxHeight: 24,
+												width: 8,
+												borderRadius: 4,
+												marginTop: 4,
+											},
+											animatedPhotoProgress2,
+										]}
+									/>
+									<Animated.View
+										style={[
+											{
+												backgroundColor: colors.white,
+												elevation: 10,
+												minHeight: 8,
+												maxHeight: 24,
+												width: 8,
+												borderRadius: 4,
+												marginTop: 4,
+											},
+											animatedPhotoProgress3,
+										]}
+									/>
+									<Animated.View
+										style={[
+											{
+												backgroundColor: colors.white,
+												elevation: 10,
+												minHeight: 8,
+												maxHeight: 24,
+												width: 8,
+												borderRadius: 4,
+												marginTop: 4,
+											},
+											animatedPhotoProgress4,
+										]}
+									/>
+								</Animated.View>
+								<Animated.View
+									style={[
+										{
+											position: "absolute",
+											top: 20,
+											right: 20,
+											backfaceVisibility: "hidden",
+										},
+										animatedFrontFace,
+									]}
+								>
+									<TouchableOpacity onPress={handleDismiss}>
 										<AntDesign name="closecircleo" size={25} color="white" />
 									</TouchableOpacity>
-								</View>
-							}
-							<LinearGradient
-								colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
-								locations={[0, 0.1, 1]}
-								start={{ x: 0.5, y: 0 }}
-								end={{ x: 0.5, y: 1 }}
-								style={{
-									minHeight: height * 0.12,
-									width: "100%",
-									position: "absolute",
-									bottom: 0,
-									paddingVertical: 10,
-								}}
+								</Animated.View>
+								<LinearGradient
+									colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.5)"]}
+									locations={[0, 0.1, 1]}
+									start={{ x: 0.5, y: 0 }}
+									end={{ x: 0.5, y: 1 }}
+									style={{
+										minHeight: height * 0.12,
+										width: "100%",
+										position: "absolute",
+										bottom: 0,
+										paddingVertical: 10,
+									}}
+								>
+									<View
+										style={{
+											width: "100%",
+											height: "100%",
+											flexDirection: "row",
+											alignItems: "center",
+											justifyContent: "space-between",
+											paddingHorizontal: 20,
+											backfaceVisibility: "hidden",
+										}}
+									>
+										<View style={{ flexShrink: 1 }}>
+											<Text
+												style={{
+													color: colors.white,
+													fontSize: Math.min(35, width * 0.06),
+													fontFamily: "PoppinsSemiBold",
+													letterSpacing: 1.05,
+												}}
+											>
+												{props.data.Name} • {age}
+											</Text>
+											<Text
+												style={{
+													color: colors.white,
+													fontSize: Math.min(24, width * 0.045),
+													fontFamily: "PoppinsItalic",
+													lineHeight: Math.min(27, width * 0.05),
+												}}
+											>
+												{props.data.School}
+												{"\n"}
+												{props.data.Major}
+											</Text>
+										</View>
+									</View>
+								</LinearGradient>
+							</Animated.View>
+							{/* PART: backface */}
+							<Animated.View
+								name={"backface"}
+								style={[
+									commonStyles.photo,
+									animatedBackFace,
+									{
+										height: Math.min(width * 1.35, height * 0.7),
+										position: "absolute",
+										backfaceVisibility: "hidden",
+										backgroundColor: "transparent",
+										elevation: 0,
+									},
+								]}
 							>
+								<BlurView
+									intensity={100}
+									tint="dark"
+									style={{ width: "100%", height: "100%", position: "absolute" }}
+								/>
 								<View
+									name={"colorFilter"}
 									style={{
 										width: "100%",
 										height: "100%",
-										flexDirection: "row",
-										alignItems: "center",
-										justifyContent: "space-between",
-										paddingHorizontal: 20,
+										position: "absolute",
+										backgroundColor: "rgba(0,0,0,0.25)",
 									}}
-								>
-									<View style={{ flexShrink: 1 }}>
-										<Text
-											style={{
-												color: colors.white,
-												fontSize: Math.min(35, width * 0.06),
-												fontFamily: "PoppinsSemiBold",
-												letterSpacing: 1.05,
-											}}
-										>
-											{props.data.Name} • {age}
-										</Text>
-										<Text
-											style={{
-												color: colors.white,
-												fontSize: Math.min(24, width * 0.045),
-												fontFamily: "PoppinsItalic",
-												lineHeight: Math.min(27, width * 0.05),
-											}}
-										>
-											{props.data.School}
-											{"\n"}
-											{props.data.Major}
-										</Text>
-									</View>
-								</View>
-							</LinearGradient>
-						</Animated.View>
-						<Animated.View
-							name={"backface"}
-							style={[
-								commonStyles.photo,
-								animatedBackFace,
-								{
-									width: width * 0.9,
-									maxHeight: height * 0.7,
-									position: "absolute",
-									backfaceVisibility: "hidden",
-									backgroundColor: colors.cool_gray,
-								},
-							]}
-						>
-							<Image
-								source={{
-									uri:
-										props.data.photos.length > 0
-											? props.data.photos[backfaceIndex].PhotoLink
-											: "Nothing to see here",
-								}}
-								blurRadius={20}
-								style={{
-									position: "absolute",
-									aspectRatio: 1 / 1.5,
-									width: width * 0.9,
-									maxHeight: height * 0.7,
-									resizeMode: "cover",
-									transform: [{ rotateY: "180deg" }],
-								}}
-							/>
-							<View
-								name={"colorFilter"}
-								style={{
-									width: "100%",
-									height: "100%",
-									position: "absolute",
-									backgroundColor: "rgba(0,0,0,0.25)",
-								}}
-							/>
-							<ReactNative.ScrollView
-								showsVerticalScrollIndicator={false}
-								style={{
-									width: "80%",
-									marginVertical: 30,
-								}}
-							>
-								<View
+								/>
+								<ReactNative.ScrollView
+									showsVerticalScrollIndicator={false}
 									style={{
-										width: "100%",
-										alignItems: "center",
+										width: "80%",
+										marginVertical: 30,
 									}}
 								>
-									{checkText(gender) && (
-										<Text
-											name={"Gender"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Cinsiyet {"\n"}
+									<View
+										style={{
+											width: "100%",
+											alignItems: "center",
+										}}
+									>
+										{checkText(gender) && (
 											<Text
+												name={"Gender"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{gender}
+												Cinsiyet {"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{gender}
+												</Text>
 											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Din) && (
-										<Text
-											name={"Religion"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Dini İnanç {"\n"}
+										)}
+										{checkText(props.data.Din) && (
 											<Text
+												name={"Religion"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{props.data.Din}
+												Dini İnanç {"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{props.data.Din}
+												</Text>
 											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Burc) && (
-										<Text
-											name={"Burc"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Burç {"\n"}
+										)}
+										{checkText(props.data.Burc) && (
 											<Text
+												name={"Burc"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{signList[props.data.Burc].choice}
+												Burç {"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{signList[props.data.Burc].choice}
+												</Text>
 											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Beslenme) && (
-										<Text
-											name={"Beslenme"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Beslenme Tercihi {"\n"}
+										)}
+										{checkText(props.data.Beslenme) && (
 											<Text
+												name={"Beslenme"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{dietList[props.data.Beslenme].choice}
+												Beslenme Tercihi {"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{dietList[props.data.Beslenme].choice}
+												</Text>
 											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Alkol) && (
-										<Text
-											name={"Alkol"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Alkol Kullanımı {"\n"}
+										)}
+										{checkText(props.data.Alkol) && (
 											<Text
+												name={"Alkol"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{smokeAndDrinkList[props.data.Alkol].choice}
+												Alkol Kullanımı {"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{smokeAndDrinkList[props.data.Alkol].choice}
+												</Text>
 											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Sigara) && (
-										<Text
-											name={"Sigara"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Sigara Kullanımı {"\n"}
+										)}
+										{checkText(props.data.Sigara) && (
 											<Text
+												name={"Sigara"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{smokeAndDrinkList[props.data.Sigara].choice}
+												Sigara Kullanımı {"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{smokeAndDrinkList[props.data.Sigara].choice}
+												</Text>
 											</Text>
-										</Text>
-									)}
-									{checkText(props.data.interest) && (
-										<Text
-											name={"interest"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											İlgi Alanları {"\n"}
-											{props.data.interest.map((item, index) => {
-												return (
-													<Text
-														key={index}
-														style={{
-															fontFamily: "PoppinsSemiBold",
-															fontSize: 22,
-														}}
-													>
-														{item.InterestName}
-														{props.data.interest.length > index + 1 ? (
-															<Text
-																style={{
-																	fontFamily: "PoppinsSemiBold",
-																	fontSize: 22,
-																}}
-															>
-																{" "}
-																|{" "}
-															</Text>
-														) : null}
-													</Text>
-												);
-											})}
-										</Text>
-									)}
-									{checkText(props.data.About) && (
-										<Text
-											name={"About"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Hakkında{"\n"}
+										)}
+										{checkText(props.data.interest) && (
 											<Text
+												name={"interest"}
 												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
 												}}
 											>
-												{props.data.About}
+												İlgi Alanları {"\n"}
+												{props.data.interest.map((item, index) => {
+													return (
+														<Text
+															key={index}
+															style={{
+																fontFamily: "PoppinsSemiBold",
+																fontSize: 22,
+															}}
+														>
+															{item.InterestName}
+															{props.data.interest.length > index + 1 ? (
+																<Text
+																	style={{
+																		fontFamily: "PoppinsSemiBold",
+																		fontSize: 22,
+																	}}
+																>
+																	{" "}
+																	|{" "}
+																</Text>
+															) : null}
+														</Text>
+													);
+												})}
 											</Text>
-										</Text>
-									)}
-								</View>
-							</ReactNative.ScrollView>
+										)}
+										{checkText(props.data.About) && (
+											<Text
+												name={"About"}
+												style={{
+													color: colors.light_gray,
+													fontSize: 18,
+													textAlign: "center",
+													paddingVertical: 5,
+												}}
+											>
+												Hakkında{"\n"}
+												<Text
+													style={{
+														fontFamily: "PoppinsSemiBold",
+														fontSize: 22,
+													}}
+												>
+													{props.data.About}
+												</Text>
+											</Text>
+										)}
+									</View>
+								</ReactNative.ScrollView>
+							</Animated.View>
 						</Animated.View>
-					</Animated.View>
-				</GestureDetector>
-			</View>
-		</View>
+					</GestureDetector>
+				</View>
+			</Pressable>
+		</Pressable>
 	);
 };
 

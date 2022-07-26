@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { AuthContext } from "./auth.context";
 import { MessageContext } from "./message.context";
+import crypto from "../functions/crypto";
 
 export const SocketContext = createContext({
 	connect: () => {},
@@ -20,16 +21,15 @@ const SocketProvider = ({ children }) => {
 	const ws = useRef();
 	const interval = useRef();
 
-	const handleReceive = ({ data }) => {
-		const pack = JSON.parse(data).package;
+	const handleReceive = (data) => {
+		const pack = data.package;
 
 		if (typeof pack == "string") {
-			console.log({ pack });
+			console.log(pack);
 			return;
 		}
 		const eventType = pack[0];
 		const message = pack[1];
-		// const token = pack[2]
 
 		switch (eventType) {
 			case "message":
@@ -52,13 +52,20 @@ const SocketProvider = ({ children }) => {
 	};
 
 	const getTicket = async () => {
+		const encryptedId = crypto.encrypt({ userId });
 		const ticket = await axios
 			.post(
 				"https://devmessage.meetdorm.com/connectionTicket",
-				{ userId },
-				{ headers: { "access-token": sesToken } }
+				// { userId },
+				encryptedId,
+				{
+					headers: { "access-token": sesToken },
+				}
 			)
-			.then((res) => res.data)
+			.then((res) => {
+				// return res.data;
+				return crypto.decrypt(res.data);
+			})
 			.catch((err) => {
 				console.log(err);
 			});
@@ -72,20 +79,25 @@ const SocketProvider = ({ children }) => {
 
 		ws.current.onopen = (e) => {
 			interval.current = setInterval(() => {
-				console.log("AA");
-				ws.current.send(JSON.stringify(organizeOutput("", "ping")));
+				const encryptedData = crypto.encrypt(organizeOutput("", "ping"));
+				encryptedData.userId = userId;
+				ws.current.send(JSON.stringify(encryptedData));
 			}, 50000);
-			console.log("connected");
 		};
 		ws.current.onmessage = (event) => {
-			handleReceive(event);
+			if (event.data != "pong") {
+				const decryptedResponse = crypto.decrypt(event.data);
+
+				handleReceive(decryptedResponse);
+			}
 		};
 		ws.current.onclose = (e) => {
+			clearInterval(interval.current);
 			console.log("socket closed:", e);
 		};
 		ws.current.onerror = (e) => {
 			console.log("error on socket:", e);
-			setTimeout(connect, 200);
+			setTimeout(connect, 5000);
 		};
 	};
 
@@ -97,16 +109,22 @@ const SocketProvider = ({ children }) => {
 	const sendMessage = (msg, type) => {
 		const messageToSent = organizeOutput(msg, type);
 
-		ws.current.send(JSON.stringify(messageToSent));
+		const encryptedMessage = crypto.encrypt(messageToSent);
+		encryptedMessage.userId = userId;
+
+		ws.current.send(JSON.stringify(encryptedMessage));
 
 		handleNewMessage(messageToSent.package[1]);
 	};
 
-	const readMessage = (matchId) => {
-		const readData = organizeOutput({ matchId, message: "" }, "read");
-		console.log({ readData });
+	const readMessage = (matchId, destId) => {
+		console.log("READING");
+		const readData = organizeOutput({ matchId, destId, message: "" }, "read");
 
-		ws.current.send(JSON.stringify(readData));
+		const encryptedReadData = crypto.encrypt(readData);
+		encryptedReadData.userId = userId;
+
+		ws.current.send(JSON.stringify(encryptedReadData));
 	};
 
 	const value = { connect, disconnect, sendMessage, readMessage };

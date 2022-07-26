@@ -5,19 +5,28 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GradientText } from "../../../visualComponents/colors";
 import CustomImage from "../../../components/custom-image.component";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/auth.context";
+import { MessageContext } from "../../../contexts/message.context";
 
 const { width, height } = Dimensions.get("screen");
 
-const ChatHeader = ({ imageUrl, name, matchId }) => {
+const ChatHeader = ({ userData, matchId }) => {
+	const { user } = useContext(AuthContext);
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation();
+
+	const { Name } = userData;
+	const imageUrl = userData?.photos[0]?.PhotoLink ?? null;
 
 	const handleBack = () => {
 		navigation.goBack();
 	};
 
 	const handleOpenProfile = () => {
-		console.log("Opening Profile");
+		navigation.navigate("ProfileCardModal", {
+			data: userData,
+		});
 	};
 
 	const handleReport = () => {
@@ -27,7 +36,7 @@ const ChatHeader = ({ imageUrl, name, matchId }) => {
 	const handleUnmatch = () => {
 		navigation.navigate("CustomModal", {
 			modalType: "UNMATCH_MODAL",
-			buttonParamsList: [{ matchId }],
+			buttonParamsList: [{ matchId, userId: user.userId, sesToken: user.sesToken }],
 		});
 	};
 
@@ -41,7 +50,7 @@ const ChatHeader = ({ imageUrl, name, matchId }) => {
 					<View style={styles.image_container}>
 						{imageUrl && <CustomImage style={styles.image} url={imageUrl} />}
 					</View>
-					<GradientText text={name} style={styles.name} />
+					<GradientText text={Name} style={styles.name} />
 				</Pressable>
 			</View>
 			<View style={styles.right_side}>

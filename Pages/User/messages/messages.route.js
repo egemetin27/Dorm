@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { View, Text, Dimensions, StyleSheet, FlatList, Pressable } from "react-native";
 
 import { GradientText, Gradient, colors } from "../../../visualComponents/colors";
@@ -11,6 +11,7 @@ import { MessageContext } from "../../../contexts/message.context";
 import { AuthContext } from "../../../contexts/auth.context";
 
 import { sort } from "../../../utils/array.utils";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -21,22 +22,20 @@ const Messages = () => {
 	const [matchMode, setMatchMode] = useState(user.matchMode || 0);
 	const [sortedNonEmptyChats, setSortedNonEmptyChats] = useState([]);
 
-	// useFocusEffect(
-	// 	useCallback(() => {
-	// 		console.log("focused");
+	useFocusEffect(
+		useCallback(() => {
+			getMessagesList();
+			connect();
+			return disconnect;
+		}, [])
+	);
 
-	// 		return () => {
-	// 			console.log("unfocused");
-	// 		};
-	// 	}, [])
-	// );
-
-	useEffect(() => {
-		// connect to the socket when mounted and disconnect when unmounted
-		getMessagesList();
-		connect();
-		return disconnect;
-	}, []);
+	// useEffect(() => {
+	// 	// connect to the socket when mounted and disconnect when unmounted
+	// 	getMessagesList();
+	// 	connect();
+	// 	return disconnect;
+	// }, []);
 
 	useEffect(() => {
 		// sort increasingly chat boxes with respect to last message date
