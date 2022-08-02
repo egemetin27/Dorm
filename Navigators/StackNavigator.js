@@ -57,6 +57,8 @@ import ModalPage from "../components/modal.component";
 import * as Notifications from "expo-notifications";
 import { useNavigation } from "@react-navigation/native";
 import ChatProfile from "../Pages/User/ChatProfile";
+import { SocketContext } from "../contexts/socket.context";
+import { AppState } from "react-native";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -64,44 +66,43 @@ const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
 	const [appIsReady, setAppIsReady] = useState(false); // is the background fetching done
-	const [introShown, setIntroShown] = useState(); // is this the firs time the app is opened
-	const [tutorialShown, setTutorialShown] = useState(); // is the tutorial screen shown before
-	const [newUser, setNewUser] = useState(false);
+	const [introShown, setIntroShown] = useState(false); // is this the firs time the app is opened
+	const [tutorialShown, setTutorialShown] = useState(false); // is the tutorial screen shown before
 
 	const { user, isLoggedIn, signIn, signOut } = useContext(AuthContext);
 
 	const updateNeeded = useKeyGenerator();
 
-	// const notificationListener = useRef();
-	// const responseListener = useRef();
-	// const navigation = useNavigation();
+	const { connect, disconnect } = useContext(SocketContext);
+	const appState = useRef(AppState.currentState);
+	const [appStateVisible, setAppStateVisible] = useState(appState.current);
+	const navigation = useNavigation();
 
-	// useEffect(() => {
-	// 	// if (isLoggedIn) {
-	// 	notificationListener.current =
-	// 		Notifications.addNotificationReceivedListener(handleNotification);
-	// 	responseListener.current = Notifications.addNotificationResponseReceivedListener(
-	// 		handleNotificationResponse
-	// 	);
-	// 	// const subscription = Notifications.addPushTokenListener(registerForPushNotificationsAsync);
-	// 	return () => {
-	// 		Notifications.removeNotificationSubscription(notificationListener.current);
-	// 		Notifications.removeNotificationSubscription(responseListener.current);
-	// 		// subscription.remove();
-	// 	};
-	// 	// }
-	// }, [appIsReady]);
-	// const handleNotification = (notification) => {
-	// 	// console.log({ notification });
-	// };
+	useEffect(() => {
+		const subscription = AppState.addEventListener("change", (nextAppState) => {
+			if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+				// app came to foreground
+				if (
+					navigation.getState().routes[0].name == "MainScreen" &&
+					(navigation.getState().routes[0]?.state?.routes[1]?.path == "messages" ||
+						navigation.getState().routes[0]?.state?.index == 2)
+				) {
+					console.log("TRYING TO CONNECT");
+					connect();
+				}
+			} else {
+				disconnect();
+			}
 
-	// const handleNotificationResponse = (response) => {
-	// 	// console.log(response.notification.request.content.data);
-	// 	const { mesData } = { mesData: null, ...response.notification.request.content.data };
-	// 	navigation?.navigate("MainScreen", {
-	// 		screen: "Mesajlar",
-	// 	});
-	// };
+			appState.current = nextAppState;
+			// setAppStateVisible(appState.current);
+			// console.log("AppState", appState.current);
+		});
+
+		return () => {
+			subscription.remove();
+		};
+	}, []);
 
 	useEffect(async () => {
 		axios.interceptors.response.use(
@@ -184,10 +185,7 @@ export default function StackNavigator() {
 					</Stack.Group>
 				) : user ? (
 					// Screens for logged in users
-					<Stack.Group
-						screenOptions={{ headerShown: false }}
-						navigationKey={newUser ? "new" : "old"}
-					>
+					<Stack.Group screenOptions={{ headerShown: false }}>
 						{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
 						<Stack.Screen name="MainScreen" component={Tabbar} />
 						<Stack.Screen name="Settings" component={Settings} />

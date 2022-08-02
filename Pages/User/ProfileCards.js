@@ -9,27 +9,17 @@ import ReactNative, {
 	ActivityIndicator,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Animated, {
-	useSharedValue,
-	useDerivedValue,
-	useAnimatedReaction,
-	useAnimatedStyle,
-	runOnJS,
-	interpolate,
-	withTiming,
-	withRepeat,
-} from "react-native-reanimated";
+import Animated, { useSharedValue, useDerivedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
-import { Octicons, Feather } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { normalize } from "../../nonVisualComponents/generalFunctions";
 
 import url from "../../connection";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
-import { AnimatedModal, CustomModal } from "../../visualComponents/customComponents";
+import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../contexts/auth.context";
 
 import Card from "./Card";

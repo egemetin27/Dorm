@@ -129,7 +129,8 @@ const Chat = ({ route, navigation }) => {
 
 	useEffect(() => {
 		return () => {
-			readMessagesLocally(MatchId, chatMessages);
+			readMessagesLocally(MatchId);
+			// readMessagesLocally(MatchId, chatMessages);
 		};
 	}, []);
 

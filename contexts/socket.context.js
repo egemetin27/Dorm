@@ -1,4 +1,12 @@
-import { createContext, useRef, useEffect, useState, useContext } from "react";
+import {
+	createContext,
+	useRef,
+	useEffect,
+	useState,
+	useContext,
+	useCallback,
+	useMemo,
+} from "react";
 import axios from "axios";
 
 import { AuthContext } from "./auth.context";
@@ -16,7 +24,12 @@ const SocketProvider = ({ children }) => {
 	const { user } = useContext(AuthContext);
 	const { handleNewMessage } = useContext(MessageContext);
 
-	const { userId, sesToken } = user ?? { userId: 0, sesToken: "" };
+	// console.log({ user });
+
+	const { userId, sesToken } = useMemo(
+		() => user ?? { userId: 0, sesToken: "Empty Token" },
+		[user]
+	);
 
 	const ws = useRef();
 	const interval = useRef();
@@ -51,7 +64,7 @@ const SocketProvider = ({ children }) => {
 		return pack;
 	};
 
-	const getTicket = async () => {
+	const getTicket = useCallback(async () => {
 		const encryptedId = crypto.encrypt({ userId });
 		const ticket = await axios
 			.post(
@@ -67,12 +80,17 @@ const SocketProvider = ({ children }) => {
 				return crypto.decrypt(res.data);
 			})
 			.catch((err) => {
+				console.log("error on /connectionTicket");
 				console.log(err);
 			});
 		return ticket;
-	};
+	}, [user]);
 
 	const connect = async () => {
+		if (!user) {
+			// console.log("ERROR ON CONNECTING TO SOCKET");
+			return;
+		}
 		const ticket = await getTicket();
 
 		// ws.current = new WebSocket(`ws://192.168.1.29:3002?userId=${userId}&ticket=${ticket}`);
@@ -94,10 +112,12 @@ const SocketProvider = ({ children }) => {
 		};
 		ws.current.onclose = (e) => {
 			clearInterval(interval.current);
-			console.log("socket closed:", e);
+			console.log("socket closed");
+			// console.log(e);
 		};
 		ws.current.onerror = (e) => {
-			console.log("error on socket:", e);
+			console.log("error on socket");
+			// console.log(e);
 			setTimeout(connect, 5000);
 		};
 	};
@@ -121,7 +141,11 @@ const SocketProvider = ({ children }) => {
 	};
 
 	const readMessage = (matchId, destId) => {
-		if (ws.current.readyState != WebSocket.OPEN) return;
+		if (ws.current.readyState != WebSocket.OPEN) {
+			console.log("CANNOT READ");
+			return;
+		}
+		console.log("READING");
 
 		const readData = organizeOutput({ matchId, destId, message: "" }, "read");
 		const encryptedReadData = crypto.encrypt(readData);

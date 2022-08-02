@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { StyleSheet, KeyboardAvoidingView, Platform, Text } from "react-native";
+import { useContext, useEffect, useRef, useState } from "react";
+import { StyleSheet, AppState, Platform, Text } from "react-native";
 import { loadAsync } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
@@ -13,7 +13,7 @@ import * as Notifications from "expo-notifications";
 
 import AuthProvider from "./contexts/auth.context";
 import NotificationProvider from "./contexts/notification.context";
-import SocketProvider from "./contexts/socket.context";
+import SocketProvider, { SocketContext } from "./contexts/socket.context";
 import MessageProvider from "./contexts/message.context";
 
 // Amplify.configure(awsmobile);
@@ -43,7 +43,8 @@ const defaultLinkingConfig = {
 			screens: {
 				Profil: "profile",
 				AnaSayfa: "home",
-				Mesajlar: "messages/:matchMode",
+				Mesajlar: "messages",
+				// Mesajlar: "messages/:matchMode",
 			},
 		},
 	},

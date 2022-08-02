@@ -164,7 +164,8 @@ const MessageProvider = ({ children }) => {
 		}
 	};
 
-	const readMessagesLocally = (matchId) => {
+	const readMessagesLocally = (matchId, chatMessages) => {
+		console.log({ chatMessages });
 		setChatsList((oldList) => ({ ...oldList, [matchId]: chatsList[matchId] }));
 	};
 

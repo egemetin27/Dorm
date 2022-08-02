@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { View, Text, Dimensions, StyleSheet, FlatList, Pressable } from "react-native";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { View, Text, Dimensions, StyleSheet, FlatList, Pressable, AppState } from "react-native";
 
 import { GradientText, Gradient, colors } from "../../../visualComponents/colors";
 import Switch from "./switch.component";
