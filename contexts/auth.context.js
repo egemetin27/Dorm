@@ -95,7 +95,7 @@ const AuthProvider = ({ children }) => {
 			});
 
 			axios
-				.post(url + "/registerToken", encryptedToken, {
+				.post("https://devmessage.meetdorm.com/registerToken", encryptedToken, {
 					headers: { "access-token": user.sesToken },
 				})
 				.then()
