@@ -24,8 +24,6 @@ const SocketProvider = ({ children }) => {
 	const { user } = useContext(AuthContext);
 	const { handleNewMessage } = useContext(MessageContext);
 
-	// console.log({ user });
-
 	const { userId, sesToken } = useMemo(
 		() => user ?? { userId: 0, sesToken: "Empty Token" },
 		[user]
@@ -64,7 +62,7 @@ const SocketProvider = ({ children }) => {
 		return pack;
 	};
 
-	const getTicket = useCallback(async () => {
+	const getTicket = async () => {
 		const encryptedId = crypto.encrypt({ userId });
 		const ticket = await axios
 			.post(
@@ -84,11 +82,11 @@ const SocketProvider = ({ children }) => {
 				console.log(err);
 			});
 		return ticket;
-	}, [user]);
+	};
 
 	const connect = async () => {
 		if (!user) {
-			// console.log("ERROR ON CONNECTING TO SOCKET");
+			console.log("ERROR ON CONNECTING TO SOCKET");
 			return;
 		}
 		const ticket = await getTicket();

@@ -73,37 +73,6 @@ export default function StackNavigator() {
 
 	const updateNeeded = useKeyGenerator();
 
-	const { connect, disconnect } = useContext(SocketContext);
-	const appState = useRef(AppState.currentState);
-	const [appStateVisible, setAppStateVisible] = useState(appState.current);
-	const navigation = useNavigation();
-
-	useEffect(() => {
-		const subscription = AppState.addEventListener("change", (nextAppState) => {
-			if (appState.current.match(/inactive|background/) && nextAppState === "active") {
-				// app came to foreground
-				if (
-					navigation.getState().routes[0].name == "MainScreen" &&
-					(navigation.getState().routes[0]?.state?.routes[1]?.path == "messages" ||
-						navigation.getState().routes[0]?.state?.index == 2)
-				) {
-					console.log("TRYING TO CONNECT");
-					connect();
-				}
-			} else {
-				disconnect();
-			}
-
-			appState.current = nextAppState;
-			// setAppStateVisible(appState.current);
-			// console.log("AppState", appState.current);
-		});
-
-		return () => {
-			subscription.remove();
-		};
-	}, []);
-
 	useEffect(async () => {
 		axios.interceptors.response.use(
 			function (response) {

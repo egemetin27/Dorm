@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as Linking from "expo-linking";
 
 import * as Notifications from "expo-notifications";
+import { enableFreeze } from "react-native-screens";
 
 // import Amplify from "aws-amplify";
 // import awsmobile from "./src/aws-exports";
@@ -21,6 +22,7 @@ import MessageProvider from "./contexts/message.context";
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
 import Temp from "./Pages/Temp";
+import AppStateManager from "./components/app-state-manager";
 
 //import ImageManipulatorTest from "./ImageManipulatorTest";
 
@@ -56,6 +58,8 @@ export default function App() {
 		// exp://192.168.1.29:19000/--/messages
 		config: defaultLinkingConfig,
 	};
+
+	enableFreeze(true);
 
 	useEffect(() => {
 		(async () => {
@@ -106,9 +110,11 @@ export default function App() {
 				<NotificationProvider>
 					<MessageProvider>
 						<SocketProvider>
-							<SafeAreaProvider style={{ flex: 1 }}>
-								<Stack />
-							</SafeAreaProvider>
+							<AppStateManager>
+								<SafeAreaProvider style={{ flex: 1 }}>
+									<Stack />
+								</SafeAreaProvider>
+							</AppStateManager>
 						</SocketProvider>
 					</MessageProvider>
 				</NotificationProvider>

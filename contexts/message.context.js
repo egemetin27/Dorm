@@ -165,13 +165,12 @@ const MessageProvider = ({ children }) => {
 	};
 
 	const readMessagesLocally = (matchId, chatMessages) => {
-		console.log({ chatMessages });
+		// console.log({ chatMessages });
 		setChatsList((oldList) => ({ ...oldList, [matchId]: chatsList[matchId] }));
 	};
 
 	const getPreviousMessages = async (matchId, lastMessDate) => {
 		const encryptedData = crypto.encrypt({ matchId, lastMessDate, userId });
-		console.log(encryptedData);
 		const prevMessages = await axios
 			// .post("http://192.168.1.29:3002/prevmess", encryptedData, {
 			.post("https://devmessage.meetdorm.com/prevmess", encryptedData, {
@@ -187,6 +186,7 @@ const MessageProvider = ({ children }) => {
 				// console.log("error on /prevmess:", err.response);
 				return [];
 			});
+		console.log({ prevMessages });
 		setChatsList((oldList) => ({ ...oldList, [matchId]: [...prevMessages, ...oldList[matchId]] }));
 	};
 

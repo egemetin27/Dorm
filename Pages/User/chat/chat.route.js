@@ -119,8 +119,9 @@ const Chat = ({ route, navigation }) => {
 		setChatMessages(sortedChat);
 		readMessage(MatchId, otherId);
 
-		if (lastReadMessageIndex) setLastReadMessageIndex(-2);
-
+		if (lastReadMessageIndex !== null) {
+			setLastReadMessageIndex(-1);
+		}
 		if (lastReadMessageIndex == null && sortedChat.length > 0) {
 			const index = getLastReadMessage(sortedChat, user.userId);
 			setLastReadMessageIndex(index);
@@ -134,10 +135,12 @@ const Chat = ({ route, navigation }) => {
 		};
 	}, []);
 
-	const handleOnEndReached = () => {
+	const handleOnEndReached = (event) => {
 		if (chatMessages && chatMessages.length < 10) return;
 		getPreviousMessages(MatchId, chatMessages[chatMessages.length - 1]?.date);
 	};
+
+	console.log({ lastReadMessageIndex });
 
 	return (
 		<KeyboardAvoidingView
@@ -159,36 +162,39 @@ const Chat = ({ route, navigation }) => {
 				</View>
 			) : (
 				<View style={styles.chat_container}>
-					<FlatList
-						onEndReached={handleOnEndReached}
-						showsVerticalScrollIndicator={false}
-						data={chatMessages}
-						contentContainerStyle={{
-							paddingHorizontal: 15,
-							paddingVertical: height * 0.024,
-						}}
-						keyExtractor={(item, index) => index}
-						ItemSeparatorComponent={() => {
-							return <View style={{ height: height * 0.005 }} />;
-						}}
-						renderItem={({ item, index }) => {
-							return (
-								<Fragment>
-									<ChatMessage message={item} />
-									{index == lastReadMessageIndex && (
-										<View style={styles.unread_container}>
-											<View style={styles.unread_line}></View>
-											<Text style={styles.unread_text}>{`Okunmamış ${
-												lastReadMessageIndex + 1
-											} mesajın var`}</Text>
-											<View style={styles.unread_line}></View>
-										</View>
-									)}
-								</Fragment>
-							);
-						}}
-						inverted
-					/>
+					{chatMessages.length > 0 && (
+						<FlatList
+							onEndReachedThreshold={0}
+							onEndReached={handleOnEndReached}
+							showsVerticalScrollIndicator={false}
+							data={chatMessages}
+							contentContainerStyle={{
+								paddingHorizontal: 15,
+								paddingVertical: height * 0.024,
+							}}
+							keyExtractor={(item, index) => index}
+							ItemSeparatorComponent={() => {
+								return <View style={{ height: height * 0.005 }} />;
+							}}
+							renderItem={({ item, index }) => {
+								return (
+									<View>
+										{lastReadMessageIndex >= 0 && index == lastReadMessageIndex && (
+											<View style={styles.unread_container}>
+												<View style={styles.unread_line}></View>
+												<Text style={styles.unread_text}>{`Okunmamış ${
+													lastReadMessageIndex + 1
+												} mesajın var`}</Text>
+												<View style={styles.unread_line}></View>
+											</View>
+										)}
+										<ChatMessage message={item} />
+									</View>
+								);
+							}}
+							inverted
+						/>
+					)}
 				</View>
 			)}
 			<View
