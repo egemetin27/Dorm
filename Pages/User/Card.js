@@ -423,6 +423,7 @@ export default Card = React.memo(
 		// };
 
 		const composedGesture = Gesture.Race(tapHandler, panHandler);
+
 		return (
 			<Animated.View key={index} style={[{ width: "100%" }, animatedWrapper]}>
 				{/* {indexOfFrontCard.value <= index + 1 &&

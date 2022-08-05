@@ -143,11 +143,7 @@ const Chat = ({ route, navigation }) => {
 	console.log({ lastReadMessageIndex });
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={styles.container}
-		>
-			{/* <View style={[styles.container]}> */}
+		<View style={[styles.container]}>
 			<ChatHeader userData={otherUser.userData} matchId={MatchId} />
 			{chatMessages.length == 0 ? (
 				<View style={styles.no_message_container}>
@@ -197,17 +193,28 @@ const Chat = ({ route, navigation }) => {
 					)}
 				</View>
 			)}
-			<View
+			<KeyboardAvoidingView
+				behavior={
+					Platform.OS === "ios" ? "padding" : "height"
+					// Platform.OS === "ios" ? (chatMessages.length == 0 ? "position" : "padding") : "height"
+				}
 				style={
 					chatMessages.length == 0
-						? styles.input_container_empty_chat
-						: styles.input_container_not_empty_chat
+						? styles.empty_chat_keyboard_avoiding_view
+						: styles.not_empty_chat_keyboard_avoiding_view
 				}
 			>
-				<ChatInput destId={otherId} matchId={MatchId} />
-			</View>
-			{/* </View> */}
-		</KeyboardAvoidingView>
+				<View
+					style={
+						chatMessages.length == 0
+							? styles.input_container_empty_chat
+							: styles.input_container_not_empty_chat
+					}
+				>
+					<ChatInput destId={otherId} matchId={MatchId} />
+				</View>
+			</KeyboardAvoidingView>
+		</View>
 	);
 };
 
@@ -215,7 +222,6 @@ export default Chat;
 
 const styles = StyleSheet.create({
 	container: {
-		// backgroundColor: "#F4F3F3",
 		backgroundColor: "#D6D6D6",
 		flex: 1,
 	},
@@ -240,15 +246,20 @@ const styles = StyleSheet.create({
 		resizeMode: "cover",
 		backgroundColor: "rgba(0,0,0,0.25)",
 	},
-	input_container_empty_chat: {
+	empty_chat_keyboard_avoiding_view: {
 		position: "absolute",
 		width: "100%",
-		bottom: height * 0.024,
+		bottom: 0,
+	},
+	not_empty_chat_keyboard_avoiding_view: {},
+	input_container_empty_chat: {
+		width: "100%",
+		paddingBottom: height * 0.024,
 		paddingTop: height * 0.016,
 	},
 	input_container_not_empty_chat: {
 		width: "100%",
-		marginBottom: height * 0.024,
+		paddingBottom: height * 0.024,
 		paddingTop: height * 0.016,
 	},
 	chat_container: {
