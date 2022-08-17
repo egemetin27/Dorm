@@ -317,12 +317,6 @@ export default function MainPage({ navigation }) {
 	React.useEffect(async () => {
 		let abortController = new AbortController();
 
-		// console.log("user: ");
-		// console.log({ user });
-
-		// console.log("photo: ");
-		// console.log(user.Photo[0]);
-
 		const userId = user?.userId;
 		const myMode = user?.matchMode;
 		const myPhoto = user?.Photo[0]?.PhotoLink ?? "";

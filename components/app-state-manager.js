@@ -9,7 +9,7 @@ const AppStateManager = ({ children }) => {
 	const { connect, disconnect } = useContext(SocketContext);
 
 	const appState = useRef(AppState.currentState);
-	const [appStateVisible, setAppStateVisible] = useState(appState.current);
+	// const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
 	useEffect(() => {
 		const subscription = AppState.addEventListener("change", (nextAppState) => {

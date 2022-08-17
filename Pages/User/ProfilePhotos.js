@@ -142,10 +142,12 @@ export default function ProfilePhotos({ route, navigation }) {
 				aspect: [2, 3],
 				quality: 0.2,
 			});
+
 			let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
 				compress: 0.2,
 				format: SaveFormat.JPEG,
 			});
+
 			if (!result.cancelled) {
 				handleAdd(resizedResult);
 			}

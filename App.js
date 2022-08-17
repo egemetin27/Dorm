@@ -1,5 +1,5 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { StyleSheet, AppState, Platform, Text } from "react-native";
+import { useContext, useEffect } from "react";
+import { StyleSheet, Platform } from "react-native";
 import { loadAsync } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
@@ -21,7 +21,7 @@ import MessageProvider from "./contexts/message.context";
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
-import Temp from "./Pages/Temp";
+// import Temp from "./Pages/Temp";
 import AppStateManager from "./components/app-state-manager";
 
 //import ImageManipulatorTest from "./ImageManipulatorTest";
@@ -110,11 +110,17 @@ export default function App() {
 				<NotificationProvider>
 					<MessageProvider>
 						<SocketProvider>
-							<AppStateManager>
+							{Platform.OS === "ios" ? (
 								<SafeAreaProvider style={{ flex: 1 }}>
 									<Stack />
 								</SafeAreaProvider>
-							</AppStateManager>
+							) : (
+								<AppStateManager>
+									<SafeAreaProvider style={{ flex: 1 }}>
+										<Stack />
+									</SafeAreaProvider>
+								</AppStateManager>
+							)}
 						</SocketProvider>
 					</MessageProvider>
 				</NotificationProvider>

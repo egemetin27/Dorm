@@ -377,7 +377,7 @@ const Item = ({ item, value, setValue }) => {
 	const [activity, setActivity] = React.useState(value.includes(item.key));
 
 	const toggleActivity = () => {
-		if (!activity && value.length < 5) {
+		if (!activity && value.length < 10) {
 			setActivity(true);
 			setValue([...value, item.key]);
 		} else if (activity) {
@@ -386,7 +386,7 @@ const Item = ({ item, value, setValue }) => {
 			tempArr.splice(tempArr.indexOf(item.key), 1);
 			setValue(tempArr);
 		} else {
-			Alert.alert("5'ten fazla ilgi alanı seçemezsin :/");
+			Alert.alert("10'dan fazla ilgi alanı seçemezsin : /");
 		}
 	};
 

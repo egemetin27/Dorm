@@ -122,6 +122,9 @@ const SocketProvider = ({ children }) => {
 
 	const disconnect = () => {
 		clearInterval(interval.current);
+		const socket = ws.current;
+		if (!socket || socket?.readyState != WebSocket.OPEN) return;
+		// if (socket?.readyState != WebSocket.OPEN) return;
 		ws.current.close();
 	};
 
