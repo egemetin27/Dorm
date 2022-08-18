@@ -568,7 +568,7 @@ export default Card = React.memo(
 									>
 										<TouchableOpacity
 											onPress={() => {
-												showReportPage(id);
+												showReportPage(id, name);
 											}}
 										>
 											{/* <Text

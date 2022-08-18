@@ -61,7 +61,8 @@ export default function ProfileCards({ navigation, route }) {
 	// 	setSecondImg(myPicture);
 	// };
 
-	function showReportPage(otherUserID) {
+	function showReportPage(otherUserID, name) {
+		setName(name);
 		setReportPage(true);
 		setReportUserID(otherUserID);
 	}
@@ -287,8 +288,8 @@ export default function ProfileCards({ navigation, route }) {
 										name: otherName,
 									});
 								}}
-								showReportPage={(otherUserID) => {
-									showReportPage(otherUserID);
+								showReportPage={(otherUserID, name) => {
+									showReportPage(otherUserID, name);
 								}}
 								showLikeEndedModal={(hour, minute) => {
 									navigation.navigate("LikeEndedModal", {
@@ -589,6 +590,7 @@ export default function ProfileCards({ navigation, route }) {
 				</View>
 			</AnimatedModal> */}
 			{/* Match Page Modal */}
+
 
 			{/* Report Page Modal */}
 

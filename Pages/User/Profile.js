@@ -546,7 +546,7 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize: 15,
-									},
+									},								
 								]}
 							>
 								Yaşadığım Şehir
@@ -1170,6 +1170,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 2.22,
 	},
 	placeHolder: {
+		marginTop: "-3%",
 		position: "absolute",
 		alignSelf: "center",
 		color: "#B6B6B6",
@@ -1186,6 +1187,7 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.white,
 	},
 	input: {
+		marginTop: "1%",
 		textAlignVertical: "bottom",
 		textAlign: "center",
 		width: "100%",

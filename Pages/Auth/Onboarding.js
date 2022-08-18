@@ -48,7 +48,7 @@ export default function Onboarding({ navigation }) {
 			});
 
 			// await AsyncStorage.setItem("introShown", "yes");
-		} catch (error) {}
+		} catch (error) { console.log(error); }
 		navigation.replace("WelcomePage");
 	};
 
@@ -184,9 +184,9 @@ export default function Onboarding({ navigation }) {
 					onPress={
 						counter < 2
 							? () => {
-									progress.value++;
-									counterChanger(counter + 1);
-							  }
+								progress.value++;
+								counterChanger(counter + 1);
+							}
 							: navigate
 					}
 				>
