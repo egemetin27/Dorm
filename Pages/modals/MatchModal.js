@@ -44,39 +44,35 @@ export default function MatchModal({ navigation, route }) {
 						fontFamily: "Poppins",
 						color: colors.medium_gray,
 						textAlign: "center",
-						paddingVertical: height * 0.02,
+						paddingVertical: height * 0.01,
 					}}
 				>
 					{name} {"&"} Sen
 				</Text>
 				<CustomImage
-					source={{
-						uri: firstImg ?? null,
-					}}
+					url={firstImg ?? null}
 					style={{
-						top: height * 0.25,
-						left: width * 0.12,
+						top: height * 0.28,
+						left: width * 0.16,
 						borderRadius: 20,
 						position: "absolute",
 						aspectRatio: 1 / 1.5,
-						width: width * 0.4,
+						width: width * 0.5,
 						maxHeight: height * 0.7,
 						resizeMode: "cover",
-						transform: [{ rotateZ: "-18deg" }],
+						transform: [{ rotateZ: "-20deg" }],
 						zIndex: 2,
 					}}
 				/>
 				<CustomImage
-					source={{
-						uri: secondImg ?? null,
-					}}
+					url={secondImg ?? null}
 					style={{
-						top: height * 0.3,
-						left: width * 0.4,
+						top: height * 0.22,
+						left: width * 0.28,
 						borderRadius: 20,
 						position: "absolute",
 						aspectRatio: 1 / 1.5,
-						width: width * 0.4,
+						width: width * 0.5,
 						maxHeight: height * 0.7,
 						resizeMode: "cover",
 						transform: [{ rotateZ: "23deg" }],
@@ -84,7 +80,7 @@ export default function MatchModal({ navigation, route }) {
 				/>
 				<Text
 					style={{
-						paddingTop: height * 0.425,
+						paddingTop: height * 0.52,
 						fontSize: 16,
 						fontFamily: "Poppins",
 						color: colors.medium_gray,

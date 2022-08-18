@@ -674,7 +674,7 @@ export default function ProfileCards({ navigation, route }) {
 								width: "100%",
 								alignItems: "center",
 								justifyContent: "center",
-								marginVertical: 10,
+								marginVertical: "8%",
 							}}
 						>
 							<Text
@@ -702,7 +702,7 @@ export default function ProfileCards({ navigation, route }) {
 								alignItems: "center",
 								borderColor: colors.black,
 								borderWidth: 1,
-								marginBottom: 10,
+								marginBottom: "8%",
 							}}
 						>
 							{chosenReport == 1 ? (
@@ -728,7 +728,7 @@ export default function ProfileCards({ navigation, route }) {
 								alignItems: "center",
 								borderColor: colors.black,
 								borderWidth: 1,
-								marginBottom: 10,
+								marginBottom: "8%",
 							}}
 						>
 							{chosenReport == 2 ? (
@@ -753,7 +753,7 @@ export default function ProfileCards({ navigation, route }) {
 								alignItems: "center",
 								borderColor: colors.black,
 								borderWidth: 1,
-								marginBottom: 10,
+								marginBottom: "8%",
 							}}
 						>
 							{chosenReport == 3 ? (
@@ -780,7 +780,7 @@ export default function ProfileCards({ navigation, route }) {
 								alignItems: "center",
 								borderColor: colors.black,
 								borderWidth: 1,
-								marginBottom: 10,
+								marginBottom: "8%",
 							}}
 						>
 							{chosenReport == 4 ? (
@@ -807,7 +807,7 @@ export default function ProfileCards({ navigation, route }) {
 								alignItems: "center",
 								borderColor: colors.black,
 								borderWidth: 1,
-								marginBottom: 10,
+								marginBottom: "8%",
 							}}
 						>
 							{chosenReport == 5 ? (
@@ -834,7 +834,7 @@ export default function ProfileCards({ navigation, route }) {
 								alignItems: "center",
 								borderColor: colors.black,
 								borderWidth: 1,
-								marginBottom: 10,
+								marginBottom: "5%",
 							}}
 						>
 							{chosenReport == 6 ? (
@@ -854,7 +854,7 @@ export default function ProfileCards({ navigation, route }) {
 
 								borderRadius: 12,
 								overflow: "hidden",
-								marginTop: 20,
+								marginTop: "9%",
 								justifyContent: "center",
 								alignItems: "center",
 							}}
@@ -871,7 +871,7 @@ export default function ProfileCards({ navigation, route }) {
 										color: colors.white,
 										fontSize: 22,
 										fontFamily: "PoppinsSemiBold",
-										padding: 10,
+										padding: "6%",
 									}}
 								>
 									Bildir
