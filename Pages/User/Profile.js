@@ -1170,14 +1170,14 @@ const styles = StyleSheet.create({
 		shadowRadius: 2.22,
 	},
 	placeHolder: {
-		marginBottom: "-4.5%",
-		paddingBottom: "2.7%",
+		marginBottom: "-4%",
+		paddingBottom: "3%",
 		position: "absolute",
 		alignSelf: "center",
 		color: "#B6B6B6",
 	},
 	inputContainer: {
-		marginTop: 21,
+		marginTop: 22,
 		position: "relative",
 		width: Math.min(width * 0.85, 600),
 		height: Math.min(width * 0.16, 100),
