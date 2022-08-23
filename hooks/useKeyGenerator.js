@@ -24,7 +24,7 @@ const useKeyGenerator = () => {
 						0,
 						Constants.manifest.version.lastIndexOf(".")
 					);
-					const realVersion = res.data.slice(0, res.data.lastIndexOf("."));
+					const realVersion = res.data.appversion;
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}
