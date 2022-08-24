@@ -448,7 +448,6 @@ const Card = ({ event, user, signOut }) => {
 								paddingBottom: 10,
 								justifyContent: "center",
 							}}
-							rt
 							style={{
 								marginTop: 30,
 								marginBottom: 10,

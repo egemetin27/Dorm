@@ -23,11 +23,11 @@ const EventCard = ({ event, openEvents, index, length, setIsAppReady }) => {
 			style={[
 				commonStyles.photo,
 				{
-					height: "95%",
+					width: width * 0.44,
 					backgroundColor: colors.cool_gray,
-					marginHorizontal: 0,
-					marginLeft: 15,
-					marginRight: index + 1 == length ? 15 : 0,
+					marginVertical: 8,
+					marginLeft: index % 2 == 0 ? width * 0.04: width * 0.02,
+					marginRight: index % 2 == 1 ? width * 0.04: width * 0.02,
 				},
 			]}
 		>
