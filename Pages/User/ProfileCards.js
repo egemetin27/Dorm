@@ -269,6 +269,7 @@ export default function ProfileCards({ navigation, route }) {
 								// index={9 - index}
 								// index={peopleList.length - index - 1}
 								eventId={route.params?.eventId ?? 0}
+								eventName={route.params?.eventName ?? ""}
 								index={index}
 								card={item}
 								backFace={backFace}
@@ -590,7 +591,6 @@ export default function ProfileCards({ navigation, route }) {
 				</View>
 			</AnimatedModal> */}
 			{/* Match Page Modal */}
-
 
 			{/* Report Page Modal */}
 

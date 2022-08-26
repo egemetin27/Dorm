@@ -21,7 +21,7 @@ import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import { StatusBar } from "expo-status-bar";
 
-import { CustomPicker, CustomRadio } from "../../visualComponents/customComponents";
+import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import url from "../../connection";
 import { getAge } from "../../utils/date.utils";
@@ -29,6 +29,7 @@ import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisu
 import crypto from "../../functions/crypto";
 import { AuthContext } from "../../contexts/auth.context";
 import CustomImage from "../../components/custom-image.component";
+import CustomRadio from "../../components/custom-radio.component";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
@@ -546,7 +547,7 @@ export default function Profile({ route, navigation }) {
 											},
 										],
 										fontSize: 15,
-									},								
+									},
 								]}
 							>
 								Yaşadığım Şehir

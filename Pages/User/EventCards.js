@@ -172,12 +172,12 @@ const Card = ({ event, user, signOut }) => {
 						sesToken: user.sesToken,
 						fromEvent: true,
 						eventId: EventId,
+						eventName: name,
 					});
 				} else {
 					navigation.navigate("CustomModal", {
 						modalType: "NO_LIKES_ON_EVENT",
 					});
-					// Alert.alert("Etkinliği Beğenen Kimse Yok :/");
 				}
 			})
 			.catch((err) => {

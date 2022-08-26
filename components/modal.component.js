@@ -62,6 +62,12 @@ const MODAL_TYPES = {
 		body: "Etkinliğe gidenleri görebilmek için diğer insanlar tarafından görülebilir olmalısın",
 		buttons: [],
 	},
+	FILTER_DISABLED: {
+		image: "sad_face",
+		title: "Maalesef Filtre Aktif Değil",
+		body: "Filtreyi kullanmayı çok istiyorsan bize iletebilir ve öncelikler arasına alınmasını sağlayabilirsin",
+		buttons: [],
+	},
 };
 
 export default function ModalPage({ navigation, route }) {

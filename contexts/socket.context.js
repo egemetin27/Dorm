@@ -155,7 +155,7 @@ const SocketProvider = ({ children }) => {
 		ws.current.send(JSON.stringify(encryptedReadData));
 	};
 
-	const value = { connect, disconnect, sendMessage, readMessage };
+	const value = useMemo(() => ({ connect, disconnect, sendMessage, readMessage }), []);
 	return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };
 

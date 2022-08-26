@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 import { Alert, Platform } from "react-native";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
@@ -115,7 +115,10 @@ const AuthProvider = ({ children }) => {
 		});
 	};
 
-	const value = { user, isLoggedIn, updateProfile, signIn, signOut };
+	const value = useMemo(
+		() => ({ user, isLoggedIn, updateProfile, signIn, signOut }),
+		[user, isLoggedIn]
+	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

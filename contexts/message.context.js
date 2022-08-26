@@ -1,4 +1,12 @@
-import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useRef,
+	useCallback,
+	useMemo,
+} from "react";
 import axios from "axios";
 
 import { AuthContext } from "./auth.context";
@@ -196,15 +204,18 @@ const MessageProvider = ({ children }) => {
 		setChatsList({});
 	};
 
-	const value = {
-		matchesList,
-		chatsList,
-		handleNewMessage,
-		getLastMessage,
-		readMessagesLocally,
-		getMessagesList,
-		getPreviousMessages,
-	};
+	const value = useMemo(
+		() => ({
+			matchesList,
+			chatsList,
+			handleNewMessage,
+			getLastMessage,
+			readMessagesLocally,
+			getMessagesList,
+			getPreviousMessages,
+		}),
+		[matchesList, chatsList]
+	);
 	return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;
 };
 export default MessageProvider;

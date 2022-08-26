@@ -44,6 +44,7 @@ export default Card = React.memo(
 	({
 		card,
 		eventId,
+		eventName,
 		index,
 		backFace,
 		myID,
@@ -55,7 +56,6 @@ export default Card = React.memo(
 		showLikeEndedModal,
 		isScrollShowed,
 		matchMode,
-		showListEndedModal,
 		showMatchScreen,
 		length,
 		refreshList,
@@ -147,37 +147,6 @@ export default Card = React.memo(
 			}
 		};
 
-		const sendNotification = async () => {
-			try {
-				const encryptedId = crypto.encrypt({ userId: id });
-				axios
-					.post(url + "/getToken", encryptedId, {
-						headers: { "access-token": user.sesToken },
-					})
-					.then((res) => {
-						const token = crypto.decrypt(res.data);
-						fetch("https://exp.host/--/api/v2/push/send", {
-							method: "POST",
-							headers: {
-								Accept: "application/json",
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify({
-								to: token,
-								sound: "default",
-								title: "Dorm",
-								body: "Yeni bir eşleşmeniz var!",
-							}),
-						});
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			} catch (e) {
-				console.log(e);
-			}
-		};
-
 		const checkText = (text) => {
 			// return false if null
 			if (text == "null" || text == null || text == "undefined" || text.length == 0 || text == 0)
@@ -201,8 +170,9 @@ export default Card = React.memo(
 				isLike: val,
 				userSwiped: myID,
 				otherUser: id,
-				matchMode: matchMode,
-				eventId: eventId,
+				matchMode,
+				eventId,
+				eventName,
 			});
 
 			axios
@@ -219,7 +189,6 @@ export default Card = React.memo(
 					if (res.data.message == "Match") {
 						showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
 						console.log("send notification.");
-						sendNotification();
 					}
 
 					if (index == length - 1) {
@@ -366,18 +335,21 @@ export default Card = React.memo(
 				display: photoList?.length > 0 ? "flex" : "none",
 			};
 		});
+
 		const animatedPhotoProgress2 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [0, 1, 2], [8, 24, 8]),
 				display: photoList?.length > 1 ? "flex" : "none",
 			};
 		});
+
 		const animatedPhotoProgress3 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [1, 2, 3], [8, 24, 8]),
 				display: photoList?.length > 2 ? "flex" : "none",
 			};
 		});
+
 		const animatedPhotoProgress4 = useAnimatedStyle(() => {
 			return {
 				height: interpolate(progress.value, [2, 3], [8, 24]),
@@ -388,16 +360,6 @@ export default Card = React.memo(
 		const handleScroll = ({ nativeEvent }) => {
 			progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
 		};
-
-		// useAnimatedReaction(
-		// 	() => {
-		// 		return progress.value;
-		// 	},
-		// 	() => {
-		// 		runOnJS(setBackfaceIndex)(Math.round(progress.value));
-		// 	},
-		// 	[progress.value]
-		// );
 
 		const animatedWrapper = useAnimatedStyle(() => {
 			return {
@@ -568,7 +530,7 @@ export default Card = React.memo(
 									>
 										<TouchableOpacity
 											onPress={() => {
-												showReportPage(id, name);
+												showReportPage(id);
 											}}
 										>
 											{/* <Text

@@ -59,6 +59,7 @@ import { useNavigation } from "@react-navigation/native";
 import ChatProfile from "../Pages/User/ChatProfile";
 import { SocketContext } from "../contexts/socket.context";
 import { AppState } from "react-native";
+import FilterModal from "../Pages/modals/filter.modal";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -214,6 +215,14 @@ export default function StackNavigator() {
 					<Stack.Screen
 						name="CustomModal"
 						component={ModalPage}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
+					/>
+					<Stack.Screen
+						name="FilterModal"
+						component={FilterModal}
 						options={{
 							presentation: "transparentModal",
 							animation: "fade",
