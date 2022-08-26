@@ -204,18 +204,15 @@ const MessageProvider = ({ children }) => {
 		setChatsList({});
 	};
 
-	const value = useMemo(
-		() => ({
-			matchesList,
-			chatsList,
-			handleNewMessage,
-			getLastMessage,
-			readMessagesLocally,
-			getMessagesList,
-			getPreviousMessages,
-		}),
-		[matchesList, chatsList]
-	);
+	const value = {
+		matchesList,
+		chatsList,
+		handleNewMessage,
+		getLastMessage,
+		readMessagesLocally,
+		getMessagesList,
+		getPreviousMessages,
+	};
 	return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;
 };
 export default MessageProvider;

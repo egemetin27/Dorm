@@ -115,10 +115,7 @@ const AuthProvider = ({ children }) => {
 		});
 	};
 
-	const value = useMemo(
-		() => ({ user, isLoggedIn, updateProfile, signIn, signOut }),
-		[user, isLoggedIn]
-	);
+	const value = { user, isLoggedIn, updateProfile, signIn, signOut };
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

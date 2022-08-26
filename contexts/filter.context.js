@@ -104,7 +104,7 @@ const FilterProvider = ({ children }) => {
 		setFilters(savedFilters);
 	};
 
-	const value = useMemo(() => ({ filters, changeFilters, saveFilters, discardUnsaved }), [filters]);
+	const value = { filters, changeFilters, saveFilters, discardUnsaved };
 	return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;
 };
 
