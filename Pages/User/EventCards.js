@@ -817,19 +817,17 @@ export default function EventCards({ navigation, route }) {
 
 	const { idx, list, myID, sesToken } = route.params;
 
-	React.useEffect(() => {
-		sendEventSeen(idx);
+	React.useEffect(async () => {
+		const backAction = () => {
+			navigation.goBack();
+			return true;
+		};
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+		return () => backHandler.remove();
 	}, []);
 
 	React.useEffect(() => {
-		const backAction = () => {
-			navigation.replace("MainScreen", { screen: "AnaSayfa" });
-			return true;
-		};
-
-		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-
-		return () => backHandler.remove();
+		sendEventSeen(idx);
 	}, []);
 
 	const sendEventSeen = (index) => {
@@ -867,7 +865,7 @@ export default function EventCards({ navigation, route }) {
 			>
 				<TouchableOpacity
 					onPress={() => {
-						navigation.replace("MainScreen", { screen: "AnaSayfa" });
+						navigation.goBack();
 					}}
 				>
 					<Feather name="chevron-left" size={30} color={colors.cool_gray} />

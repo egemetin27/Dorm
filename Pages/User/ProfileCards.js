@@ -30,7 +30,7 @@ import crypto from "../../functions/crypto";
 const { width, height, fontScale } = Dimensions.get("window");
 
 export default function ProfileCards({ navigation, route }) {
-	const { user, signOut } = useContext(AuthContext);
+	const { user, signOut, peopleListIndex } = useContext(AuthContext);
 
 	const [isLoading, setIsLoading] = React.useState(true);
 	// const [peopleList, setPeopleList] = React.useState(route.params.list);
@@ -121,7 +121,7 @@ export default function ProfileCards({ navigation, route }) {
 				navigation.goBack();
 				return true;
 			}
-			navigation.replace("MainScreen", { screen: "AnaSayfa" });
+			navigation.goBack();
 			return true;
 		};
 		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
@@ -226,7 +226,7 @@ export default function ProfileCards({ navigation, route }) {
 							navigation.goBack();
 							return;
 						}
-						navigation.replace("MainScreen", { screen: "AnaSayfa", props: { screen: "Home" } });
+						navigation.goBack();
 					}}
 				>
 					<Feather name="chevron-left" size={30} color={colors.cool_gray} />
@@ -271,6 +271,7 @@ export default function ProfileCards({ navigation, route }) {
 								eventId={route.params?.eventId ?? 0}
 								eventName={route.params?.eventName ?? ""}
 								index={index}
+								idxForMainPage={idx+peopleListIndex-1}
 								card={item}
 								backFace={backFace}
 								myID={myID}

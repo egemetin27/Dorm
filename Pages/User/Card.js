@@ -46,6 +46,7 @@ export default Card = React.memo(
 		eventId,
 		eventName,
 		index,
+		idxForMainPage,
 		backFace,
 		myID,
 		sesToken,
@@ -60,7 +61,7 @@ export default Card = React.memo(
 		length,
 		refreshList,
 	}) => {
-		const { user, signOut } = useContext(AuthContext);
+		const { user, signOut, setPeopleIndex } = useContext(AuthContext);
 		const progress = useSharedValue(0);
 		const x = useSharedValue(0);
 		const destination = useSharedValue(0);
@@ -157,7 +158,7 @@ export default Card = React.memo(
 		const onSwipe = async (val) => {
 			// 0 = like, 1 = super like, 2 =  dislike
 			backFace.value = false;
-
+			setPeopleIndex(idxForMainPage+1);
 			if (val == 0 && Session.LikeCount == 0 && getTimeDiff(user.SwipeRefreshTime)) {
 				x.value = withSpring(0);
 				destination.value = 0;

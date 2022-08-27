@@ -11,6 +11,8 @@ import crypto from "../functions/crypto";
 export const AuthContext = createContext({
 	user: null,
 	isLoggedIn: null,
+	peopleListIndex: null,
+	setPeopleIndex: () => {},
 	updateProfile: () => {},
 	signIn: () => {},
 	signOut: () => {},
@@ -21,6 +23,7 @@ const AuthProvider = ({ children }) => {
 
 	const [user, setUser] = useState(null);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [peopleListIndex, setPeopleListIndex] = useState(0);
 
 	const signIn = async ({ email, password, notLoading = () => {} }) => {
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
@@ -115,7 +118,11 @@ const AuthProvider = ({ children }) => {
 		});
 	};
 
-	const value = { user, isLoggedIn, updateProfile, signIn, signOut };
+	const setPeopleIndex = (idx) => {
+		setPeopleListIndex(idx+1);
+	};
+
+	const value = { user, isLoggedIn, peopleListIndex, setPeopleIndex, updateProfile, signIn, signOut };
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

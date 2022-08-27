@@ -16,14 +16,15 @@ import crypto from "../functions/crypto";
 import { sort } from "../utils/array.utils";
 
 export const MessageContext = createContext({
+	unreadCheck: Boolean,
 	matchesList: {},
 	chatsList: {},
+	lastMessages: {},
+	setUnread: () => {},
+	//setLastMsgs: () => {},
 	handleNewMessage: () => {},
 	getLastMessage: () => {},
 	readMessagesLocally: () => {},
-	getMessagesList: () => {},
-	getPreviousMessages: () => {},
-	resetMessages: () => {},
 });
 
 const defaultMatchesList = {
@@ -121,7 +122,9 @@ const MessageProvider = ({ children }) => {
 
 	const [rawMatchesList, setRawMatchesList] = useState([]);
 	const [matchesList, setMatchesList] = useState(defaultMatchesList);
+	const [unreadCheck, setUnreadCheck] = useState(false);
 	const [chatsList, setChatsList] = useState({});
+	const [lastMessages, setLastMessages] = useState({});
 
 	useEffect(() => {
 		if (isLoggedIn) {
@@ -134,6 +137,8 @@ const MessageProvider = ({ children }) => {
 	useEffect(() => {
 		const newMatchesList = filterMatchesList(rawMatchesList, chatsList);
 		setMatchesList(newMatchesList);
+		setLastMsgs();
+		//console.log(Object.keys(chatsList).length + "asd");
 	}, [chatsList, rawMatchesList]);
 
 	const handleNewMessage = (msg) => {
@@ -177,6 +182,17 @@ const MessageProvider = ({ children }) => {
 		setChatsList((oldList) => ({ ...oldList, [matchId]: chatsList[matchId] }));
 	};
 
+	const setLastMsgs = () => {
+		Object.keys(chatsList).forEach(matchID => {
+			setLastMessages((oldlist) => ({...oldlist, [matchID]: getLastMessage(matchID)}));
+			if (getLastMessage(matchID).unread == 1 && getLastMessage(matchID).sourceId != user.userId) setUnreadCheck(true);
+		});
+		console.log("NOW:\n" + JSON.stringify(lastMessages));
+	}
+	const setUnread = (bool) => {
+		setUnreadCheck(bool);
+	}
+
 	const getPreviousMessages = async (matchId, lastMessDate) => {
 		const encryptedData = crypto.encrypt({ matchId, lastMessDate, userId });
 		const prevMessages = await axios
@@ -207,6 +223,9 @@ const MessageProvider = ({ children }) => {
 	const value = {
 		matchesList,
 		chatsList,
+		unreadCheck,
+		setUnread,
+		//setLastMsgs,
 		handleNewMessage,
 		getLastMessage,
 		readMessagesLocally,

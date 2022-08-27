@@ -11,13 +11,12 @@ import { colors } from "../visualComponents/colors";
 
 const { width, height } = Dimensions.get("window");
 
-const EventCard = ({ event, openEvents, index, length, setIsAppReady }) => {
+const EventCard = ({ event, openEvents, index, length }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
 
 	return (
 		<Pressable
 			onPress={() => {
-				setIsAppReady(false);
 				openEvents(index);
 			}}
 			style={[

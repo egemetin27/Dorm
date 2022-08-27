@@ -75,18 +75,16 @@ function Tabbar({ route, navigation }) {
 										props?.accessibilityState?.selected &&
 										props?.children?.props?.children[0].props?.route.state
 									) {
-										navigation.replace("MainScreen", {
+										navigation.navigate("MainScreen", {
 											screen: "AnaSayfa",
-											params: { screen: "Home" },
 										});
 									} else if (!props?.accessibilityState?.selected) {
 										// const jumpToAction = TabActions.jumpTo("AnaSayfa", {
 										// 	screen: "Home",
 										// });
 										// navigation.dispatch(jumpToAction);
-										navigation.replace("MainScreen", {
+										navigation.navigate("MainScreen", {
 											screen: "AnaSayfa",
-											params: { screen: "Home" },
 										});
 									}
 								}}

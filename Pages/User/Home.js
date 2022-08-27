@@ -178,7 +178,7 @@ const Category = ({
 };
 
 export default function MainPage({ navigation }) {
-	const { user, signOut } = useContext(AuthContext);
+	const { user, signOut, peopleListIndex } = useContext(AuthContext);
 	const { filters } = useContext(FilterContext);
 
 	const [isAppReady, setIsAppReady] = React.useState(false);
@@ -389,17 +389,17 @@ export default function MainPage({ navigation }) {
 											keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 											horizontal={true}
 											showsHorizontalScrollIndicator={false}
-											data={peopleList.slice(0, 5)}
+											data={peopleList.slice(peopleListIndex, peopleListIndex+7) ?? null}
 											renderItem={({ item, index }) => (
 												<People
 													setIsAppReady={setIsAppReady}
 													index={index}
 													person={item}
-													length={peopleList.slice(0, 5).length}
+													length={7}
 													openProfiles={(idx) => {
-														navigation.replace("ProfileCards", {
+														navigation.navigate("ProfileCards", {
 															idx: idx,
-															list: peopleList.slice(0, 45),
+															list: peopleList.slice(peopleListIndex, 45),
 															matchMode: matchMode,
 															myID: user.userId,
 															sesToken: user.sesToken,
@@ -463,7 +463,6 @@ export default function MainPage({ navigation }) {
 					}}
 					renderItem={({ item, index }) => (
 						<Event
-							setIsAppReady={setIsAppReady}
 							index={index}
 							event={item}
 							length={shownEvents.length}
