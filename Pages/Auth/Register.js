@@ -16,7 +16,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
-import { Gradient, colors } from "../../visualComponents/colors";
+import { Gradient, GradientRegistration, colors } from "../../visualComponents/colors";
 import { getAge } from "../../utils/date.utils";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import { univList } from "../../nonVisualComponents/Lists";
@@ -196,9 +196,9 @@ export default function Register({ navigation }) {
 							},
 						]}
 					>
-						<Gradient
+						<GradientRegistration
 							style={{ borderRadius: 7, alignItems: "center", width: "100%", height: "100%" }}
-						></Gradient>
+						></GradientRegistration>
 					</Animated.View>
 				</View>
 
@@ -484,15 +484,18 @@ export default function Register({ navigation }) {
 				</Animated.View>
 			</View>
 			{show && (
-				<DateTimePicker
-					textColor="black"
-					accentColor="red"
-					testID="dateTimePicker"
-					value={date}
-					style={{ backgroundColor: "white" }}
-					mode="date"
-					onChange={datePick}
-				/>
+				<View style={{marginRight: width * 0.12, marginTop: 6, alignSelf: "flex-end"}}>
+					<Text style={{ alignSelf: "center"}}>Lütfen Doğum Tarihinizi Seçin</Text>
+					<DateTimePicker
+						textColor="black"
+						accentColor="red"
+						testID="dateTimePicker"
+						value={date}
+						style={{ backgroundColor: "white", marginVertical: 5, alignSelf: "auto"}}
+						mode="date"
+						onChange={datePick}
+					/>
+				</View>
 			)}
 			<View style={styles.TextContainer}>
 				<Animated.Text

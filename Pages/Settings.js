@@ -104,6 +104,7 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 						marginTop: 10,
 						alignItems: "center",
 						justifyContent: "center",
+						marginBottom: 8,
 						borderWidth: 2,
 						borderColor: "#B6B6B6",
 					}}
@@ -572,7 +573,7 @@ export default function Settings({ navigation, route }) {
 				</View>
 				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} />
 
-				<View style={styles.buttonContainer}>
+				{/* <View style={styles.buttonContainer}>
 					<Text style={{ fontSize: 20, fontFamily: "PoppinsSemiBold", color: "#333333" }}>
 						Bildirimler
 					</Text>
@@ -608,7 +609,7 @@ export default function Settings({ navigation, route }) {
 					</Text>
 				</View>
 
-				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} />
+				<View style={{ width: "100%", height: 1, backgroundColor: "#DADADA" }} /> */}
 
 				<TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Yardım ve Destek</Text>

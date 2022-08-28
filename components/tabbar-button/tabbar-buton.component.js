@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { View, Image, Text, Dimensions, StyleSheet } from "react-native";
 import { MessageContext } from "../../contexts/message.context";
+import { NotificationContext } from "../../contexts/notification.context";
 import { GradientText, colors } from "../../visualComponents/colors";
 const { width, height } = Dimensions.get("screen");
 const profileIcon = require("../../assets/TabBarIcons/profile.png");
@@ -8,13 +9,14 @@ const messagesIcon = require("../../assets/TabBarIcons/messages.png");
 
 const TabbarButton = ({ icon, label, focused }) => {
 	const { unreadCheck } = useContext(MessageContext);
+	const { unReadCheck } = useContext(NotificationContext);
 	const [unRead, SetUnRead] = useState(false);
 	useEffect(() => {
-		SetUnRead(unreadCheck);
-	}, [unreadCheck]);
+		SetUnRead(unReadCheck);
+	}, [unReadCheck]);
 	return (
 		<View style={styles.container}>
-			{((unRead == true && label == "Mesajlar")) ? 
+			{((unReadCheck == true && label == "Mesajlar")) ? 
 				<Image
 					source={messagesIcon}
 					style={{

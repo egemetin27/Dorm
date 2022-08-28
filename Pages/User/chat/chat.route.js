@@ -166,7 +166,7 @@ const Chat = ({ route, navigation }) => {
 							data={chatMessages}
 							contentContainerStyle={{
 								paddingHorizontal: 15,
-								paddingVertical: height * 0.024,
+								paddingVertical: height * 0.008,
 							}}
 							keyExtractor={(item, index) => index}
 							ItemSeparatorComponent={() => {
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
 	input_container_not_empty_chat: {
 		width: "100%",
 		paddingBottom: height * 0.024,
-		paddingTop: height * 0.016,
+		paddingTop: height * 0.008,
 	},
 	chat_container: {
 		flex: 1,

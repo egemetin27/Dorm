@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import moment from "moment";
 import { LinearGradient } from "expo-linear-gradient";
+import { getHourMinute } from "../../../utils/date.utils";
 
 import { colors, Gradient } from "../../../visualComponents/colors";
 
@@ -25,11 +26,13 @@ const ChatMessage = ({ message }) => {
 				<View style={styles.my_message_container}>
 					<Gradient style={styles.my_message_gradient}>
 						<Text style={styles.my_message}>{message.message}</Text>
+						<Text style={styles.my_message_time}>{getHourMinute(message.date) }</Text>
 					</Gradient>
 				</View>
 			) : (
 				<View style={styles.received_message_container}>
 					<Text style={styles.received_message_text}>{message.message}</Text>
+					<Text style={styles.received_message_time}>{getHourMinute(message.date) }</Text>
 				</View>
 			)}
 		</View>
@@ -51,21 +54,39 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 	},
 	my_message_gradient: {
-		paddingVertical: height * 0.012,
-		paddingHorizontal: width * 0.04,
+		paddingVertical: height * 0.01,
+		paddingHorizontal: width * 0.035,
 	},
 	my_message: {
 		color: colors.white,
 		fontSize: height * 0.018,
 		// fontFamily: "Poppins",
 	},
+	my_message_time: {
+		textAlign: "right",
+		fontSize: width * 0.02, 
+		//marginBottom: height * 0.0055, 
+		position: "absolute", 
+		right: width * 0.016, 
+		bottom: height * 0, 
+		width: width * 0.065
+	},
 	received_message_container: {
-		borderRadius: Math.min(width * 0.08, height * 0.024),
+		borderRadius: Math.min(width * 0.085, height * 0.024),
 		borderBottomLeftRadius: 0,
-		paddingVertical: height * 0.012,
-		paddingHorizontal: width * 0.04,
+		paddingVertical: height * 0.01,
+		paddingHorizontal: width * 0.035,
 		alignSelf: "flex-start",
 		backgroundColor: colors.white,
+	},
+	received_message_time: {
+		textAlign: "right",
+		fontSize: width * 0.02, 
+		//marginBottom: height * 0.0055, 
+		position: "absolute", 
+		right: width * 0.028, 
+		bottom: height * 0, 
+		width: width * 0.065
 	},
 	received_message_name: {
 		fontSize: height * 0.02,

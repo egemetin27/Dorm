@@ -10,6 +10,7 @@ import { AuthContext } from "../../../contexts/auth.context";
 
 import { getWhen } from "../../../utils/date.utils";
 import { colors, Gradient } from "../../../visualComponents/colors";
+import { NotificationContext } from "../../../contexts/notification.context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,7 +37,8 @@ const SwipedPanel = ({ handleUnmatch, handleDeleteChat }) => {
 };
 
 const NonEmptyChatBox = ({ match }) => {
-	const { getLastMessage, setUnread } = useContext(MessageContext);
+	const { getLastMessage/*, setUnread */ } = useContext(MessageContext);
+	const { setUnreadChecker } = useContext(NotificationContext);
 	const { user } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const { MatchId } = match;
@@ -52,7 +54,7 @@ const NonEmptyChatBox = ({ match }) => {
 	const [isUnreadMessage, setIsUnreadMessage] = useState(false);
 	useEffect(() => {
 		if (sourceId != user.userId) {
-			setUnread(unread == 1);
+			setUnreadChecker(unread == 1);
 			setIsUnreadMessage(unread == 1); 
 		}
 		// if (unread == 1) setUnreadMatch(MatchId, true);

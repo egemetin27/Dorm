@@ -4,6 +4,7 @@ import * as Notifications from "expo-notifications";
 import { isDevice } from "expo-device";
 import axios from "axios";
 import * as Linking from "expo-linking";
+import { MessageContext } from "./message.context";
 
 import { AuthContext } from "./auth.context";
 
@@ -29,20 +30,41 @@ const handleNotificationResponse = (response) => {
 	// Linking.openURL(url);
 };
 
-export const NotificationContext = createContext({});
+export const NotificationContext = createContext({
+	unReadCheck: Boolean,
+	setUnreadChecker: () => {}
+});
 
 const NotificationProvider = ({ children }) => {
 	const { isLoggedIn, user } = useContext(AuthContext);
+	const [unReadCheck, setUnreadCheck] = useState(false);
+	//const { setUnread } = useContext(MessageContext);
+	//const [notification, setNotification] = useState(false);
 
 	const notificationListener = useRef();
-	const responseListener = useRef();
+	//const responseListener = useRef();
 
 	useEffect(() => {
 		if (isLoggedIn) {
 			registerForPushNotificationsAsync();
+
+			notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+				//console.log("The push notification message content: " + notification.request.content.body);
+				setUnreadChecker(true);
+			});
+		
+			//responseListener.current = Notifications.addNotificationResponseReceivedListener();
+		
+			return () => {
+			  Notifications.removeNotificationSubscription(notificationListener.current);
+			  //Notifications.removeNotificationSubscription(responseListener.current);
+			};		
 		}
 	}, [isLoggedIn]);
 
+	const setUnreadChecker = (bool) => {
+		setUnreadCheck(bool);
+	};
 	// const lastNotificationResponse = Notifications.useLastNotificationResponse();
 	// useEffect(() => {
 	// 	if (
@@ -110,7 +132,7 @@ const NotificationProvider = ({ children }) => {
 		}
 	};
 
-	const value = {};
+	const value = {unReadCheck, setUnreadChecker};
 	return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 };
 

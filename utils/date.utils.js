@@ -48,6 +48,14 @@ export const getWhen = (date) => {
 	return dayDifference;
 };
 
+export const getHourMinute = (date) => {
+	var msgdate = new Date(date);
+	var hour = (msgdate.getHours().toString().length == 1) ? "0" + msgdate.getHours().toString() : msgdate.getHours().toString();
+	var minute = (msgdate.getMinutes().toString().length == 1) ? "0" + msgdate.getMinutes().toString() : msgdate.getMinutes().toString();
+	var time = hour + "." + minute;
+	return time;
+};
+
 export const getAge = (date) => {
 	var birthday = new Date(date);
 	// console.log(birthday);

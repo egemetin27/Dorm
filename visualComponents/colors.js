@@ -57,6 +57,21 @@ export const Gradient = (props) => {
 	);
 };
 
+export const GradientRegistration = (props) => {
+	return (
+		<LinearGradient
+			colors={props.colors || ["#808080", "#7043FF"]}
+			start={props.start || { x: 0, y: 0 }}
+			end={props.end || { x: 1, y: 1 }}
+			locations={props.locations || [0, 1]}
+			style={props.style}
+			// style={[{ height: "100%", width: "100%" }, props.style]}
+		>
+			{props.children}
+		</LinearGradient>
+	);
+};
+
 export const GradientText = (props) => {
 	// text, style.fontSize
 	return (

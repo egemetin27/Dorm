@@ -52,7 +52,7 @@ const MODAL_TYPES = {
 	},
 	NO_LIKES_ON_EVENT: {
 		image: "sad_face",
-		title: "Maalesef Etkinliği Kimse Beğenmemiş",
+		title: "Şu an için etkinliği beğenen kimse kalmadı gibi görünüyor",
 		body: "Etkinliği paylaşarak beğenmeleri arttırmamıza yardımcı olabilirsin",
 		buttons: [],
 	},
@@ -68,6 +68,12 @@ const MODAL_TYPES = {
 		body: "Filtreyi kullanmayı çok istiyorsan bize iletebilir ve öncelikler arasına alınmasını sağlayabilirsin",
 		buttons: [],
 	},
+	MAXHOBBIES: {
+		image: "sad_face",
+		title: "10'dan fazla ilgi alanı seçemezsin",
+		body: "Lütfen en sevdiğin 10 hobini işaretle",
+		buttons: [],
+	}
 };
 
 export default function ModalPage({ navigation, route }) {
@@ -161,6 +167,7 @@ const styles = StyleSheet.create({
 		fontSize: Math.min(24, width * 0.06),
 		fontFamily: "PoppinsExtraBold",
 		color: "#666666",
+		marginBottom: 10,
 	},
 	body: {
 		textAlign: "center",

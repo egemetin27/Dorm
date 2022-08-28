@@ -18,6 +18,7 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import url from "../../connection";
 import { AuthContext } from "../../contexts/auth.context";
 import crypto from "../../functions/crypto";
+import { useNavigation } from "@react-navigation/native";
 
 const { height, width } = Dimensions.get("window");
 
@@ -375,7 +376,7 @@ export default function Hobbies({ navigation, route }) {
 
 const Item = ({ item, value, setValue }) => {
 	const [activity, setActivity] = React.useState(value.includes(item.key));
-
+	const navigation = useNavigation();
 	const toggleActivity = () => {
 		if (!activity && value.length < 10) {
 			setActivity(true);
@@ -386,7 +387,10 @@ const Item = ({ item, value, setValue }) => {
 			tempArr.splice(tempArr.indexOf(item.key), 1);
 			setValue(tempArr);
 		} else {
-			Alert.alert("10'dan fazla ilgi alanı seçemezsin : /");
+			//Alert.alert("10'dan fazla ilgi alanı seçemezsin :/ ");
+			navigation.navigate("CustomModal", {
+				modalType: "MAXHOBBIES",
+			});
 		}
 	};
 

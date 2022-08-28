@@ -48,7 +48,7 @@ const categories = [
 		url: require("../../assets/HomeScreenCategoryIcons/AllEvents.png"),
 	},
 	{
-		key: "Favorilerin",
+		key: "Favoriler",
 		databaseKey: "isLiked",
 		url: require("../../assets/HomeScreenCategoryIcons/Favs.png"),
 	},
@@ -83,7 +83,7 @@ const categories = [
 		url: require("../../assets/HomeScreenCategoryIcons/Culture.png"),
 	},
 	{
-		key: "Filmler",
+		key: "Film/Dizi",
 		databaseKey: "Film",
 		url: require("../../assets/HomeScreenCategoryIcons/Movies.png"),
 	},
@@ -139,7 +139,7 @@ const Category = ({
 					setSelectedCategory(index);
 					filterEvents(index);
 				}}
-				style={{ width: "100%" }}
+				style={{ width: "100%" , paddingHorizontal: 2}}
 			>
 				<View
 					name={"icon"}
@@ -161,11 +161,11 @@ const Category = ({
 					/>
 				</View>
 
-				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center" }}>
+				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center"}}>
 					<Text
 						numberOfLines={1}
 						style={{
-							fontSize: height * 0.016,
+							fontSize: height * 0.014,
 							color: selectedCategory == index ? colors.white : colors.cool_gray,
 						}}
 					>
