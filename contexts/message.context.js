@@ -82,7 +82,7 @@ const organizeMatchesList = async (rawList, userId, sesToken, setRawMatchesList)
 			}
 			encryptedRequest = crypto.encrypt({ userId, otherId });
 			const res = await axios
-				.post(url + "/profileInfo", encryptedRequest, {
+				.post(url + "/profile/profileInfo", encryptedRequest, {
 					headers: { "access-token": sesToken },
 				})
 				.catch((err) => {
@@ -151,7 +151,7 @@ const MessageProvider = ({ children }) => {
 	const getMessagesList = async () => {
 		if (isLoggedIn) {
 			const resp = await axios
-				.post(url + "/matchList", { userId }, { headers: { "access-token": sesToken } })
+				.post(url + "/lists/matchList", { userId }, { headers: { "access-token": sesToken } })
 				.then((res) => {
 					return res.data;
 				})

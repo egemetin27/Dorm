@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import ReactNative, {
 	View,
 	Text,
@@ -18,6 +18,7 @@ import {
 } from "react-native-gesture-handler";
 import Animated, {
 	interpolate,
+	log,
 	runOnJS,
 	useAnimatedReaction,
 	useAnimatedStyle,
@@ -42,6 +43,21 @@ import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("window");
 
+const FIELDS = {
+	Description: { label: "Etkinliğin Adı" },
+	Location: { label: "Konum" },
+	Date: { label: "Tarih", function: formatDate },
+	endDate: { label: "Bitiş Tarihi" },
+	StartTime: { label: "Başlangıç Saati" },
+	Category: { label: "Kategori" },
+	director: { label: "Yönetmen" },
+	genre: { label: "Tür" },
+	lineUp: { label: "Sanatçılar" },
+	platform: { label: "Platform" },
+	// BuyLink: { label: "Link" },
+	// Organizator: { label: "Bilet Platformu" },
+};
+
 const Card = ({ event, user, signOut }) => {
 	const {
 		EventId,
@@ -49,21 +65,25 @@ const Card = ({ event, user, signOut }) => {
 		Description: name,
 		Date: date,
 		StartTime: time,
-		Location: location,
-		Category: genre,
 		Organizator: seller,
 		photos: photoList,
 		isLiked,
 	} = event;
 
+	const checkField = (text) => {
+		// return true if null or empty
+
+		// if (typeof text !== "undefined")
+
+		return !text || typeof text === "undefined" || (typeof text === "string" && text.length === 0);
+	};
+
 	const navigation = useNavigation();
 
 	const [favFlag, setFavFlag] = React.useState(isLiked == 1 ? true : false);
-	const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 	const [likeEventModal, setLikeEventModal] = React.useState(false);
 	const [seeWhoLikedModal, setSeeWhoLikedModal] = React.useState(false);
 
-	const progress = useSharedValue(0);
 	const turn = useSharedValue(1); // 1 => front, -1 => back
 
 	const animatedCard = useAnimatedStyle(() => {
@@ -81,7 +101,7 @@ const Card = ({ event, user, signOut }) => {
 
 	const handleDoubleTab = () => {
 		const encryptedData = crypto.encrypt({ userId: user.userId, eventId: EventId });
-		axios.post(url + "/detailEventClick", encryptedData, {
+		axios.post(url + "/statistics/detailEventClick", encryptedData, {
 			headers: { "access-token": user.sesToken },
 		});
 	};
@@ -95,19 +115,6 @@ const Card = ({ event, user, signOut }) => {
 			turn.value = withTiming(-turn.value);
 		});
 
-	const handleScroll = ({ nativeEvent }) => {
-		progress.value = nativeEvent.contentOffset.y / nativeEvent.layoutMeasurement.height;
-	};
-
-	useAnimatedReaction(
-		() => {
-			return progress.value;
-		},
-		() => {
-			runOnJS(setBackfaceIndex)(Math.round(progress.value));
-		}
-	);
-
 	// how much the Fav star should go up relative to the height of the surrounding circle (height * constant = marginBottom)
 	const MARGIN_CONSTANT = 0.190983 / 2;
 
@@ -117,7 +124,9 @@ const Card = ({ event, user, signOut }) => {
 
 		if (favFlag) {
 			await axios
-				.post(url + "/dislikeEvent", encryptedData, { headers: { "access-token": user.sesToken } })
+				.post(url + "/userAction/dislikeEvent", encryptedData, {
+					headers: { "access-token": user.sesToken },
+				})
 				.then((res) => setFavFlag(false))
 				.catch((err) => console.log(err));
 			return;
@@ -129,7 +138,9 @@ const Card = ({ event, user, signOut }) => {
 		const id = user.userId;
 		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: likeMode });
 		await axios
-			.post(url + "/likeEvent", encryptedData, { headers: { "access-token": user.sesToken } })
+			.post(url + "/userAction/likeEvent", encryptedData, {
+				headers: { "access-token": user.sesToken },
+			})
 			.then((res) => {
 				setFavFlag(true);
 				// Alert.alert("RES " + res.data);
@@ -156,7 +167,7 @@ const Card = ({ event, user, signOut }) => {
 			userId: user.userId,
 		});
 		await axios
-			.post(url + "/eventParticipants", encryptedData, {
+			.post(url + "/lists/eventParticipants", encryptedData, {
 				headers: { "access-token": user.sesToken },
 			})
 			.then((res) => {
@@ -216,7 +227,7 @@ const Card = ({ event, user, signOut }) => {
 							style={{ width: "100%" }}
 							pagingEnabled={true}
 							showsVerticalScrollIndicator={false}
-							onScroll={handleScroll}
+							// onScroll={handleScroll}
 						>
 							{photoList?.map((item, index) => {
 								return (
@@ -250,16 +261,17 @@ const Card = ({ event, user, signOut }) => {
 										key={index}
 										style={[
 											{
-												minHeight: 8,
+												// minHeight: 8,
+												height: 24,
 												width: 8,
 												borderRadius: 4,
 												backgroundColor: colors.white,
 											},
-											useAnimatedStyle(() => {
-												return {
-													height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
-												};
-											}),
+											// useAnimatedStyle(() => {
+											// 	return {
+											// 		height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
+											// 	};
+											// }),
 										]}
 									/>
 								);
@@ -421,7 +433,7 @@ const Card = ({ event, user, signOut }) => {
 					>
 						<Image
 							source={{
-								uri: photoList[backfaceIndex],
+								uri: photoList[0],
 							}}
 							blurRadius={20}
 							style={{
@@ -455,109 +467,37 @@ const Card = ({ event, user, signOut }) => {
 							}}
 						>
 							{/* <View style={{ width: "100%", alignItems: "center" }}> */}
-							<Text
-								name={"Name"}
-								style={{
-									color: colors.light_gray,
-									fontSize: Math.min(height * 0.025, width * 0.04),
-									textAlign: "center",
-									paddingVertical: 5,
-								}}
-							>
-								Etkinliğin Adı{"\n"}
-								<Text
-									style={{
-										fontFamily: "PoppinsSemiBold",
-										fontSize: Math.min(height * 0.03, width * 0.048),
-									}}
-								>
-									{name}
-								</Text>
-							</Text>
-							{location != "" && (
-								<Text
-									name={"Location"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(height * 0.025, width * 0.04),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Yer{"\n"}
+							{Object.keys(FIELDS).map((field) => {
+								const foo = FIELDS[field]?.function ?? null;
+
+								const text = foo ? foo(event[field]) : event[field];
+
+								if (!event[field] || checkField(text)) return <View key={field} />;
+								return (
 									<Text
+										key={field}
+										name={"Name"}
 										style={{
-											fontFamily: "PoppinsSemiBold",
-											fontSize: Math.min(height * 0.03, width * 0.048),
+											color: colors.light_gray,
+											fontSize: Math.min(height * 0.025, width * 0.04),
+											textAlign: "center",
+											paddingVertical: 5,
 										}}
 									>
-										{location}
+										{FIELDS[field]?.label}
+										{"\n"}
+										<Text
+											style={{
+												fontFamily: "PoppinsSemiBold",
+												fontSize: Math.min(height * 0.03, width * 0.048),
+											}}
+										>
+											{text}
+										</Text>
 									</Text>
-								</Text>
-							)}
-							{date != "NaN/NaN/NaN" && (
-								<Text
-									name={"Date"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(height * 0.025, width * 0.04),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Tarih{"\n"}
-									<Text
-										style={{
-											fontFamily: "PoppinsSemiBold",
-											fontSize: Math.min(height * 0.03, width * 0.048),
-										}}
-									>
-										{formatDate(date)}
-									</Text>
-								</Text>
-							)}
-							{time != "" && (
-								<Text
-									name={"Time"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(height * 0.025, width * 0.04),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Saat{"\n"}
-									<Text
-										style={{
-											fontFamily: "PoppinsSemiBold",
-											fontSize: Math.min(height * 0.03, width * 0.048),
-										}}
-									>
-										{time}
-									</Text>
-								</Text>
-							)}
-							{genre != "" && (
-								<Text
-									name={"Genre"}
-									style={{
-										color: colors.light_gray,
-										fontSize: Math.min(height * 0.025, width * 0.04),
-										textAlign: "center",
-										paddingVertical: 5,
-									}}
-								>
-									Tür{"\n"}
-									<Text
-										style={{
-											fontFamily: "PoppinsSemiBold",
-											fontSize: Math.min(height * 0.03, width * 0.048),
-										}}
-									>
-										{genre}
-									</Text>
-								</Text>
-							)}
+								);
+							})}
+
 							{buyLink != "" && (
 								<View style={{ width: "100%", alignItems: "center" }}>
 									<Text
@@ -581,7 +521,7 @@ const Card = ({ event, user, signOut }) => {
 											});
 
 											await axios
-												.post(url + "/eventLinkClick", data, {
+												.post(url + "/statistics/eventLinkClick", data, {
 													headers: { "access-token": user.sesToken },
 												})
 												.catch((err) => console.log(err));
@@ -835,7 +775,7 @@ export default function EventCards({ navigation, route }) {
 			userId: user.userId,
 			eventId: list[index].EventId,
 		});
-		axios.post(url + "/EventClick", encryptedData, {
+		axios.post(url + "/statistics/EventClick", encryptedData, {
 			headers: { "access-token": user.sesToken },
 		});
 	};

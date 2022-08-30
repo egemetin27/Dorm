@@ -30,7 +30,7 @@ export default function Verification({ navigation, route }) {
 		const ver = crypto.encrypt({ mail: email, verCode: strCode });
 
 		axios
-			.post(url + "/CheckVerification", ver)
+			.post(url + "/account/CheckVerification", ver)
 			.then((res) => {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
 
@@ -57,7 +57,7 @@ export default function Verification({ navigation, route }) {
 
 	const resendCode = () => {
 		const verData = crypto.encrypt({ mail: email, isNewUser: false });
-		axios.post(url + "/SendVerification", verData).catch((error) => {
+		axios.post(url + "/account/SendVerification", verData).catch((error) => {
 			console.log({ error });
 		});
 	};

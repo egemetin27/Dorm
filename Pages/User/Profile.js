@@ -151,7 +151,7 @@ export default function Profile({ route, navigation }) {
 		const dataToSend = crypto.encrypt(dataRaw);
 
 		await axios
-			.post(url + "/IdentityUpdate", dataToSend, {
+			.post(url + "/profile/IdentityUpdate", dataToSend, {
 				headers: { "access-token": user.sesToken },
 			})
 			.then(async (res) => {
@@ -200,7 +200,7 @@ export default function Profile({ route, navigation }) {
 		});
 
 		axios
-			.post(url + "/matchMode", dataToBeSent, {
+			.post(url + "/profile/matchMode", dataToBeSent, {
 				headers: { "access-token": user.sesToken },
 			}) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {

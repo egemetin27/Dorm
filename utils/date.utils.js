@@ -5,6 +5,8 @@ const normalizeDate = (date) => {
 };
 
 export const formatDate = (date) => {
+	if (typeof date !== "string" || date.indexOf("-") === -1) return "";
+
 	const arr = date.split("-");
 	const newDate = `${arr[2]}/${arr[1]}/${arr[0]}`;
 	return newDate;
@@ -32,26 +34,29 @@ export const getWhen = (date) => {
 	// }
 
 	if (parseInt(Difference_In_Days) == 0 && newDate.getDay() == now.getDay()) {
-	    dayDifference = "Bugün";
-	}
-	else if (parseInt(Difference_In_Days) == 0) {
+		dayDifference = "Bugün";
+	} else if (parseInt(Difference_In_Days) == 0) {
 		// if the message is from yesterday but no later than 24h
-	    dayDifference = "Dün";
-	}
-	else if (parseInt(Difference_In_Days) == 1 && now.getDay() - newDate.getDay() == 1) {
 		dayDifference = "Dün";
-	}
-	else {
+	} else if (parseInt(Difference_In_Days) == 1 && now.getDay() - newDate.getDay() == 1) {
+		dayDifference = "Dün";
+	} else {
 		dayDifference = "Daha Önce";
 	}
-	
+
 	return dayDifference;
 };
 
 export const getHourMinute = (date) => {
 	var msgdate = new Date(date);
-	var hour = (msgdate.getHours().toString().length == 1) ? "0" + msgdate.getHours().toString() : msgdate.getHours().toString();
-	var minute = (msgdate.getMinutes().toString().length == 1) ? "0" + msgdate.getMinutes().toString() : msgdate.getMinutes().toString();
+	var hour =
+		msgdate.getHours().toString().length == 1
+			? "0" + msgdate.getHours().toString()
+			: msgdate.getHours().toString();
+	var minute =
+		msgdate.getMinutes().toString().length == 1
+			? "0" + msgdate.getMinutes().toString()
+			: msgdate.getMinutes().toString();
 	var time = hour + "." + minute;
 	return time;
 };

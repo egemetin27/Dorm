@@ -48,7 +48,7 @@ export default function FirstPassword({ navigation, route }) {
 		const dataToBeSent = { password: encryptedPassword, mail: email, verification: verification }; //TODO: userId should be come from route.params.id
 		const encryptedData = crypto.encrypt(dataToBeSent);
 		axios
-			.post(url + "/PasswordRegister", encryptedData)
+			.post(url + "/account/PasswordRegister", encryptedData)
 			.then((res) => {
 				console.log(res.data);
 				console.log("Password Updated Successfully");

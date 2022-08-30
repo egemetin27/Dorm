@@ -119,7 +119,7 @@ export default function ProfilePhotos({ route, navigation }) {
 			const encryptedData = crypto.encrypt({
 				photoName: toBeDeleted.PhotoLink.split("/")[3],
 			});
-			const response = await axios.post(url + "/deleteS3Photo", encryptedData, {
+			const response = await axios.post(url + "/profile/deleteS3Photo", encryptedData, {
 				headers: { "access-token": sesToken },
 			});
 			console.log(response.data);
@@ -173,7 +173,7 @@ export default function ProfilePhotos({ route, navigation }) {
 					if (item?.photo ?? false) {
 						const dataToBeSent = crypto.encrypt({ userId: userId });
 						const returnVal = await axios
-							.post(url + "/SecurePhotoLink", dataToBeSent, {
+							.post(url + "/profile/SecurePhotoLink", dataToBeSent, {
 								headers: { "access-token": sesToken },
 							})
 							.then(async (res) => {
@@ -216,7 +216,7 @@ export default function ProfilePhotos({ route, navigation }) {
 				photos: newList,
 			});
 			await axios
-				.post(url + "/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
+				.post(url + "/profile/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
 					updateProfile({ Photo: newList });
 					setIsLoading(false);

@@ -139,7 +139,7 @@ const Category = ({
 					setSelectedCategory(index);
 					filterEvents(index);
 				}}
-				style={{ width: "100%" , paddingHorizontal: 2}}
+				style={{ width: "100%", paddingHorizontal: 2 }}
 			>
 				<View
 					name={"icon"}
@@ -161,7 +161,7 @@ const Category = ({
 					/>
 				</View>
 
-				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center"}}>
+				<View name={"name"} style={{ width: "100%", height: "40%", alignItems: "center" }}>
 					<Text
 						numberOfLines={1}
 						style={{
@@ -215,7 +215,7 @@ export default function MainPage({ navigation }) {
 			});
 
 			await axios
-				.post(url + "/Swipelist", swipeListData, {
+				.post(url + "/lists/Swipelist", swipeListData, {
 					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {
@@ -247,7 +247,7 @@ export default function MainPage({ navigation }) {
 
 			const eventListData = crypto.encrypt({ userId: userId, campus: user.School });
 			await axios
-				.post(url + "/EventList", eventListData, {
+				.post(url + "/lists/EventList", eventListData, {
 					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {
@@ -389,7 +389,7 @@ export default function MainPage({ navigation }) {
 											keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 											horizontal={true}
 											showsHorizontalScrollIndicator={false}
-											data={peopleList.slice(peopleListIndex, peopleListIndex+7) ?? null}
+											data={peopleList.slice(peopleListIndex, peopleListIndex + 7) ?? null}
 											renderItem={({ item, index }) => (
 												<People
 													setIsAppReady={setIsAppReady}

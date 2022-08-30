@@ -29,7 +29,7 @@ export default function ForgotPassword({ navigation }) {
 	const HandleButton = () => {
 		const verData = crypto.encrypt({ mail: email, isNewUser: false });
 		axios
-			.post(url + "/SendVerification", verData)
+			.post(url + "/account/SendVerification", verData)
 			.then((res) => {
 				navigation.replace("Verification2", { email: email });
 			})

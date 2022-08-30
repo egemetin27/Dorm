@@ -36,7 +36,7 @@ const MODAL_TYPES = {
 				onPress: ({ matchId = 0, userId = 0, sesToken = "" }, getMessagesList) => {
 					const encryptedData = crypto.encrypt({ userId, unmatchId: matchId });
 					axios
-						.post(url + "/unmatch", encryptedData, {
+						.post(url + "/userAction/unmatch", encryptedData, {
 							headers: { "access-token": sesToken },
 						})
 						.then((res) => {
@@ -73,7 +73,7 @@ const MODAL_TYPES = {
 		title: "10'dan fazla ilgi alanı seçemezsin",
 		body: "Lütfen en sevdiğin 10 hobini işaretle",
 		buttons: [],
-	}
+	},
 };
 
 export default function ModalPage({ navigation, route }) {

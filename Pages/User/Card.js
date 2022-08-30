@@ -158,7 +158,7 @@ export default Card = React.memo(
 		const onSwipe = async (val) => {
 			// 0 = like, 1 = super like, 2 =  dislike
 			backFace.value = false;
-			setPeopleIndex(idxForMainPage+1);
+			setPeopleIndex(idxForMainPage + 1);
 			if (val == 0 && Session.LikeCount == 0 && getTimeDiff(user.SwipeRefreshTime)) {
 				x.value = withSpring(0);
 				destination.value = 0;
@@ -177,7 +177,7 @@ export default Card = React.memo(
 			});
 
 			axios
-				.post(url + "/LikeDislike", likeDislike, {
+				.post(url + "/userAction/LikeDislike", likeDislike, {
 					headers: { "access-token": user.sesToken },
 				})
 				.then((res) => {

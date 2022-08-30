@@ -52,7 +52,7 @@ export default function AfterRegister({ route, navigation }) {
 		// console.log(choices);
 		const encryptedData = crypto.encrypt(choices);
 		await axios
-			.post(url + "/AfterRegister", encryptedData, {
+			.post(url + "/account/AfterRegister", encryptedData, {
 				headers: { "access-token": sesToken },
 			})
 			.then((res) => {

@@ -95,7 +95,7 @@ export default function PhotoUpload({ navigation, route }) {
 					if (item?.photo ?? false) {
 						const dataToBeSent = crypto.encrypt({ userId: userId });
 						const returnVal = await axios
-							.post(url + "/SecurePhotoLink", dataToBeSent, {
+							.post(url + "/profile/SecurePhotoLink", dataToBeSent, {
 								headers: { "access-token": sesToken },
 							})
 							.then(async (res) => {
@@ -138,7 +138,7 @@ export default function PhotoUpload({ navigation, route }) {
 				photos: newList,
 			});
 			await axios
-				.post(url + "/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
+				.post(url + "/profile/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
 					// setPhotoList(newList);
 

@@ -124,7 +124,7 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => 
 
 		const myJson = crypto.encrypt({ userId: userId });
 		axios
-			.post(url + "/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
+			.post(url + "/profile/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
 			.then(() => {
 				signOut();
 			})
@@ -247,7 +247,7 @@ const DeleteAccountModal = ({
 		await dismiss();
 		const encryptedData = crypto.encrypt({ userId: userId });
 		axios
-			.post(url + "/deleteAccount", encryptedData, {
+			.post(url + "/profile/deleteAccount", encryptedData, {
 				headers: { "access-token": sesToken },
 			})
 			.then((res) => {
@@ -406,7 +406,7 @@ export default function Settings({ navigation, route }) {
 		const invisSent = crypto.encrypt({ invisible: value ? "1" : "0", userId: userId });
 
 		axios
-			.post(url + "/ChangeVisibility", invisSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
+			.post(url + "/profile/ChangeVisibility", invisSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				// let userStr = await SecureStore.getItemAsync("userData");
 				// const user = JSON.parse(userStr);
@@ -429,7 +429,9 @@ export default function Settings({ navigation, route }) {
 		const blockCampusSent = crypto.encrypt({ BlockCampus: value ? "1" : "0", userId: userId });
 
 		axios
-			.post(url + "/BlockCampus", blockCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
+			.post(url + "/profile/BlockCampus", blockCampusSent, {
+				headers: { "access-token": sesToken },
+			}) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				// let userStr = await SecureStore.getItemAsync("userData");
 				// const user = JSON.parse(userStr);
@@ -453,7 +455,7 @@ export default function Settings({ navigation, route }) {
 		const onlyCampusSent = crypto.encrypt({ OnlyCampus: value ? "1" : "0", userId: userId });
 
 		axios
-			.post(url + "/OnlyCampus", onlyCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
+			.post(url + "/profile/OnlyCampus", onlyCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				// let userStr = await SecureStore.getItemAsync("userData");
 				// const user = JSON.parse(userStr);

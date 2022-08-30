@@ -45,7 +45,7 @@ export default function FirstPassword({ navigation, route }) {
 		const dataToBeSent = { ...profile, password: password }; //TODO: userId should be come from route.params.id
 		const verData = crypto.encrypt({ mail: profile.mail, isNewUser: true });
 		await axios
-			.post(url + "/SendVerification", verData)
+			.post(url + "/account/SendVerification", verData)
 			.then(() => {
 				navigation.replace("Verification", { dataToBeSent: dataToBeSent });
 			})

@@ -45,7 +45,7 @@ export default function Hobbies({ navigation, route }) {
 			});
 
 			axios
-				.post(url + "/interests", encryptedData, {
+				.post(url + "/profile/interests", encryptedData, {
 					headers: { "access-token": route.params?.sesToken ?? user.sesToken },
 				})
 				.then(async (res) => {

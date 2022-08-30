@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 		const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
 		await axios
-			.post(url + "/Login", dataToBeSent)
+			.post(url + "/account/Login", dataToBeSent)
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
 				if (data.authentication == "true") {
@@ -119,10 +119,18 @@ const AuthProvider = ({ children }) => {
 	};
 
 	const setPeopleIndex = (idx) => {
-		setPeopleListIndex(idx+1);
+		setPeopleListIndex(idx + 1);
 	};
 
-	const value = { user, isLoggedIn, peopleListIndex, setPeopleIndex, updateProfile, signIn, signOut };
+	const value = {
+		user,
+		isLoggedIn,
+		peopleListIndex,
+		setPeopleIndex,
+		updateProfile,
+		signIn,
+		signOut,
+	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

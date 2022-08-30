@@ -13,7 +13,6 @@ import {
 	Platform,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Gradient, GradientRegistration, colors } from "../../visualComponents/colors";
@@ -484,14 +483,14 @@ export default function Register({ navigation }) {
 				</Animated.View>
 			</View>
 			{show && (
-				<View style={{marginRight: width * 0.12, marginTop: 6, alignSelf: "flex-end"}}>
-					<Text style={{ alignSelf: "center"}}>Lütfen Doğum Tarihinizi Seçin</Text>
+				<View style={{ marginRight: width * 0.12, marginTop: 6, alignSelf: "flex-end" }}>
+					<Text style={{ alignSelf: "center" }}>Lütfen Doğum Tarihinizi Seçin</Text>
 					<DateTimePicker
 						textColor="black"
 						accentColor="red"
 						testID="dateTimePicker"
 						value={date}
-						style={{ backgroundColor: "white", marginVertical: 5, alignSelf: "auto"}}
+						style={{ backgroundColor: "white", marginVertical: 5, alignSelf: "auto" }}
 						mode="date"
 						onChange={datePick}
 					/>

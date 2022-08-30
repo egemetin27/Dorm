@@ -45,7 +45,7 @@ export default function Verification({ navigation, route }) {
 		const encryptedVerification = crypto.encrypt(ver);
 
 		axios
-			.post(url + "/CheckVerification", encryptedVerification)
+			.post(url + "/account/CheckVerification", encryptedVerification)
 			.then((res) => {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
 				const encryptedData = crypto.encrypt({
@@ -56,7 +56,7 @@ export default function Verification({ navigation, route }) {
 
 				if (res.data?.Verification > 0) {
 					axios
-						.post(url + "/register", encryptedData)
+						.post(url + "/account/register", encryptedData)
 						.then((res) => {
 							console.log(res.data);
 							const data = crypto.decrypt(res.data);
@@ -97,7 +97,7 @@ export default function Verification({ navigation, route }) {
 
 	const resendCode = () => {
 		const verData = crypto.encrypt({ mail: profile.mail, isNewUser: true });
-		axios.post(url + "/SendVerification", verData).catch((error) => {
+		axios.post(url + "/account/SendVerification", verData).catch((error) => {
 			console.log({ error });
 		});
 	};

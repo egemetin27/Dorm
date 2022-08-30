@@ -18,7 +18,11 @@ const useKeyGenerator = () => {
 			const encryptedMessage = crypto.appVersionChecker(strJson);
 
 			await axios
-				.post(url + "/appversion", { dormId: dormId, message: encryptedMessage })
+				// .post("/https://devmessage.meetdorm.com/appversion", {
+				.post(url + "/appversion", {
+					dormId: dormId,
+					message: encryptedMessage,
+				})
 				.then((res) => {
 					const localVersion = Constants.manifest.version.slice(
 						0,
