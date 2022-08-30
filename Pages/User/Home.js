@@ -268,7 +268,7 @@ export default function MainPage({ navigation }) {
 			await prepare();
 		} catch (err) {
 			console.log(err);
-		} 
+		}
 
 		return () => {
 			abortController.abort();
@@ -295,8 +295,7 @@ export default function MainPage({ navigation }) {
 					console.log("error on /eventList");
 					console.log(err);
 				});
-		}
-		catch (err) {
+		} catch (err) {
 			console.log(err);
 		} finally {
 			setIsAppReady(true);
@@ -340,7 +339,6 @@ export default function MainPage({ navigation }) {
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
 				<StatusBar style="dark" backgroundColor={"#F4F3F3"} hideTransitionAnimation="slide" />
-
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
 		);
@@ -360,7 +358,7 @@ export default function MainPage({ navigation }) {
 				showsHorizontalScrollIndicator={false}
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ alignSelf: "flex-start" }}
-				keyExtractor={(item, idx) => item?.EventId?.toString() ?? idx}
+				keyExtractor={(item, idx) => item?.EventId?.toString()}
 				data={shownEvents}
 				ListHeaderComponent={() => {
 					// All the items above events
@@ -498,7 +496,7 @@ export default function MainPage({ navigation }) {
 					<Event
 						index={index}
 						event={item}
-						length={shownEvents.length}
+						// length={shownEvents.length}
 						openEvents={(idx) => {
 							navigation.navigate("EventCards", {
 								idx: idx,

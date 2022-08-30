@@ -30,36 +30,22 @@ import crypto from "../../functions/crypto";
 const { width, height, fontScale } = Dimensions.get("window");
 
 export default function ProfileCards({ navigation, route }) {
+	const { myID, sesToken, list, idx, fromEvent = false } = route.params;
+
 	const { user, signOut, peopleListIndex } = useContext(AuthContext);
 
 	const [isLoading, setIsLoading] = React.useState(true);
-	// const [peopleList, setPeopleList] = React.useState(route.params.list);
 	const [peopleList, setPeopleList] = React.useState([]);
 	const [shownList, setShownList] = React.useState([]);
-	// const superLikeEndedPopup = useSharedValue(false);
 	const indexOfFrontCard = useSharedValue(0);
-	// const [indexOfFrontCard, setIndexOfFrontCard] = React.useState(0);
-	// const [endOfListModal, setEndOfListModal] = React.useState(false);
-	// const [endOfLikesTimer, setEndOfLikesTimer] = React.useState({ hour: 0, minute: 0 });
-	// const [isScrollShowed, setIsScrollShowed] = React.useState(false);
 
 	const eventID = route.params.eventID ?? 0;
 
-	// const [myProfilePicture, setMyProfilePicture] = React.useState();
 	const [reportPage, setReportPage] = React.useState(false);
 	const [chosenReport, setChosenReport] = React.useState(0);
 
 	const [name, setName] = React.useState("");
-	// const [firstImg, setFirstImg] = React.useState("");
-	// const [secondImg, setSecondImg] = React.useState("");
 	const [reportUserID, setReportUserID] = React.useState("");
-
-	// const showMatchScreen = (otherName, otherPicture, myPicture) => {
-	// 	// setMatchPage(true);
-	// 	setName(otherName);
-	// 	setFirstImg(otherPicture);
-	// 	setSecondImg(myPicture);
-	// };
 
 	function showReportPage(otherUserID, name) {
 		setName(name);
@@ -113,7 +99,6 @@ export default function ProfileCards({ navigation, route }) {
 	);
 
 	// const peopleList = route.params.list;
-	const { myID, sesToken, list, idx, fromEvent = false } = route.params;
 
 	React.useEffect(async () => {
 		const backAction = () => {
@@ -127,6 +112,8 @@ export default function ProfileCards({ navigation, route }) {
 		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 		async function prepare() {
 			let profile = list.splice(idx, 1);
+			// setPeopleList(list.slice(5));
+			// setShownList([profile[0], ...list.slice(0, 5)]);
 			setPeopleList(list.slice(9));
 			setShownList([profile[0], ...list.slice(0, 9)]);
 		}
@@ -246,7 +233,7 @@ export default function ProfileCards({ navigation, route }) {
 						marginTop: height * 0.05,
 					}}
 				>
-					<Animated.View
+					<View
 						style={[
 							{
 								width: "100%",
@@ -261,7 +248,7 @@ export default function ProfileCards({ navigation, route }) {
 						<Text style={{ fontSize: normalize(18), color: colors.medium_gray, letterSpacing: 1 }}>
 							Yeni kişiler aranıyor...
 						</Text>
-					</Animated.View>
+					</View>
 					{shownList.map((item, index) => {
 						return (
 							<Card
@@ -271,7 +258,7 @@ export default function ProfileCards({ navigation, route }) {
 								eventId={route.params?.eventId ?? 0}
 								eventName={route.params?.eventName ?? ""}
 								index={index}
-								idxForMainPage={idx+peopleListIndex-1}
+								idxForMainPage={idx + peopleListIndex - 1}
 								card={item}
 								backFace={backFace}
 								myID={myID}
@@ -306,6 +293,8 @@ export default function ProfileCards({ navigation, route }) {
 								refreshList={() => {
 									try {
 										setIsLoading(true);
+										// setShownList(peopleList.slice(0, 5));
+										// setPeopleList(peopleList.slice(5));
 										setShownList(peopleList.slice(0, 10));
 										setPeopleList(peopleList.slice(10));
 										indexOfFrontCard.value = 0;

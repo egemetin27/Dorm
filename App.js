@@ -112,17 +112,11 @@ export default function App() {
 					<NotificationProvider>
 						<MessageProvider>
 							<SocketProvider>
-								{Platform.OS === "ios" ? (
+								<AppStateManager>
 									<SafeAreaProvider style={{ flex: 1 }}>
 										<Stack />
 									</SafeAreaProvider>
-								) : (
-									<AppStateManager>
-										<SafeAreaProvider style={{ flex: 1 }}>
-											<Stack />
-										</SafeAreaProvider>
-									</AppStateManager>
-								)}
+								</AppStateManager>
 							</SocketProvider>
 						</MessageProvider>
 					</NotificationProvider>

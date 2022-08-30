@@ -159,6 +159,7 @@ export default Card = React.memo(
 			// 0 = like, 1 = super like, 2 =  dislike
 			backFace.value = false;
 			setPeopleIndex(idxForMainPage + 1);
+
 			if (val == 0 && Session.LikeCount == 0 && getTimeDiff(user.SwipeRefreshTime)) {
 				x.value = withSpring(0);
 				destination.value = 0;
@@ -167,6 +168,9 @@ export default Card = React.memo(
 				showLikeEndedModal(time.hour, time.minute);
 				return;
 			}
+
+			incrementIndex();
+
 			const likeDislike = crypto.encrypt({
 				isLike: val,
 				userSwiped: myID,
@@ -197,7 +201,7 @@ export default Card = React.memo(
 						return;
 					}
 
-					incrementIndex();
+					// incrementIndex();
 				})
 				.catch((error) => {
 					if (error.response) {
@@ -223,7 +227,7 @@ export default Card = React.memo(
 					} else {
 						console.log("error: ", error.message);
 					}
-					incrementIndex();
+					// incrementIndex();
 				});
 		};
 

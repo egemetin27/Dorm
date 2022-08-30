@@ -6,7 +6,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import * as Device from "expo-device";
 
 // AUTH PAGES
 import Onboarding from "../Pages/Auth/Onboarding";
@@ -40,28 +39,23 @@ import ToplulukKurallari from "../Pages/ToplulukKurallari";
 // COMPONENTS
 import { AuthContext } from "../contexts/auth.context";
 import { Session } from "../nonVisualComponents/SessionVariables";
+import ChatProfile from "../Pages/User/ChatProfile";
 /////
 
 // STACKS
 import Tabbar from "./tabbar.stack";
 /////
 
+import FilterModal from "../Pages/modals/filter.modal";
 import LikeEndedModal from "../Pages/modals/LikeEndedModal";
 import MatchModal from "../Pages/modals/MatchModal";
 import ListEndedModal from "../Pages/modals/ListEndedModal";
-
-import useKeyGenerator from "../hooks/useKeyGenerator";
 import UpdateNeededModal from "../Pages/modals/UpdateNeededModal";
 import ModalPage from "../components/modal.component";
 
-import * as Notifications from "expo-notifications";
-import { useNavigation } from "@react-navigation/native";
-import ChatProfile from "../Pages/User/ChatProfile";
-import { SocketContext } from "../contexts/socket.context";
-import { AppState } from "react-native";
-import FilterModal from "../Pages/modals/filter.modal";
+import useKeyGenerator from "../hooks/useKeyGenerator";
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 
@@ -192,17 +186,26 @@ export default function StackNavigator() {
 					<Stack.Screen
 						name="LikeEndedModal"
 						component={LikeEndedModal}
-						options={{ presentation: "transparentModal" }}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
 					/>
 					<Stack.Screen
 						name="MatchModal"
 						component={MatchModal}
-						options={{ presentation: "transparentModal" }}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
 					/>
 					<Stack.Screen
 						name="ListEndedModal"
 						component={ListEndedModal}
-						options={{ presentation: "transparentModal" }}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
 					/>
 					<Stack.Screen
 						name="ProfileCardModal"

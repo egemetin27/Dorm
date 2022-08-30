@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { AppState } from "react-native";
+import { AppState, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { SocketContext } from "../contexts/socket.context";
@@ -37,11 +37,13 @@ const AppStateManager = ({ children }) => {
 		});
 
 		return () => {
-			subscription.remove();
+			if (subscription) {
+				subscription.remove();
+			}
 		};
 	}, []);
 
-	return <>{children}</>;
+	return <View style={{ flex: 1 }}>{children}</View>;
 };
 
 export default AppStateManager;

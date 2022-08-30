@@ -11,7 +11,7 @@ import { colors } from "../visualComponents/colors";
 
 const { width, height } = Dimensions.get("window");
 
-const EventCard = ({ event, openEvents, index, length }) => {
+const EventCard = ({ event, openEvents, index }) => {
 	const { Description, Date, StartTime, Location, photos } = event;
 
 	return (
@@ -25,8 +25,8 @@ const EventCard = ({ event, openEvents, index, length }) => {
 					width: width * 0.44,
 					backgroundColor: colors.cool_gray,
 					marginVertical: 8,
-					marginLeft: index % 2 == 0 ? width * 0.04: width * 0.02,
-					marginRight: index % 2 == 1 ? width * 0.04: width * 0.02,
+					marginLeft: index % 2 == 0 ? width * 0.04 : width * 0.02,
+					marginRight: index % 2 == 1 ? width * 0.04 : width * 0.02,
 				},
 			]}
 		>
