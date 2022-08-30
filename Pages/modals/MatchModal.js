@@ -24,8 +24,8 @@ export default function MatchModal({ navigation, route }) {
 			/>
 			<View
 				style={{
-					height: height * 0.95,
-					width: width * 0.95,
+					height: height * 0.91,
+					width: width * 0.92,
 					backgroundColor: colors.white,
 				}}
 			>

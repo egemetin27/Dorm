@@ -22,7 +22,6 @@ const Tab = createBottomTabNavigator();
 
 function Tabbar({ route, navigation }) {
 	const insets = useSafeAreaInsets();
-	//const {unreadCheck, setUnread} = useContext(MessageContext);
 	const {unReadCheck, setUnreadChecker} = useContext(NotificationContext);
 	return (
 		<View

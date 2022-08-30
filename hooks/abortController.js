@@ -1,7 +1,7 @@
-import React from "react";
+import { useEffect } from "react";
 
 const abortController = () => {
-	React.useEffect(() => {
+	useEffect(() => {
 		console.log("connected");
 		let abortController = new AbortController();
 		return () => {

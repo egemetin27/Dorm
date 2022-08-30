@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -8,16 +8,11 @@ import {
 	FlatList,
 	Image,
 	Pressable,
-	ScrollView,
 	Alert,
 	BackHandler,
 	ActivityIndicator,
-	Platform,
-	TextInput,
-	SafeAreaView,
-	RefreshControlBase,
 } from "react-native";
-import { Octicons, MaterialCommunityIcons, Entypo, Feather, Ionicons } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
@@ -25,18 +20,16 @@ import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
 import url from "../../connection";
 
-import { useSafeAreaFrame } from "react-native-safe-area-context";
-import { CustomModal } from "../../visualComponents/customComponents";
+//import { useSafeAreaFrame } from "react-native-safe-area-context";
 import { AuthContext } from "../../contexts/auth.context";
-import { Session } from "../../nonVisualComponents/SessionVariables";
+//import { Session } from "../../nonVisualComponents/SessionVariables";
 
 import crypto from "../../functions/crypto";
-import { formatDate } from "../../utils/date.utils";
-import CustomImage from "../../components/custom-image.component";
 
 import People from "../../components/person-card-small.component";
 import Event from "../../components/event-card-small.component";
 import { FilterContext } from "../../contexts/filter.context";
+import { NotificationContext } from "../../contexts/notification.context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -204,26 +197,27 @@ const ListEmpty = () => {
 
 export default function MainPage({ navigation }) {
 	const { user, signOut, peopleListIndex } = useContext(AuthContext);
+	const { eventLiked, setEventLike } = useContext(NotificationContext);
 	const { filters } = useContext(FilterContext);
 
-	const [isAppReady, setIsAppReady] = React.useState(false);
-	const [selectedCategory, setSelectedCategory] = React.useState(0);
-	const [eventList, setEventList] = React.useState([]);
-	const [shownEvents, setShownEvents] = React.useState([]);
-	const [peopleList, setPeopleList] = React.useState([]);
-	const [myPP, setMyPP] = React.useState("");
-	const [matchMode, setMatchMode] = React.useState(0);
-	const [listEmptyMessage, setLisetEmptyMessage] = React.useState(
+	const [isAppReady, setIsAppReady] = useState(false);
+	const [selectedCategory, setSelectedCategory] = useState(0);
+	const [eventList, setEventList] = useState([]);
+	const [shownEvents, setShownEvents] = useState([]);
+	const [peopleList, setPeopleList] = useState([]);
+	const [myPP, setMyPP] = useState("");
+	const [matchMode, setMatchMode] = useState(0);
+	const [listEmptyMessage, setLisetEmptyMessage] = useState(
 		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
 	);
-	const eventsFlatListRef = React.useRef();
-	const peopleFlatListRef = React.useRef();
+	const eventsFlatListRef = useRef();
+	const peopleFlatListRef = useRef();
 
 	const handleFilterButton = () => {
 		navigation.navigate("FilterModal");
 	};
 
-	React.useEffect(async () => {
+	useEffect(async () => {
 		let abortController = new AbortController();
 
 		const userId = user?.userId;
@@ -269,7 +263,22 @@ export default function MainPage({ navigation }) {
 					console.log("error on swipelist");
 					console.log(err);
 				});
+		}
+		try {
+			await prepare();
+		} catch (err) {
+			console.log(err);
+		} 
 
+		return () => {
+			abortController.abort();
+		};
+	}, []);
+
+	useEffect(async () => {
+		let abortController = new AbortController();
+		const userId = user?.userId;
+		try {
 			const eventListData = crypto.encrypt({ userId: userId, campus: user.School });
 			await axios
 				.post(url + "/lists/EventList", eventListData, {
@@ -279,26 +288,25 @@ export default function MainPage({ navigation }) {
 					const data = crypto.decrypt(res.data);
 					setEventList(data);
 					setShownEvents(data);
+					setEventLike(null);
+					//console.log(eventList);
 				})
 				.catch((err) => {
 					console.log("error on /eventList");
 					console.log(err);
 				});
 		}
-		try {
-			await prepare();
-		} catch (err) {
+		catch (err) {
 			console.log(err);
 		} finally {
 			setIsAppReady(true);
 		}
-
 		return () => {
 			abortController.abort();
 		};
-	}, [filters]);
+	}, [filters, eventLiked]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const backAction = () => {
 			Alert.alert("Emin Misin?", "Uygulamayı Kapatmak İstiyor Musun?", [
 				{
@@ -316,13 +324,13 @@ export default function MainPage({ navigation }) {
 		return () => backHandler.remove();
 	}, []);
 
-	// React.useEffect(() => {
+	// useEffect(() => {
 	// 	if (eventsFlatListRef.current && shownEvents.length > 0) {
 	// 		eventsFlatListRef.current.scrollToIndex({ index: 0 });
 	// 	}
 	// }, [shownEvents]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (peopleFlatListRef.current) {
 			peopleFlatListRef.current.scrollToIndex({ index: 0 });
 		}
@@ -414,7 +422,7 @@ export default function MainPage({ navigation }) {
 										keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 										horizontal={true}
 										showsHorizontalScrollIndicator={false}
-										data={peopleList.slice(peopleListIndex, peopleListIndex + 7) ?? null}
+										data={peopleList.slice(peopleListIndex, peopleListIndex + 5) ?? null}
 										renderItem={({ item, index }) => (
 											<People
 												setIsAppReady={setIsAppReady}

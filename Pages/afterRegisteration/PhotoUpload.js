@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import  { useState } from "react";
 import {
 	Text,
 	View,
@@ -22,18 +22,18 @@ import axios from "axios";
 import url from "../../connection";
 
 import crypto from "../../functions/crypto";
-import { AuthContext } from "../../contexts/auth.context";
+//import { AuthContext } from "../../contexts/auth.context";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function PhotoUpload({ navigation, route }) {
 	const { userId, sesToken } = route.params;
-	const [initial, setInitial] = React.useState(true);
-	const [isLoading, setIsLoading] = React.useState(false);
+	const [initial, setInitial] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
-	const [photoList, setPhotoList] = React.useState([]);
-	const [modalVisible, setModalVisibility] = React.useState(false);
-	const [toBeDeleted, setToBeDeleted] = React.useState(false);
+	const [photoList, setPhotoList] = useState([]);
+	const [modalVisible, setModalVisibility] = useState(false);
+	const [toBeDeleted, setToBeDeleted] = useState(false);
 
 	const pickImage = async () => {
 		const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync(false);

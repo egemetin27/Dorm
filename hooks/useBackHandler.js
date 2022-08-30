@@ -1,8 +1,8 @@
-import React from "react";
+import { useEffect } from "react";
 import { BackHandler } from "react-native";
 
 const useBackHandler = (action) => {
-	React.useEffect(() => {
+	useEffect(() => {
 		const backAction = () => {
 			action();
 			return true;

@@ -16,12 +16,10 @@ import crypto from "../functions/crypto";
 import { sort } from "../utils/array.utils";
 
 export const MessageContext = createContext({
-	//unreadCheck: Boolean,
 	matchesList: {},
 	chatsList: {},
-	//lastMessages: {},
-	//setUnread: () => {},
-	//setLastMsgs: () => {},
+	unreadChatIDS : [],
+	setunreadChatID: () => {},
 	handleNewMessage: () => {},
 	getLastMessage: () => {},
 	readMessagesLocally: () => {},
@@ -122,9 +120,10 @@ const MessageProvider = ({ children }) => {
 
 	const [rawMatchesList, setRawMatchesList] = useState([]);
 	const [matchesList, setMatchesList] = useState(defaultMatchesList);
-	//const [unreadCheck, setUnreadCheck] = useState(false);
+
+	const [unreadChatIDS, setUnreadChatIDs] = useState([]);
+
 	const [chatsList, setChatsList] = useState({});
-	const [lastMessages, setLastMessages] = useState({});
 
 	useEffect(() => {
 		if (isLoggedIn) {
@@ -137,7 +136,13 @@ const MessageProvider = ({ children }) => {
 	useEffect(() => {
 		const newMatchesList = filterMatchesList(rawMatchesList, chatsList);
 		setMatchesList(newMatchesList);
-		//setLastMsgs();
+		
+		// Set the unread message IDs so message icon can light on
+		if (chatsList != {}) Object.keys(chatsList).forEach(matchid => {
+			const lastMessage = sort(chatsList[matchid], "date", false)[0];
+			const lastmsg = {...lastMessage};
+			if (lastmsg.unread == 1 && lastmsg.sourceId != userId) setUnreadChatIDs((oldlist) => [...oldlist, matchid]);
+		});
 	}, [chatsList, rawMatchesList]);
 
 	const handleNewMessage = (msg) => {
@@ -181,18 +186,6 @@ const MessageProvider = ({ children }) => {
 		setChatsList((oldList) => ({ ...oldList, [matchId]: chatsList[matchId] }));
 	};
 
-	// const setLastMsgs = () => {
-	// 	Object.keys(chatsList).forEach(matchID => {
-	// 		setLastMessages((oldlist) => ({...oldlist, [matchID]: getLastMessage(matchID)}));
-	// 		if (getLastMessage(matchID).unread == 1 && getLastMessage(matchID).sourceId != user.userId) setUnreadCheck(true);
-	// 	});
-	// 	console.log("NOW:\n" + JSON.stringify(lastMessages));
-	// }
-
-	// const setUnread = (bool) => {
-	// 	setUnreadCheck(bool);
-	// }
-
 	const getPreviousMessages = async (matchId, lastMessDate) => {
 		const encryptedData = crypto.encrypt({ matchId, lastMessDate, userId });
 		const prevMessages = await axios
@@ -210,8 +203,15 @@ const MessageProvider = ({ children }) => {
 				// console.log("error on /prevmess:", err.response);
 				return [];
 			});
-		console.log({ prevMessages });
+		//console.log({ prevMessages });
 		setChatsList((oldList) => ({ ...oldList, [matchId]: [...prevMessages, ...oldList[matchId]] }));
+	};
+
+	const setunreadChatID = (ID, addBool) => {
+		// remove ID from list
+		if (addBool == false && unreadChatIDS.includes(ID)) setUnreadChatIDs((oldlist) => oldlist.filter((id) => id != ID));
+		// add ID to list
+		else if (addBool == true && !unreadChatIDS.includes(ID)) setUnreadChatIDs((oldlist) => [...oldlist, ID]);
 	};
 
 	const resetMessages = () => {
@@ -223,9 +223,8 @@ const MessageProvider = ({ children }) => {
 	const value = {
 		matchesList,
 		chatsList,
-		//unreadCheck,
-		//setUnread,
-		//setLastMsgs,
+		unreadChatIDS,
+		setunreadChatID,
 		handleNewMessage,
 		getLastMessage,
 		readMessagesLocally,

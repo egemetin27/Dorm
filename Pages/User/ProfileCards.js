@@ -161,7 +161,7 @@ export default function ProfileCards({ navigation, route }) {
 	// 	try {
 	// 		await axios
 	// 			.post(
-	// 				url + "/getProfilePic",
+	// 				url + "/profile/getProfilePic",
 	// 				{ userId: route.params.myID },
 	// 				{ headers: { "access-token": route.params.sesToken } }
 	// 			)
@@ -326,7 +326,7 @@ export default function ProfileCards({ navigation, route }) {
 					style={{
 						width: "100%",
 						// flex: 1,
-						paddingTop: height * 0.01,
+						paddingTop: height * 0.015,
 						justifyContent: "flex-start",
 					}}
 				>

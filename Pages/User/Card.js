@@ -68,7 +68,7 @@ export default Card = React.memo(
 		const turn = useSharedValue(1); // 1 => front, -1 => back
 
 		const [likeFlag, setLikeFlag] = React.useState(false);
-		const [backfaceIndex, setBackfaceIndex] = React.useState(0);
+		//const [backfaceIndex, setBackfaceIndex] = React.useState(0);
 
 		const About = card?.About ?? "";
 		const drink = card?.Alkol ?? "";

@@ -37,13 +37,14 @@ const SwipedPanel = ({ handleUnmatch, handleDeleteChat }) => {
 };
 
 const NonEmptyChatBox = ({ match }) => {
-	const { getLastMessage/*, setUnread */ } = useContext(MessageContext);
+	const { getLastMessage, setunreadChatID } = useContext(MessageContext);
 	const { setUnreadChecker } = useContext(NotificationContext);
 	const { user } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const { MatchId } = match;
 	const { Name } = match.userData;
 	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
+	
 	const { message, date, unread, sourceId } = {
 		message: "",
 		date: 0,
@@ -52,13 +53,13 @@ const NonEmptyChatBox = ({ match }) => {
 		...getLastMessage(MatchId),
 	};
 	const [isUnreadMessage, setIsUnreadMessage] = useState(false);
+
 	useEffect(() => {
 		if (sourceId != user.userId) {
+			setunreadChatID(MatchId, unread == 1);
 			setUnreadChecker(unread == 1);
 			setIsUnreadMessage(unread == 1); 
 		}
-		// if (unread == 1) setUnreadMatch(MatchId, true);
-		// else if (unread == 0) setUnreadMatch(MatchId, false);
 	}, [unread]);
 
 	const renderRightActions = useCallback(() => {

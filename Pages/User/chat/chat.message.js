@@ -49,13 +49,14 @@ const styles = StyleSheet.create({
 	},
 	my_message_container: {
 		alignSelf: "flex-end",
-		borderRadius: Math.min(width * 0.08, height * 0.024),
+		borderRadius: Math.min(width * 0.05, height * 0.024),
 		borderBottomRightRadius: 0,
 		overflow: "hidden",
 	},
 	my_message_gradient: {
-		paddingVertical: height * 0.01,
-		paddingHorizontal: width * 0.035,
+		paddingVertical: height * 0.0095,
+		paddingLeft: width * 0.035,
+		paddingRight: width * 0.053,
 	},
 	my_message: {
 		color: colors.white,
@@ -64,28 +65,31 @@ const styles = StyleSheet.create({
 	},
 	my_message_time: {
 		textAlign: "right",
-		fontSize: width * 0.02, 
+		fontSize: width * 0.0185, 
+		color: "#dddddd",
 		//marginBottom: height * 0.0055, 
 		position: "absolute", 
-		right: width * 0.016, 
+		right: width * 0.012, 
 		bottom: height * 0, 
 		width: width * 0.065
 	},
 	received_message_container: {
-		borderRadius: Math.min(width * 0.085, height * 0.024),
+		borderRadius: Math.min(width * 0.05, height * 0.024),
 		borderBottomLeftRadius: 0,
-		paddingVertical: height * 0.01,
-		paddingHorizontal: width * 0.035,
+		paddingVertical: height * 0.0095,
+		paddingLeft: width * 0.032,
+		paddingRight: width * 0.067,
 		alignSelf: "flex-start",
 		backgroundColor: colors.white,
 	},
 	received_message_time: {
 		textAlign: "right",
-		fontSize: width * 0.02, 
+		fontSize: width * 0.0185, 
+		color: "#999999",
 		//marginBottom: height * 0.0055, 
 		position: "absolute", 
-		right: width * 0.028, 
-		bottom: height * 0, 
+		right: width * 0.024, 
+		bottom: height * 0.002, 
 		width: width * 0.065
 	},
 	received_message_name: {

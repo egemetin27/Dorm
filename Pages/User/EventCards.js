@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import { createRef, useContext, useEffect, useState } from "react";
 import ReactNative, {
 	View,
 	Text,
@@ -40,6 +40,7 @@ import { formatDate } from "../../utils/date.utils";
 import { useNavigation } from "@react-navigation/native";
 
 import crypto from "../../functions/crypto";
+import { NotificationContext } from "../../contexts/notification.context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -80,11 +81,17 @@ const Card = ({ event, user, signOut }) => {
 
 	const navigation = useNavigation();
 
-	const [favFlag, setFavFlag] = React.useState(isLiked == 1 ? true : false);
-	const [likeEventModal, setLikeEventModal] = React.useState(false);
-	const [seeWhoLikedModal, setSeeWhoLikedModal] = React.useState(false);
+	const [favFlag, setFavFlag] = useState(isLiked == 1 ? true : false);
+	const [likeEventModal, setLikeEventModal] = useState(false);
+	const [seeWhoLikedModal, setSeeWhoLikedModal] = useState(false);
+	//const [backfaceIndex, setBackfaceIndex] = useState(0);
+	const { setEventLike } = useContext(NotificationContext);
 
 	const turn = useSharedValue(1); // 1 => front, -1 => back
+
+	useEffect(() => {
+		setFavFlag(isLiked==1);
+	}, [isLiked]);
 
 	const animatedCard = useAnimatedStyle(() => {
 		return {
@@ -129,6 +136,7 @@ const Card = ({ event, user, signOut }) => {
 				})
 				.then((res) => setFavFlag(false))
 				.catch((err) => console.log(err));
+			setEventLike(false);
 			return;
 		}
 		setLikeEventModal(true);
@@ -148,6 +156,7 @@ const Card = ({ event, user, signOut }) => {
 			.catch((err) => {
 				// Alert.alert(err.response.status);
 			});
+		setEventLike(true);
 	};
 
 	const explorePeople = async () => {
@@ -201,7 +210,7 @@ const Card = ({ event, user, signOut }) => {
 			});
 	};
 
-	const likeButton = React.createRef();
+	const likeButton = createRef();
 
 	return (
 		<View
@@ -343,7 +352,7 @@ const Card = ({ event, user, signOut }) => {
 										>
 											{name}
 										</Text>
-										{date != "NaN/NaN/NaN" && (
+										{(date != "NaN/NaN/NaN") && (date != "") && (
 											<Text
 												style={{
 													color: colors.white,
@@ -757,8 +766,12 @@ export default function EventCards({ navigation, route }) {
 
 	const { idx, list, myID, sesToken } = route.params;
 
-	React.useEffect(async () => {
+	useEffect(async () => {
 		const backAction = () => {
+			// navigation.replace("MainScreen", {
+			// 	screen: "AnaSayfa",
+			// 	params: { screen: "Home" },
+			// });
 			navigation.goBack();
 			return true;
 		};
@@ -766,7 +779,7 @@ export default function EventCards({ navigation, route }) {
 		return () => backHandler.remove();
 	}, []);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		sendEventSeen(idx);
 	}, []);
 
@@ -805,6 +818,10 @@ export default function EventCards({ navigation, route }) {
 			>
 				<TouchableOpacity
 					onPress={() => {
+						// navigation.replace("MainScreen", {
+						// 	screen: "AnaSayfa",
+						// 	params: { screen: "Home" },
+						// });
 						navigation.goBack();
 					}}
 				>

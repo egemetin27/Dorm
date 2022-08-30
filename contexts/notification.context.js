@@ -32,12 +32,15 @@ const handleNotificationResponse = (response) => {
 
 export const NotificationContext = createContext({
 	unReadCheck: Boolean,
-	setUnreadChecker: () => {}
+	setUnreadChecker: () => {},
+	eventLiked: Boolean,
+	setEventLike: () => {}
 });
 
 const NotificationProvider = ({ children }) => {
 	const { isLoggedIn, user } = useContext(AuthContext);
 	const [unReadCheck, setUnreadCheck] = useState(false);
+	const [eventLiked, setEventLiked] = useState(null);
 	//const { setUnread } = useContext(MessageContext);
 	//const [notification, setNotification] = useState(false);
 
@@ -65,6 +68,11 @@ const NotificationProvider = ({ children }) => {
 	const setUnreadChecker = (bool) => {
 		setUnreadCheck(bool);
 	};
+
+	const setEventLike = (bool) => {
+		setEventLiked(bool);
+	};
+	
 	// const lastNotificationResponse = Notifications.useLastNotificationResponse();
 	// useEffect(() => {
 	// 	if (
@@ -132,7 +140,13 @@ const NotificationProvider = ({ children }) => {
 		}
 	};
 
-	const value = {unReadCheck, setUnreadChecker};
+	const value = {
+		unReadCheck, 
+		setUnreadChecker,
+		eventLiked,
+		setEventLike
+	};
+
 	return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 };
 
