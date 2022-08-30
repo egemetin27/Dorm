@@ -185,6 +185,23 @@ const Category = ({
 	);
 };
 
+const ListEmpty = () => {
+	return (
+		<View>
+			<Text
+				style={{
+					textAlign: "center",
+					fontFamily: "PoppinsSemiBold",
+					fontSize: Math.min(width * 0.042, 20),
+					color: colors.gray,
+				}}
+			>
+				Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
+			</Text>
+		</View>
+	);
+};
+
 export default function MainPage({ navigation }) {
 	const { user, signOut, peopleListIndex } = useContext(AuthContext);
 	const { filters } = useContext(FilterContext);
@@ -337,136 +354,138 @@ export default function MainPage({ navigation }) {
 				contentContainerStyle={{ alignSelf: "flex-start" }}
 				keyExtractor={(item, idx) => item?.EventId?.toString() ?? idx}
 				data={shownEvents}
-				ListHeaderComponent={
+				ListHeaderComponent={() => {
 					// All the items above events
-					<View style={{ width: width }}>
-						<View
-							name={"PeopleHeader"}
-							style={[
-								{
-									marginTop: height * 0.01,
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "space-between",
-									width: "100%",
-									height: height * 0.05,
-								},
-							]}
-						>
-							<GradientText
-								text={"Kişiler"}
-								style={{
-									fontSize: Math.min(height * 0.035, 35),
-									fontFamily: "NowBold",
-									letterSpacing: 1.2,
-									marginLeft: 20,
-								}}
-							/>
-							<View style={{ marginRight: 20 }}>
-								<TouchableOpacity
+					return (
+						<View style={{ width: width }}>
+							<View
+								name={"PeopleHeader"}
+								style={[
+									{
+										marginTop: height * 0.01,
+										flexDirection: "row",
+										alignItems: "center",
+										justifyContent: "space-between",
+										width: "100%",
+										height: height * 0.05,
+									},
+								]}
+							>
+								<GradientText
+									text={"Kişiler"}
 									style={{
-										paddingHorizontal: 15,
-										height: "100%",
-										justifyContent: "center",
+										fontSize: Math.min(height * 0.035, 35),
+										fontFamily: "NowBold",
+										letterSpacing: 1.2,
+										marginLeft: 20,
 									}}
-									onPress={handleFilterButton}
-								>
-									<Octicons
+								/>
+								<View style={{ marginRight: 20 }}>
+									<TouchableOpacity
 										style={{
-											transform: [{ rotate: "-90deg" }],
+											paddingHorizontal: 15,
+											height: "100%",
+											justifyContent: "center",
 										}}
-										name="settings"
-										size={Math.min(height * 0.035, 30)}
-										color={colors.cool_gray}
-									/>
-								</TouchableOpacity>
+										onPress={handleFilterButton}
+									>
+										<Octicons
+											style={{
+												transform: [{ rotate: "-90deg" }],
+											}}
+											name="settings"
+											size={Math.min(height * 0.035, 30)}
+											color={colors.cool_gray}
+										/>
+									</TouchableOpacity>
+								</View>
 							</View>
-						</View>
-						<View
-							name={"People"}
-							style={{
-								width: "100%",
-								height: height * 0.3,
-								justifyContent: "center",
-							}}
-						>
-							{peopleList?.length > 0 ? (
+							<View
+								name={"People"}
+								style={{
+									width: "100%",
+									height: height * 0.3,
+									justifyContent: "center",
+								}}
+							>
+								{peopleList?.length > 0 ? (
+									<FlatList
+										ref={peopleFlatListRef}
+										keyExtractor={(item, index) => item?.userId?.toString() ?? index}
+										horizontal={true}
+										showsHorizontalScrollIndicator={false}
+										data={peopleList.slice(peopleListIndex, peopleListIndex + 7) ?? null}
+										renderItem={({ item, index }) => (
+											<People
+												setIsAppReady={setIsAppReady}
+												index={index}
+												person={item}
+												length={7}
+												openProfiles={(idx) => {
+													navigation.navigate("ProfileCards", {
+														idx: idx,
+														list: peopleList.slice(peopleListIndex, 45),
+														matchMode: matchMode,
+														myID: user.userId,
+														sesToken: user.sesToken,
+														myPP: myPP,
+													});
+												}}
+											/>
+										)}
+									/>
+								) : (
+									<View style={{ paddingHorizontal: width * 0.075 }}>
+										<Text
+											style={{
+												textAlign: "center",
+												fontFamily: "PoppinsSemiBold",
+												fontSize: Math.min(width * 0.042, 20),
+												color: colors.gray,
+											}}
+										>
+											{listEmptyMessage}
+										</Text>
+									</View>
+								)}
+							</View>
+							<View
+								name={"EventHeader"}
+								style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+							>
+								<GradientText
+									text={"Etkinlikler"}
+									style={{
+										fontSize: Math.min(height * 0.035, 32),
+										fontFamily: "NowBold",
+										letterSpacing: 1.2,
+										marginLeft: 20,
+									}}
+								/>
+							</View>
+
+							<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
 								<FlatList
-									ref={peopleFlatListRef}
-									keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 									horizontal={true}
 									showsHorizontalScrollIndicator={false}
-									data={peopleList.slice(peopleListIndex, peopleListIndex + 7) ?? null}
+									data={categories}
 									renderItem={({ item, index }) => (
-										<People
-											setIsAppReady={setIsAppReady}
+										<Category
 											index={index}
-											person={item}
-											length={7}
-											openProfiles={(idx) => {
-												navigation.navigate("ProfileCards", {
-													idx: idx,
-													list: peopleList.slice(peopleListIndex, 45),
-													matchMode: matchMode,
-													myID: user.userId,
-													sesToken: user.sesToken,
-													myPP: myPP,
-												});
-											}}
-										/>
+											userId={user.sesToken}
+											selectedCategory={selectedCategory}
+											setSelectedCategory={setSelectedCategory}
+											setShownEvents={setShownEvents}
+											eventList={eventList}
+										>
+											{item}
+										</Category>
 									)}
 								/>
-							) : (
-								<View style={{ paddingHorizontal: width * 0.075 }}>
-									<Text
-										style={{
-											textAlign: "center",
-											fontFamily: "PoppinsSemiBold",
-											fontSize: Math.min(width * 0.042, 20),
-											color: colors.gray,
-										}}
-									>
-										{listEmptyMessage}
-									</Text>
-								</View>
-							)}
+							</View>
 						</View>
-						<View
-							name={"EventHeader"}
-							style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
-						>
-							<GradientText
-								text={"Etkinlikler"}
-								style={{
-									fontSize: Math.min(height * 0.035, 32),
-									fontFamily: "NowBold",
-									letterSpacing: 1.2,
-									marginLeft: 20,
-								}}
-							/>
-						</View>
-
-						<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
-							<FlatList
-								horizontal={true}
-								showsHorizontalScrollIndicator={false}
-								data={categories}
-								renderItem={({ item, index }) => (
-									<Category
-										index={index}
-										userId={user.sesToken}
-										selectedCategory={selectedCategory}
-										setSelectedCategory={setSelectedCategory}
-										setShownEvents={setShownEvents}
-										eventList={eventList}
-									>
-										{item}
-									</Category>
-								)}
-							/>
-						</View>
-					</View>
-				}
+					);
+				}}
 				renderItem={({ item, index }) => (
 					<Event
 						index={index}
@@ -482,21 +501,19 @@ export default function MainPage({ navigation }) {
 						}}
 					/>
 				)}
-				ListEmptyComponent={
-					<View>
-						{shownEvents.length === 0 && (
-							<Text
-								style={{
-									textAlign: "center",
-									fontFamily: "PoppinsSemiBold",
-									fontSize: Math.min(width * 0.042, 20),
-									color: colors.gray,
-								}}
-							>
-								Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
-							</Text>
-						)}
-					</View>
+				ListFooterComponent={() =>
+					shownEvents.length === 0 ? (
+						<Text
+							style={{
+								textAlign: "center",
+								fontFamily: "PoppinsSemiBold",
+								fontSize: Math.min(width * 0.042, 20),
+								color: colors.gray,
+							}}
+						>
+							Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
+						</Text>
+					) : null
 				}
 			/>
 
