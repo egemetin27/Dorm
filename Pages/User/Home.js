@@ -63,14 +63,19 @@ const categories = [
 		url: require("../../assets/HomeScreenCategoryIcons/Gece.png"),
 	},
 	{
-		key: "Festival",
-		databaseKey: "festival",
-		url: require("../../assets/HomeScreenCategoryIcons/festival.png"),
-	},
-	{
 		key: "Konser",
 		databaseKey: "Konser",
 		url: require("../../assets/HomeScreenCategoryIcons/Concert.png"),
+	},
+	{
+		key: "Festival",
+		databaseKey: "festival",
+		url: require("../../assets/HomeScreenCategoryIcons/Festival.png"),
+	},
+	{
+		key: "Deneyim",
+		databaseKey: "experience",
+		url: require("../../assets/HomeScreenCategoryIcons/Experience.png"),
 	},
 	{
 		key: "Kampüs",
@@ -103,7 +108,10 @@ const Category = ({
 			setShownEvents(eventList);
 			return;
 		}
-		const filtered = eventList.filter((item) => item[categories[idx].databaseKey] == 1);
+		const filtered = eventList.filter((item) => {
+			if (!item[categories[idx]?.databaseKey]) return false;
+			return item[categories[idx]?.databaseKey] == 1;
+		});
 		setShownEvents(filtered);
 	};
 
@@ -319,186 +327,179 @@ export default function MainPage({ navigation }) {
 
 			{/* The items above events are all part of header of Events View to scroll in events in the page */}
 			{/* <View name={"Events"} style={{ width: width, height: height }}> */}
-			{shownEvents.length > 0 ? (
-				<FlatList
-					horizontal={false}
-					ref={eventsFlatListRef}
-					numColumns={2}
-					showsHorizontalScrollIndicator={false}
-					showsVerticalScrollIndicator={false}
-					contentContainerStyle={{ alignSelf: "flex-start" }}
-					keyExtractor={(item) => item?.EventId?.toString() ?? ""}
-					data={shownEvents}
-					ListHeaderComponent={() => {
-						return (
-							// All the items above events
-							<View style={{ width: width }}>
-								<View
-									name={"PeopleHeader"}
-									style={[
-										{
-											marginTop: height * 0.01,
-											flexDirection: "row",
-											alignItems: "center",
-											justifyContent: "space-between",
-											width: "100%",
-											height: height * 0.05,
-										},
-									]}
-								>
-									<GradientText
-										text={"Kişiler"}
-										style={{
-											fontSize: Math.min(height * 0.035, 35),
-											fontFamily: "NowBold",
-											letterSpacing: 1.2,
-											marginLeft: 20,
-										}}
-									/>
-									<View style={{ marginRight: 20 }}>
-										<TouchableOpacity
-											style={{
-												paddingHorizontal: 15,
-												height: "100%",
-												justifyContent: "center",
-											}}
-											onPress={handleFilterButton}
-										>
-											<Octicons
-												style={{
-													transform: [{ rotate: "-90deg" }],
-												}}
-												name="settings"
-												size={Math.min(height * 0.035, 30)}
-												color={colors.cool_gray}
-											/>
-										</TouchableOpacity>
-									</View>
-								</View>
-								<View
-									name={"People"}
+
+			<FlatList
+				horizontal={false}
+				ref={eventsFlatListRef}
+				numColumns={2}
+				showsHorizontalScrollIndicator={false}
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ alignSelf: "flex-start" }}
+				keyExtractor={(item, idx) => item?.EventId?.toString() ?? idx}
+				data={shownEvents}
+				ListHeaderComponent={
+					// All the items above events
+					<View style={{ width: width }}>
+						<View
+							name={"PeopleHeader"}
+							style={[
+								{
+									marginTop: height * 0.01,
+									flexDirection: "row",
+									alignItems: "center",
+									justifyContent: "space-between",
+									width: "100%",
+									height: height * 0.05,
+								},
+							]}
+						>
+							<GradientText
+								text={"Kişiler"}
+								style={{
+									fontSize: Math.min(height * 0.035, 35),
+									fontFamily: "NowBold",
+									letterSpacing: 1.2,
+									marginLeft: 20,
+								}}
+							/>
+							<View style={{ marginRight: 20 }}>
+								<TouchableOpacity
 									style={{
-										width: "100%",
-										height: height * 0.3,
+										paddingHorizontal: 15,
+										height: "100%",
 										justifyContent: "center",
 									}}
+									onPress={handleFilterButton}
 								>
-									{peopleList?.length > 0 ? (
-										<FlatList
-											ref={peopleFlatListRef}
-											keyExtractor={(item, index) => item?.userId?.toString() ?? index}
-											horizontal={true}
-											showsHorizontalScrollIndicator={false}
-											data={peopleList.slice(peopleListIndex, peopleListIndex + 7) ?? null}
-											renderItem={({ item, index }) => (
-												<People
-													setIsAppReady={setIsAppReady}
-													index={index}
-													person={item}
-													length={7}
-													openProfiles={(idx) => {
-														navigation.navigate("ProfileCards", {
-															idx: idx,
-															list: peopleList.slice(peopleListIndex, 45),
-															matchMode: matchMode,
-															myID: user.userId,
-															sesToken: user.sesToken,
-															myPP: myPP,
-														});
-													}}
-												/>
-											)}
-										/>
-									) : (
-										<View style={{ paddingHorizontal: width * 0.075 }}>
-											<Text
-												style={{
-													textAlign: "center",
-													fontFamily: "PoppinsSemiBold",
-													fontSize: Math.min(width * 0.042, 20),
-													color: colors.gray,
-												}}
-											>
-												{listEmptyMessage}
-											</Text>
-										</View>
-									)}
-								</View>
-								<View
-									name={"EventHeader"}
-									style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
-								>
-									<GradientText
-										text={"Etkinlikler"}
+									<Octicons
 										style={{
-											fontSize: Math.min(height * 0.035, 32),
-											fontFamily: "NowBold",
-											letterSpacing: 1.2,
-											marginLeft: 20,
+											transform: [{ rotate: "-90deg" }],
 										}}
+										name="settings"
+										size={Math.min(height * 0.035, 30)}
+										color={colors.cool_gray}
 									/>
-								</View>
-
-								<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
-									<FlatList
-										horizontal={true}
-										showsHorizontalScrollIndicator={false}
-										data={categories}
-										renderItem={({ item, index }) => (
-											<Category
-												index={index}
-												userId={user.sesToken}
-												selectedCategory={selectedCategory}
-												setSelectedCategory={setSelectedCategory}
-												setShownEvents={setShownEvents}
-												eventList={eventList}
-											>
-												{item}
-											</Category>
-										)}
-									/>
-								</View>
+								</TouchableOpacity>
 							</View>
-						);
-					}}
-					renderItem={({ item, index }) => (
-						<Event
-							index={index}
-							event={item}
-							length={shownEvents.length}
-							openEvents={(idx) => {
-								navigation.navigate("EventCards", {
-									idx: idx,
-									list: shownEvents,
-									myID: user.userId,
-									sesToken: user.sesToken,
-								});
+						</View>
+						<View
+							name={"People"}
+							style={{
+								width: "100%",
+								height: height * 0.3,
+								justifyContent: "center",
 							}}
-						/>
-					)}
-				/>
-			) : (
-				<View
-					style={{
-						width: "100%",
-						height: "100%",
-						justifyContent: "center",
-						alignItems: "center",
-						paddingHorizontal: "10%",
-					}}
-				>
-					<Text
-						style={{
-							textAlign: "center",
-							fontFamily: "PoppinsSemiBold",
-							fontSize: Math.min(width * 0.042, 20),
-							color: colors.gray,
+						>
+							{peopleList?.length > 0 ? (
+								<FlatList
+									ref={peopleFlatListRef}
+									keyExtractor={(item, index) => item?.userId?.toString() ?? index}
+									horizontal={true}
+									showsHorizontalScrollIndicator={false}
+									data={peopleList.slice(peopleListIndex, peopleListIndex + 7) ?? null}
+									renderItem={({ item, index }) => (
+										<People
+											setIsAppReady={setIsAppReady}
+											index={index}
+											person={item}
+											length={7}
+											openProfiles={(idx) => {
+												navigation.navigate("ProfileCards", {
+													idx: idx,
+													list: peopleList.slice(peopleListIndex, 45),
+													matchMode: matchMode,
+													myID: user.userId,
+													sesToken: user.sesToken,
+													myPP: myPP,
+												});
+											}}
+										/>
+									)}
+								/>
+							) : (
+								<View style={{ paddingHorizontal: width * 0.075 }}>
+									<Text
+										style={{
+											textAlign: "center",
+											fontFamily: "PoppinsSemiBold",
+											fontSize: Math.min(width * 0.042, 20),
+											color: colors.gray,
+										}}
+									>
+										{listEmptyMessage}
+									</Text>
+								</View>
+							)}
+						</View>
+						<View
+							name={"EventHeader"}
+							style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+						>
+							<GradientText
+								text={"Etkinlikler"}
+								style={{
+									fontSize: Math.min(height * 0.035, 32),
+									fontFamily: "NowBold",
+									letterSpacing: 1.2,
+									marginLeft: 20,
+								}}
+							/>
+						</View>
+
+						<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
+							<FlatList
+								horizontal={true}
+								showsHorizontalScrollIndicator={false}
+								data={categories}
+								renderItem={({ item, index }) => (
+									<Category
+										index={index}
+										userId={user.sesToken}
+										selectedCategory={selectedCategory}
+										setSelectedCategory={setSelectedCategory}
+										setShownEvents={setShownEvents}
+										eventList={eventList}
+									>
+										{item}
+									</Category>
+								)}
+							/>
+						</View>
+					</View>
+				}
+				renderItem={({ item, index }) => (
+					<Event
+						index={index}
+						event={item}
+						length={shownEvents.length}
+						openEvents={(idx) => {
+							navigation.navigate("EventCards", {
+								idx: idx,
+								list: shownEvents,
+								myID: user.userId,
+								sesToken: user.sesToken,
+							});
 						}}
-					>
-						Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
-					</Text>
-				</View>
-			)}
+					/>
+				)}
+				ListEmptyComponent={
+					<View>
+						{shownEvents.length === 0 && (
+							<Text
+								style={{
+									textAlign: "center",
+									fontFamily: "PoppinsSemiBold",
+									fontSize: Math.min(width * 0.042, 20),
+									color: colors.gray,
+								}}
+							>
+								Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
+							</Text>
+						)}
+					</View>
+				}
+			/>
+
 			{/* </View> */}
 		</View>
 	);

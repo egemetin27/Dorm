@@ -559,8 +559,8 @@ const Card = ({ event, user, signOut }) => {
 									</Pressable>
 								</View>
 							)}
-							{/* </View> */}
 						</ScrollView>
+
 						<View style={{ width: "80%", marginBottom: height * 0.05 }}>
 							<TouchableOpacity onPress={explorePeople}>
 								<View
