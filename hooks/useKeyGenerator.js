@@ -5,6 +5,7 @@ import Constants from "expo-constants";
 
 import crypto from "../functions/crypto";
 import url from "../connection";
+import { Session } from "../nonVisualComponents/SessionVariables";
 
 const useKeyGenerator = () => {
 	const [initializationError, setInitializationError] = React.useState(false);
@@ -24,11 +25,15 @@ const useKeyGenerator = () => {
 					message: encryptedMessage,
 				})
 				.then((res) => {
+					const { appVersion, genderList, univList } = res.data;
+					Session.lists.genderList = genderList;
+					Session.lists.univList = univList;
+
 					const localVersion = Constants.manifest.version.slice(
 						0,
 						Constants.manifest.version.lastIndexOf(".")
 					);
-					const realVersion = res.data.appversion;
+					const realVersion = appVersion;
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}

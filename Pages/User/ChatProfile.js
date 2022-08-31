@@ -27,7 +27,7 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
 import { getGender } from "../../nonVisualComponents/generalFunctions";
 import { getAge } from "../../utils/date.utils";
-import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
+import { dietList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
 const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];

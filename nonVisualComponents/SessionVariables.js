@@ -3,6 +3,14 @@ export class Session {
 	static ScrollShown = false;
 	static ScrollNumber = 0;
 	static likeCount = 1;
+	static lists = {
+		genderList: [],
+		univList: [],
+		dietList: [],
+		signList: [],
+		smokeAndDrinkList: [],
+		religionList: [],
+	};
 }
 
 /*{

@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import url from "../connection";
 import crypto from "../functions/crypto";
+import { Session } from "../nonVisualComponents/SessionVariables";
 
 export const AuthContext = createContext({
 	user: null,
@@ -32,6 +33,7 @@ const AuthProvider = ({ children }) => {
 			.post(url + "/account/Login", dataToBeSent)
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
+				Session.lists = { ...Session.lists, ...data.applists };
 				if (data.authentication == "true") {
 					if (navigation != null && data.onBoardingComplete == 0) {
 						navigation.reset({

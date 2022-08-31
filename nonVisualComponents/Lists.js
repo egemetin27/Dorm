@@ -1,8 +1,9 @@
 export const genderList = [
-	{ key: 0, choice: "Kadın" },
-	{ key: 1, choice: "Erkek" },
-	{ key: 2, choice: "Non-Binary" },
-	{ key: 3, choice: "Belirtmek İstemiyorum" },
+	{ key: 0, choice: "" },
+	{ key: 1, choice: "Kadın" },
+	{ key: 2, choice: "Erkek" },
+	{ key: 3, choice: "Non-Binary" },
+	{ key: 4, choice: "Belirtmek İstemiyorum" },
 ];
 
 export const univList = [

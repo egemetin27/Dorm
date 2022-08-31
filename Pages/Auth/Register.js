@@ -19,6 +19,7 @@ import { Gradient, GradientRegistration, colors } from "../../visualComponents/c
 import { getAge } from "../../utils/date.utils";
 import { CustomPicker } from "../../visualComponents/customComponents";
 import { univList } from "../../nonVisualComponents/Lists";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { width, height } = Dimensions.get("window");
 
@@ -529,7 +530,7 @@ export default function Register({ navigation }) {
 
 			<CustomPicker
 				style={{ width: width * 0.7, height: height * 0.6, maxWidth: 300, maxHeight: 500 }}
-				data={univList.slice(1)}
+				data={Session.lists.univList.slice(1)}
 				visible={univListVisible}
 				setVisible={setUnivListVisible}
 				setChoice={setUniversity}

@@ -11,7 +11,6 @@ import {
 	ScrollView,
 	KeyboardAvoidingView,
 	FlatList,
-	Image,
 	ActivityIndicator,
 	BackHandler,
 } from "react-native";
@@ -25,11 +24,11 @@ import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
 import url from "../../connection";
 import { getAge } from "../../utils/date.utils";
-import { dietList, genderList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 import crypto from "../../functions/crypto";
 import { AuthContext } from "../../contexts/auth.context";
 import CustomImage from "../../components/custom-image.component";
 import CustomRadio from "../../components/custom-radio.component";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
@@ -88,16 +87,26 @@ export default function Profile({ route, navigation }) {
 		try {
 			setName(user.Name + " " + user.Surname);
 			setAge(getAge(user.Birth_date));
-			setSex(user.Gender == "null" ? "" : genderList[user.Gender]);
+			setSex(user.Gender == "null" ? "" : Session.lists.genderList[user.Gender]);
 			setSchool(user.School);
 			setMajor(user.Major == "null" ? "" : user.Major);
 			setReligion(user.Din == "null" ? "" : user.Din);
 			setFriendMode(user.matchMode == "1" ? true : false);
 
-			setSign(user.Burc == "null" ? signList[0] : signList[user.Burc]);
-			setDiet(user.Beslenme == "null" ? dietList[0] : dietList[user.Beslenme]);
-			setDrink(user.Alkol == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[user.Alkol]);
-			setSmoke(user.Sigara == "null" ? smokeAndDrinkList[0] : smokeAndDrinkList[user.Sigara]);
+			setSign(user.Burc == "null" ? Session.lists.signList[0] : Session.lists.signList[user.Burc]);
+			setDiet(
+				user.Beslenme == "null" ? Session.lists.dietList[0] : Session.lists.dietList[user.Beslenme]
+			);
+			setDrink(
+				user.Alkol == "null"
+					? Session.lists.smokeAndDrinkList[0]
+					: Session.lists.smokeAndDrinkList[user.Alkol]
+			);
+			setSmoke(
+				user.Sigara == "null"
+					? Session.lists.smokeAndDrinkList[0]
+					: Session.lists.smokeAndDrinkList[user.Sigara]
+			);
 
 			/*
 			setSign(getChoice(data.Burc, signList));
@@ -1084,35 +1093,35 @@ export default function Profile({ route, navigation }) {
 			</KeyboardAvoidingView>
 
 			<CustomPicker
-				data={genderList.slice(1)}
+				data={Session.lists.genderList.slice(1)}
 				visible={genderVisible}
 				setVisible={setGenderVisible}
 				setChoice={setSex}
 			/>
 
 			<CustomPicker
-				data={signList.slice(1)}
+				data={Session.lists.signList.slice(1)}
 				visible={signVisible}
 				setVisible={setSignVisible}
 				setChoice={setSign}
 				style={{ height: height * 0.5, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={dietList.slice(1)}
+				data={Session.lists.dietList.slice(1)}
 				visible={dietVisible}
 				setVisible={setDietVisible}
 				setChoice={setDiet}
 				style={{ height: (6 * height) / 16, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={smokeAndDrinkList.slice(1)}
+				data={Session.lists.smokeAndDrinkList.slice(1)}
 				visible={drinkVisible}
 				setVisible={setDrinkVisible}
 				setChoice={setDrink}
 				style={{ height: (5 * height) / 16, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={smokeAndDrinkList.slice(1)}
+				data={Session.lists.smokeAndDrinkList.slice(1)}
 				visible={smokeVisible}
 				setVisible={setSmokeVisible}
 				setChoice={setSmoke}
