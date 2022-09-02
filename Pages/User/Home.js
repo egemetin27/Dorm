@@ -196,7 +196,7 @@ const ListEmpty = () => {
 };
 
 export default function MainPage({ navigation }) {
-	const { user, signOut, peopleListIndex } = useContext(AuthContext);
+	const { user, signOut, peopleListIndex, setPeopleIndex } = useContext(AuthContext);
 	const { eventLiked, setEventLike } = useContext(NotificationContext);
 	const { filters } = useContext(FilterContext);
 
@@ -273,7 +273,7 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, []);
+	}, [filters]);
 
 	useEffect(async () => {
 		let abortController = new AbortController();
@@ -303,7 +303,7 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [filters, eventLiked]);
+	}, [eventLiked]);
 
 	useEffect(() => {
 		const backAction = () => {
@@ -319,7 +319,7 @@ export default function MainPage({ navigation }) {
 		};
 
 		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-
+		setPeopleIndex(-1);
 		return () => backHandler.remove();
 	}, []);
 
@@ -329,11 +329,11 @@ export default function MainPage({ navigation }) {
 	// 	}
 	// }, [shownEvents]);
 
-	useEffect(() => {
-		if (peopleFlatListRef.current) {
-			peopleFlatListRef.current.scrollToIndex({ index: 0 });
-		}
-	}, [peopleList]);
+	// useEffect(() => {
+	// 	if (peopleFlatListRef.current) {
+	// 		peopleFlatListRef.current.scrollToIndex({ index: 0 });
+	// 	}
+	// }, [peopleList]);
 
 	if (!isAppReady) {
 		return (
@@ -417,6 +417,7 @@ export default function MainPage({ navigation }) {
 								{peopleList?.length > 0 ? (
 									<FlatList
 										ref={peopleFlatListRef}
+										maxToRenderPerBatch={1}
 										keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 										horizontal={true}
 										showsHorizontalScrollIndicator={false}
@@ -426,10 +427,11 @@ export default function MainPage({ navigation }) {
 												setIsAppReady={setIsAppReady}
 												index={index}
 												person={item}
-												length={7}
+												length={5}
 												openProfiles={(idx) => {
 													navigation.navigate("ProfileCards", {
 														idx: idx,
+														//lastIndex: 45,
 														list: peopleList.slice(peopleListIndex, 45),
 														matchMode: matchMode,
 														myID: user.userId,

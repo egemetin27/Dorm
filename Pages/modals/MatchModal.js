@@ -93,6 +93,7 @@ export default function MatchModal({ navigation, route }) {
 
 				<ReactNative.TouchableOpacity
 					onPress={() => {
+						setPeopleIndex(-1);
 						navigation.replace("MainScreen", { screen: "Mesajlar" });
 					}}
 					style={{

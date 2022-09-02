@@ -12,6 +12,7 @@ import { FilterContext, TYPES, FILTERS, OPTIONS } from "../../contexts/filter.co
 
 import { colors, GradientText } from "../../visualComponents/colors";
 import RangeSlider from "../../components/range-slider.component";
+import { AuthContext } from "../../contexts/auth.context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -27,6 +28,7 @@ const makeList = (options) => {
 
 const FilterModal = () => {
 	const { filters, changeFilters, discardUnsaved, saveFilters } = useContext(FilterContext);
+	const { setPeopleIndex } = useContext(AuthContext);
 	const { age } = filters;
 	const navigation = useNavigation();
 	const ref = useRef();
@@ -38,7 +40,12 @@ const FilterModal = () => {
 
 	const handleSave = () => {
 		saveFilters();
-		navigation.goBack();
+		setPeopleIndex(-1);
+		navigation.replace("MainScreen", {
+			screen: "AnaSayfa",
+			params: { screen: "Home" },
+		});
+		//navigation.goBack();
 	};
 
 	const handleRangeChange = (values) => {

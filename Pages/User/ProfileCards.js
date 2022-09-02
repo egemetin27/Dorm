@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReactNative, {
 	View,
 	Text,
@@ -34,18 +34,18 @@ export default function ProfileCards({ navigation, route }) {
 
 	const { user, signOut, peopleListIndex } = useContext(AuthContext);
 
-	const [isLoading, setIsLoading] = React.useState(true);
-	const [peopleList, setPeopleList] = React.useState([]);
-	const [shownList, setShownList] = React.useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [peopleList, setPeopleList] = useState([]);
+	const [shownList, setShownList] = useState([]);
 	const indexOfFrontCard = useSharedValue(0);
 
 	const eventID = route.params.eventID ?? 0;
 
-	const [reportPage, setReportPage] = React.useState(false);
-	const [chosenReport, setChosenReport] = React.useState(0);
+	const [reportPage, setReportPage] = useState(false);
+	const [chosenReport, setChosenReport] = useState(0);
 
-	const [name, setName] = React.useState("");
-	const [reportUserID, setReportUserID] = React.useState("");
+	const [name, setName] = useState("");
+	const [reportUserID, setReportUserID] = useState("");
 
 	function showReportPage(otherUserID, name) {
 		setName(name);
@@ -100,7 +100,7 @@ export default function ProfileCards({ navigation, route }) {
 
 	// const peopleList = route.params.list;
 
-	React.useEffect(async () => {
+	useEffect(async () => {
 		const backAction = () => {
 			if (fromEvent) {
 				navigation.goBack();
@@ -114,8 +114,8 @@ export default function ProfileCards({ navigation, route }) {
 			let profile = list.splice(idx, 1);
 			// setPeopleList(list.slice(5));
 			// setShownList([profile[0], ...list.slice(0, 5)]);
-			setPeopleList(list.slice(9));
-			setShownList([profile[0], ...list.slice(0, 9)]);
+			setPeopleList(list.slice(4));
+			setShownList([profile[0], ...list.slice(0, 4)]);
 		}
 		try {
 			await prepare();
@@ -144,7 +144,7 @@ export default function ProfileCards({ navigation, route }) {
 	// 	[indexOfFrontCard.value]
 	// );
 
-	// React.useEffect(async () => {
+	// useEffect(async () => {
 	// 	try {
 	// 		await axios
 	// 			.post(
@@ -162,13 +162,13 @@ export default function ProfileCards({ navigation, route }) {
 	// 		console.log(error);
 	// 	}
 	// }, []);
-	// React.useEffect(() => {
+	// useEffect(() => {
 	// 	if (peopleList.length > 0 && indexOfFrontCard == peopleList.length)
 	// 		navigation.navigate("ListEndedModal");
 	// 	// if (peopleList.length > 0 && indexOfFrontCard == peopleList.length) setEndOfListModal(true);
 	// }, [indexOfFrontCard]);
 
-	// React.useEffect(() => {
+	// useEffect(() => {
 	// 	const unsubscribe = navigation.addListener("blur", () => {
 	// 		setEndOfListModal(false);
 	// 	});
@@ -290,13 +290,13 @@ export default function ProfileCards({ navigation, route }) {
 									navigation.navigate("ListEndedModal");
 								}}
 								length={shownList.length}
-								refreshList={() => {
+								refreshList={async () => {
 									try {
 										setIsLoading(true);
 										// setShownList(peopleList.slice(0, 5));
 										// setPeopleList(peopleList.slice(5));
-										setShownList(peopleList.slice(0, 10));
-										setPeopleList(peopleList.slice(10));
+										setShownList([shownList[4], ...peopleList.slice(0, 4)]);
+										setPeopleList(peopleList.slice(4));
 										indexOfFrontCard.value = 0;
 										if (peopleList.length == 0) {
 											navigation.navigate("ListEndedModal");

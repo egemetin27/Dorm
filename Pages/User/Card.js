@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { memo, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, Image, Dimensions, Alert } from "react-native";
 import {
 	ScrollView,
@@ -40,7 +40,7 @@ import { getTimeDiff } from "../../nonVisualComponents/generalFunctions";
 import crypto from "../../functions/crypto";
 import CustomImage from "../../components/custom-image.component";
 
-export default Card = React.memo(
+export default Card =
 	({
 		card,
 		eventId,
@@ -59,7 +59,7 @@ export default Card = React.memo(
 		matchMode,
 		showMatchScreen,
 		length,
-		refreshList,
+		refreshList
 	}) => {
 		const { user, signOut, setPeopleIndex } = useContext(AuthContext);
 		const progress = useSharedValue(0);
@@ -67,8 +67,8 @@ export default Card = React.memo(
 		const destination = useSharedValue(0);
 		const turn = useSharedValue(1); // 1 => front, -1 => back
 
-		const [likeFlag, setLikeFlag] = React.useState(false);
-		//const [backfaceIndex, setBackfaceIndex] = React.useState(0);
+		const [likeFlag, setLikeFlag] = useState(false);
+		//const [backfaceIndex, setBackfaceIndex] = useState(0);
 
 		const About = card?.About ?? "";
 		const drink = card?.Alkol ?? "";
@@ -106,16 +106,16 @@ export default Card = React.memo(
 		const gender = getGender(genderNo);
 		const age = getAge(bDay);
 
-		const photoListRef = React.useRef();
+		const photoListRef = useRef();
 
-		React.useEffect(() => {
+		useEffect(() => {
 			let abortController = new AbortController();
 			return () => {
 				abortController.abort();
 			};
 		});
 
-		// React.useEffect(async () => {
+		// useEffect(async () => {
 		// 	if (photoList.length > 0) {
 		// 		photoList.map(async (item, index) => {
 		// 			await Image.prefetch(item?.PhotoLink);
@@ -196,8 +196,12 @@ export default Card = React.memo(
 						console.log("send notification.");
 					}
 
-					if (index == length - 1) {
-						setTimeout(refreshList, 100);
+					// if (index == length - 1) {
+					// 	setTimeout(refreshList, 100);
+					// 	return;
+					// }
+					if (index == length - 2) {		
+						refreshList();
 						return;
 					}
 
@@ -231,7 +235,7 @@ export default Card = React.memo(
 				});
 		};
 
-		const panHandler = React.useMemo(() =>
+		const panHandler = useMemo(() =>
 			Gesture.Pan()
 				.onUpdate((event) => {
 					if (indexOfFrontCard.value == index) {
@@ -253,7 +257,7 @@ export default Card = React.memo(
 				})
 		);
 
-		const tapHandler = React.useMemo(() =>
+		const tapHandler = useMemo(() =>
 			Gesture.Tap()
 				.numberOfTaps(2)
 				.onStart(() => {
@@ -436,7 +440,7 @@ export default Card = React.memo(
 															style={{
 																aspectRatio: 1 / 1.5,
 																height: Math.min(height * 0.7, width * 1.35),
-																resizeMode: "cover",
+																//resizeMode: "cover",
 																backgroundColor: colors.cool_gray,
 															}}
 														/>
@@ -446,7 +450,7 @@ export default Card = React.memo(
 											pagingEnabled={true}
 											showsVerticalScrollIndicator={false}
 											onScroll={handleScroll}
-											initialNumToRender={2}
+											initialNumToRender={1}
 										/>
 									) : (
 										<View
@@ -930,4 +934,4 @@ export default Card = React.memo(
 			</Animated.View>
 		);
 	}
-);
+
