@@ -77,7 +77,6 @@ export default styles = StyleSheet.create({
 		justifyContent: "center",
 		alignSelf: "center",
 		overflow: "hidden",
-		alignSelf: "center",
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,

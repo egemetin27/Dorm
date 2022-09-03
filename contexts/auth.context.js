@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import url from "../connection";
 import crypto from "../functions/crypto";
 import { ListsContext } from "./lists.context";
+import { sort } from "../utils/array.utils";
 
 export const AuthContext = createContext({
 	user: null,
@@ -64,7 +65,7 @@ const AuthProvider = ({ children }) => {
 					const { applists, ...userData } = {
 						...data,
 						email: email,
-						Photo: photoList,
+						Photo: sort(photoList, "Photo_Order"),
 					};
 
 					const credentials = JSON.stringify({

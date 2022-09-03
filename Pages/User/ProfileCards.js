@@ -7,9 +7,17 @@ import ReactNative, {
 	Dimensions,
 	BackHandler,
 	ActivityIndicator,
+	FlatList,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useSharedValue, useDerivedValue } from "react-native-reanimated";
+import Animated, {
+	useSharedValue,
+	useDerivedValue,
+	useAnimatedStyle,
+	interpolate,
+	Extrapolate,
+	withTiming,
+} from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
 import { Feather } from "@expo/vector-icons";
@@ -26,6 +34,8 @@ import crypto from "../../functions/crypto";
 import Swiper from "react-native-deck-swiper";
 import Card from "../../components/person-card-big.component";
 import useBackHandler from "../../hooks/useBackHandler";
+import CustomImage from "../../components/custom-image.component";
+import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -53,12 +63,25 @@ export default function ProfileCards({ navigation, route }) {
 
 	const indexOfFrontCard = useSharedValue(0);
 	const isBackFace = useSharedValue(false);
+	const x = useSharedValue(0);
 
 	const [reportPage, setReportPage] = useState(false);
 	const [chosenReport, setChosenReport] = useState(0);
 
 	const [name, setName] = useState("");
 	const [reportUserID, setReportUserID] = useState("");
+
+	useEffect(async () => {
+		async function prepare() {
+			let profile = list.splice(idx, 1);
+			setShownList([profile[0], ...list]);
+		}
+		try {
+			await prepare();
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
 
 	function showReportPage(otherUserID, name) {
 		setName(name);
@@ -108,19 +131,13 @@ export default function ProfileCards({ navigation, route }) {
 			}`
 	);
 
-	// const peopleList = route.params.list;
+	const handleSwipeAnimation = (event) => {
+		x.value = event;
+	};
 
-	useEffect(async () => {
-		async function prepare() {
-			let profile = list.splice(idx, 1);
-			setShownList([profile[0], ...list]);
-		}
-		try {
-			await prepare();
-		} finally {
-			setIsLoading(false);
-		}
-	}, []);
+	const handleSwipeEnd = () => {
+		x.value = withTiming(0);
+	};
 
 	const handleSwipe = ({ value, index }) => {
 		// 0 = like, 1 = super like, 2 =  dislike
@@ -134,6 +151,8 @@ export default function ProfileCards({ navigation, route }) {
 			eventId,
 			eventName,
 		});
+
+		indexOfFrontCard.value += 1;
 
 		const otherUser = shownList[index];
 
@@ -175,6 +194,40 @@ export default function ProfileCards({ navigation, route }) {
 			});
 	};
 
+	const animatedLike = useAnimatedStyle(() => {
+		return {
+			transform: [
+				{
+					translateX:
+						x.value > 0
+							? interpolate(x.value, [0, width], [0, -width / 2 - 60], Extrapolate.CLAMP)
+							: 0,
+				},
+				{
+					scale: x.value > 0 ? interpolate(x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
+				},
+			],
+			opacity: interpolate(x.value, [width * 0.95, width], [1, 0]),
+		};
+	});
+
+	const animatedDislike = useAnimatedStyle(() => {
+		return {
+			transform: [
+				{
+					translateX:
+						x.value < 0
+							? interpolate(x.value, [0, -width], [0, width / 2 + 60], Extrapolate.CLAMP)
+							: 0,
+				},
+				{
+					scale: x.value < 0 ? interpolate(-x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
+				},
+			],
+			opacity: interpolate(x.value, [-width * 0.95, -width], [1, 0]),
+		};
+	});
+
 	if (isLoading) {
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
@@ -183,7 +236,6 @@ export default function ProfileCards({ navigation, route }) {
 			</View>
 		);
 	}
-
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
@@ -250,6 +302,10 @@ export default function ProfileCards({ navigation, route }) {
 						</Text> */}
 					</View>
 					<Swiper
+						swipeBackCard
+						onSwiping={handleSwipeAnimation}
+						onSwiped={handleSwipeEnd}
+						onSwipedAborted={handleSwipeEnd}
 						onSwipedRight={(index) => {
 							handleSwipe({ value: 0, index });
 						}}
@@ -258,14 +314,58 @@ export default function ProfileCards({ navigation, route }) {
 						}}
 						cards={shownList}
 						keyExtractor={(card) => card.UserId}
-						stackSize={5}
+						stackSize={3}
 						verticalSwipe={false}
 						backgroundColor="transparent"
 						cardVerticalMargin={0}
 						stackSeparation={0}
-						// renderCard={(item, index) => {
 						renderCard={(card, idx) => {
-							return <Card card={card} index={idx} isBackFace={isBackFace} />;
+							// return (
+							// 	<View
+							// 		style={[
+							// 			commonStyles.photo,
+							// 			{
+							// 				height: Math.min(width * 1.35, height * 0.7),
+							// 				backgroundColor: "#440080",
+							// 				borderColor: "red",
+							// 				borderWidth: 5,
+							// 			},
+							// 		]}
+							// 	>
+							// 		<FlatList
+							// 			data={card.photos}
+							// 			keyExtractor={(item) => {
+							// 				return item.Photo_Order;
+							// 			}}
+							// 			renderItem={({ item }) => {
+							// 				return (
+							// 					<CustomImage
+							// 						url={item?.PhotoLink}
+							// 						style={{
+							// 							// width: "100%",
+							// 							// flex: 1,
+							// 							aspectRatio: 1 / 1.5,
+							// 							height: Math.min(height * 0.7, width * 1.35),
+							// 							// //resizeMode: "cover",
+							// 							// backgroundColor: colors.cool_gray,
+							// 						}}
+							// 					/>
+							// 				);
+							// 			}}
+							// 			pagingEnabled={true}
+							// 			showsVerticalScrollIndicator={false}
+							// 		/>
+							// 	</View>
+							// );
+							return (
+								<Card
+									card={card}
+									index={idx}
+									isBackFace={isBackFace}
+									isScrollShowed={Session.ScrollShown}
+									indexOfFrontCard={indexOfFrontCard}
+								/>
+							);
 						}}
 					/>
 					{/* {shownList.map((item, index) => {
@@ -353,7 +453,6 @@ export default function ProfileCards({ navigation, route }) {
 			</View>
 
 			{/* Report Page Modal */}
-
 			<CustomModal
 				visible={reportPage}
 				dismiss={() => {
@@ -642,168 +741,62 @@ export default function ProfileCards({ navigation, route }) {
 				</View>
 			</CustomModal>
 			{/* Report Page Modal */}
-			{/* <AnimatedModal
-				visible={likeEndedModal}
-				// visible={likeEndedModal}
-				dismiss={() => {
-					likeEndedModal.value = false;
-					// setLikeEndedModal(false);
-				}}
-			>
-				<View
-					style={{
-						width: width * 0.8,
-						// height: height * 0.6,
-						backgroundColor: "white",
-						borderRadius: 10,
-						alignItems: "center",
-						justifyContent: "space-around",
-						paddingVertical: 30,
-						paddingHorizontal: "7.5%",
-					}}
-				>
-					<Image
-						source={require("../../assets/superLikeFinished.png")}
-						style={{ height: "24%" }}
-						resizeMode={"contain"}
-					/>
-					<Text
-						style={{
-							textAlign: "center",
-							marginTop: 20,
-							color: colors.medium_gray,
-							fontSize: Math.min(height * 0.021, width * 0.04),
-						}}
-					>
-						Beğenme hakların bitti!{"\n"} Ama korkma gün içinde tekrar yenilecek
-					</Text>
-					<View>
-						<Text
-							numberOfLines={1}
-							adjustsFontSizeToFit={true}
-							style={{
-								textAlign: "center",
-								marginTop: 20,
-								color: colors.cool_gray,
-								fontSize: Math.min(height * 0.021, width * 0.04),
-							}}
-						>
-							Beğenme hakkın için kalan süre:
-						</Text>
-						<Text
-							numberOfLines={1}
-							adjustsFontSizeToFit={true}
-							style={{
-								textAlign: "center",
-								color: colors.cool_gray,
-								fontSize: Math.min(height * 0.021, width * 0.04),
-							}}
-						>
-							<Feather
-								name="clock"
-								size={Math.min(height * 0.021, width * 0.04)}
-								color={colors.cool_gray}
-							/>
-							{endOfLikesTimer.hour != 0 ? endOfLikesTimer.hour + " saat" : ""}{" "}
-							{endOfLikesTimer.minute} dakika
-						</Text>
-					</View>
-					<ReactNative.TouchableOpacity
-						onPress={() => {
-							// setLikeEndedModal(false);
-							likeEndedModal.value = false;
-						}}
-						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
-					>
-						<Gradient
-							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								width: "100%",
-								height: "100%",
-							}}
-						>
-							<Text
-								style={{
-									color: colors.white,
-									fontSize: 20,
-									fontFamily: "PoppinsSemiBold",
-									letterSpacing: 1,
-								}}
-							>
-								Devam Et
-							</Text>
-						</Gradient>
-					</ReactNative.TouchableOpacity>
-				</View>
-			</AnimatedModal> */}
 
-			{/* <CustomModal
-				visible={endOfListModal}
-				dismiss={() => {
-					setEndOfListModal(false);
+			<View
+				style={{
+					position: "absolute",
+					height: "100%",
+					width: "100%",
+					justifyContent: "center",
 				}}
 			>
-				<View
-					style={{
-						width: width * 0.8,
-						aspectRatio: 1,
-						maxHeight: height * 0.5,
-						backgroundColor: "white",
-						borderRadius: 10,
-						alignItems: "center",
-						paddingVertical: 30,
-						paddingHorizontal: 40,
-					}}
+				{/* Animated Like */}
+				<Animated.View
+					name={"like"}
+					style={[
+						{
+							position: "absolute",
+							width: 60,
+							aspectRatio: 1 / 1,
+							backgroundColor: "transparent",
+							borderRadius: 30,
+							right: 0,
+						},
+						animatedLike,
+					]}
 				>
 					<Image
-						source={require("../../assets/sadFace.png")}
-						style={{ height: "24%" }}
-						resizeMode={"contain"}
+						style={{ width: "100%", height: "100%", resizeMode: "contain" }}
+						source={require("../../assets/Like.png")}
 					/>
-					<Text
+				</Animated.View>
+
+				{/* Animated Dislike */}
+				<Animated.View
+					name={"dislike"}
+					style={[
+						{
+							position: "absolute",
+							width: 60,
+							aspectRatio: 1 / 1,
+							backgroundColor: "transparent",
+							borderRadius: 30,
+							left: 0,
+						},
+						animatedDislike,
+					]}
+				>
+					<Image
 						style={{
-							textAlign: "center",
-							marginTop: 20,
-							color: colors.medium_gray,
-							fontSize: 16,
+							tintColor: colors.gray,
+							width: "100%",
+							height: "100%",
+							resizeMode: "contain",
 						}}
-					>
-						Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa
-						zamanda tekrar uğramayı unutma!
-					</Text>
-					<ReactNative.TouchableOpacity
-						onPress={async () => {
-							await setEndOfListModal(false);
-							navigation.replace("MainScreen", {
-								screen: "AnaSayfa",
-								params: { screen: "Home" },
-							});
-						}}
-						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
-					>
-						<Gradient
-							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								width: "100%",
-								height: "100%",
-							}}
-						>
-							<Text
-								style={{
-									color: colors.white,
-									fontSize: 20,
-									fontFamily: "PoppinsSemiBold",
-									letterSpacing: 1,
-								}}
-							>
-								Ana Sayfaya Dön
-							</Text>
-						</Gradient>
-					</ReactNative.TouchableOpacity>
-				</View>
-			</CustomModal> */}
+						source={require("../../assets/Dislike.png")}
+					/>
+				</Animated.View>
+			</View>
 		</View>
 	);
 }

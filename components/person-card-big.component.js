@@ -36,7 +36,7 @@ import { getInterests } from "../functions/get-interests";
 
 const { height, width } = Dimensions.get("window");
 
-const Card = ({ card, index, isBackFace }) => {
+const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => {
 	const {
 		lists: { genderList, smokeAndDrinkList, signList, dietList },
 	} = useContext(ListsContext);
@@ -74,11 +74,7 @@ const Card = ({ card, index, isBackFace }) => {
 	};
 
 	const checkScrollNeeded = async () => {
-		if (
-			// index == indexOfFrontCard.value &&
-			// !isScrollShowed &&
-			photos.length > 1
-		) {
+		if (index == indexOfFrontCard.value && !isScrollShowed && photos.length > 1) {
 			scroll();
 			if (Session.ScrollNumber + 1 == 10) {
 				AsyncStorage.removeItem("scrollNotShowed");
@@ -137,9 +133,9 @@ const Card = ({ card, index, isBackFace }) => {
 	const card_style = [
 		commonStyles.photo,
 		{
-			// backgroundColor: "blue",
 			height: Math.min(width * 1.35, height * 0.7),
 			elevation: 0,
+			shadowOpacity: 0,
 		},
 	];
 
@@ -264,23 +260,6 @@ const Card = ({ card, index, isBackFace }) => {
 									animatedPhotoProgress4,
 								]}
 							/>
-							{/*  {sortedPhotos.map((photo, index) => {
-							 	return (
-							 		<Animated.View
-							 			style={[
-							 				{
-							 					backgroundColor: colors.white,
-							 					elevation: 10,
-							 					minHeight: 8,
-							 					maxHeight: 24,
-							 					width: 8,
-							 					borderRadius: 4,
-							 					marginBottom: 4,
-							 				},
-							 			]}
-							 		/>
-							 	);
-							 })}  */}
 						</Reanimated.View>
 						<LinearGradient
 							colors={["rgba(0,0,0,0.005)", " rgba(0,0,0,0.1)", "rgba(0,0,0,0.7)"]}
@@ -399,6 +378,7 @@ const Card = ({ card, index, isBackFace }) => {
 							}}
 						/>
 					</Reanimated.View>
+
 					{/* Back Face End */}
 				</View>
 			</DoubleTap>
