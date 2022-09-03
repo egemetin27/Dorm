@@ -3,7 +3,6 @@ import { Dimensions, Text } from "react-native";
 const { width, height } = Dimensions.get("window");
 
 export const getInterests = (interestList) => {
-	console.log({ interestList });
 	if (!interestList || interestList.length === 0 || typeof interestList === "string") return "";
 	return interestList.map((item, index) => {
 		return (

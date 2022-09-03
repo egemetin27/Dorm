@@ -31,10 +31,12 @@ const { width, height, fontScale } = Dimensions.get("window");
 
 export default function ProfileCards({ navigation, route }) {
 	const {
-		user: { userId, matchMode },
+		user: { userId, sesToken, matchMode },
 		peopleListIndex,
+		SwipeRefreshTime,
 		signOut,
 		setPeopleIndex,
+		updateProfile,
 	} = useContext(AuthContext);
 
 	useBackHandler(() => {
@@ -78,7 +80,7 @@ export default function ProfileCards({ navigation, route }) {
 				});
 				await axios
 					.post(url + "/report", encryptedData, {
-						headers: { "access-token": user.sesToken },
+						headers: { "access-token": sesToken },
 					})
 					.then((res) => {
 						if (res.data == "Unauthorized Session") {
@@ -122,10 +124,8 @@ export default function ProfileCards({ navigation, route }) {
 
 	const handleSwipe = ({ value, index }) => {
 		// 0 = like, 1 = super like, 2 =  dislike
+		// setPeopleIndex(index + peopleListIndex);
 		isBackFace.value = false;
-		setPeopleIndex(index + peopleListIndex);
-		// console.log(value == 0 ? "liked:" : "disliked:");
-		// console.log(shownList[index]);
 		const likeDislike = crypto.encrypt({
 			isLike: value,
 			userSwiped: userId,
@@ -135,60 +135,44 @@ export default function ProfileCards({ navigation, route }) {
 			eventName,
 		});
 
-		// axios
-		// 	.post(url + "/userAction/LikeDislike", likeDislike, {
-		// 		headers: { "access-token": user.sesToken },
-		// 	})
-		// 	.then((res) => {
-		// 		console.log(res.data);
-		// 		// if (res.data.LikeCount == 0) {
-		// 		// 	user.SwipeRefreshTime = normalizeTime(Date.now());
-		// 		// 	Session.LikeCount = 0;
-		// 		// }
+		const otherUser = shownList[index];
 
-		// 		if (res.data.message == "Match") {
-		// 			showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
-		// 			console.log("send notification.");
-		// 		}
+		axios
+			.post(url + "/userAction/LikeDislike", likeDislike, {
+				headers: { "access-token": sesToken },
+			})
+			.then((res) => {
+				console.log(res.data);
 
-		// 		// if (index == length - 1) {
-		// 		// 	setTimeout(refreshList, 100);
-		// 		// 	return;
-		// 		// }
-		// 		// if (index == length - 2) {
-		// 		// 	refreshList();
-		// 		// 	return;
-		// 		// }
+				if (res.data.message == "Match") {
+					showMatchScreen(name, otherUser.photos[0]?.PhotoLink, myProfilePicture);
+				}
+			})
+			.catch((error) => {
+				if (error.response) {
+					console.log(error.response);
+					if (error.response.status == 410) {
+						Alert.alert("Oturumunuzun süresi doldu!");
+						signOut();
+					}
+					if (error.response.status == 408) {
+						// console.log("swipe count ended response");
+						updateProfile({ SwipeRefreshTime: error.response.data });
+						Session.LikeCount = 0;
 
-		// 		// incrementIndex();
-		// 	})
-		// 	.catch((error) => {
-		// 		if (error.response) {
-		// 			console.log(error.response);
-		// 			if (error.response.status == 410) {
-		// 				Alert.alert("Oturumunuzun süresi doldu!");
-		// 				signOut();
-		// 			}
-		// 			if (error.response.status == 408) {
-		// 				// console.log("swipe count ended response");
-		// 				user.SwipeRefreshTime = error.response.data;
-		// 				Session.LikeCount = 0;
+						const time = getTimeDiff(error.response.data);
+						showLikeEndedModal(time.hour, time.minute);
 
-		// 				const time = getTimeDiff(error.response.data);
-		// 				showLikeEndedModal(time.hour, time.minute);
-
-		// 				x.value = withSpring(0);
-		// 				destination.value = 0;
-		// 			}
-		// 			return;
-		// 		} else if (error.request) {
-		// 			console.log("request error: ", error.request);
-		// 		} else {
-		// 			console.log("error: ", error.message);
-		// 		}
-
-		// 		// incrementIndex();
-		// 	});
+						x.value = withSpring(0);
+						destination.value = 0;
+					}
+					return;
+				} else if (error.request) {
+					console.log("request error: ", error.request);
+				} else {
+					console.log("error: ", error.message);
+				}
+			});
 	};
 
 	if (isLoading) {
