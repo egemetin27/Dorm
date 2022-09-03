@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { Alert, Platform } from "react-native";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import url from "../connection";
 import crypto from "../functions/crypto";
-import { Session } from "../nonVisualComponents/SessionVariables";
+import { ListsContext } from "./lists.context";
 
 export const AuthContext = createContext({
 	user: null,
@@ -20,6 +20,7 @@ export const AuthContext = createContext({
 });
 
 const AuthProvider = ({ children }) => {
+	const { updateLists } = useContext(ListsContext);
 	const navigation = useNavigation();
 
 	const [user, setUser] = useState(null);
@@ -33,7 +34,7 @@ const AuthProvider = ({ children }) => {
 			.post(url + "/account/Login", dataToBeSent)
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
-				Session.lists = { ...Session.lists, ...data.applists };
+				updateLists(data.applists);
 				if (data.authentication == "true") {
 					if (navigation != null && data.onBoardingComplete == 0) {
 						navigation.reset({
@@ -60,7 +61,7 @@ const AuthProvider = ({ children }) => {
 						};
 					});
 
-					const userData = {
+					const { applists, ...userData } = {
 						...data,
 						email: email,
 						Photo: photoList,
@@ -72,7 +73,8 @@ const AuthProvider = ({ children }) => {
 					});
 
 					SecureStore.setItemAsync("credentials", credentials);
-					setUser({ ...userData });
+
+					setUser(userData);
 					setIsLoggedIn(true);
 				} else {
 					console.log("else:", data);

@@ -18,12 +18,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { Gradient, GradientRegistration, colors } from "../../visualComponents/colors";
 import { getAge } from "../../utils/date.utils";
 import { CustomPicker } from "../../visualComponents/customComponents";
-import { univList } from "../../nonVisualComponents/Lists";
 import { Session } from "../../nonVisualComponents/SessionVariables";
+import { ListsContext } from "../../contexts/lists.context";
 
 const { width, height } = Dimensions.get("window");
 
 export default function Register({ navigation }) {
+	const { lists } = useContext(ListsContext);
+
 	const animRef1 = React.useRef(new Animated.Value(0)).current;
 	const animRef2 = React.useRef(new Animated.Value(0)).current;
 	const animRef3 = React.useRef(new Animated.Value(0)).current;
@@ -530,7 +532,7 @@ export default function Register({ navigation }) {
 
 			<CustomPicker
 				style={{ width: width * 0.7, height: height * 0.6, maxWidth: 300, maxHeight: 500 }}
-				data={Session.lists.univList.slice(1)}
+				data={lists.univList.slice(1)}
 				visible={univListVisible}
 				setVisible={setUnivListVisible}
 				setChoice={setUniversity}

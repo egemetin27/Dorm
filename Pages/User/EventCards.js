@@ -41,6 +41,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import crypto from "../../functions/crypto";
 import { NotificationContext } from "../../contexts/notification.context";
+import { checkField } from "../../utils/null-check.utils";
 
 const { width, height } = Dimensions.get("window");
 
@@ -71,14 +72,6 @@ const Card = ({ event, user, signOut }) => {
 		isLiked,
 	} = event;
 
-	const checkField = (text) => {
-		// return true if null or empty
-
-		// if (typeof text !== "undefined")
-
-		return !text || typeof text === "undefined" || (typeof text === "string" && text.length === 0);
-	};
-
 	const navigation = useNavigation();
 
 	const [favFlag, setFavFlag] = useState(isLiked == 1 ? true : false);
@@ -90,7 +83,7 @@ const Card = ({ event, user, signOut }) => {
 	const turn = useSharedValue(1); // 1 => front, -1 => back
 
 	useEffect(() => {
-		setFavFlag(isLiked==1);
+		setFavFlag(isLiked == 1);
 	}, [isLiked]);
 
 	const animatedCard = useAnimatedStyle(() => {
@@ -352,7 +345,7 @@ const Card = ({ event, user, signOut }) => {
 										>
 											{name}
 										</Text>
-										{(date != "NaN/NaN/NaN") && (date != "") && (
+										{date != "NaN/NaN/NaN" && date != "" && (
 											<Text
 												style={{
 													color: colors.white,

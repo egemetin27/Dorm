@@ -19,6 +19,9 @@ const PersonCard = ({ person, openProfiles, index, length, setIsAppReady }) => {
 		Major: major,
 		photos: photoList,
 	} = person;
+	const firstPhoto = photoList.find(({ Photo_Order }) => {
+		return Photo_Order.toString() === "1";
+	});
 
 	const age = getAge(bDay);
 
@@ -40,7 +43,7 @@ const PersonCard = ({ person, openProfiles, index, length, setIsAppReady }) => {
 		>
 			{photoList?.length > 0 ? (
 				<CustomImage
-					url={photoList[0]?.PhotoLink}
+					url={firstPhoto.PhotoLink}
 					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 				/>
 			) : (

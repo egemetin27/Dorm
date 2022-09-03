@@ -24,6 +24,7 @@ import Stack from "./Navigators/StackNavigator";
 // import Temp from "./Pages/Temp";
 import AppStateManager from "./components/app-state-manager";
 import FilterProvider from "./contexts/filter.context";
+import ListsProvider from "./contexts/lists.context";
 
 //import ImageManipulatorTest from "./ImageManipulatorTest";
 
@@ -107,21 +108,23 @@ export default function App() {
 				},
 			}}
 		>
-			<AuthProvider>
-				<FilterProvider>
-					<NotificationProvider>
-						<MessageProvider>
-							<SocketProvider>
-								<AppStateManager>
-									<SafeAreaProvider style={{ flex: 1 }}>
-										<Stack />
-									</SafeAreaProvider>
-								</AppStateManager>
-							</SocketProvider>
-						</MessageProvider>
-					</NotificationProvider>
-				</FilterProvider>
-			</AuthProvider>
+			<ListsProvider>
+				<AuthProvider>
+					<FilterProvider>
+						<NotificationProvider>
+							<MessageProvider>
+								<SocketProvider>
+									<AppStateManager>
+										<SafeAreaProvider style={{ flex: 1 }}>
+											<Stack />
+										</SafeAreaProvider>
+									</AppStateManager>
+								</SocketProvider>
+							</MessageProvider>
+						</NotificationProvider>
+					</FilterProvider>
+				</AuthProvider>
+			</ListsProvider>
 		</NavigationContainer>
 	);
 }

@@ -9,7 +9,7 @@ import ReactNative, {
 	ActivityIndicator,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useDerivedValue } from "react-native-reanimated";
+import { useSharedValue, useDerivedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
 import { Feather } from "@expo/vector-icons";
@@ -22,24 +22,35 @@ import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { AuthContext } from "../../contexts/auth.context";
 
-import Card from "./Card";
-import { Session } from "../../nonVisualComponents/SessionVariables";
-
 import crypto from "../../functions/crypto";
+import Swiper from "react-native-deck-swiper";
+import Card from "../../components/person-card-big.component";
+import useBackHandler from "../../hooks/useBackHandler";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
 export default function ProfileCards({ navigation, route }) {
-	const { myID, sesToken, list, idx, fromEvent = false } = route.params;
+	const {
+		user: { userId, matchMode },
+		peopleListIndex,
+		signOut,
+		setPeopleIndex,
+	} = useContext(AuthContext);
 
-	const { user, signOut, peopleListIndex } = useContext(AuthContext);
+	useBackHandler(() => {
+		navigation.goBack();
+		return true;
+	});
+
+	const { list, idx, fromEvent = false } = route.params;
+	const eventId = route.params.eventID ?? 0;
+	const eventName = route.params.eventName ?? "";
 
 	const [isLoading, setIsLoading] = useState(true);
-	const [peopleList, setPeopleList] = useState([]);
 	const [shownList, setShownList] = useState([]);
-	const indexOfFrontCard = useSharedValue(0);
 
-	const eventID = route.params.eventID ?? 0;
+	const indexOfFrontCard = useSharedValue(0);
+	const isBackFace = useSharedValue(false);
 
 	const [reportPage, setReportPage] = useState(false);
 	const [chosenReport, setChosenReport] = useState(0);
@@ -86,13 +97,10 @@ export default function ProfileCards({ navigation, route }) {
 		}
 	}
 
-	// const numberOfSuperLikes = useSharedValue(1); // TODO: get this data from database
-	const backFace = useSharedValue(false);
-
 	const derivedText = useDerivedValue(
 		() =>
 			`${
-				backFace.value
+				isBackFace.value
 					? "Arka yüze dönmek için kart alanına çift dokun"
 					: "Daha iyi tanımak için kart alanına çift dokun"
 			}`
@@ -101,80 +109,87 @@ export default function ProfileCards({ navigation, route }) {
 	// const peopleList = route.params.list;
 
 	useEffect(async () => {
-		const backAction = () => {
-			if (fromEvent) {
-				navigation.goBack();
-				return true;
-			}
-			navigation.goBack();
-			return true;
-		};
-		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 		async function prepare() {
 			let profile = list.splice(idx, 1);
-			// setPeopleList(list.slice(5));
-			// setShownList([profile[0], ...list.slice(0, 5)]);
-			setPeopleList(list.slice(4));
-			setShownList([profile[0], ...list.slice(0, 4)]);
+			setShownList([profile[0], ...list]);
 		}
 		try {
 			await prepare();
 		} finally {
 			setIsLoading(false);
 		}
-		return () => backHandler.remove();
 	}, []);
 
-	// useAnimatedReaction(
-	// 	() => {
-	// 		indexOfFrontCard.value;
-	// 	},
-	// 	() => {
-	// 		let list = peopleList;
-	// 		let person = list.shift();
-	// 		// console.log(person);
-	// 		console.log(shownList.length);
-	// 		if (shownList.length > 2) {
-	// 			runOnJS(setShownList)([...shownList.slice(1), person]);
-	// 			runOnJS(setPeopleList)(list);
-	// 			console.log([...shownList.slice(1), person]);
-	// 		}
-	// 		console.log("AAAA");
-	// 	},
-	// 	[indexOfFrontCard.value]
-	// );
+	const handleSwipe = ({ value, index }) => {
+		// 0 = like, 1 = super like, 2 =  dislike
+		isBackFace.value = false;
+		setPeopleIndex(index + peopleListIndex);
+		// console.log(value == 0 ? "liked:" : "disliked:");
+		// console.log(shownList[index]);
+		const likeDislike = crypto.encrypt({
+			isLike: value,
+			userSwiped: userId,
+			otherUser: shownList[index].UserId,
+			matchMode,
+			eventId,
+			eventName,
+		});
 
-	// useEffect(async () => {
-	// 	try {
-	// 		await axios
-	// 			.post(
-	// 				url + "/profile/getProfilePic",
-	// 				{ userId: route.params.myID },
-	// 				{ headers: { "access-token": route.params.sesToken } }
-	// 			)
-	// 			.then((res) => {
-	// 				setMyProfilePicture(res.data[0].PhotoLink);
-	// 			})
-	// 			.catch((err) => {
-	// 				console.log(err);
-	// 			});
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// }, []);
-	// useEffect(() => {
-	// 	if (peopleList.length > 0 && indexOfFrontCard == peopleList.length)
-	// 		navigation.navigate("ListEndedModal");
-	// 	// if (peopleList.length > 0 && indexOfFrontCard == peopleList.length) setEndOfListModal(true);
-	// }, [indexOfFrontCard]);
+		// axios
+		// 	.post(url + "/userAction/LikeDislike", likeDislike, {
+		// 		headers: { "access-token": user.sesToken },
+		// 	})
+		// 	.then((res) => {
+		// 		console.log(res.data);
+		// 		// if (res.data.LikeCount == 0) {
+		// 		// 	user.SwipeRefreshTime = normalizeTime(Date.now());
+		// 		// 	Session.LikeCount = 0;
+		// 		// }
 
-	// useEffect(() => {
-	// 	const unsubscribe = navigation.addListener("blur", () => {
-	// 		setEndOfListModal(false);
-	// 	});
+		// 		if (res.data.message == "Match") {
+		// 			showMatchScreen(name, photoList[0]?.PhotoLink, myProfilePicture);
+		// 			console.log("send notification.");
+		// 		}
 
-	// 	return unsubscribe;
-	// }, [navigation]);
+		// 		// if (index == length - 1) {
+		// 		// 	setTimeout(refreshList, 100);
+		// 		// 	return;
+		// 		// }
+		// 		// if (index == length - 2) {
+		// 		// 	refreshList();
+		// 		// 	return;
+		// 		// }
+
+		// 		// incrementIndex();
+		// 	})
+		// 	.catch((error) => {
+		// 		if (error.response) {
+		// 			console.log(error.response);
+		// 			if (error.response.status == 410) {
+		// 				Alert.alert("Oturumunuzun süresi doldu!");
+		// 				signOut();
+		// 			}
+		// 			if (error.response.status == 408) {
+		// 				// console.log("swipe count ended response");
+		// 				user.SwipeRefreshTime = error.response.data;
+		// 				Session.LikeCount = 0;
+
+		// 				const time = getTimeDiff(error.response.data);
+		// 				showLikeEndedModal(time.hour, time.minute);
+
+		// 				x.value = withSpring(0);
+		// 				destination.value = 0;
+		// 			}
+		// 			return;
+		// 		} else if (error.request) {
+		// 			console.log("request error: ", error.request);
+		// 		} else {
+		// 			console.log("error: ", error.message);
+		// 		}
+
+		// 		// incrementIndex();
+		// 	});
+	};
 
 	if (isLoading) {
 		return (
@@ -184,6 +199,7 @@ export default function ProfileCards({ navigation, route }) {
 			</View>
 		);
 	}
+
 	return (
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
@@ -245,24 +261,43 @@ export default function ProfileCards({ navigation, route }) {
 							},
 						]}
 					>
-						<Text style={{ fontSize: normalize(18), color: colors.medium_gray, letterSpacing: 1 }}>
+						{/* <Text style={{ fontSize: normalize(18), color: colors.medium_gray, letterSpacing: 1 }}>
 							Yeni kişiler aranıyor...
-						</Text>
+						</Text> */}
 					</View>
-					{shownList.map((item, index) => {
+					<Swiper
+						onSwipedRight={(index) => {
+							handleSwipe({ value: 0, index });
+						}}
+						onSwipedLeft={(index) => {
+							handleSwipe({ value: 2, index });
+						}}
+						cards={shownList}
+						keyExtractor={(card) => card.UserId}
+						stackSize={5}
+						verticalSwipe={false}
+						backgroundColor="transparent"
+						cardVerticalMargin={0}
+						stackSeparation={0}
+						// renderCard={(item, index) => {
+						renderCard={(card, idx) => {
+							return <Card card={card} index={idx} isBackFace={isBackFace} />;
+						}}
+					/>
+					{/* {shownList.map((item, index) => {
 						return (
-							<Card
+							<Card2
 								key={index}
 								// index={9 - index}
 								// index={peopleList.length - index - 1}
+								index={index}
 								eventId={route.params?.eventId ?? 0}
 								eventName={route.params?.eventName ?? ""}
-								index={index}
 								idxForMainPage={idx + peopleListIndex - 1}
 								card={item}
 								backFace={backFace}
-								myID={myID}
-								sesToken={sesToken}
+								myID={user.userId}
+								sesToken={user.sesToken}
 								indexOfFrontCard={indexOfFrontCard}
 								myProfilePicture={route.params.myPP}
 								isScrollShowed={Session.ScrollShown}
@@ -308,7 +343,7 @@ export default function ProfileCards({ navigation, route }) {
 								}}
 							/>
 						);
-					})}
+					})} */}
 				</View>
 
 				<View
@@ -332,255 +367,6 @@ export default function ProfileCards({ navigation, route }) {
 					/>
 				</View>
 			</View>
-
-			{/* <AnimatedModal
-				visible={superLikeEndedPopup.value}
-				dismiss={() => {
-					superLikeEndedPopup.value = false;
-				}}
-				// style={{ position: "absolute" }}
-			>
-				<View
-					style={{
-						width: width * 0.8,
-						aspectRatio: 1,
-						maxHeight: height * 0.5,
-						backgroundColor: "white",
-						borderRadius: 10,
-						alignItems: "center",
-						paddingVertical: 30,
-						paddingHorizontal: 40,
-					}}
-				>
-					<ReactNative.TouchableOpacity
-						onPress={() => {
-							superLikeEndedPopup.value = false;
-						}}
-						style={{ position: "absolute", top: 15, right: 20 }}
-					>
-						<Text
-							style={{
-								color: colors.medium_gray,
-								fontSize: 16,
-								fontWeight: "600",
-								letterSpacing: 0.5,
-							}}
-						>
-							Kapat
-						</Text>
-					</ReactNative.TouchableOpacity>
-					<Image
-						source={require("../../assets/superLikeFinished.png")}
-						style={{ height: "24%" }}
-						resizeMode={"contain"}
-					/>
-					<Text
-						style={{
-							textAlign: "center",
-							marginTop: 20,
-							color: colors.medium_gray,
-							fontSize: 16,
-						}}
-					>
-						Kıvılcım hakların bitti! Gün içinde tekrar yenilecek ama aranızdaki kıvılcımlar hiçbir
-						yere kaçmıyor
-					</Text>
-					<Text
-						style={{
-							textAlign: "center",
-							marginTop: 20,
-							color: colors.cool_gray,
-							fontSize: 16,
-						}}
-					>
-						Kıvılcım hakkın için kalan süre:{"\n"}
-						<Feather name="clock" size={16} color={colors.cool_gray} />
-						{hour} saat {minute} dakika {second} saniye
-					</Text>
-					<ReactNative.TouchableOpacity
-						onPress={handlePopupSubmit}
-						style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
-					>
-						<Gradient
-							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								width: "100%",
-								height: "100%",
-							}}
-						>
-							<Text
-								style={{
-									color: colors.white,
-									fontSize: 20,
-									fontFamily: "PoppinsSemiBold",
-									letterSpacing: 1,
-								}}
-							>
-								Devam Et
-							</Text>
-						</Gradient>
-					</ReactNative.TouchableOpacity>
-				</View>
-			</AnimatedModal> */}
-
-			{/*Match Page Modal */}
-			{/* <AnimatedModal
-				visible={matchPage2}
-				dismiss={() => {
-					// matchPopup.value = false;
-					// setMatchPage(false);
-					matchPage2.value = false;
-				}}
-			>
-				<View
-					style={{
-						height: height,
-						width: width,
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						position: "absolute",
-						justifyContent: "center",
-						alignItems: "center",
-						alignContent: "center",
-					}}
-				>
-				<View
-					style={{
-						height: height * 0.95,
-						width: width * 0.95,
-						backgroundColor: colors.white,
-					}}
-				>
-					<GradientText
-						style={{
-							fontSize: 26,
-							fontWeight: "bold",
-							textAlign: "center",
-							paddingVertical: height * 0.02,
-						}}
-						text={"Hey! \n Eşleştiniz"}
-					/>
-					<Text
-						style={{
-							fontSize: 23,
-							fontFamily: "Poppins",
-							color: colors.medium_gray,
-							textAlign: "center",
-							paddingVertical: height * 0.02,
-						}}
-					>
-						{name} {"&"} Sen
-					</Text>
-					<Image
-						source={{
-							uri: firstImg ?? null,
-						}}
-						style={{
-							top: height * 0.25,
-							left: width * 0.12,
-							borderRadius: 20,
-							position: "absolute",
-							aspectRatio: 1 / 1.5,
-							width: width * 0.4,
-							maxHeight: height * 0.7,
-							resizeMode: "cover",
-							transform: [{ rotateZ: "-18deg" }],
-							zIndex: 2,
-						}}
-					/>
-					<Image
-						source={{
-							uri: secondImg ?? null,
-						}}
-						style={{
-							top: height * 0.3,
-							left: width * 0.4,
-							borderRadius: 20,
-							position: "absolute",
-							aspectRatio: 1 / 1.5,
-							width: width * 0.4,
-							maxHeight: height * 0.7,
-							resizeMode: "cover",
-							transform: [{ rotateZ: "23deg" }],
-						}}
-					/>
-					<Text
-						style={{
-							paddingTop: height * 0.425,
-							fontSize: 16,
-							fontFamily: "Poppins",
-							color: colors.medium_gray,
-							textAlign: "center",
-							paddingHorizontal: 5,
-						}}
-					>
-						“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
-					</Text>
-
-					<ReactNative.TouchableOpacity
-						onPress={async () => {
-							// await setMatchPage(false);
-							matchPage2.value = false;
-							setIndexOfFrontCard(indexOfFrontCard + 1);
-							navigation.replace("MainScreen", { screen: "Mesajlar" });
-						}}
-						style={{
-							paddingTop: 10,
-							maxWidth: "100%",
-							overflow: "hidden",
-							justifyContent: "center",
-							alignItems: "center",
-						}}
-					>
-						<Gradient
-							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								width: "80%",
-								borderRadius: 12,
-							}}
-						>
-							<Text
-								style={{
-									color: colors.white,
-									fontSize: 18,
-									fontFamily: "PoppinsSemiBold",
-									padding: 10,
-								}}
-							>
-								Mesaj Gönder
-							</Text>
-						</Gradient>
-					</ReactNative.TouchableOpacity>
-					<ReactNative.TouchableOpacity
-						style={{
-							paddingTop: 5,
-						}}
-						onPress={async () => {
-							// await setMatchPage(false);
-							matchPage2.value = false;
-							// matchPopup.value = false;
-							//incrementIndex();
-						}}
-					>
-						<GradientText
-							style={{
-								fontSize: 18,
-								fontFamily: "Poppins",
-								fontWeight: "bold",
-								textAlign: "center",
-								paddingVertical: height * 0.02,
-							}}
-							text={"Daha sonra"}
-						/>
-					</ReactNative.TouchableOpacity>
-				</View>
-				</View>
-			</AnimatedModal> */}
-			{/* Match Page Modal */}
 
 			{/* Report Page Modal */}
 

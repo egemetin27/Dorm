@@ -70,7 +70,7 @@ export default styles = StyleSheet.create({
 		letterSpacing: 1.2,
 	},
 	photo: {
-		aspectRatio: 1 / 1.5,
+		aspectRatio: 2 / 3,
 		backgroundColor: colors.white,
 		borderRadius: 20,
 		alignItems: "center",

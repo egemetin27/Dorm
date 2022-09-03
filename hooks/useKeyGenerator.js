@@ -1,13 +1,14 @@
-import React from "react";
-import { Alert } from "react-native";
+import React, { useContext } from "react";
 import axios from "axios";
 import Constants from "expo-constants";
 
 import crypto from "../functions/crypto";
 import url from "../connection";
 import { Session } from "../nonVisualComponents/SessionVariables";
+import { ListsContext } from "../contexts/lists.context";
 
 const useKeyGenerator = () => {
+	const { updateLists } = useContext(ListsContext);
 	const [initializationError, setInitializationError] = React.useState(false);
 	// const initializationError = React.useRef(false);
 	React.useEffect(() => {
@@ -26,8 +27,7 @@ const useKeyGenerator = () => {
 				})
 				.then((res) => {
 					const { appVersion, genderList, univList } = res.data;
-					Session.lists.genderList = genderList;
-					Session.lists.univList = univList;
+					updateLists({ genderList, univList });
 
 					const localVersion = Constants.manifest.version.slice(
 						0,

@@ -29,9 +29,11 @@ import { AuthContext } from "../../contexts/auth.context";
 import CustomImage from "../../components/custom-image.component";
 import CustomRadio from "../../components/custom-radio.component";
 import { Session } from "../../nonVisualComponents/SessionVariables";
+import { ListsContext } from "../../contexts/lists.context";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
+	const { lists } = useContext(ListsContext);
 	const { user, updateProfile } = useContext(AuthContext);
 	// const tabBarHeight = useBottomTabBarHeight();
 
@@ -87,25 +89,19 @@ export default function Profile({ route, navigation }) {
 		try {
 			setName(user.Name + " " + user.Surname);
 			setAge(getAge(user.Birth_date));
-			setSex(user.Gender == "null" ? "" : Session.lists.genderList[user.Gender]);
+			setSex(user.Gender == "null" ? "" : lists.genderList[user.Gender]);
 			setSchool(user.School);
 			setMajor(user.Major == "null" ? "" : user.Major);
 			setReligion(user.Din == "null" ? "" : user.Din);
 			setFriendMode(user.matchMode == "1" ? true : false);
 
-			setSign(user.Burc == "null" ? Session.lists.signList[0] : Session.lists.signList[user.Burc]);
-			setDiet(
-				user.Beslenme == "null" ? Session.lists.dietList[0] : Session.lists.dietList[user.Beslenme]
-			);
+			setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
+			setDiet(user.Beslenme == "null" ? lists.dietList[0] : lists.dietList[user.Beslenme]);
 			setDrink(
-				user.Alkol == "null"
-					? Session.lists.smokeAndDrinkList[0]
-					: Session.lists.smokeAndDrinkList[user.Alkol]
+				user.Alkol == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Alkol]
 			);
 			setSmoke(
-				user.Sigara == "null"
-					? Session.lists.smokeAndDrinkList[0]
-					: Session.lists.smokeAndDrinkList[user.Sigara]
+				user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
 			);
 
 			/*
@@ -1093,35 +1089,35 @@ export default function Profile({ route, navigation }) {
 			</KeyboardAvoidingView>
 
 			<CustomPicker
-				data={Session.lists.genderList.slice(1)}
+				data={lists.genderList.slice(1)}
 				visible={genderVisible}
 				setVisible={setGenderVisible}
 				setChoice={setSex}
 			/>
 
 			<CustomPicker
-				data={Session.lists.signList.slice(1)}
+				data={lists.signList.slice(1)}
 				visible={signVisible}
 				setVisible={setSignVisible}
 				setChoice={setSign}
 				style={{ height: height * 0.5, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={Session.lists.dietList.slice(1)}
+				data={lists.dietList.slice(1)}
 				visible={dietVisible}
 				setVisible={setDietVisible}
 				setChoice={setDiet}
 				style={{ height: (6 * height) / 16, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={Session.lists.smokeAndDrinkList.slice(1)}
+				data={lists.smokeAndDrinkList.slice(1)}
 				visible={drinkVisible}
 				setVisible={setDrinkVisible}
 				setChoice={setDrink}
 				style={{ height: (5 * height) / 16, width: width * 0.6 }}
 			/>
 			<CustomPicker
-				data={Session.lists.smokeAndDrinkList.slice(1)}
+				data={lists.smokeAndDrinkList.slice(1)}
 				visible={smokeVisible}
 				setVisible={setSmokeVisible}
 				setChoice={setSmoke}
