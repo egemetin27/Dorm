@@ -6,6 +6,8 @@ export class Session {
 	static lists = {
 		genderList: [],
 		univList: [],
+      expectationList: [],
+      sexualOrientationList: [],
 		dietList: [],
 		signList: [],
 		smokeAndDrinkList: [],

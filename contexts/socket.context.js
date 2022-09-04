@@ -12,6 +12,8 @@ import axios from "axios";
 import { AuthContext } from "./auth.context";
 import { MessageContext } from "./message.context";
 import crypto from "../functions/crypto";
+import { Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export const SocketContext = createContext({
 	connect: () => {},
@@ -23,6 +25,8 @@ export const SocketContext = createContext({
 const SocketProvider = ({ children }) => {
 	const { user } = useContext(AuthContext);
 	const { handleNewMessage } = useContext(MessageContext);
+
+	const navigation = useNavigation();
 
 	const { userId, sesToken } = useMemo(
 		() => user ?? { userId: 0, sesToken: "Empty Token" },
@@ -129,7 +133,12 @@ const SocketProvider = ({ children }) => {
 	};
 
 	const sendMessage = async (msg, type) => {
-		if (ws.current.readyState != WebSocket.OPEN) return false;
+		if (ws.current.readyState != WebSocket.OPEN) {
+			navigation.navigate("CustomModal", {
+				modalType: "CONNECTION_ERROR",
+			});
+			return false;
+		};
 
 		const messageToSent = organizeOutput(msg, type);
 

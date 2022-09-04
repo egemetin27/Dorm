@@ -26,8 +26,8 @@ const useKeyGenerator = () => {
 					message: encryptedMessage,
 				})
 				.then((res) => {
-					const { appVersion, genderList, univList } = res.data;
-					updateLists({ genderList, univList });
+					const { appVersion, genderList, univList, sexualOrientationList, expectationList } = res.data;
+					updateLists({ genderList, univList, sexualOrientationList, expectationList });
 
 					const localVersion = Constants.manifest.version.slice(
 						0,

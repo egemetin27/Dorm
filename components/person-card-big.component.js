@@ -42,15 +42,11 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 	} = useContext(ListsContext);
 
 	const { photos, Name: name, Birth_Date: bDay, School: school, Major: major } = card;
-	const age = getAge(bDay);
+	//console.log(JSON.stringify(card));
+	const [age, setAge] = useState(getAge(bDay));
 	const sortedPhotos = sort(photos, "Photo_Order");
 
-	const photoIndex = useSharedValue(0);
-	const face = useSharedValue(1); // 1 => front, -1 => back
-
-	const photoListRef = useRef();
-
-	const BACK_FACE_FIELDS = {
+	const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
 		Gender: { label: "Cinsiyet", function: (idx) => genderList[idx + 1].choice },
 		Burc: { label: "Burç", function: (idx) => signList[idx].choice },
 		Sigara: { label: "Sigara Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
@@ -59,7 +55,12 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 		interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
 		About: { label: "Hakkında", function: (val) => getInterests(val) },
 		// Din: { label: "Dini İnanç", function: (val) => val },
-	};
+	});
+
+	const photoIndex = useSharedValue(0);
+	const face = useSharedValue(1); // 1 => front, -1 => back
+
+	const photoListRef = useRef();
 
 	const handleSingleTap = () => {
 		if (face.value === -1 || !photoListRef.current) return;
@@ -129,15 +130,6 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 			height: interpolate(photoIndex.value, [2, 3], [8, 24]),
 		};
 	});
-
-	const card_style = [
-		commonStyles.photo,
-		{
-			height: Math.min(width * 1.35, height * 0.7),
-			elevation: 0,
-			shadowOpacity: 0,
-		},
-	];
 
 	const animatedFrontFace = useAnimatedStyle(() => {
 		return {
@@ -393,3 +385,12 @@ const styles = StyleSheet.create({
 		backfaceVisibility: "hidden",
 	},
 });
+
+const card_style = [
+	commonStyles.photo,
+	{
+		// backgroundColor: "blue",
+		height: Math.min(width * 1.35, height * 0.7),
+		elevation: 0,
+	},
+];

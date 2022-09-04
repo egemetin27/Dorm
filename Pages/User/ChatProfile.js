@@ -429,7 +429,7 @@ const ChatProfile = ({ navigation, route }) => {
 											</Text>
 										</Text>
 									)}
-									{checkText(props.data.Din) && (
+									{/* {checkText(props.data.Din) && (
 										<Text
 											name={"Religion"}
 											style={{
@@ -449,7 +449,7 @@ const ChatProfile = ({ navigation, route }) => {
 												{props.data.Din}
 											</Text>
 										</Text>
-									)}
+									)} */}
 									{checkText(props.data.Burc) && (
 										<Text
 											name={"Burc"}
@@ -467,11 +467,11 @@ const ChatProfile = ({ navigation, route }) => {
 													fontSize: 22,
 												}}
 											>
-												{signList[props.data.Burc].choice}
+												{signList[props.data.Beslenme].choice}
 											</Text>
 										</Text>
 									)}
-									{checkText(props.data.Beslenme) && (
+									{checkText(props.data.Burc) && (
 										<Text
 											name={"Beslenme"}
 											style={{

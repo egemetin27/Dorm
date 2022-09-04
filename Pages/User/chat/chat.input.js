@@ -3,20 +3,27 @@ import { View, Text, TextInput, Pressable, Dimensions, StyleSheet, Platform } fr
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 
-import { Gradient } from "../../../visualComponents/colors";
+//import { Gradient } from "../../../visualComponents/colors";
 
 import { SocketContext } from "../../../contexts/socket.context";
 
 const { width, height } = Dimensions.get("screen");
 
 const ChatInput = ({ destId, matchId }) => {
+
 	const { sendMessage } = useContext(SocketContext);
 	const [message, setMessage] = useState("");
 
 	const handleSend = () => {
 		if (!message.length) return;
 
-		sendMessage({ destId, matchId, message: message.trim() }, "message");
+		try {
+			sendMessage({ destId, matchId, message: message.trim() }, "message");
+		}
+		catch (e) {
+			console.log(e);
+		}
+
 		setMessage("");
 	};
 

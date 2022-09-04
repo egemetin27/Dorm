@@ -712,7 +712,7 @@ export default Card = ({
 												</Text>
 											</Text>
 										)}
-										{checkText(religion) && (
+										{/* {checkText(religion) && (
 											<Text
 												name={"Religion"}
 												style={{
@@ -732,7 +732,7 @@ export default Card = ({
 													{religion}
 												</Text>
 											</Text>
-										)}
+										)} */}
 										{checkText(sign) && (
 											<Text
 												name={"Sign"}

@@ -33,9 +33,9 @@ const MODAL_TYPES = {
 		buttons: [
 			{
 				text: "Eşleşmeyi Kaldır",
-				onPress: ({ matchId = 0, userId = 0, sesToken = "" }, getMessagesList) => {
+				onPress: async ({ matchId = 0, userId = 0, sesToken = "" }, getMessagesList) => {
 					const encryptedData = crypto.encrypt({ userId, unmatchId: matchId });
-					axios
+					await axios
 						.post(url + "/userAction/unmatch", encryptedData, {
 							headers: { "access-token": sesToken },
 						})
@@ -46,6 +46,7 @@ const MODAL_TYPES = {
 						.catch((err) => {
 							console.log(err);
 						});
+					navigation.replace("MainScreen", { screen: "Mesajlar" });
 				},
 			},
 		],
@@ -74,11 +75,18 @@ const MODAL_TYPES = {
 		body: "Lütfen en sevdiğin 10 hobini işaretle",
 		buttons: [],
 	},
+	CONNECTION_ERROR: {
+		image: "unmatch",
+		title: "BAĞLANTI HATASI",
+		body: "Lütfen internet bağlantını kontrol et",
+		buttons: [],
+	},
 };
 
 export default function ModalPage({ navigation, route }) {
-	const { getMessagesList } = useContext(MessageContext);
 
+	const { getMessagesList } = useContext(MessageContext);
+	
 	const { modalType, buttonParamsList } = {
 		modalType: "NO_LIKES_ON_EVENT",
 		buttonParamsList: [],
@@ -94,7 +102,7 @@ export default function ModalPage({ navigation, route }) {
 		} catch (err) {
 			console.log("error on ModalPage > handleDismiss():", err);
 		}
-	};
+	};	
 
 	return (
 		<Pressable onPress={handleDismiss} style={styles.wrapper}>
@@ -159,7 +167,7 @@ const styles = StyleSheet.create({
 	icon: {
 		height: height * 0.08,
 		maxWidth: "50%",
-		marginBottom: 10,
+		marginBottom: 20,
 		resizeMode: "contain",
 	},
 	title: {

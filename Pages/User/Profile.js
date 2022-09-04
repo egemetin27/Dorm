@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -28,7 +28,7 @@ import crypto from "../../functions/crypto";
 import { AuthContext } from "../../contexts/auth.context";
 import CustomImage from "../../components/custom-image.component";
 import CustomRadio from "../../components/custom-radio.component";
-import { Session } from "../../nonVisualComponents/SessionVariables";
+//import { Session } from "../../nonVisualComponents/SessionVariables";
 import { ListsContext } from "../../contexts/lists.context";
 const { height, width } = Dimensions.get("screen");
 
@@ -37,46 +37,49 @@ export default function Profile({ route, navigation }) {
 	const { user, updateProfile } = useContext(AuthContext);
 	// const tabBarHeight = useBottomTabBarHeight();
 
-	// const [progressBarVisible, setVisibility] = React.useState(true);
-	// const [progress, setProgress] = React.useState(0);
-	// const animatedProgress = React.useRef(new Animated.Value(0)).current; // Progressi yap
+	// const [progressBarVisible, setVisibility] = useState(true);
+	// const [progress, setProgress] = useState(0);
+	// const animatedProgress = useRef(new Animated.Value(0)).current; // Progressi yap
 
-	const [isReady, setIsReady] = React.useState(false);
-	const [isEditable, setEditibility] = React.useState(false);
-	const [genderVisible, setGenderVisible] = React.useState(false);
-	const [signVisible, setSignVisible] = React.useState(false);
-	const [dietVisible, setDietVisible] = React.useState(false);
-	const [smokeVisible, setSmokeVisible] = React.useState(false);
-	const [drinkVisible, setDrinkVisible] = React.useState(false);
+	const [isReady, setIsReady] = useState(false);
+	const [isEditable, setEditibility] = useState(false);
+	const [genderVisible, setGenderVisible] = useState(false);
+	const [sexualOrientationVisible, setSexualOrientationVisible] = useState(false);
+	const [expectationVisible, setExpectationVisible] = useState(false);
+	const [signVisible, setSignVisible] = useState(false);
+	const [dietVisible, setDietVisible] = useState(false);
+	const [smokeVisible, setSmokeVisible] = useState(false);
+	const [drinkVisible, setDrinkVisible] = useState(false);
+	const [name, setName] = useState("");
+	const [major, setMajor] = useState("");
+	const [age, setAge] = useState("");
+	const [sex, setSex] = useState("");
+	const [sexualOrientation, setSexualOrientation] = useState("");
+	const [expectation, setExpectation] = useState("");
+	const [school, setSchool] = useState("");
+	//const [religion, setReligion] = useState("");
+	const [sign, setSign] = useState("");
+	const [diet, setDiet] = useState("");
+	const [drink, setDrink] = useState("");
+	const [smoke, setSmoke] = useState("");
+	const [hobbies, setHobbies] = useState("");
+	const [about, setAbout] = useState("");
+	const [PHOTO_LIST, setPhotoList] = useState("");
+	const [friendMode, setFriendMode] = useState(false);
 
-	const [name, setName] = React.useState("");
-	const [major, setMajor] = React.useState("");
-	const [age, setAge] = React.useState("");
-	const [sex, setSex] = React.useState("");
-	const [school, setSchool] = React.useState("");
-	const [religion, setReligion] = React.useState("");
-	const [sign, setSign] = React.useState("");
-	const [diet, setDiet] = React.useState("");
-	const [drink, setDrink] = React.useState("");
-	const [smoke, setSmoke] = React.useState("");
-	const [hobbies, setHobbies] = React.useState("");
-	const [about, setAbout] = React.useState("");
-	const [PHOTO_LIST, setPhotoList] = React.useState("");
-	const [friendMode, setFriendMode] = React.useState(false);
+	const [city, setCity] = useState([0, 1, 0]);
 
-	const [city, setCity] = React.useState([0, 1, 0]);
+	const nameRef = useRef(new Animated.Value(0)).current;
+	const majorRef = useRef(new Animated.Value(0)).current;
+	//const religionRef = useRef(new Animated.Value(0)).current;
+	const signRef = useRef(new Animated.Value(0)).current;
+	const dietRef = useRef(new Animated.Value(0)).current;
+	const drinkRef = useRef(new Animated.Value(0)).current;
+	const smokeRef = useRef(new Animated.Value(0)).current;
+	const hobbiesRef = useRef(new Animated.Value(0)).current;
+	const aboutRef = useRef(new Animated.Value(0)).current;
 
-	const nameRef = React.useRef(new Animated.Value(0)).current;
-	const majorRef = React.useRef(new Animated.Value(0)).current;
-	const religionRef = React.useRef(new Animated.Value(0)).current;
-	const signRef = React.useRef(new Animated.Value(0)).current;
-	const dietRef = React.useRef(new Animated.Value(0)).current;
-	const drinkRef = React.useRef(new Animated.Value(0)).current;
-	const smokeRef = React.useRef(new Animated.Value(0)).current;
-	const hobbiesRef = React.useRef(new Animated.Value(0)).current;
-	const aboutRef = React.useRef(new Animated.Value(0)).current;
-
-	// React.useEffect(() => {
+	// useEffect(() => {
 	// 	const backAction = () => {
 	// 		navigation.replace("MainScreen", { screen: "AnaSayfa" });
 	// 		return true;
@@ -85,14 +88,16 @@ export default function Profile({ route, navigation }) {
 	// 	return () => backHandler.remove();
 	// }, []);
 
-	React.useEffect(async () => {
+	useEffect(async () => {
 		try {
 			setName(user.Name + " " + user.Surname);
-			setAge(getAge(user.Birth_date));
+			setAge(getAge(user.Birth_date).toString());
 			setSex(user.Gender == "null" ? "" : lists.genderList[user.Gender]);
+			setSexualOrientation(user.InterestedSex == "null" ? "" : lists.sexualOrientationList[user.InterestedSex]); 
+			setExpectation(user.Expectation == "null" ? "" : lists.expectationList[user.Expectation]); 
 			setSchool(user.School);
 			setMajor(user.Major == "null" ? "" : user.Major);
-			setReligion(user.Din == "null" ? "" : user.Din);
+			//setReligion(user.Din == "null" ? "" : user.Din);
 			setFriendMode(user.matchMode == "1" ? true : false);
 
 			setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
@@ -144,8 +149,10 @@ export default function Profile({ route, navigation }) {
 			Name: fName,
 			Surname: lName,
 			Gender: sex.key,
+			InterestedSex: sexualOrientation.key,
+			Expectation: expectation.key,
 			Major: major,
-			Din: religion,
+			//Din: religion,
 			Burc: sign.key,
 			Beslenme: diet.key,
 			Alkol: drink.key,
@@ -243,7 +250,12 @@ export default function Profile({ route, navigation }) {
 			>
 				<View style={{ marginLeft: 20 }}>
 					{isEditable ? (
-						<TouchableOpacity onPress={() => setEditibility(!isEditable)}>
+						<TouchableOpacity onPress={() => {
+								setEditibility(!isEditable);
+								navigation.replace("MainScreen", {
+									screen: "Profil",
+								});
+							}}>
 							<MaterialCommunityIcons
 								name="arrow-left"
 								size={height * 0.035}
@@ -358,7 +370,7 @@ export default function Profile({ route, navigation }) {
 									parallaxScrollingOfset: 100,
 									parallaxScrollingScale: 0.8,
 								}}
-								style={{ overflow: "visible", transform: [{ scale: 1.1 }] }}
+								style={{ overflow: "visible", transform: [{ scale: 1.1 }], width: width * 0.95, justifyContent: "center" }}
 								width={width * 0.7}
 								data={user.Photo.length < 4 ? [...user.Photo, "Add Photo"] : user.Photo}
 								renderItem={({ item }) => (
@@ -404,7 +416,7 @@ export default function Profile({ route, navigation }) {
 						)}
 					</View>
 
-					<View style={{ width: "100%", alignItems: "center", marginTop: 50 }}>
+					<View style={{ width: "100%", alignItems: "center", marginTop: 35, marginBottom: 5 }}>
 						<CustomRadio
 							horizontal={true}
 							list={["Flört Modu", "Arkadaşlık Modu"]}
@@ -420,7 +432,7 @@ export default function Profile({ route, navigation }) {
 						/>
 					</View>
 
-					<View name={"Info"} style={{ paddingBottom: 50 }}>
+					<View name={"Info"} style={{ paddingBottom: 40 }}>
 						<View name={"Name"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
@@ -462,6 +474,7 @@ export default function Profile({ route, navigation }) {
 								}}
 							/>
 						</View>
+
 						<View name={"Age"} style={[styles.inputContainer, {}]}>
 							<Text
 								style={[
@@ -484,6 +497,7 @@ export default function Profile({ route, navigation }) {
 								value={age.toString()}
 							/>
 						</View>
+
 						<View name={"Sex"} style={[styles.inputContainer, {}]}>
 							<Text
 								style={[
@@ -512,6 +526,65 @@ export default function Profile({ route, navigation }) {
 								<Text style={[styles.input, { color: colors.black }]}>{sex.choice}</Text>
 							</Pressable>
 						</View>
+
+						<View name={"SexualOrientation"} style={[styles.inputContainer, {}]}>
+							<Text
+								style={[
+									styles.placeHolder,
+									{
+										transform: [
+											{
+												translateY: -20,
+											},
+										],
+										fontSize: 15,
+									},
+								]}
+							>
+								İlgi Duyduğum
+							</Text>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setSexualOrientationVisible(true);
+										  }
+										: () => {}
+								}
+							>
+								<Text style={[styles.input, { color: colors.black }]}>{sexualOrientation.choice}</Text>
+							</Pressable>
+						</View>
+
+						<View name={"Expectation"} style={[styles.inputContainer, {}]}>
+							<Text
+								style={[
+									styles.placeHolder,
+									{
+										transform: [
+											{
+												translateY: -20,
+											},
+										],
+										fontSize: 15,
+									},
+								]}
+							>
+								dorm'dan Beklentim
+							</Text>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setExpectationVisible(true);
+										  }
+										: () => {}
+								}
+							>
+								<Text style={[styles.input, { color: colors.black }]}>{expectation.choice}</Text>
+							</Pressable>
+						</View>
+
 						<View name={"School"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
@@ -534,6 +607,7 @@ export default function Profile({ route, navigation }) {
 								value={school}
 							/>
 						</View>
+
 						<View
 							name={"City"}
 							style={[
@@ -724,7 +798,7 @@ export default function Profile({ route, navigation }) {
 							/>
 						</View>
 
-						<View name={"Religion"} style={[styles.inputContainer, {}]}>
+						{/* <View name={"Religion"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
 									styles.placeHolder,
@@ -764,7 +838,7 @@ export default function Profile({ route, navigation }) {
 									if (religion == "") handleBlur(religionRef);
 								}}
 							/>
-						</View>
+						</View> */}
 
 						<View name={"Sign"} style={[styles.inputContainer, {}]}>
 							<Pressable
@@ -1089,10 +1163,26 @@ export default function Profile({ route, navigation }) {
 			</KeyboardAvoidingView>
 
 			<CustomPicker
-				data={lists.genderList.slice(1)}
+				data={lists.genderList.slice(0,4)}
 				visible={genderVisible}
 				setVisible={setGenderVisible}
 				setChoice={setSex}
+				style={{ height: height * 0.262, width: width * 0.624 }}
+			/>
+
+			<CustomPicker
+				data={lists.sexualOrientationList.slice(1)}
+				visible={sexualOrientationVisible}
+				setVisible={setSexualOrientationVisible}
+				setChoice={setSexualOrientation}
+				style={{ height: height * 0.194, width: width * 0.45 }}
+			/>
+			<CustomPicker
+				data={lists.expectationList.slice(1)}
+				visible={expectationVisible}
+				setVisible={setExpectationVisible}
+				setChoice={setExpectation}
+				style={{ height: height * 0.38, width: width * 0.68 }}
 			/>
 
 			<CustomPicker
@@ -1156,7 +1246,7 @@ const styles = StyleSheet.create({
 	photosContainer: {
 		marginTop: 20,
 		height: height / 2.8,
-		width: "100%",
+		width: width,
 		justifyContent: "center",
 		alignItems: "center",
 	},

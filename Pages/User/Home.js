@@ -386,7 +386,7 @@ export default function MainPage({ navigation }) {
 										marginLeft: 20,
 									}}
 								/>
-								<View style={{ marginRight: 20 }}>
+								<View style={{ marginRight: 15 }}>
 									<TouchableOpacity
 										style={{
 											paddingHorizontal: 15,
@@ -400,7 +400,7 @@ export default function MainPage({ navigation }) {
 												transform: [{ rotate: "-90deg" }],
 											}}
 											name="settings"
-											size={Math.min(height * 0.035, 30)}
+											size={Math.min(height * 0.032, 30)}
 											color={colors.cool_gray}
 										/>
 									</TouchableOpacity>
@@ -410,7 +410,7 @@ export default function MainPage({ navigation }) {
 								name={"People"}
 								style={{
 									width: "100%",
-									height: height * 0.3,
+									height: height * 0.285,
 									justifyContent: "center",
 								}}
 							>

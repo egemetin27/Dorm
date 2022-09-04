@@ -1,3 +1,22 @@
+export const sexualOrientationList = [
+	{ key: 0, choice: "" },
+	{ key: 1, choice: "Heteroseksüel" },
+	{ key: 2, choice: "Biseksüel" },
+	{ key: 3, choice: "Homoseksüel" },
+	{ key: 4, choice: "Panseksüel" },
+	{ key: 5, choice: "Aseksüel" },
+];
+
+export const expectationList = [
+	{ key: 0, choice: "" },
+	{ key: 1, choice: "Takılmak" },
+	{ key: 2, choice: "Kısa Süreli İlişki" },
+	{ key: 3, choice: "Uzun Süreli İlişki" },
+	{ key: 4, choice: "Yeni Arkadaşlıklar" },
+	{ key: 5, choice: "Etkinliklere Eşlik Edecek Biri" },
+	{ key: 6, choice: "Ne istediğimi Bilmiyorum" },
+];
+
 export const genderList = [
 	{ key: 0, choice: "" },
 	{ key: 1, choice: "Kadın" },

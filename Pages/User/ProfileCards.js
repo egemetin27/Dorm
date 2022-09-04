@@ -143,6 +143,10 @@ export default function ProfileCards({ navigation, route }) {
 		// 0 = like, 1 = super like, 2 =  dislike
 		// setPeopleIndex(index + peopleListIndex);
 		isBackFace.value = false;
+		console.log("\nUSER SWIPED: " + shownList[index].UserId + "\n");
+		setPeopleIndex(index + peopleListIndex);
+		// console.log(value == 0 ? "liked:" : "disliked:");
+		// console.log(shownList[index]);
 		const likeDislike = crypto.encrypt({
 			isLike: value,
 			userSwiped: userId,

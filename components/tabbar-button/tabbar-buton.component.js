@@ -3,7 +3,6 @@ import { View, Image, Text, Dimensions, StyleSheet } from "react-native";
 import { MessageContext } from "../../contexts/message.context";
 import { NotificationContext } from "../../contexts/notification.context";
 import { GradientText, colors } from "../../visualComponents/colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("screen");
 const profileIcon = require("../../assets/TabBarIcons/profile.png");
