@@ -3,7 +3,7 @@
 		"name": "Dorm",
 		"scheme": "dorm",
 		"slug": "Dorm",
-		"version": "1.3.0",
+		"version": "1.4.0",
 		"orientation": "portrait",
 		"icon": "./assets/DormIcon.png",
 		"owner": "dorm",
@@ -23,7 +23,7 @@
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 88
+			"versionCode": 89
 		},
 		"web": {
 			"favicon": "./assets/DormIcon.png"
