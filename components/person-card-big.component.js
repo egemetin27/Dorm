@@ -41,13 +41,14 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 		lists: { genderList, smokeAndDrinkList, signList, dietList },
 	} = useContext(ListsContext);
 
-	const { photos, Name: name, Birth_Date: bDay, School: school, Major: major } = card;
+	const { photos = [], Name: name, Birth_Date: bDay, School: school, Major: major } = card;
 	//console.log(JSON.stringify(card));
 	const [age, setAge] = useState(getAge(bDay));
-	const sortedPhotos = sort(photos, "Photo_Order");
+	const [sortedPhotos, setSortedPhotos] = useState(sort(photos, "Photo_Order"));
 
+	const [backFace, setBackFace] = useState(false);
 	const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
-		Gender: { label: "Cinsiyet", function: (idx) => genderList[idx + 1].choice },
+		Gender: { label: "Cinsiyet", function: (idx) => genderList[idx].choice },
 		Burc: { label: "Burç", function: (idx) => signList[idx].choice },
 		Sigara: { label: "Sigara Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
 		Alkol: { label: "Alkol Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
@@ -56,6 +57,7 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 		About: { label: "Hakkında", function: (val) => getInterests(val) },
 		// Din: { label: "Dini İnanç", function: (val) => val },
 	});
+
 
 	const photoIndex = useSharedValue(0);
 	const face = useSharedValue(1); // 1 => front, -1 => back
@@ -66,12 +68,13 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 		if (face.value === -1 || !photoListRef.current) return;
 		const newIndex =
 			sortedPhotos.length > Math.round(photoIndex.value + 1) ? Math.round(photoIndex.value) + 1 : 0;
-		photoListRef.current.scrollToIndex({ index: newIndex });
+		photoListRef.current.scrollToIndex({ animated: true, index: newIndex });
 	};
 
 	const handleDoubleTap = () => {
 		face.value = withTiming(-face.value);
 		isBackFace.value = !isBackFace.value;
+		setBackFace(true);
 	};
 
 	const checkScrollNeeded = async () => {
@@ -154,11 +157,14 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 
 	return (
 		<View>
-			<DoubleTap singleTap={handleSingleTap} doubleTap={handleDoubleTap} delay={200}>
+			<DoubleTap singleTap={handleSingleTap} doubleTap={handleDoubleTap} delay={220}>
 				<View>
 					{/* Front Face Start */}
 					<Reanimated.View style={[card_style, animatedFrontFace]}>
 						<FlatList
+							removeClippedSubviews={true}
+							initialNumToRender={2}
+							maxToRenderPerBatch={2}
 							ref={photoListRef}
 							data={sortedPhotos}
 							onLayout={async () => {
@@ -183,8 +189,10 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 								);
 							}}
 							pagingEnabled={true}
+							showsHorizontalScrollIndicator={false}
 							showsVerticalScrollIndicator={false}
 							onScroll={handleScroll}
+							horizontal={false}
 						/>
 						<Reanimated.View
 							style={[
@@ -310,7 +318,7 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 					{/* Front Face End */}
 
 					{/* Back Face Start */}
-					<Reanimated.View
+					{backFace && <Reanimated.View
 						style={[
 							card_style,
 							animatedBackFace,
@@ -369,7 +377,7 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 								);
 							}}
 						/>
-					</Reanimated.View>
+					</Reanimated.View>}
 
 					{/* Back Face End */}
 				</View>

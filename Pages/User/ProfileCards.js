@@ -51,7 +51,6 @@ export default function ProfileCards({ navigation, route }) {
 
 	useBackHandler(() => {
 		navigation.goBack();
-		return true;
 	});
 
 	const { list, idx, fromEvent = false } = route.params;
@@ -71,16 +70,14 @@ export default function ProfileCards({ navigation, route }) {
 	const [name, setName] = useState("");
 	const [reportUserID, setReportUserID] = useState("");
 
-	useEffect(async () => {
-		async function prepare() {
+	useEffect(() => {
+		const prepare = async () => {
 			let profile = list.splice(idx, 1);
 			setShownList([profile[0], ...list]);
 		}
-		try {
-			await prepare();
-		} finally {
+		prepare().catch(console.error).then(() => {
 			setIsLoading(false);
-		}
+		});
 	}, []);
 
 	function showReportPage(otherUserID, name) {
@@ -143,8 +140,8 @@ export default function ProfileCards({ navigation, route }) {
 		// 0 = like, 1 = super like, 2 =  dislike
 		// setPeopleIndex(index + peopleListIndex);
 		isBackFace.value = false;
-		console.log("\nUSER SWIPED: " + shownList[index].UserId + "\n");
-		setPeopleIndex(index + peopleListIndex);
+		console.log("\nUSER SWIPED: " + shownList[index].UserId + " " + shownList[index].Name + "\n");
+		setPeopleIndex(idx + peopleListIndex);
 		// console.log(value == 0 ? "liked:" : "disliked:");
 		// console.log(shownList[index]);
 		const likeDislike = crypto.encrypt({
@@ -306,7 +303,7 @@ export default function ProfileCards({ navigation, route }) {
 						</Text> */}
 					</View>
 					<Swiper
-						swipeBackCard
+						//swipeBackCard
 						onSwiping={handleSwipeAnimation}
 						onSwiped={handleSwipeEnd}
 						onSwipedAborted={handleSwipeEnd}
@@ -318,7 +315,8 @@ export default function ProfileCards({ navigation, route }) {
 						}}
 						cards={shownList}
 						keyExtractor={(card) => card.UserId}
-						stackSize={3}
+						stackSize={2}
+						useViewOverflow={false}
 						verticalSwipe={false}
 						backgroundColor="transparent"
 						cardVerticalMargin={0}

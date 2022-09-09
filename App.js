@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Platform } from "react-native";
 import { loadAsync } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -7,7 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as Linking from "expo-linking";
 
 import * as Notifications from "expo-notifications";
-import { enableFreeze } from "react-native-screens";
+// import { enableFreeze } from "react-native-screens";
 
 // import Amplify from "aws-amplify";
 // import awsmobile from "./src/aws-exports";
@@ -28,15 +28,15 @@ import ListsProvider from "./contexts/lists.context";
 
 //import ImageManipulatorTest from "./ImageManipulatorTest";
 
-const fonts = {
-	Now: require("./assets/fonts/now.otf"),
-	NowBold: require("./assets/fonts/now_bold.otf"),
-	Poppins: require("./assets/fonts/Poppins.ttf"),
-	PoppinsItalic: require("./assets/fonts/Poppins_Italic.ttf"),
-	PoppinsSemiBold: require("./assets/fonts/Poppins-SemiBold.ttf"),
-	PoppinsBold: require("./assets/fonts/Poppins_bold.ttf"),
-	PoppinsExtraBold: require("./assets/fonts/Poppins-ExtraBold.ttf"),
-};
+// const fonts = {
+// 	Now: require("./assets/fonts/now.otf"),
+// 	NowBold: require("./assets/fonts/now_bold.otf"),
+// 	Poppins: require("./assets/fonts/Poppins.ttf"),
+// 	PoppinsItalic: require("./assets/fonts/Poppins_Italic.ttf"),
+// 	PoppinsSemiBold: require("./assets/fonts/Poppins-SemiBold.ttf"),
+// 	PoppinsBold: require("./assets/fonts/Poppins_bold.ttf"),
+// 	PoppinsExtraBold: require("./assets/fonts/Poppins-ExtraBold.ttf"),
+// };
 
 const prefix = Linking.createURL("/");
 
@@ -55,22 +55,37 @@ const defaultLinkingConfig = {
 };
 
 export default function App() {
+	const [fontLoaded, setFontLoaded] = useState(false);
+
 	const linking = {
 		prefixes: [prefix, "dorm://"],
 		// exp://192.168.1.29:19000/--/messages
 		config: defaultLinkingConfig,
 	};
 
-	enableFreeze(true);
+	//enableFreeze(true);
 
 	useEffect(() => {
-		(async () => {
-			await loadAsync(fonts);
+		const appstart = async () => {
+			await loadAsync({
+				Now: require("./assets/fonts/now.otf"),
+				NowBold: require("./assets/fonts/now_bold.otf"),
+				Poppins: require("./assets/fonts/Poppins.ttf"),
+				PoppinsItalic: require("./assets/fonts/Poppins_Italic.ttf"),
+				PoppinsSemiBold: require("./assets/fonts/Poppins-SemiBold.ttf"),
+				PoppinsBold: require("./assets/fonts/Poppins_bold.ttf"),
+				PoppinsExtraBold: require("./assets/fonts/Poppins-ExtraBold.ttf"),
+			});
 
 			setCustomText({ style: { fontFamily: "Poppins" } });
 			setCustomTextInput({ style: { fontFamily: "Poppins" } });
-		})();
+		};
+		appstart().catch(console.error).then(() => {
+			setFontLoaded(true);
+		});
 	}, []);
+
+	if (!fontLoaded) return null;
 
 	return (
 		<NavigationContainer

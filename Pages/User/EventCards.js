@@ -759,17 +759,20 @@ export default function EventCards({ navigation, route }) {
 
 	const { idx, list, myID, sesToken } = route.params;
 
-	useEffect(async () => {
-		const backAction = () => {
-			// navigation.replace("MainScreen", {
-			// 	screen: "AnaSayfa",
-			// 	params: { screen: "Home" },
-			// });
-			navigation.goBack();
-			return true;
-		};
-		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-		return () => backHandler.remove();
+	useEffect(() => {
+		const backhandler = async () => {
+			const backAction = () => {
+				// navigation.replace("MainScreen", {
+				// 	screen: "AnaSayfa",
+				// 	params: { screen: "Home" },
+				// });
+				navigation.goBack();
+				return true;
+			};
+			const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+			return () => backHandler.remove();
+		}
+		backhandler();
 	}, []);
 
 	useEffect(() => {

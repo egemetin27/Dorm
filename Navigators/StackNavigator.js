@@ -68,63 +68,66 @@ export default function StackNavigator() {
 
 	const updateNeeded = useKeyGenerator();
 
-	useEffect(async () => {
-		axios.interceptors.response.use(
-			function (response) {
-				// Any status code that lie within the range of 2xx cause this function to trigger
-				// Do something with response data
-				return response;
-			},
-			async (error) => {
-				const status = error?.response?.status;
-				if (status === 420) {
-					// await refreshToken(store);
-					//   error.config.headers[
-					// 	 "Authorization"
-					//   ] = `Bearer ${store.state.auth.token}`;
-					// error.config.baseURL = url;
-					return axios.request(error.config);
-				}
-				return Promise.reject(error);
-			}
-		);
-
-		async function prepare() {
-			try {
-				// Keep the splash screen visible while we fetch resources
-
-				await AsyncStorage.getItem("Constants").then(async (res) => {
-					var constants = JSON.parse(res);
-					if (res == null) {
-						constants = { introShown: false, tutorialShown: false };
-						AsyncStorage.setItem("scrollNotShowed", "0"); //scroll not shown
+	useEffect(() => {
+		const stackready = async () => {
+			axios.interceptors.response.use(
+				function (response) {
+					// Any status code that lie within the range of 2xx cause this function to trigger
+					// Do something with response data
+					return response;
+				},
+				async (error) => {
+					const status = error?.response?.status;
+					if (status === 420) {
+						// await refreshToken(store);
+						//   error.config.headers[
+						// 	 "Authorization"
+						//   ] = `Bearer ${store.state.auth.token}`;
+						// error.config.baseURL = url;
+						return axios.request(error.config);
 					}
-					AsyncStorage.getItem("scrollNotShowed").then((res) => {
+					return Promise.reject(error);
+				}
+			);
+	
+			async function prepare() {
+				try {
+					// Keep the splash screen visible while we fetch resources
+	
+					await AsyncStorage.getItem("Constants").then(async (res) => {
+						var constants = JSON.parse(res);
 						if (res == null) {
-							Session.ScrollShown = true;
-						} else {
-							Session.ScrollNumber = parseInt(res);
+							constants = { introShown: false, tutorialShown: false };
+							AsyncStorage.setItem("scrollNotShowed", "0"); //scroll not shown
 						}
+						AsyncStorage.getItem("scrollNotShowed").then((res) => {
+							if (res == null) {
+								Session.ScrollShown = true;
+							} else {
+								Session.ScrollNumber = parseInt(res);
+							}
+						});
+						setIntroShown(constants.introShown);
+						setTutorialShown(constants.tutorialShown);
 					});
-					setIntroShown(constants.introShown);
-					setTutorialShown(constants.tutorialShown);
-				});
-
-				if (!isLoggedIn) {
-					const credsStr = await SecureStore.getItemAsync("credentials");
-					if (credsStr) {
-						const { email, password } = JSON.parse(credsStr);
-						await signIn({ email, password });
+	
+					if (!isLoggedIn) {
+						const credsStr = await SecureStore.getItemAsync("credentials");
+						if (credsStr) {
+							const { email, password } = JSON.parse(credsStr);
+							await signIn({ email, password });
+						}
 					}
+				} catch (e) {
+					console.warn(e);
+				} finally {
+					setAppIsReady(true); // app is ready
 				}
-			} catch (e) {
-				console.warn(e);
-			} finally {
-				setAppIsReady(true); // app is ready
 			}
-		}
-
-		await prepare();
+	
+			await prepare();
+		};
+		stackready().catch(console.error);;
 	}, []);
 
 	const onLayoutRootView = useCallback(async () => {

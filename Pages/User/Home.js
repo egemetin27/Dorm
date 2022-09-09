@@ -217,92 +217,98 @@ export default function MainPage({ navigation }) {
 		navigation.navigate("FilterModal");
 	};
 
-	useEffect(async () => {
-		let abortController = new AbortController();
+	useEffect(() => {
+		const homeStart = async () => {
+			let abortController = new AbortController();
 
-		const userId = user?.userId;
-		const myMode = user?.matchMode;
-		const myPhoto = user?.Photo[0]?.PhotoLink ?? "";
+			const userId = user?.userId;
+			const myMode = user?.matchMode;
+			const myPhoto = user?.Photo[0]?.PhotoLink ?? "";
 
-		setMatchMode(myMode);
-		setMyPP(myPhoto);
+			setMatchMode(myMode);
+			setMyPP(myPhoto);
 
-		async function prepare() {
-			const swipeListData = crypto.encrypt({
-				userId: userId,
-				...filters,
-			});
-
-			await axios
-				.post(url + "/lists/Swipelist", swipeListData, {
-					headers: { "access-token": user.sesToken },
-				})
-				.then((res) => {
-					const data = crypto.decrypt(res.data);
-
-					setPeopleList(data);
-				})
-				.catch((err) => {
-					if (err.response) {
-						if (err.response.status == 410) {
-							Alert.alert("Oturumunuzun süresi doldu!");
-							signOut();
-						}
-						if (err.response.status == 411) {
-							setPeopleList([]);
-							setLisetEmptyMessage(
-								// "Diğerler insanları görmek istiyorsan görünmez moddan çıkmalısın!"
-								// "Görünmez moddayken diğer kişileri göremezsin"
-								"Görünmez modda olduğun için kişileri sana gösteremiyoruz :("
-							);
-							return;
-						}
-					} else {
-						console.log(err);
-					}
-					console.log("error on swipelist");
-					console.log(err);
+			async function prepare() {
+				const swipeListData = crypto.encrypt({
+					userId: userId,
+					...filters,
 				});
-		}
-		try {
-			await prepare();
-		} catch (err) {
-			console.log(err);
-		}
 
-		return () => {
-			abortController.abort();
+				await axios
+					.post(url + "/lists/Swipelist", swipeListData, {
+						headers: { "access-token": user.sesToken },
+					})
+					.then((res) => {
+						const data = crypto.decrypt(res.data);
+
+						setPeopleList(data);
+					})
+					.catch((err) => {
+						if (err.response) {
+							if (err.response.status == 410) {
+								Alert.alert("Oturumunuzun süresi doldu!");
+								signOut();
+							}
+							if (err.response.status == 411) {
+								setPeopleList([]);
+								setLisetEmptyMessage(
+									// "Diğerler insanları görmek istiyorsan görünmez moddan çıkmalısın!"
+									// "Görünmez moddayken diğer kişileri göremezsin"
+									"Görünmez modda olduğun için kişileri sana gösteremiyoruz :("
+								);
+								return;
+							}
+						} else {
+							console.log(err);
+						}
+						console.log("error on swipelist");
+						console.log(err);
+					});
+			}
+			try {
+				await prepare();
+			} catch (err) {
+				console.log(err);
+			}
+
+			return () => {
+				abortController.abort();
+			};
 		};
+		homeStart().catch(console.error);;
 	}, [filters]);
 
-	useEffect(async () => {
-		let abortController = new AbortController();
-		const userId = user?.userId;
-		try {
-			const eventListData = crypto.encrypt({ userId: userId, campus: user.School });
-			await axios
-				.post(url + "/lists/EventList", eventListData, {
-					headers: { "access-token": user.sesToken },
-				})
-				.then((res) => {
-					const data = crypto.decrypt(res.data);
-					setEventList(data);
-					setShownEvents(data);
-					setEventLike(null);
-					//console.log(eventList);
-				})
-				.catch((err) => {
-					console.log("error on /eventList");
-					console.log(err);
-				});
-		} catch (err) {
-			console.log(err);
-		} finally {
-			setIsAppReady(true);
-		}
-		return () => {
-			abortController.abort();
+	useEffect(() => {
+		const eventlike = async () => {
+			let abortController = new AbortController();
+			const userId = user?.userId;
+			try {
+				const eventListData = crypto.encrypt({ userId: userId, campus: user.School });
+				await axios
+					.post(url + "/lists/EventList", eventListData, {
+						headers: { "access-token": user.sesToken },
+					})
+					.then((res) => {
+						const data = crypto.decrypt(res.data);
+						setEventList(data);
+						setShownEvents(data);
+						setEventLike(null);
+						//console.log(eventList);
+					})
+					.catch((err) => {
+						console.log("error on /eventList");
+						console.log(err);
+					});
+			} catch (err) {
+				console.log(err);
+			} finally {
+				setIsAppReady(true);
+			}
+			return () => {
+				abortController.abort();
+			};
 		};
+		eventlike().catch(console.error);;
 	}, [eventLiked]);
 
 	useEffect(() => {
@@ -353,7 +359,7 @@ export default function MainPage({ navigation }) {
 
 			<FlatList
 				horizontal={false}
-				ref={eventsFlatListRef}
+				//ref={eventsFlatListRef}
 				numColumns={2}
 				showsHorizontalScrollIndicator={false}
 				showsVerticalScrollIndicator={false}

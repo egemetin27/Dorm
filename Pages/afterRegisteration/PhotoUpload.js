@@ -44,12 +44,12 @@ export default function PhotoUpload({ navigation, route }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.3,
+				quality: 0.4,
 			});
 			console.log(result + typeof(result) + "A");
 			if (!result.cancelled && result != null) {
 				let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
-					compress: 0.3,
+					compress: 0.4,
 					format: SaveFormat.JPEG,
 				});
 				handleAdd(resizedResult);
