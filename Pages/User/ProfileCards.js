@@ -74,10 +74,12 @@ export default function ProfileCards({ navigation, route }) {
 		const prepare = async () => {
 			let profile = list.splice(idx, 1);
 			setShownList([profile[0], ...list]);
-		}
-		prepare().catch(console.error).then(() => {
-			setIsLoading(false);
-		});
+		};
+		prepare()
+			.catch(console.error)
+			.then(() => {
+				setIsLoading(false);
+			});
 	}, []);
 
 	function showReportPage(otherUserID, name) {
@@ -304,8 +306,8 @@ export default function ProfileCards({ navigation, route }) {
 					</View>
 					<Swiper
 						//swipeBackCard
-						onSwiping={handleSwipeAnimation}
 						onSwiped={handleSwipeEnd}
+						onSwiping={handleSwipeAnimation}
 						onSwipedAborted={handleSwipeEnd}
 						onSwipedRight={(index) => {
 							handleSwipe({ value: 0, index });
@@ -744,61 +746,54 @@ export default function ProfileCards({ navigation, route }) {
 			</CustomModal>
 			{/* Report Page Modal */}
 
-			<View
-				style={{
-					position: "absolute",
-					height: "100%",
-					width: "100%",
-					justifyContent: "center",
-				}}
+			{/* Animated Like */}
+			<Animated.View
+				name={"like"}
+				style={[
+					{
+						position: "absolute",
+						top: "50%",
+						width: 60,
+						aspectRatio: 1 / 1,
+						backgroundColor: "transparent",
+						borderRadius: 30,
+						right: 0,
+					},
+					animatedLike,
+				]}
 			>
-				{/* Animated Like */}
-				<Animated.View
-					name={"like"}
-					style={[
-						{
-							position: "absolute",
-							width: 60,
-							aspectRatio: 1 / 1,
-							backgroundColor: "transparent",
-							borderRadius: 30,
-							right: 0,
-						},
-						animatedLike,
-					]}
-				>
-					<Image
-						style={{ width: "100%", height: "100%", resizeMode: "contain" }}
-						source={require("../../assets/Like.png")}
-					/>
-				</Animated.View>
+				<Image
+					style={{ width: "100%", height: "100%", resizeMode: "contain" }}
+					source={require("../../assets/Like.png")}
+				/>
+			</Animated.View>
 
-				{/* Animated Dislike */}
-				<Animated.View
-					name={"dislike"}
-					style={[
-						{
-							position: "absolute",
-							width: 60,
-							aspectRatio: 1 / 1,
-							backgroundColor: "transparent",
-							borderRadius: 30,
-							left: 0,
-						},
-						animatedDislike,
-					]}
-				>
-					<Image
-						style={{
-							tintColor: colors.gray,
-							width: "100%",
-							height: "100%",
-							resizeMode: "contain",
-						}}
-						source={require("../../assets/Dislike.png")}
-					/>
-				</Animated.View>
-			</View>
+			{/* Animated Dislike */}
+			<Animated.View
+				name={"dislike"}
+				style={[
+					{
+						position: "absolute",
+						top: "50%",
+						width: 60,
+						aspectRatio: 1 / 1,
+						backgroundColor: "transparent",
+						borderRadius: 30,
+						left: 0,
+					},
+					animatedDislike,
+				]}
+			>
+				<Image
+					style={{
+						tintColor: colors.gray,
+						width: "100%",
+						height: "100%",
+						resizeMode: "contain",
+					}}
+					source={require("../../assets/Dislike.png")}
+				/>
+			</Animated.View>
 		</View>
 	);
 }

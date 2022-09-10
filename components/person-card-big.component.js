@@ -58,7 +58,6 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 		// Din: { label: "Dini İnanç", function: (val) => val },
 	});
 
-
 	const photoIndex = useSharedValue(0);
 	const face = useSharedValue(1); // 1 => front, -1 => back
 
@@ -318,66 +317,68 @@ const Card = ({ card, index, isBackFace, isScrollShowed, indexOfFrontCard }) => 
 					{/* Front Face End */}
 
 					{/* Back Face Start */}
-					{backFace && <Reanimated.View
-						style={[
-							card_style,
-							animatedBackFace,
-							{
-								position: "absolute",
-								backgroundColor: "transparent",
-								backfaceVisibility: "hidden",
-							},
-						]}
-					>
-						<BlurView
-							intensity={100}
-							tint="dark"
-							style={{ width: "100%", height: "100%", position: "absolute" }}
-						/>
-						<FlatList
-							showsVerticalScrollIndicator={false}
-							style={{
-								zIndex: 5,
-								width: "80%",
-								marginVertical: 30,
-							}}
-							keyExtractor={(key) => key}
-							data={Object.keys(BACK_FACE_FIELDS)}
-							renderItem={({ item: field }) => {
-								const value = card[field];
+					{backFace && (
+						<Reanimated.View
+							style={[
+								card_style,
+								animatedBackFace,
+								{
+									position: "absolute",
+									backgroundColor: "transparent",
+									backfaceVisibility: "hidden",
+								},
+							]}
+						>
+							<BlurView
+								intensity={100}
+								tint="dark"
+								style={{ width: "100%", height: "100%", position: "absolute" }}
+							/>
+							<FlatList
+								showsVerticalScrollIndicator={false}
+								style={{
+									zIndex: 5,
+									width: "80%",
+									marginVertical: 30,
+								}}
+								keyExtractor={(key) => key}
+								data={Object.keys(BACK_FACE_FIELDS)}
+								renderItem={({ item: field }) => {
+									const value = card[field];
 
-								if (field == "interest" && typeof value === "string") {
-									console.log({ value });
-								}
+									if (field == "interest" && typeof value === "string") {
+										console.log({ value });
+									}
 
-								if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
-									return null;
-								return (
-									<Text
-										key={field}
-										name={field}
-										style={{
-											color: colors.light_gray,
-											fontSize: Math.min(height * 0.025, width * 0.04),
-											textAlign: "center",
-											paddingVertical: 5,
-										}}
-									>
-										{BACK_FACE_FIELDS[field].label}
-										{"\n"}
+									if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
+										return null;
+									return (
 										<Text
+											key={field}
+											name={field}
 											style={{
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(height * 0.03, width * 0.048),
+												color: colors.light_gray,
+												fontSize: Math.min(height * 0.025, width * 0.04),
+												textAlign: "center",
+												paddingVertical: 5,
 											}}
 										>
-											{BACK_FACE_FIELDS[field].function(value)}
+											{BACK_FACE_FIELDS[field].label}
+											{"\n"}
+											<Text
+												style={{
+													fontFamily: "PoppinsSemiBold",
+													fontSize: Math.min(height * 0.03, width * 0.048),
+												}}
+											>
+												{BACK_FACE_FIELDS[field].function(value)}
+											</Text>
 										</Text>
-									</Text>
-								);
-							}}
-						/>
-					</Reanimated.View>}
+									);
+								}}
+							/>
+						</Reanimated.View>
+					)}
 
 					{/* Back Face End */}
 				</View>

@@ -4,7 +4,6 @@ import Constants from "expo-constants";
 
 import crypto from "../functions/crypto";
 import url from "../connection";
-import { Session } from "../nonVisualComponents/SessionVariables";
 import { ListsContext } from "../contexts/lists.context";
 
 const useKeyGenerator = () => {
@@ -26,14 +25,17 @@ const useKeyGenerator = () => {
 					message: encryptedMessage,
 				})
 				.then((res) => {
-					const { appVersion, genderList, univList, sexualOrientationList, expectationList } = res.data;
+					const { appVersion, genderList, univList, sexualOrientationList, expectationList } =
+						res.data;
 					updateLists({ genderList, univList, sexualOrientationList, expectationList });
 
 					const localVersion = Constants.manifest.version.slice(
 						0,
 						Constants.manifest.version.lastIndexOf(".")
 					);
-					const realVersion = appVersion;
+
+					const realVersion = appVersion.slice(0, appVersion.lastIndexOf("."));
+
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}
