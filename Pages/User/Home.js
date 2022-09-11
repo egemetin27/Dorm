@@ -210,7 +210,7 @@ export default function MainPage({ navigation }) {
 	const [listEmptyMessage, setLisetEmptyMessage] = useState(
 		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
 	);
-	const eventsFlatListRef = useRef();
+	//const eventsFlatListRef = useRef();
 	const peopleFlatListRef = useRef();
 
 	const handleFilterButton = () => {
@@ -362,6 +362,7 @@ export default function MainPage({ navigation }) {
 				//ref={eventsFlatListRef}
 				numColumns={2}
 				showsHorizontalScrollIndicator={false}
+				initialNumToRender={8}
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ alignSelf: "flex-start" }}
 				keyExtractor={(item, idx) => item?.EventId?.toString()}
@@ -392,10 +393,10 @@ export default function MainPage({ navigation }) {
 										marginLeft: 20,
 									}}
 								/>
-								<View style={{ marginRight: 15 }}>
+								<View style={{ marginRight: 14 }}>
 									<TouchableOpacity
 										style={{
-											paddingHorizontal: 15,
+											paddingHorizontal: 14,
 											height: "100%",
 											justifyContent: "center",
 										}}
@@ -403,9 +404,9 @@ export default function MainPage({ navigation }) {
 									>
 										<Octicons
 											style={{
-												transform: [{ rotate: "-90deg" }],
+												//transform: [{ rotate: "-90deg" }],
 											}}
-											name="settings"
+											name='filter'
 											size={Math.min(height * 0.032, 30)}
 											color={colors.cool_gray}
 										/>

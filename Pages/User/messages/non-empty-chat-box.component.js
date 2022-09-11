@@ -41,9 +41,9 @@ const NonEmptyChatBox = ({ match }) => {
 	const { setUnreadChecker } = useContext(NotificationContext);
 	const { user } = useContext(AuthContext);
 	const navigation = useNavigation();
-	const { MatchId } = match;
+	const [MatchId, setMatchId] = useState(match.MatchId);
 	const { Name } = match.userData;
-	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
+	const [imageUrl, setImageUrl] = useState(match.userData.photos[0]?.PhotoLink ?? null);
 	
 	const { message, date, unread, sourceId } = {
 		message: "",

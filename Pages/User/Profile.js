@@ -88,56 +88,59 @@ export default function Profile({ route, navigation }) {
 	// 	return () => backHandler.remove();
 	// }, []);
 
-	useEffect(async () => {
-		try {
-			setName(user.Name + " " + user.Surname);
-			setAge(getAge(user.Birth_date).toString());
-			setSex(user.Gender == "null" ? "" : lists.genderList[user.Gender]);
-			setSexualOrientation(user.InterestedSex == "null" ? "" : lists.sexualOrientationList[user.InterestedSex]);
-			setExpectation(user.Expectation == "null" ? "" : lists.expectationList[user.Expectation]);
-			setSchool(user.School);
-			setMajor(user.Major == "null" ? "" : user.Major);
-			//setReligion(user.Din == "null" ? "" : user.Din);
-			setFriendMode(user.matchMode == "1" ? true : false);
-
-			setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
-			setDiet(user.Beslenme == "null" ? lists.dietList[0] : lists.dietList[user.Beslenme]);
-			setDrink(
-				user.Alkol == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Alkol]
-			);
-			setSmoke(
-				user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
-			);
-
-			/*
-			setSign(getChoice(data.Burc, signList));
-			setDiet(getChoice(data.Beslenme, dietList));
-			setDrink(getChoice(data.Alkol, smokeAndDrinkList));
-			setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
-			*/
-
-			setAbout(user.About == "null" ? "" : user.About);
-			setPhotoList(user.Photo);
-			setHobbies(user.interest);
-			// setUserData({
-			// 	userId: data.userId,
-			// 	name: data.Name + " " + data.Surname,
-			// 	major: data.Major,
-			// 	age: getAge(data.Birth_date),
-			// 	sex: GENDER_LIST[data.Gender],
-			// 	school: data.School,
-			// 	religion: data.Din,
-			// 	sign: data.Burc,
-			// 	diet: data.Beslenme,
-			// 	alcohol: data.Alkol,
-			// 	smoke: data.Sigara,
-			// 	hobbies: data.interest,
-			// 	about: data.About,
-			// 	PhotoList: data.Photo,
-			// });
-		} finally {
-			setIsReady(true);
+	useEffect(() => {
+		const profile = async () => {
+			try {
+				setName(user.Name + " " + user.Surname);
+				setAge(getAge(user.Birth_date).toString());
+				setSex(user.Gender == "null" ? "" : lists.genderList[user.Gender]);
+				setSexualOrientation(user.InterestedSex == "null" ? "" : lists.sexualOrientationList[user.InterestedSex]);
+				setExpectation(user.Expectation == "null" ? "" : lists.expectationList[user.Expectation]);
+				setSchool(user.School);
+				setMajor(user.Major == "null" ? "" : user.Major);
+				//setReligion(user.Din == "null" ? "" : user.Din);
+				setFriendMode(user.matchMode == "1" ? true : false);
+	
+				setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
+				setDiet(user.Beslenme == "null" ? lists.dietList[0] : lists.dietList[user.Beslenme]);
+				setDrink(
+					user.Alkol == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Alkol]
+				);
+				setSmoke(
+					user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
+				);
+	
+				/*
+				setSign(getChoice(data.Burc, signList));
+				setDiet(getChoice(data.Beslenme, dietList));
+				setDrink(getChoice(data.Alkol, smokeAndDrinkList));
+				setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
+				*/
+	
+				setAbout(user.About == "null" ? "" : user.About);
+				setPhotoList(user.Photo);
+				setHobbies(user.interest);
+				// setUserData({
+				// 	userId: data.userId,
+				// 	name: data.Name + " " + data.Surname,
+				// 	major: data.Major,
+				// 	age: getAge(data.Birth_date),
+				// 	sex: GENDER_LIST[data.Gender],
+				// 	school: data.School,
+				// 	religion: data.Din,
+				// 	sign: data.Burc,
+				// 	diet: data.Beslenme,
+				// 	alcohol: data.Alkol,
+				// 	smoke: data.Sigara,
+				// 	hobbies: data.interest,
+				// 	about: data.About,
+				// 	PhotoList: data.Photo,
+				// });
+			} finally {
+				setIsReady(true);
+			}
 		}
+		profile().catch(console.err);;
 	}, []);
 
 	const handleSave = async () => {

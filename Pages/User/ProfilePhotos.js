@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
 	StyleSheet,
 	View,
@@ -70,16 +70,16 @@ const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 export default function ProfilePhotos({ route, navigation }) {
 	const { user, updateProfile } = useContext(AuthContext);
 
-	const [modalVisible, setModalVisibility] = React.useState(false);
-	const [toBeDeleted, setToBeDeleted] = React.useState(null);
-	const [PHOTO_LIST, setPhotoList] = React.useState(user.Photo || []);
-	const [isLoading, setIsLoading] = React.useState(false);
+	const [modalVisible, setModalVisibility] = useState(false);
+	const [toBeDeleted, setToBeDeleted] = useState(null);
+	const [PHOTO_LIST, setPhotoList] = useState(user.Photo || []);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const insets = useSafeAreaInsets();
 
 	const { userId, sesToken } = user;
 
-	React.useEffect(() => {
+	useEffect(() => {
 		let abortController = new AbortController();
 		const backAction = () => {
 			handleSave();
@@ -142,7 +142,7 @@ export default function ProfilePhotos({ route, navigation }) {
 				aspect: [2, 3],
 				quality: 0.4,
 			});
-			
+
 			if (!result.cancelled) {
 				let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
 					compress: 0.4,
@@ -182,7 +182,7 @@ export default function ProfilePhotos({ route, navigation }) {
 									method: "PUT",
 									body: item.photo,
 									headers: {
-										Accept: "application/json",
+										"Accept": "application/json",
 										"Content-Type": "multipart/form-data",
 									},
 								})
@@ -230,6 +230,7 @@ export default function ProfilePhotos({ route, navigation }) {
 		} catch (err) {
 			console.log("ERROR SAVING: ", err);
 		}
+		console.log("started4");
 	};
 
 	return (

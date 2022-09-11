@@ -167,7 +167,11 @@ export default function ProfileCards({ navigation, route }) {
 				console.log(res.data);
 
 				if (res.data.message == "Match") {
-					showMatchScreen(name, otherUser.photos[0]?.PhotoLink, myProfilePicture);
+					navigation.navigate("MatchModal", {
+						firstImg: otherUser.photos[0]?.PhotoLink,
+						secondImg: myProfilePicture,
+						name: name,
+					});
 				}
 			})
 			.catch((error) => {
