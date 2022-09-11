@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
 	Text,
 	View,
@@ -26,6 +26,12 @@ import crypto from "../../functions/crypto";
 
 const { width, height } = Dimensions.get("screen");
 
+const fetchImageFromUri = async (uri) => {
+	const response = await fetch(uri);
+	const blob = await response.blob();
+	return blob;
+};
+
 export default function PhotoUpload({ navigation, route }) {
 	const { userId, sesToken } = route.params;
 	const [initial, setInitial] = useState(true);
@@ -46,7 +52,7 @@ export default function PhotoUpload({ navigation, route }) {
 				aspect: [2, 3],
 				quality: 0.4,
 			});
-			console.log(result + typeof(result) + "A");
+			console.log(result + typeof result + "A");
 			if (!result.cancelled && result != null) {
 				let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
 					compress: 0.4,
@@ -101,13 +107,20 @@ export default function PhotoUpload({ navigation, route }) {
 							})
 							.then(async (res) => {
 								const uploadUrl = crypto.decrypt(res.data).url;
+								// const returned = await fetch(uploadUrl, {
+								// 	method: "PUT",
+								// 	body: item.photo,
+								// 	headers: {
+								// 		Accept: "application/json",
+								// 		"Content-Type": "multipart/form-data",
+								// 	},
+								// })
+								// const returned = await axios
+								// 	.put(uploadUrl, img)
+								const img = await fetchImageFromUri(item.PhotoLink);
 								const returned = await fetch(uploadUrl, {
 									method: "PUT",
-									body: item.photo,
-									headers: {
-										Accept: "application/json",
-										"Content-Type": "multipart/form-data",
-									},
+									body: img,
 								})
 									.then((res) => {
 										if (res.ok) {

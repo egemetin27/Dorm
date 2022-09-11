@@ -94,13 +94,15 @@ export default function Profile({ route, navigation }) {
 				setName(user.Name + " " + user.Surname);
 				setAge(getAge(user.Birth_date).toString());
 				setSex(user.Gender == "null" ? "" : lists.genderList[user.Gender]);
-				setSexualOrientation(user.InterestedSex == "null" ? "" : lists.sexualOrientationList[user.InterestedSex]);
+				setSexualOrientation(
+					user.InterestedSex == "null" ? "" : lists.sexualOrientationList[user.InterestedSex]
+				);
 				setExpectation(user.Expectation == "null" ? "" : lists.expectationList[user.Expectation]);
 				setSchool(user.School);
 				setMajor(user.Major == "null" ? "" : user.Major);
 				//setReligion(user.Din == "null" ? "" : user.Din);
 				setFriendMode(user.matchMode == "1" ? true : false);
-	
+
 				setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
 				setDiet(user.Beslenme == "null" ? lists.dietList[0] : lists.dietList[user.Beslenme]);
 				setDrink(
@@ -109,14 +111,14 @@ export default function Profile({ route, navigation }) {
 				setSmoke(
 					user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
 				);
-	
+
 				/*
 				setSign(getChoice(data.Burc, signList));
 				setDiet(getChoice(data.Beslenme, dietList));
 				setDrink(getChoice(data.Alkol, smokeAndDrinkList));
 				setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
 				*/
-	
+
 				setAbout(user.About == "null" ? "" : user.About);
 				setPhotoList(user.Photo);
 				setHobbies(user.interest);
@@ -139,8 +141,8 @@ export default function Profile({ route, navigation }) {
 			} finally {
 				setIsReady(true);
 			}
-		}
-		profile().catch(console.err);;
+		};
+		profile().catch(console.err);
 	}, []);
 
 	const handleSave = async () => {
@@ -253,12 +255,14 @@ export default function Profile({ route, navigation }) {
 			>
 				<View style={{ marginLeft: 20 }}>
 					{isEditable ? (
-						<TouchableOpacity onPress={() => {
-							setEditibility(!isEditable);
-							navigation.replace("MainScreen", {
-								screen: "Profil",
-							});
-						}}>
+						<TouchableOpacity
+							onPress={() => {
+								setEditibility(!isEditable);
+								navigation.replace("MainScreen", {
+									screen: "Profil",
+								});
+							}}
+						>
 							<MaterialCommunityIcons
 								name="arrow-left"
 								size={height * 0.035}
@@ -373,7 +377,12 @@ export default function Profile({ route, navigation }) {
 									parallaxScrollingOfset: 100,
 									parallaxScrollingScale: 0.8,
 								}}
-								style={{ overflow: "visible", transform: [{ scale: 1.1 }], width: width * 0.95, justifyContent: "center" }}
+								style={{
+									overflow: "visible",
+									transform: [{ scale: 1.1 }],
+									width: width * 0.95,
+									justifyContent: "center",
+								}}
 								width={width * 0.7}
 								data={user.Photo.length < 4 ? [...user.Photo, "Add Photo"] : user.Photo}
 								renderItem={({ item }) => (
@@ -409,7 +418,7 @@ export default function Profile({ route, navigation }) {
 						) : (
 							<Pressable
 								onPress={() => {
-									navigation.replace("ProfilePhotos");
+									navigation.navigate("ProfilePhotos");
 								}}
 							>
 								<View style={[styles.photo]}>
@@ -446,18 +455,18 @@ export default function Profile({ route, navigation }) {
 												translateY:
 													name == ""
 														? nameRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -20],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+														  })
 														: -20,
 											},
 										],
 										fontSize:
 											name == ""
 												? nameRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -465,9 +474,9 @@ export default function Profile({ route, navigation }) {
 								Adım
 							</Animated.Text>
 
-							{!isEditable ?
+							{!isEditable ? (
 								<Text style={[styles.input, { color: colors.black }]}>{name}</Text>
-								:
+							) : (
 								<TextInput
 									editable={isEditable}
 									style={[styles.input, { color: colors.black }]}
@@ -480,7 +489,7 @@ export default function Profile({ route, navigation }) {
 										if (name == "") handleBlur(nameRef);
 									}}
 								/>
-							}
+							)}
 						</View>
 
 						<View name={"Age"} style={[styles.inputContainer, {}]}>
@@ -522,9 +531,9 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setGenderVisible(true);
-										}
-										: () => { }
+												setGenderVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{sex.choice}</Text>
@@ -551,12 +560,14 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSexualOrientationVisible(true);
-										}
-										: () => { }
+												setSexualOrientationVisible(true);
+										  }
+										: () => {}
 								}
 							>
-								<Text style={[styles.input, { color: colors.black }]}>{sexualOrientation.choice}</Text>
+								<Text style={[styles.input, { color: colors.black }]}>
+									{sexualOrientation.choice}
+								</Text>
 							</Pressable>
 						</View>
 
@@ -580,9 +591,9 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setExpectationVisible(true);
-										}
-										: () => { }
+												setExpectationVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{expectation.choice}</Text>
@@ -610,9 +621,7 @@ export default function Profile({ route, navigation }) {
 								editable={false}
 								value={school}
 							/> */}
-							<Text style={[styles.input, { color: colors.black }]}>
-								{school}
-							</Text>
+							<Text style={[styles.input, { color: colors.black }]}>{school}</Text>
 						</View>
 
 						<View
@@ -638,9 +647,7 @@ export default function Profile({ route, navigation }) {
 							>
 								Yaşadığım Şehir
 							</Text>
-							<Text style={[styles.input, { color: colors.black }]}>
-								{getCityName()}
-							</Text>
+							<Text style={[styles.input, { color: colors.black }]}>{getCityName()}</Text>
 							{/* <TextInput
 								style={[styles.input, { color: colors.black }]}
 								editable={false}
@@ -777,18 +784,18 @@ export default function Profile({ route, navigation }) {
 												translateY:
 													major == ""
 														? majorRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -20],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+														  })
 														: -20,
 											},
 										],
 										fontSize:
 											major == ""
 												? majorRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -796,11 +803,9 @@ export default function Profile({ route, navigation }) {
 								Bölümüm
 							</Animated.Text>
 
-							{!isEditable ?
-								<Text style={[styles.input, { color: colors.black }]}>
-									{major}
-								</Text>
-								:
+							{!isEditable ? (
+								<Text style={[styles.input, { color: colors.black }]}>{major}</Text>
+							) : (
 								<TextInput
 									editable={isEditable}
 									style={[styles.input, { color: colors.black }]}
@@ -813,7 +818,7 @@ export default function Profile({ route, navigation }) {
 										if (major == "") handleBlur(majorRef);
 									}}
 								/>
-							}
+							)}
 						</View>
 
 						{/* <View name={"Religion"} style={[styles.inputContainer, {}]}>
@@ -864,9 +869,9 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSignVisible(true);
-										}
-										: () => { }
+												setSignVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -878,18 +883,18 @@ export default function Profile({ route, navigation }) {
 													translateY:
 														sign.choice == ""
 															? signRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												sign.choice == ""
 													? signRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -906,9 +911,9 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setDietVisible(true);
-										}
-										: () => { }
+												setDietVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -920,18 +925,18 @@ export default function Profile({ route, navigation }) {
 													translateY:
 														diet.choice == ""
 															? dietRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												diet.choice == ""
 													? dietRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -948,9 +953,9 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setDrinkVisible(true);
-										}
-										: () => { }
+												setDrinkVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -962,18 +967,18 @@ export default function Profile({ route, navigation }) {
 													translateY:
 														drink.choice == ""
 															? drinkRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												drink.choice == ""
 													? drinkRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -990,9 +995,9 @@ export default function Profile({ route, navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSmokeVisible(true);
-										}
-										: () => { }
+												setSmokeVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -1004,18 +1009,18 @@ export default function Profile({ route, navigation }) {
 													translateY:
 														smoke.choice == ""
 															? smokeRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												smoke.choice == ""
 													? smokeRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -1047,18 +1052,18 @@ export default function Profile({ route, navigation }) {
 													translateY:
 														hobbies == ""
 															? hobbiesRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												hobbies == ""
 													? hobbiesRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -1128,9 +1133,9 @@ export default function Profile({ route, navigation }) {
 												translateY:
 													about == ""
 														? aboutRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -75],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -75],
+														  })
 														: -75,
 											},
 											{
@@ -1143,32 +1148,34 @@ export default function Profile({ route, navigation }) {
 										fontSize:
 											about == ""
 												? aboutRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
 							>
 								Hakkımda
 							</Animated.Text>
-							{!isEditable ?
-								<Text style={[
-									styles.input,
-									{
-										color: colors.black,
-										height: height * 0.15,
-										width: "95%",
-										marginHorizontal: "3%",
-										marginBottom: "1%",
-										marginTop: "3%",
-										textAlign: "left",
-										textAlignVertical: "top",
-									},
-								]}>
+							{!isEditable ? (
+								<Text
+									style={[
+										styles.input,
+										{
+											color: colors.black,
+											height: height * 0.15,
+											width: "95%",
+											marginHorizontal: "3%",
+											marginBottom: "1%",
+											marginTop: "3%",
+											textAlign: "left",
+											textAlignVertical: "top",
+										},
+									]}
+								>
 									{about}
 								</Text>
-								:
+							) : (
 								<TextInput
 									multiline={true}
 									editable={isEditable}
@@ -1196,7 +1203,7 @@ export default function Profile({ route, navigation }) {
 										if (about == "") handleBlur(aboutRef);
 									}}
 								/>
-							}
+							)}
 						</View>
 					</View>
 				</ScrollView>

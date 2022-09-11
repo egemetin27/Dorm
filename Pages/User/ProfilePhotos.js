@@ -29,6 +29,12 @@ import CustomImage from "../../components/custom-image.component";
 
 const { width, height } = Dimensions.get("window");
 
+const fetchImageFromUri = async (uri) => {
+	const response = await fetch(uri);
+	const blob = await response.blob();
+	return blob;
+};
+
 const Photo = ({ index, photo, setToBeDeleted, setModalVisibility }) => {
 	const PHOTO_HEIGHT = width * 0.715;
 	const PHOTO_WIDTH = width * 0.5;
@@ -82,7 +88,7 @@ export default function ProfilePhotos({ route, navigation }) {
 	useEffect(() => {
 		let abortController = new AbortController();
 		const backAction = () => {
-			handleSave();
+			handleBackButton();
 			return true;
 		};
 
@@ -143,17 +149,19 @@ export default function ProfilePhotos({ route, navigation }) {
 				quality: 0.4,
 			});
 
-			if (!result.cancelled) {
-				let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
-					compress: 0.4,
-					format: SaveFormat.JPEG,
-				});
-				handleAdd(resizedResult);
-			}
+			handleAdd(result);
+
+			// if (!result.cancelled) {
+			// 	let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
+			// 		compress: 0.4,
+			// 		format: SaveFormat.JPEG,
+			// 	});
+			// 	handleAdd(resizedResult);
+			// }
 		}
 	};
 
-	const handleAdd = (photo) => {
+	const handleAdd = async (photo) => {
 		setPhotoList([
 			...PHOTO_LIST,
 			{
@@ -162,6 +170,10 @@ export default function ProfilePhotos({ route, navigation }) {
 				photo: photo,
 			},
 		]);
+	};
+
+	const handleBackButton = () => {
+		navigation.goBack();
 	};
 
 	const handleSave = async () => {
@@ -177,17 +189,23 @@ export default function ProfilePhotos({ route, navigation }) {
 							})
 							.then(async (res) => {
 								const uploadUrl = crypto.decrypt(res.data).url;
-								// const uploadUrl = res.data.url;
+								const img = await fetchImageFromUri(item.PhotoLink);
+								// const returned = await fetch(uploadUrl, {
+								// 	method: "PUT",
+								// 	body: item.photo,
+								// 	headers: {
+								// 		Accept: "application/json",
+								// 		"Content-Type": "multipart/form-data",
+								// 	},
+								// })
+								// const returned = await axios
+								// 	.put(uploadUrl, img)
 								const returned = await fetch(uploadUrl, {
 									method: "PUT",
-									body: item.photo,
-									headers: {
-										"Accept": "application/json",
-										"Content-Type": "multipart/form-data",
-									},
+									body: img,
 								})
 									.then((res) => {
-										if (res.ok) {
+										if (res?.status?.toString() === "200" || res.ok) {
 											const photoLink = uploadUrl.split("?")[0];
 											return {
 												Photo_Order: item.Photo_Order,
@@ -210,6 +228,7 @@ export default function ProfilePhotos({ route, navigation }) {
 					return item;
 				})
 			);
+			console.log({ newList });
 			const photoData = crypto.encrypt({
 				userId: userId,
 				photos: newList,
@@ -230,7 +249,7 @@ export default function ProfilePhotos({ route, navigation }) {
 		} catch (err) {
 			console.log("ERROR SAVING: ", err);
 		}
-		console.log("started4");
+		console.log("started");
 	};
 
 	return (
@@ -249,7 +268,7 @@ export default function ProfilePhotos({ route, navigation }) {
 				}}
 			>
 				<View style={{ marginLeft: 20 }}>
-					<TouchableOpacity onPress={handleSave}>
+					<TouchableOpacity onPress={handleBackButton}>
 						<Feather
 							name="arrow-left"
 							size={height * 0.04}
