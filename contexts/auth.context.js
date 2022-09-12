@@ -13,8 +13,10 @@ import { sort } from "../utils/array.utils";
 export const AuthContext = createContext({
 	user: null,
 	isLoggedIn: null,
+	friendMode: null,
 	peopleListIndex: null,
 	setPeopleIndex: () => {},
+	setFriendMode: () => {},
 	updateProfile: () => {},
 	signIn: () => {},
 	signOut: () => {},
@@ -27,6 +29,7 @@ const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [peopleListIndex, setPeopleListIndex] = useState(0);
+	const [friendMode, setfriendMode] = useState(null);
 
 	const signIn = async ({ email, password, notLoading = () => {} }) => {
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
@@ -127,14 +130,20 @@ const AuthProvider = ({ children }) => {
 		setPeopleListIndex(idx + 1);
 	};
 
+	const setFriendMode = (bool) => {
+		setfriendMode(bool);
+	};
+
 	const value = {
 		user,
 		isLoggedIn,
 		peopleListIndex,
+		friendMode,
 		setPeopleIndex,
 		updateProfile,
 		signIn,
 		signOut,
+		setFriendMode,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

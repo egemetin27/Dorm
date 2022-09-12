@@ -33,7 +33,7 @@ const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
 	const { lists } = useContext(ListsContext);
-	const { user, updateProfile } = useContext(AuthContext);
+	const { user, friendMode, setFriendMode, updateProfile } = useContext(AuthContext);
 	// const tabBarHeight = useBottomTabBarHeight();
 
 	// const [progressBarVisible, setVisibility] = useState(true);
@@ -64,8 +64,8 @@ export default function Profile({ route, navigation }) {
 	const [smoke, setSmoke] = useState("");
 	const [hobbies, setHobbies] = useState("");
 	const [about, setAbout] = useState("");
-	const [PHOTO_LIST, setPhotoList] = useState("");
-	const [friendMode, setFriendMode] = useState(false);
+	//const [PHOTO_LIST, setPhotoList] = useState("");
+	//const [friendMode, setFriendMode] = useState(false);
 
 	const [city, setCity] = useState([0, 1, 0]);
 
@@ -120,7 +120,7 @@ export default function Profile({ route, navigation }) {
 				*/
 
 				setAbout(user.About == "null" ? "" : user.About);
-				setPhotoList(user.Photo);
+				//setPhotoList(user.Photo);
 				setHobbies(user.interest);
 				// setUserData({
 				// 	userId: data.userId,
@@ -209,7 +209,7 @@ export default function Profile({ route, navigation }) {
 		if ((friendMode && index == 1) || (!friendMode && index == 0)) {
 			return;
 		}
-		setFriendMode(index == 1 ? true : false);
+		setFriendMode(index == 1);
 
 		const dataToBeSent = crypto.encrypt({
 			userId: user.userId,
@@ -384,7 +384,7 @@ export default function Profile({ route, navigation }) {
 									justifyContent: "center",
 								}}
 								width={width * 0.7}
-								data={user.Photo.length < 4 ? [...user.Photo, "Add Photo"] : user.Photo}
+								data={user.Photo.length <= 4 ? [...user.Photo, "Add Photo"] : user.Photo}
 								renderItem={({ item }) => (
 									<View style={[styles.photo]}>
 										{item != "Add Photo" ? (

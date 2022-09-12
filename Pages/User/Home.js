@@ -196,7 +196,7 @@ const ListEmpty = () => {
 };
 
 export default function MainPage({ navigation }) {
-	const { user, signOut, peopleListIndex, setPeopleIndex } = useContext(AuthContext);
+	const { user, peopleListIndex, friendMode, signOut, setPeopleIndex } = useContext(AuthContext);
 	const { eventLiked, setEventLike } = useContext(NotificationContext);
 	const { filters } = useContext(FilterContext);
 
@@ -218,6 +218,7 @@ export default function MainPage({ navigation }) {
 	};
 
 	useEffect(() => {
+		// User list fetch
 		const homeStart = async () => {
 			let abortController = new AbortController();
 
@@ -276,9 +277,10 @@ export default function MainPage({ navigation }) {
 			};
 		};
 		homeStart().catch(console.error);
-	}, [filters]);
+	}, [filters, friendMode]);
 
 	useEffect(() => {
+		// Event list fetch
 		const eventlike = async () => {
 			let abortController = new AbortController();
 			const userId = user?.userId;

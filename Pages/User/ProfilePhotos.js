@@ -16,14 +16,14 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
+//import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 import { Gradient, GradientText, colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 import { CustomModal } from "../../visualComponents/customComponents";
 import url from "../../connection";
 import crypto from "../../functions/crypto";
-import { Session } from "../../nonVisualComponents/SessionVariables";
+//import { Session } from "../../nonVisualComponents/SessionVariables";
 import { AuthContext } from "../../contexts/auth.context";
 import CustomImage from "../../components/custom-image.component";
 
@@ -146,18 +146,17 @@ export default function ProfilePhotos({ route, navigation }) {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [2, 3],
-				quality: 0.4,
+				quality: 0.16,
 			});
 
-			handleAdd(result);
-
-			// if (!result.cancelled) {
-			// 	let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
-			// 		compress: 0.4,
-			// 		format: SaveFormat.JPEG,
-			// 	});
-			// 	handleAdd(resizedResult);
-			// }
+			if (!result.cancelled && result != null) {
+				// let resizedResult = await manipulateAsync(result.uri, [{ resize: { height: 1024 } }], {
+				// 	compress: 0.4,
+				// 	format: SaveFormat.JPEG,
+				// });
+				//handleAdd(resizedResult);
+				handleAdd(result);
+			}
 		}
 	};
 
@@ -228,12 +227,12 @@ export default function ProfilePhotos({ route, navigation }) {
 					return item;
 				})
 			);
-			console.log({ newList });
+			//console.log({ newList });
 			const photoData = crypto.encrypt({
 				userId: userId,
 				photos: newList,
 			});
-			console.log({ photoData });
+			//console.log({ photoData });
 			await axios
 				.post(url + "/profile/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
@@ -251,7 +250,6 @@ export default function ProfilePhotos({ route, navigation }) {
 		} catch (err) {
 			console.log("ERROR SAVING: ", err);
 		}
-		console.log("started");
 	};
 
 	return (
@@ -323,7 +321,7 @@ export default function ProfilePhotos({ route, navigation }) {
 					paddingBottom: height * 0.02,
 				}}
 			>
-				<Text style={{ fontSize: width * 0.03, color: colors.medium_gray }}>
+				<Text style={{ fontSize: width * 0.035, color: colors.medium_gray }}>
 					En sevdiğin fotoğraflarından 4 tane seçebilirsin
 				</Text>
 			</View>
@@ -409,7 +407,7 @@ const styles = StyleSheet.create({
 	photo: {
 		marginVertical: height * 0.01,
 		marginHorizontal: width * 0.03,
-		height: Math.min(height * 0.35, width * 0.66),
+		height: Math.min(height * 0.315, width * 0.635),
 		aspectRatio: 1 / 1.5,
 		backgroundColor: colors.white,
 		borderRadius: 20,

@@ -97,9 +97,9 @@ const Card = ({
 	};
 
 	const handleDoubleTap = () => {
+		setBackFace(true);
 		face.value = withTiming(-face.value);
 		isBackFace.value = !isBackFace.value;
-		setBackFace(true);
 	};
 
 	const checkScrollNeeded = async () => {
