@@ -117,9 +117,9 @@ export default function Verification({ navigation, route }) {
 				<TouchableOpacity style={{ left: 35 }}>
 					<Ionicons name="arrow-back-outline" size={32} color="#B6B6B6" />
 				</TouchableOpacity>
-				<TouchableOpacity style={{ right: 35, top: 2 }}>
+				{/* <TouchableOpacity style={{ right: 35, top: 2 }}>
 					<Text style={{ fontSize: 22, color: "#B6B6B6" }}>Atla</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 			</View>
 
 			<View style={{ marginTop: height * 0.02, paddingHorizontal: width * 0.05 }}>

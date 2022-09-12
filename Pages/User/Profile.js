@@ -33,12 +33,8 @@ const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ route, navigation }) {
 	const { lists } = useContext(ListsContext);
-	const { user, friendMode, setFriendMode, updateProfile } = useContext(AuthContext);
-	// const tabBarHeight = useBottomTabBarHeight();
-
-	// const [progressBarVisible, setVisibility] = useState(true);
-	// const [progress, setProgress] = useState(0);
-	// const animatedProgress = useRef(new Animated.Value(0)).current; // Progressi yap
+	const { user, updateProfile } = useContext(AuthContext);
+	const { matchMode } = user;
 
 	const [isReady, setIsReady] = useState(false);
 	const [isEditable, setEditibility] = useState(false);
@@ -64,8 +60,6 @@ export default function Profile({ route, navigation }) {
 	const [smoke, setSmoke] = useState("");
 	const [hobbies, setHobbies] = useState("");
 	const [about, setAbout] = useState("");
-	//const [PHOTO_LIST, setPhotoList] = useState("");
-	//const [friendMode, setFriendMode] = useState(false);
 
 	const [city, setCity] = useState([0, 1, 0]);
 
@@ -101,7 +95,6 @@ export default function Profile({ route, navigation }) {
 				setSchool(user.School);
 				setMajor(user.Major == "null" ? "" : user.Major);
 				//setReligion(user.Din == "null" ? "" : user.Din);
-				setFriendMode(user.matchMode == "1" ? true : false);
 
 				setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
 				setDiet(user.Beslenme == "null" ? lists.dietList[0] : lists.dietList[user.Beslenme]);
@@ -206,10 +199,9 @@ export default function Profile({ route, navigation }) {
 	};
 
 	const handleMatchModeChange = (index) => {
-		if ((friendMode && index == 1) || (!friendMode && index == 0)) {
+		if (matchMode == index) {
 			return;
 		}
-		setFriendMode(index == 1);
 
 		const dataToBeSent = crypto.encrypt({
 			userId: user.userId,
@@ -437,7 +429,7 @@ export default function Profile({ route, navigation }) {
 								aspectRatio: 3 / 1,
 								borderRadius: (width * 0.4) / 6,
 							}}
-							index={friendMode ? 1 : 0}
+							index={matchMode}
 							setIndex={(index) => {
 								handleMatchModeChange(index);
 							}}

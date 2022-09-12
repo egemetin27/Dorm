@@ -12,24 +12,30 @@ import {
 	BackHandler,
 	ActivityIndicator,
 } from "react-native";
+import Animated, {
+	useAnimatedStyle,
+	useSharedValue,
+	Extrapolation,
+	interpolate,
+} from "react-native-reanimated";
 import { Octicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-
-import commonStyles from "../../visualComponents/styles";
-import { colors, GradientText, Gradient } from "../../visualComponents/colors";
 import axios from "axios";
-import url from "../../connection";
-
-//import { useSafeAreaFrame } from "react-native-safe-area-context";
-import { AuthContext } from "../../contexts/auth.context";
-//import { Session } from "../../nonVisualComponents/SessionVariables";
-
-import crypto from "../../functions/crypto";
 
 import People from "../../components/person-card-small.component";
 import Event from "../../components/event-card-small.component";
+
+import commonStyles from "../../visualComponents/styles";
+import { colors, GradientText, Gradient } from "../../visualComponents/colors";
+import url from "../../connection";
+
+import useBackHandler from "../../hooks/useBackHandler";
+
+import { AuthContext } from "../../contexts/auth.context";
 import { FilterContext } from "../../contexts/filter.context";
 import { NotificationContext } from "../../contexts/notification.context";
+
+import crypto from "../../functions/crypto";
 
 const { height, width } = Dimensions.get("window");
 
@@ -195,23 +201,43 @@ const ListEmpty = () => {
 	);
 };
 
+const PEOPLE_LIST_HEIGHT = height * 0.35;
+const EVENT_HEADER_HEIGHT = height * 0.15;
+
 export default function MainPage({ navigation }) {
-	const { user, peopleListIndex, friendMode, signOut, setPeopleIndex } = useContext(AuthContext);
+	const {
+		user: { userId, matchMode, sesToken, School, Invisible },
+		peopleListIndex,
+		signOut,
+		setPeopleIndex,
+	} = useContext(AuthContext);
 	const { eventLiked, setEventLike } = useContext(NotificationContext);
 	const { filters } = useContext(FilterContext);
+
+	useBackHandler(() => {
+		Alert.alert("Emin Misin?", "Uygulamayı Kapatmak İstiyor Musun?", [
+			{
+				text: "Vazgeç",
+				onPress: () => null,
+				style: "cancel",
+			},
+			{ text: "EVET", onPress: () => BackHandler.exitApp() },
+		]);
+		return true;
+	});
+
+	const scrollY = useSharedValue(0);
 
 	const [isAppReady, setIsAppReady] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState(0);
 	const [eventList, setEventList] = useState([]);
 	const [shownEvents, setShownEvents] = useState([]);
 	const [peopleList, setPeopleList] = useState([]);
-	const [myPP, setMyPP] = useState("");
-	const [matchMode, setMatchMode] = useState(0);
 	const [listEmptyMessage, setLisetEmptyMessage] = useState(
 		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
 	);
-	//const eventsFlatListRef = useRef();
 	const peopleFlatListRef = useRef();
+	const eventsFlatListRef = useRef();
 
 	const handleFilterButton = () => {
 		navigation.navigate("FilterModal");
@@ -222,13 +248,6 @@ export default function MainPage({ navigation }) {
 		const homeStart = async () => {
 			let abortController = new AbortController();
 
-			const userId = user?.userId;
-			const myMode = user?.matchMode;
-			const myPhoto = user?.Photo[0]?.PhotoLink ?? "";
-
-			setMatchMode(myMode);
-			setMyPP(myPhoto);
-
 			async function prepare() {
 				const swipeListData = crypto.encrypt({
 					userId: userId,
@@ -237,7 +256,7 @@ export default function MainPage({ navigation }) {
 
 				await axios
 					.post(url + "/lists/Swipelist", swipeListData, {
-						headers: { "access-token": user.sesToken },
+						headers: { "access-token": sesToken },
 					})
 					.then((res) => {
 						const data = crypto.decrypt(res.data);
@@ -277,18 +296,18 @@ export default function MainPage({ navigation }) {
 			};
 		};
 		homeStart().catch(console.error);
-	}, [filters, friendMode]);
+	}, [filters, matchMode, Invisible]);
 
 	useEffect(() => {
 		// Event list fetch
 		const eventlike = async () => {
 			let abortController = new AbortController();
-			const userId = user?.userId;
+			// const userId = user?.userId;
 			try {
-				const eventListData = crypto.encrypt({ userId: userId, campus: user.School });
+				const eventListData = crypto.encrypt({ userId: userId, campus: School });
 				await axios
 					.post(url + "/lists/EventList", eventListData, {
-						headers: { "access-token": user.sesToken },
+						headers: { "access-token": sesToken },
 					})
 					.then((res) => {
 						const data = crypto.decrypt(res.data);
@@ -314,34 +333,42 @@ export default function MainPage({ navigation }) {
 	}, [eventLiked]);
 
 	useEffect(() => {
-		const backAction = () => {
-			Alert.alert("Emin Misin?", "Uygulamayı Kapatmak İstiyor Musun?", [
-				{
-					text: "Vazgeç",
-					onPress: () => null,
-					style: "cancel",
-				},
-				{ text: "EVET", onPress: () => BackHandler.exitApp() },
-			]);
-			return true;
-		};
-
-		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 		setPeopleIndex(-1);
-		return () => backHandler.remove();
 	}, []);
 
-	// useEffect(() => {
-	// 	if (eventsFlatListRef.current && shownEvents.length > 0) {
-	// 		eventsFlatListRef.current.scrollToIndex({ index: 0 });
-	// 	}
-	// }, [shownEvents]);
+	useEffect(() => {
+		if (eventsFlatListRef.current && shownEvents.length > 0) {
+			eventsFlatListRef.current.scrollToIndex({ index: 0 });
+		}
+	}, [shownEvents]);
 
-	// useEffect(() => {
-	// 	if (peopleFlatListRef.current) {
-	// 		peopleFlatListRef.current.scrollToIndex({ index: 0 });
-	// 	}
-	// }, [peopleList]);
+	useEffect(() => {
+		if (peopleFlatListRef.current) {
+			peopleFlatListRef.current.scrollToIndex({ index: 0 });
+		}
+	}, [peopleList]);
+
+	const animatedHeader = useAnimatedStyle(() => {
+		return {
+			transform: [
+				{
+					translateY: scrollY.value,
+				},
+			],
+			elevation: interpolate(scrollY.value, [0, -PEOPLE_LIST_HEIGHT], [0, 16]),
+			shadowOpacity: interpolate(scrollY.value, [0, -PEOPLE_LIST_HEIGHT], [0, 0.44]),
+		};
+	}, []);
+
+	const handleScroll = ({ nativeEvent: { contentOffset } }) => {
+		// if (contentOffset.y > PEOPLE_LIST_HEIGHT) return;
+		scrollY.value = interpolate(
+			contentOffset.y,
+			[0, PEOPLE_LIST_HEIGHT],
+			[0, -PEOPLE_LIST_HEIGHT],
+			{ extrapolateRight: Extrapolation.CLAMP }
+		);
+	};
 
 	if (!isAppReady) {
 		return (
@@ -357,150 +384,333 @@ export default function MainPage({ navigation }) {
 			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
 
 			{/* The items above events are all part of header of Events View to scroll in events in the page */}
-			{/* <View name={"Events"} style={{ width: width, height: height }}> */}
 
-			<FlatList
-				horizontal={false}
-				//ref={eventsFlatListRef}
-				numColumns={2}
-				showsHorizontalScrollIndicator={false}
-				initialNumToRender={8}
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ alignSelf: "flex-start" }}
-				keyExtractor={(item, idx) => item?.EventId?.toString()}
-				data={shownEvents}
-				ListHeaderComponent={() => {
-					// All the items above events
-					return (
-						<View style={{ width: width }}>
-							<View
-								name={"PeopleHeader"}
-								style={[
+			{/* COMMENT OUT THIS PART TO REMOVE STICKY HEADER */}
+			<Animated.View
+				style={[
+					{
+						position: "absolute",
+						width: width,
+						zIndex: 1,
+						backgroundColor: colors.backgroundColor,
+
+						shadowColor: "#000",
+						shadowOffset: {
+							width: 0,
+							height: 8,
+						},
+						shadowRadius: 10.32,
+					},
+					animatedHeader,
+				]}
+			>
+				<View
+					name={"PeopleHeader"}
+					style={[
+						{
+							marginTop: height * 0.01,
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-between",
+							width: "100%",
+							height: height * 0.05,
+						},
+					]}
+				>
+					<GradientText
+						text={"Kişiler"}
+						style={{
+							fontSize: Math.min(height * 0.035, 35),
+							fontFamily: "NowBold",
+							letterSpacing: 1.2,
+							marginLeft: 20,
+						}}
+					/>
+					<View style={{ marginRight: 14 }}>
+						<TouchableOpacity
+							style={{
+								paddingHorizontal: 14,
+								height: "100%",
+								justifyContent: "center",
+							}}
+							onPress={handleFilterButton}
+						>
+							<Octicons
+								style={
 									{
-										marginTop: height * 0.01,
-										flexDirection: "row",
-										alignItems: "center",
-										justifyContent: "space-between",
-										width: "100%",
-										height: height * 0.05,
-									},
-								]}
-							>
-								<GradientText
-									text={"Kişiler"}
-									style={{
-										fontSize: Math.min(height * 0.035, 35),
-										fontFamily: "NowBold",
-										letterSpacing: 1.2,
-										marginLeft: 20,
+										//transform: [{ rotate: "-90deg" }],
+									}
+								}
+								name="filter"
+								size={Math.min(height * 0.032, 30)}
+								color={colors.cool_gray}
+							/>
+						</TouchableOpacity>
+					</View>
+				</View>
+				<View
+					name={"People"}
+					style={{
+						width: "100%",
+						height: height * 0.285,
+						justifyContent: "center",
+					}}
+				>
+					{peopleList?.length > 0 ? (
+						<FlatList
+							ref={peopleFlatListRef}
+							maxToRenderPerBatch={1}
+							keyExtractor={(item, index) => item?.userId?.toString() ?? index}
+							horizontal={true}
+							showsHorizontalScrollIndicator={false}
+							data={peopleList.slice(peopleListIndex, peopleListIndex + 5) ?? null}
+							renderItem={({ item, index }) => (
+								<People
+									setIsAppReady={setIsAppReady}
+									index={index}
+									person={item}
+									length={5}
+									openProfiles={(idx) => {
+										navigation.navigate("ProfileCards", {
+											idx: idx,
+											//lastIndex: 45,
+											list: peopleList.slice(peopleListIndex, 45),
+										});
 									}}
 								/>
-								<View style={{ marginRight: 14 }}>
-									<TouchableOpacity
-										style={{
-											paddingHorizontal: 14,
-											height: "100%",
-											justifyContent: "center",
-										}}
-										onPress={handleFilterButton}
-									>
-										<Octicons
-											style={
-												{
-													//transform: [{ rotate: "-90deg" }],
-												}
-											}
-											name="filter"
-											size={Math.min(height * 0.032, 30)}
-											color={colors.cool_gray}
-										/>
-									</TouchableOpacity>
-								</View>
-							</View>
-							<View
-								name={"People"}
+							)}
+						/>
+					) : (
+						<View style={{ paddingHorizontal: width * 0.075 }}>
+							<Text
 								style={{
-									width: "100%",
-									height: height * 0.285,
-									justifyContent: "center",
+									textAlign: "center",
+									fontFamily: "PoppinsSemiBold",
+									fontSize: Math.min(width * 0.042, 20),
+									color: colors.gray,
 								}}
 							>
-								{peopleList?.length > 0 ? (
-									<FlatList
-										ref={peopleFlatListRef}
-										maxToRenderPerBatch={1}
-										keyExtractor={(item, index) => item?.userId?.toString() ?? index}
-										horizontal={true}
-										showsHorizontalScrollIndicator={false}
-										data={peopleList.slice(peopleListIndex, peopleListIndex + 5) ?? null}
-										renderItem={({ item, index }) => (
-											<People
-												setIsAppReady={setIsAppReady}
-												index={index}
-												person={item}
-												length={5}
-												openProfiles={(idx) => {
-													navigation.navigate("ProfileCards", {
-														idx: idx,
-														//lastIndex: 45,
-														list: peopleList.slice(peopleListIndex, 45),
-													});
-												}}
-											/>
-										)}
-									/>
-								) : (
-									<View style={{ paddingHorizontal: width * 0.075 }}>
-										<Text
-											style={{
-												textAlign: "center",
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(width * 0.042, 20),
-												color: colors.gray,
-											}}
-										>
-											{listEmptyMessage}
-										</Text>
-									</View>
-								)}
-							</View>
-							<View
-								name={"EventHeader"}
-								style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
-							>
-								<GradientText
-									text={"Etkinlikler"}
-									style={{
-										fontSize: Math.min(height * 0.035, 32),
-										fontFamily: "NowBold",
-										letterSpacing: 1.2,
-										marginLeft: 20,
-									}}
-								/>
-							</View>
-
-							<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
-								<FlatList
-									horizontal={true}
-									showsHorizontalScrollIndicator={false}
-									data={categories}
-									renderItem={({ item, index }) => (
-										<Category
-											index={index}
-											userId={user.sesToken}
-											selectedCategory={selectedCategory}
-											setSelectedCategory={setSelectedCategory}
-											setShownEvents={setShownEvents}
-											eventList={eventList}
-										>
-											{item}
-										</Category>
-									)}
-								/>
-							</View>
+								{listEmptyMessage}
+							</Text>
 						</View>
-					);
-				}}
+					)}
+				</View>
+				<View
+					name={"EventHeader"}
+					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+				>
+					<GradientText
+						text={"Etkinlikler"}
+						style={{
+							fontSize: Math.min(height * 0.035, 32),
+							fontFamily: "NowBold",
+							letterSpacing: 1.2,
+							marginLeft: 20,
+						}}
+					/>
+				</View>
+				<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
+					<FlatList
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+						data={categories}
+						renderItem={({ item, index }) => (
+							<Category
+								index={index}
+								userId={sesToken}
+								selectedCategory={selectedCategory}
+								setSelectedCategory={setSelectedCategory}
+								setShownEvents={setShownEvents}
+								eventList={eventList}
+							>
+								{item}
+							</Category>
+						)}
+					/>
+				</View>
+			</Animated.View>
+			{/* COMMENT OUT THIS PART TO REMOVE STICKY HEADER */}
+
+			<FlatList
+				scrollEventThrottle={1}
+				onScroll={handleScroll}
+				ref={eventsFlatListRef}
+				numColumns={2}
+				initialNumToRender={8}
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ paddingTop: height * 0.495 }}
+				keyExtractor={(item, idx) => item?.EventId?.toString()}
+				data={shownEvents}
+				// ListHeaderComponent={() => {
+				// 	return (
+				// 		<View style={{ backgroundColor: colors.backgroundColor }}>
+				// 			<View
+				// 				name={"EventHeader"}
+				// 				style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+				// 			>
+				// 				<GradientText
+				// 					text={"Etkinlikler"}
+				// 					style={{
+				// 						fontSize: Math.min(height * 0.035, 32),
+				// 						fontFamily: "NowBold",
+				// 						letterSpacing: 1.2,
+				// 						marginLeft: 20,
+				// 					}}
+				// 				/>
+				// 			</View>
+				// 			<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
+				// 				<FlatList
+				// 					horizontal={true}
+				// 					showsHorizontalScrollIndicator={false}
+				// 					data={categories}
+				// 					renderItem={({ item, index }) => (
+				// 						<Category
+				// 							index={index}
+				// 							userId={sesToken}
+				// 							selectedCategory={selectedCategory}
+				// 							setSelectedCategory={setSelectedCategory}
+				// 							setShownEvents={setShownEvents}
+				// 							eventList={eventList}
+				// 						>
+				// 							{item}
+				// 						</Category>
+				// 					)}
+				// 				/>
+				// 			</View>
+				// 		</View>
+				// 	);
+				// }}
+				// ListHeaderComponent={() => {
+				// 	// All the items above events
+				// 	return (
+				// 		<View style={{ width: width, backgroundColor: colors.backgroundColor }}>
+				// 			<View
+				// 				name={"PeopleHeader"}
+				// 				style={[
+				// 					{
+				// 						marginTop: height * 0.01,
+				// 						flexDirection: "row",
+				// 						alignItems: "center",
+				// 						justifyContent: "space-between",
+				// 						width: "100%",
+				// 						height: height * 0.05,
+				// 					},
+				// 				]}
+				// 			>
+				// 				<GradientText
+				// 					text={"Kişiler"}
+				// 					style={{
+				// 						fontSize: Math.min(height * 0.035, 35),
+				// 						fontFamily: "NowBold",
+				// 						letterSpacing: 1.2,
+				// 						marginLeft: 20,
+				// 					}}
+				// 				/>
+				// 				<View style={{ marginRight: 14 }}>
+				// 					<TouchableOpacity
+				// 						style={{
+				// 							paddingHorizontal: 14,
+				// 							height: "100%",
+				// 							justifyContent: "center",
+				// 						}}
+				// 						onPress={handleFilterButton}
+				// 					>
+				// 						<Octicons
+				// 							style={
+				// 								{
+				// 									//transform: [{ rotate: "-90deg" }],
+				// 								}
+				// 							}
+				// 							name="filter"
+				// 							size={Math.min(height * 0.032, 30)}
+				// 							color={colors.cool_gray}
+				// 						/>
+				// 					</TouchableOpacity>
+				// 				</View>
+				// 			</View>
+				// 			<View
+				// 				name={"People"}
+				// 				style={{
+				// 					width: "100%",
+				// 					height: height * 0.285,
+				// 					justifyContent: "center",
+				// 				}}
+				// 			>
+				// 				{peopleList?.length > 0 ? (
+				// 					<FlatList
+				// 						ref={peopleFlatListRef}
+				// 						maxToRenderPerBatch={1}
+				// 						keyExtractor={(item, index) => item?.userId?.toString() ?? index}
+				// 						horizontal={true}
+				// 						showsHorizontalScrollIndicator={false}
+				// 						data={peopleList.slice(peopleListIndex, peopleListIndex + 5) ?? null}
+				// 						renderItem={({ item, index }) => (
+				// 							<People
+				// 								setIsAppReady={setIsAppReady}
+				// 								index={index}
+				// 								person={item}
+				// 								length={5}
+				// 								openProfiles={(idx) => {
+				// 									navigation.navigate("ProfileCards", {
+				// 										idx: idx,
+				// 										//lastIndex: 45,
+				// 										list: peopleList.slice(peopleListIndex, 45),
+				// 									});
+				// 								}}
+				// 							/>
+				// 						)}
+				// 					/>
+				// 				) : (
+				// 					<View style={{ paddingHorizontal: width * 0.075 }}>
+				// 						<Text
+				// 							style={{
+				// 								textAlign: "center",
+				// 								fontFamily: "PoppinsSemiBold",
+				// 								fontSize: Math.min(width * 0.042, 20),
+				// 								color: colors.gray,
+				// 							}}
+				// 						>
+				// 							{listEmptyMessage}
+				// 						</Text>
+				// 					</View>
+				// 				)}
+				// 			</View>
+				// 			<View
+				// 				name={"EventHeader"}
+				// 				style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
+				// 			>
+				// 				<GradientText
+				// 					text={"Etkinlikler"}
+				// 					style={{
+				// 						fontSize: Math.min(height * 0.035, 32),
+				// 						fontFamily: "NowBold",
+				// 						letterSpacing: 1.2,
+				// 						marginLeft: 20,
+				// 					}}
+				// 				/>
+				// 			</View>
+				// 			<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
+				// 				<FlatList
+				// 					horizontal={true}
+				// 					showsHorizontalScrollIndicator={false}
+				// 					data={categories}
+				// 					renderItem={({ item, index }) => (
+				// 						<Category
+				// 							index={index}
+				// 							userId={sesToken}
+				// 							selectedCategory={selectedCategory}
+				// 							setSelectedCategory={setSelectedCategory}
+				// 							setShownEvents={setShownEvents}
+				// 							eventList={eventList}
+				// 						>
+				// 							{item}
+				// 						</Category>
+				// 					)}
+				// 				/>
+				// 			</View>
+				// 		</View>
+				// 	);
+				// }}
 				renderItem={({ item, index }) => (
 					<Event
 						index={index}
@@ -510,8 +720,8 @@ export default function MainPage({ navigation }) {
 							navigation.navigate("EventCards", {
 								idx: idx,
 								list: shownEvents,
-								myID: user.userId,
-								sesToken: user.sesToken,
+								myID: userId,
+								sesToken: sesToken,
 							});
 						}}
 					/>
