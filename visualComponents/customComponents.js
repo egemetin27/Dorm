@@ -22,8 +22,13 @@ import { Gradient, colors } from "./colors";
 
 const { width, height } = Dimensions.get("screen");
 
-export const CustomModal = (props) => {
-	const { visible, transparent = true, dismiss, animationType = "none", children } = props;
+export const CustomModal = ({
+	visible,
+	dismiss,
+	transparent = true,
+	animationType = "none",
+	children,
+}) => {
 	return (
 		<Modal
 			visible={visible}
@@ -31,9 +36,14 @@ export const CustomModal = (props) => {
 			onRequestClose={dismiss}
 			animationType={animationType}
 		>
-			<Pressable style={styles.modalContent} onPress={dismiss}>
-				<Pressable onPress={() => {}}>{children}</Pressable>
-			</Pressable>
+			<View style={styles.wrapper}>
+				<Pressable onPress={dismiss} style={styles.absolute_fill} />
+				<View>{children}</View>
+
+				{/* <Pressable style={styles.modalContent} onPress={dismiss}>
+					<Pressable onPress={() => {}}>{children}</Pressable>
+				</Pressable> */}
+			</View>
 		</Modal>
 	);
 };
@@ -176,6 +186,16 @@ export const AnimatedModal = (props) => {
 };
 
 const styles = StyleSheet.create({
+	wrapper: {
+		width: "100%",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	absolute_fill: {
+		...StyleSheet.absoluteFill,
+		backgroundColor: "rgba(0,0,0,0.5)",
+	},
 	modalContent: {
 		flex: 1,
 		justifyContent: "center",

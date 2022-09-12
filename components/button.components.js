@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Dimensions } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Pressable } from "react-native";
 
 import { Gradient, GradientText } from "../visualComponents/colors";
 
@@ -19,6 +19,7 @@ const CustomButton = ({
 	onPress = () => {},
 	positioning = { marginTop: 10, marginBottom: 0 },
 	style = {},
+	...props
 }) => {
 	const type = BUTTON_TYPES[buttonType];
 
@@ -30,13 +31,17 @@ const CustomButton = ({
 		return (
 			<View style={[styles.container, positioning]}>
 				<Gradient style={[styles.base, { borderRadius: 8 }, style]}>
-					<TouchableOpacity style={[styles.base, styles[`${type}`], style]} onPress={pressHandler}>
+					<Pressable
+						{...props}
+						style={[styles.base, styles[`${type}`], style]}
+						onPress={pressHandler}
+					>
 						{type == BUTTON_TYPES.gradient ? (
-							<Text style={[styles.base_text, styles[`${type}_text`]]}>{text}</Text>
+							<Text style={[styles.base_text, styles[`${type}_text`], style]}>{text}</Text>
 						) : (
-							<GradientText style={{ fontFamily: "PoppinsSemiBold" }} text={text} />
+							<GradientText style={[{ fontFamily: "PoppinsSemiBold" }, style]} text={text} />
 						)}
-					</TouchableOpacity>
+					</Pressable>
 				</Gradient>
 			</View>
 		);
@@ -44,13 +49,13 @@ const CustomButton = ({
 
 	return (
 		<View style={positioning}>
-			<TouchableOpacity style={[styles.base, styles[`${type}`], style]} onPress={pressHandler}>
+			<Pressable {...props} style={[styles.base, styles[`${type}`], style]} onPress={pressHandler}>
 				{type == BUTTON_TYPES.inverted ? (
-					<GradientText style={{ fontFamily: "PoppinsSemiBold" }} text={text} />
+					<GradientText style={[{ fontFamily: "PoppinsSemiBold" }, style]} text={text} />
 				) : (
-					<Text style={[styles.base_text, styles[`${type}_text`]]}>{text}</Text>
+					<Text style={[styles.base_text, styles[`${type}_text`], style]}>{text}</Text>
 				)}
-			</TouchableOpacity>
+			</Pressable>
 		</View>
 	);
 };

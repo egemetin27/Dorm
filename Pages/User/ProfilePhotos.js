@@ -233,9 +233,11 @@ export default function ProfilePhotos({ route, navigation }) {
 				userId: userId,
 				photos: newList,
 			});
+			console.log({ photoData });
 			await axios
 				.post(url + "/profile/addPhotoLink", photoData, { headers: { "access-token": sesToken } })
 				.then(async (res) => {
+					console.log(res.data);
 					updateProfile({ Photo: newList });
 					setIsLoading(false);
 					navigation.replace("MainScreen", {

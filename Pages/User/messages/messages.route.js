@@ -18,9 +18,17 @@ const { width, height } = Dimensions.get("screen");
 const Messages = ({ route, navigation }) => {
 	const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
-	const { matchesList, getLastMessage, getMessagesList } = useContext(MessageContext);
-	const [matchMode, setMatchMode] = useState(route.params?.matchMode ?? (user.matchMode || 0));
+	const { matchesList, getLastMessage, getMessagesList, unreadChatIDS } =
+		useContext(MessageContext);
+	const [chatMode, setChatMode] = useState(route.params?.matchMode ?? (user.matchMode || 0));
 	const [sortedNonEmptyChats, setSortedNonEmptyChats] = useState([]);
+
+	const unreadInFlirt = matchesList["0"].nonEmptyChats.some(({ MatchId }) => {
+		return unreadChatIDS.includes(MatchId.toString());
+	});
+	const unreadInFriend = matchesList["1"].nonEmptyChats.some(({ MatchId }) => {
+		return unreadChatIDS.includes(MatchId.toString());
+	});
 
 	useFocusEffect(
 		useCallback(() => {
@@ -39,17 +47,17 @@ const Messages = ({ route, navigation }) => {
 
 	useEffect(() => {
 		// sort increasingly chat boxes with respect to last message date
-		const sortedList = matchesList[matchMode].nonEmptyChats;
+		const sortedList = matchesList[chatMode].nonEmptyChats;
 		sortedList.sort((a, b) => {
 			return getLastMessage(a.MatchId).date < getLastMessage(b.MatchId).date ? 1 : -1;
 		});
 
 		setSortedNonEmptyChats(sortedList);
-	}, [matchesList[matchMode].nonEmptyChats]);
+	}, [matchesList[chatMode].nonEmptyChats]);
 
 	const handleModeChange = (idx) => {
-		if (matchMode == idx) return;
-		setMatchMode(idx);
+		if (chatMode == idx) return;
+		setChatMode(idx);
 	};
 
 	const handleScroll = ({ nativeEvent }) => {
@@ -89,8 +97,11 @@ const Messages = ({ route, navigation }) => {
 					</Pressable> */}
 				</View>
 				<Switch
-					choiceList={["Flört Modu", "Arkadaş Modu"]}
-					choice={matchMode}
+					choiceList={[
+						`Flört Modu ${chatMode === 1 && unreadInFlirt ? "*" : ""}`,
+						`Arkadaş Modu  ${chatMode === 0 && unreadInFriend ? "*" : ""}`,
+					]}
+					choice={chatMode}
 					setChoice={handleModeChange}
 				/>
 			</View>
@@ -99,7 +110,7 @@ const Messages = ({ route, navigation }) => {
 					horizontal={true}
 					showsHorizontalScrollIndicator={false}
 					keyExtractor={(item) => item.MatchId}
-					data={matchesList[matchMode].emptyChats}
+					data={matchesList[chatMode].emptyChats}
 					contentContainerStyle={styles.empty_chat_list}
 					ItemSeparatorComponent={() => <View style={{ width: width * 0.02 }} />}
 					renderItem={({ item, index }) => <NewMatchBox match={item} />}

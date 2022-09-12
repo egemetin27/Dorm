@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import ReactNative, {
 	View,
-	Text,
 	Image,
 	StyleSheet,
 	Dimensions,
-	BackHandler,
 	ActivityIndicator,
-	FlatList,
+	Text,
+	Pressable,
+	ScrollView,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
@@ -18,36 +18,46 @@ import Animated, {
 	Extrapolate,
 	withTiming,
 } from "react-native-reanimated";
+import Swiper from "react-native-deck-swiper";
+import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
 import { Feather } from "@expo/vector-icons";
-import axios from "axios";
+
+import CustomButton from "../../components/button.components";
+import Card from "../../components/person-card-big.component";
+import { CustomModal } from "../../visualComponents/customComponents";
+import { colors } from "../../visualComponents/colors";
+import commonStyles from "../../visualComponents/styles";
+
 import { normalize } from "../../nonVisualComponents/generalFunctions";
 
+import crypto from "../../functions/crypto";
 import url from "../../connection";
-import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient, GradientText } from "../../visualComponents/colors";
-import { CustomModal } from "../../visualComponents/customComponents";
+import { Session } from "../../nonVisualComponents/SessionVariables";
+
 import { AuthContext } from "../../contexts/auth.context";
 
-import crypto from "../../functions/crypto";
-import Swiper from "react-native-deck-swiper";
-import Card from "../../components/person-card-big.component";
 import useBackHandler from "../../hooks/useBackHandler";
-import CustomImage from "../../components/custom-image.component";
-import { Session } from "../../nonVisualComponents/SessionVariables";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
+const REPORT_REASONS = {
+	spam: { label: "Sahte profil / Spam" },
+	message: { label: "Uygunsuz mesaj" },
+	photo: { label: "Uygunsuz fotoğraf" },
+	bio: { label: "Uygunsuz biyografi" },
+	age: { label: "Reşit olmayan kullanıcı" },
+	other: { label: "Diğer" },
+};
+
 export default function ProfileCards({ navigation, route }) {
 	const {
-		user: { userId, sesToken, matchMode },
+		user: { userId, matchMode, sesToken },
 		peopleListIndex,
-		SwipeRefreshTime,
-		signOut,
 		setPeopleIndex,
-		updateProfile,
 	} = useContext(AuthContext);
+	const swiperRef = useRef();
 
 	useBackHandler(() => {
 		navigation.goBack();
@@ -64,12 +74,6 @@ export default function ProfileCards({ navigation, route }) {
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
 
-	const [reportPage, setReportPage] = useState(false);
-	const [chosenReport, setChosenReport] = useState(0);
-
-	const [name, setName] = useState("");
-	const [reportUserID, setReportUserID] = useState("");
-
 	useEffect(() => {
 		const prepare = async () => {
 			let profile = list.splice(idx, 1);
@@ -82,44 +86,67 @@ export default function ProfileCards({ navigation, route }) {
 			});
 	}, []);
 
-	function showReportPage(otherUserID, name) {
-		setName(name);
-		setReportPage(true);
-		setReportUserID(otherUserID);
-	}
+	const [reportPage, setReportPage] = useState({
+		visible: false,
+		chosenReport: -1,
+		name: "",
+		id: 0,
+		index: 0,
+	});
 
-	async function reportProfile() {
-		if (chosenReport == 0) {
-			alert("Lütfen bildirme nedeninizi seçiniz!");
-		} else {
-			setReportPage(false);
-			try {
-				const encryptedData = crypto.encrypt({
-					userId: route.params.myID,
-					sikayetEdilen: reportUserID,
-					sikayetKodu: chosenReport,
-					aciklama: "",
-				});
-				await axios
-					.post(url + "/report", encryptedData, {
-						headers: { "access-token": sesToken },
-					})
-					.then((res) => {
-						if (res.data == "Unauthorized Session") {
-							Alert.alert("Oturumunuzun süresi doldu!");
-							signOut();
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-				// setIndexOfFrontCard(indexOfFrontCard + 1);
-				indexOfFrontCard.value = indexOfFrontCard.value + 1;
-			} catch (error) {
-				console.log(error);
-			}
-		}
-	}
+	const capitalizedName = reportPage?.name.charAt(0).toUpperCase() + reportPage?.name.slice(1);
+
+	// const [chosenReport, setChosenReport] = useState(-1);
+
+	const handleModalOpen = (name, id, index) => {
+		setReportPage((oldValue) => {
+			const newValue = { ...oldValue, visible: true, name, id, index };
+			return newValue;
+		});
+	};
+
+	const handleModalDismiss = () => {
+		setReportPage({
+			visible: false,
+			chosenReport: -1,
+			name: "",
+			id: 0,
+			index: 0,
+		});
+	};
+
+	const handleReportChange = (idx) => {
+		setReportPage((oldValue) => {
+			const newValue = { ...oldValue, chosenReport: idx };
+			return newValue;
+		});
+	};
+
+	const handleReport = async () => {
+		const { id, chosenReport, index } = reportPage;
+		const encryptedData = crypto.encrypt({
+			userId: userId,
+			sikayetEdilen: id,
+			sikayetKodu: chosenReport + 1,
+			aciklama: "",
+		});
+		await axios
+			.post(url + "/report", encryptedData, {
+				headers: { "access-token": sesToken },
+			})
+			.then((res) => {
+				if (res.data == "Unauthorized Session") {
+					Alert.alert("Oturumunuzun süresi doldu!");
+					signOut();
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+		handleModalDismiss();
+		swiperRef.current.jumpToCardIndex(index + 1);
+		navigation.navigate("CustomModal", { modalType: "REPORT_FEEDBACK" });
+	};
 
 	const derivedText = useDerivedValue(
 		() =>
@@ -159,46 +186,46 @@ export default function ProfileCards({ navigation, route }) {
 
 		const otherUser = shownList[index];
 
-		axios
-			.post(url + "/userAction/LikeDislike", likeDislike, {
-				headers: { "access-token": sesToken },
-			})
-			.then((res) => {
-				console.log(res.data);
+		// axios
+		// 	.post(url + "/userAction/LikeDislike", likeDislike, {
+		// 		headers: { "access-token": sesToken },
+		// 	})
+		// 	.then((res) => {
+		// 		console.log(res.data);
 
-				if (res.data.message == "Match") {
-					navigation.navigate("MatchModal", {
-						firstImg: otherUser.photos[0]?.PhotoLink,
-						secondImg: myProfilePicture,
-						name: name,
-					});
-				}
-			})
-			.catch((error) => {
-				if (error.response) {
-					console.log(error.response);
-					if (error.response.status == 410) {
-						Alert.alert("Oturumunuzun süresi doldu!");
-						signOut();
-					}
-					if (error.response.status == 408) {
-						// console.log("swipe count ended response");
-						updateProfile({ SwipeRefreshTime: error.response.data });
-						Session.LikeCount = 0;
+		// 		if (res.data.message == "Match") {
+		// 			navigation.navigate("MatchModal", {
+		// 				firstImg: otherUser.photos[0]?.PhotoLink,
+		// 				secondImg: myProfilePicture,
+		// 				name: name,
+		// 			});
+		// 		}
+		// 	})
+		// 	.catch((error) => {
+		// 		if (error.response) {
+		// 			console.log(error.response);
+		// 			if (error.response.status == 410) {
+		// 				Alert.alert("Oturumunuzun süresi doldu!");
+		// 				signOut();
+		// 			}
+		// 			if (error.response.status == 408) {
+		// 				// console.log("swipe count ended response");
+		// 				updateProfile({ SwipeRefreshTime: error.response.data });
+		// 				Session.LikeCount = 0;
 
-						const time = getTimeDiff(error.response.data);
-						showLikeEndedModal(time.hour, time.minute);
+		// 				const time = getTimeDiff(error.response.data);
+		// 				showLikeEndedModal(time.hour, time.minute);
 
-						x.value = withSpring(0);
-						destination.value = 0;
-					}
-					return;
-				} else if (error.request) {
-					console.log("request error: ", error.request);
-				} else {
-					console.log("error: ", error.message);
-				}
-			});
+		// 				x.value = withSpring(0);
+		// 				destination.value = 0;
+		// 			}
+		// 			return;
+		// 		} else if (error.request) {
+		// 			console.log("request error: ", error.request);
+		// 		} else {
+		// 			console.log("error: ", error.message);
+		// 		}
+		// 	});
 	};
 
 	const animatedLike = useAnimatedStyle(() => {
@@ -309,6 +336,7 @@ export default function ProfileCards({ navigation, route }) {
 						</Text> */}
 					</View>
 					<Swiper
+						ref={swiperRef}
 						//swipeBackCard
 						onSwiped={handleSwipeEnd}
 						onSwiping={handleSwipeAnimation}
@@ -367,6 +395,7 @@ export default function ProfileCards({ navigation, route }) {
 							// );
 							return (
 								<Card
+									handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
 									card={card}
 									index={idx}
 									isBackFace={isBackFace}
@@ -460,296 +489,6 @@ export default function ProfileCards({ navigation, route }) {
 				</View>
 			</View>
 
-			{/* Report Page Modal */}
-			<CustomModal
-				visible={reportPage}
-				dismiss={() => {
-					setReportPage(false);
-				}}
-			>
-				<View
-					style={{
-						maxWidth: width * 0.9,
-						height: height * 0.9,
-						backgroundColor: colors.white,
-						borderRadius: 10,
-						paddingHorizontal: 36,
-					}}
-				>
-					<View
-						style={{
-							width: "100%",
-							marginTop: 20,
-						}}
-					>
-						<View
-							style={{
-								flexDirection: "row",
-								width: "100%",
-								alignContent: "center",
-								justifyContent: "center",
-								marginVertical: 10,
-							}}
-						>
-							<Image
-								style={{ left: width * 0.1, alignSelf: "center" }}
-								source={require("../../assets/report.png")}
-							/>
-							<View
-								style={{
-									left: width * 0.2,
-								}}
-							>
-								<ReactNative.TouchableOpacity
-									onPress={() => {
-										setReportPage(false);
-									}}
-									style={{
-										alignSelf: "flex-end",
-										padding: 16,
-										zIndex: 5,
-									}}
-								>
-									<Text style={{ fontSize: 22, color: colors.medium_gray }}>İptal</Text>
-								</ReactNative.TouchableOpacity>
-							</View>
-						</View>
-						<View
-							style={{
-								flexDirection: "row",
-								width: "100%",
-								alignItems: "center",
-								justifyContent: "center",
-								marginVertical: 5,
-							}}
-						>
-							<Text
-								style={{
-									color: colors.black,
-									fontSize: 20,
-									lineHeight: 24,
-									fontFamily: "PoppinsSemiBold",
-									fontWeight: "500",
-								}}
-							>
-								Bildirmek istiyor musun ?
-							</Text>
-						</View>
-						<View
-							style={{
-								flexDirection: "row",
-								width: "100%",
-								alignItems: "center",
-								justifyContent: "center",
-								marginVertical: "8%",
-							}}
-						>
-							<Text
-								style={{
-									color: colors.dark_gray,
-									fontSize: 13,
-									fontFamily: "Poppins",
-									fontWeight: "400",
-									textAlign: "center",
-								}}
-							>
-								{name} adlı kişiyi bildiriyorsun. Bunu ona söylemeyeceğiz.
-							</Text>
-						</View>
-						<ReactNative.TouchableOpacity
-							onPress={() => {
-								chosenReport == 1 ? setChosenReport(0) : setChosenReport(1);
-							}}
-							style={{
-								maxWidth: "100%",
-
-								borderRadius: 12,
-								overflow: "hidden",
-								justifyContent: "center",
-								alignItems: "center",
-								borderColor: colors.black,
-								borderWidth: 1,
-								marginBottom: "8%",
-							}}
-						>
-							{chosenReport == 1 ? (
-								<GradientText
-									text={"Sahte Profil/Spam"}
-									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
-								/>
-							) : (
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
-									Sahte Profil/Spam
-								</Text>
-							)}
-						</ReactNative.TouchableOpacity>
-						<ReactNative.TouchableOpacity
-							onPress={() => {
-								chosenReport == 2 ? setChosenReport(0) : setChosenReport(2);
-							}}
-							style={{
-								maxWidth: "100%",
-								borderRadius: 12,
-								overflow: "hidden",
-								justifyContent: "center",
-								alignItems: "center",
-								borderColor: colors.black,
-								borderWidth: 1,
-								marginBottom: "8%",
-							}}
-						>
-							{chosenReport == 2 ? (
-								<GradientText
-									text={"Uygunsuz Mesaj"}
-									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
-								/>
-							) : (
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Uygunsuz Mesaj</Text>
-							)}
-						</ReactNative.TouchableOpacity>
-						<ReactNative.TouchableOpacity
-							onPress={() => {
-								chosenReport == 3 ? setChosenReport(0) : setChosenReport(3);
-							}}
-							style={{
-								maxWidth: "100%",
-
-								borderRadius: 12,
-								overflow: "hidden",
-								justifyContent: "center",
-								alignItems: "center",
-								borderColor: colors.black,
-								borderWidth: 1,
-								marginBottom: "8%",
-							}}
-						>
-							{chosenReport == 3 ? (
-								<GradientText
-									text={"Uygunsuz Fotoğraf"}
-									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
-								/>
-							) : (
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
-									Uygunsuz Fotoğraf
-								</Text>
-							)}
-						</ReactNative.TouchableOpacity>
-						<ReactNative.TouchableOpacity
-							onPress={() => {
-								chosenReport == 4 ? setChosenReport(0) : setChosenReport(4);
-							}}
-							style={{
-								maxWidth: "100%",
-
-								borderRadius: 12,
-								overflow: "hidden",
-								justifyContent: "center",
-								alignItems: "center",
-								borderColor: colors.black,
-								borderWidth: 1,
-								marginBottom: "8%",
-							}}
-						>
-							{chosenReport == 4 ? (
-								<GradientText
-									text={"Uygunsuz Biyografi"}
-									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
-								/>
-							) : (
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
-									Uygunsuz Biyografi
-								</Text>
-							)}
-						</ReactNative.TouchableOpacity>
-						<ReactNative.TouchableOpacity
-							onPress={() => {
-								chosenReport == 5 ? setChosenReport(0) : setChosenReport(5);
-							}}
-							style={{
-								maxWidth: "100%",
-
-								borderRadius: 12,
-								overflow: "hidden",
-								justifyContent: "center",
-								alignItems: "center",
-								borderColor: colors.black,
-								borderWidth: 1,
-								marginBottom: "8%",
-							}}
-						>
-							{chosenReport == 5 ? (
-								<GradientText
-									text={"Reşit olmayan kullanıcı"}
-									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
-								/>
-							) : (
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>
-									Reşit Olmayan Kullanıcı
-								</Text>
-							)}
-						</ReactNative.TouchableOpacity>
-						<ReactNative.TouchableOpacity
-							onPress={() => {
-								chosenReport == 6 ? setChosenReport(0) : setChosenReport(6);
-							}}
-							style={{
-								maxWidth: "100%",
-
-								borderRadius: 12,
-								overflow: "hidden",
-								justifyContent: "center",
-								alignItems: "center",
-								borderColor: colors.black,
-								borderWidth: 1,
-								marginBottom: "5%",
-							}}
-						>
-							{chosenReport == 6 ? (
-								<GradientText
-									text={"Diğer"}
-									style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}
-								/>
-							) : (
-								<Text style={{ fontSize: 18, fontWeight: "bold", padding: 5 }}>Diğer</Text>
-							)}
-						</ReactNative.TouchableOpacity>
-
-						<ReactNative.TouchableOpacity
-							onPress={reportProfile}
-							style={{
-								maxWidth: "100%",
-
-								borderRadius: 12,
-								overflow: "hidden",
-								marginTop: "9%",
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<Gradient
-								style={{
-									justifyContent: "center",
-									alignItems: "center",
-									width: "100%",
-								}}
-							>
-								<Text
-									style={{
-										color: colors.white,
-										fontSize: 22,
-										fontFamily: "PoppinsSemiBold",
-										padding: "6%",
-									}}
-								>
-									Bildir
-								</Text>
-							</Gradient>
-						</ReactNative.TouchableOpacity>
-					</View>
-				</View>
-			</CustomModal>
-			{/* Report Page Modal */}
-
 			{/* Animated Like */}
 			<Animated.View
 				name={"like"}
@@ -798,18 +537,92 @@ export default function ProfileCards({ navigation, route }) {
 					source={require("../../assets/Dislike.png")}
 				/>
 			</Animated.View>
+
+			<CustomModal visible={reportPage.visible} dismiss={handleModalDismiss} animationType="fade">
+				<View style={styles.modal_container}>
+					<View style={styles.header}>
+						<Image
+							source={require("../../assets/flag.png")}
+							resizeMode="contain"
+							style={{ height: height * 0.05, aspectRatio: 1, marginBottom: 10 }}
+						/>
+						<Text style={styles.header_text}>Bildirmek istiyor musun?</Text>
+						<Text style={styles.header_subtext}>{capitalizedName} adlı kişiyi bildiriyorsun.</Text>
+						<Text style={styles.header_subtext}>Bunu ona söylemeyeceğiz.</Text>
+					</View>
+					<ScrollView
+						showsVerticalScrollIndicator={false}
+						style={{ width: "100%" }}
+						contentContainerStyle={{ paddingBottom: 10 }}
+					>
+						{Object.values(REPORT_REASONS).map(({ label }, index) => {
+							return (
+								<CustomButton
+									key={index}
+									onPress={() => {
+										handleReportChange(index);
+									}}
+									text={label}
+									buttonType={reportPage.chosenReport === index ? "white_selected" : "white"}
+									style={{ fontSize: Math.min(16, width * 0.036) }}
+								/>
+							);
+						})}
+					</ScrollView>
+					<CustomButton
+						disabled={reportPage.chosenReport === -1}
+						onPress={handleReport}
+						buttonType={reportPage.chosenReport === -1 ? "transparent" : "gradient"}
+						text={"Bildir"}
+						style={{ fontSize: Math.min(16, width * 0.036) }}
+					/>
+				</View>
+			</CustomModal>
 		</View>
 	);
 }
-
+const vars = {
+	fontSizeHeader: Math.min(width * 0.045, 20),
+};
 const styles = StyleSheet.create({
-	tabBar: {
-		position: "absolute",
-		bottom: 0,
-		height: height * 0.08,
+	wrapper: {
 		width: "100%",
-		paddingBottom: height * 0.008,
-		backgroundColor: colors.white,
-		flexDirection: "row",
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	absolute_fill: {
+		...StyleSheet.absoluteFill,
+		backgroundColor: "rgba(0,0,0,0.5)",
+	},
+	modal_container: {
+		width: Math.min(width * 0.8, 360),
+		height: height * 0.85,
+		backgroundColor: colors.backgroundColor,
+		alignItems: "center",
+		justifyContent: "space-evenly",
+		paddingVertical: Math.min(height * 0.05, 30),
+		paddingHorizontal: Math.min(width * 0.05, 20),
+		borderRadius: 16,
+	},
+	header: {
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	header_text: {
+		fontSize: vars.fontSizeHeader,
+		fontFamily: "PoppinsSemiBold",
+		letterSpacing: 0.2,
+	},
+	header_subtext: {
+		textAlign: "center",
+		color: colors.gray,
+		fontSize: vars.fontSizeHeader * 0.72,
+	},
+	modal_exit_button: {
+		zIndex: 1,
+		position: "absolute",
+		top: 10,
+		right: "5%",
 	},
 });

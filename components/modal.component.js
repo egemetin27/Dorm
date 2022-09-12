@@ -23,70 +23,83 @@ const IMAGE_LIST = {
 	dorm_logo: require("../assets/logoGradient.png"),
 	monkey: require("../assets/monkey.png"),
 	unmatch: require("../assets/unmatch.png"),
-};
-
-const MODAL_TYPES = {
-	UNMATCH_MODAL: {
-		image: "unmatch",
-		title: "Emin misin?",
-		body: "Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.",
-		buttons: [
-			{
-				text: "Eşleşmeyi Kaldır",
-				onPress: async ({ matchId = 0, userId = 0, sesToken = "" }, getMessagesList) => {
-					const encryptedData = crypto.encrypt({ userId, unmatchId: matchId });
-					await axios
-						.post(url + "/userAction/unmatch", encryptedData, {
-							headers: { "access-token": sesToken },
-						})
-						.then((res) => {
-							console.log(res.data);
-							getMessagesList();
-						})
-						.catch((err) => {
-							console.log(err);
-						});
-					navigation.replace("MainScreen", { screen: "Mesajlar" });
-				},
-			},
-		],
-	},
-	NO_LIKES_ON_EVENT: {
-		image: "sad_face",
-		title: "Şu an için etkinliği beğenen kimse kalmadı gibi görünüyor",
-		body: "Etkinliği paylaşarak beğenmeleri arttırmamıza yardımcı olabilirsin",
-		buttons: [],
-	},
-	CANNOT_SEE_EVENT_LIKES: {
-		image: "sad_face",
-		title: "Görünmezliği Kapatmalısın",
-		body: "Etkinliğe gidenleri görebilmek için diğer insanlar tarafından görülebilir olmalısın",
-		buttons: [],
-	},
-	FILTER_DISABLED: {
-		image: "sad_face",
-		title: "Maalesef Filtre Aktif Değil",
-		body: "Filtreyi kullanmayı çok istiyorsan bize iletebilir ve öncelikler arasına alınmasını sağlayabilirsin",
-		buttons: [],
-	},
-	MAXHOBBIES: {
-		image: "sad_face",
-		title: "10'dan fazla ilgi alanı seçemezsin",
-		body: "Lütfen en sevdiğin 10 hobini işaretle",
-		buttons: [],
-	},
-	CONNECTION_ERROR: {
-		image: "unmatch",
-		title: "BAĞLANTI HATASI",
-		body: "Lütfen internet bağlantını kontrol et",
-		buttons: [],
-	},
+	flag: require("../assets/flag.png"),
 };
 
 export default function ModalPage({ navigation, route }) {
-
 	const { getMessagesList } = useContext(MessageContext);
-	
+
+	const MODAL_TYPES = {
+		UNMATCH_MODAL: {
+			image: "unmatch",
+			title: "Emin misin?",
+			body: "Eşleşmeyi kaldırırsan bu kişiyi artık görüntüleyemezsin ve başka bir mesaj atamazsın.",
+			buttons: [
+				{
+					text: "Eşleşmeyi Kaldır",
+					onPress: async ({ matchId = 0, userId = 0, sesToken = "" }, getMessagesList) => {
+						const encryptedData = crypto.encrypt({ userId, unmatchId: matchId });
+						await axios
+							.post(url + "/userAction/unmatch", encryptedData, {
+								headers: { "access-token": sesToken },
+							})
+							.then((res) => {
+								console.log(res.data);
+								getMessagesList();
+							})
+							.catch((err) => {
+								console.log(err);
+							});
+						navigation.replace("MainScreen", { screen: "Mesajlar" });
+					},
+				},
+			],
+		},
+		NO_LIKES_ON_EVENT: {
+			image: "sad_face",
+			title: "Şu an için etkinliği beğenen kimse kalmadı gibi görünüyor",
+			body: "Etkinliği paylaşarak beğenmeleri arttırmamıza yardımcı olabilirsin",
+			buttons: [],
+		},
+		CANNOT_SEE_EVENT_LIKES: {
+			image: "sad_face",
+			title: "Görünmezliği Kapatmalısın",
+			body: "Etkinliğe gidenleri görebilmek için diğer insanlar tarafından görülebilir olmalısın",
+			buttons: [],
+		},
+		FILTER_DISABLED: {
+			image: "sad_face",
+			title: "Maalesef Filtre Aktif Değil",
+			body: "Filtreyi kullanmayı çok istiyorsan bize iletebilir ve öncelikler arasına alınmasını sağlayabilirsin",
+			buttons: [],
+		},
+		MAXHOBBIES: {
+			image: "sad_face",
+			title: "10'dan fazla ilgi alanı seçemezsin",
+			body: "Lütfen en sevdiğin 10 hobini işaretle",
+			buttons: [],
+		},
+		CONNECTION_ERROR: {
+			image: "unmatch",
+			title: "BAĞLANTI HATASI",
+			body: "Lütfen internet bağlantını kontrol et",
+			buttons: [],
+		},
+		REPORT_FEEDBACK: {
+			image: "flag",
+			// title: "BAĞLANTI HATASI",
+			body: "Destek ekibimiz bu kişiyi en kısa sürede inceleyerek sana dönüş sağlayacak. Uyarın için teşekkürler!\n\ndorm senin sayende daha güvenli.",
+			buttons: [
+				{
+					text: "Devam Et",
+					onPress: () => {
+						navigation.goBack();
+					},
+				},
+			],
+		},
+	};
+
 	const { modalType, buttonParamsList } = {
 		modalType: "NO_LIKES_ON_EVENT",
 		buttonParamsList: [],
@@ -102,7 +115,7 @@ export default function ModalPage({ navigation, route }) {
 		} catch (err) {
 			console.log("error on ModalPage > handleDismiss():", err);
 		}
-	};	
+	};
 
 	return (
 		<Pressable onPress={handleDismiss} style={styles.wrapper}>

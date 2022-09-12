@@ -89,11 +89,11 @@ export default function StackNavigator() {
 					return Promise.reject(error);
 				}
 			);
-	
+
 			async function prepare() {
 				try {
 					// Keep the splash screen visible while we fetch resources
-	
+
 					await AsyncStorage.getItem("Constants").then(async (res) => {
 						var constants = JSON.parse(res);
 						if (res == null) {
@@ -110,7 +110,7 @@ export default function StackNavigator() {
 						setIntroShown(constants.introShown);
 						setTutorialShown(constants.tutorialShown);
 					});
-	
+
 					if (!isLoggedIn) {
 						const credsStr = await SecureStore.getItemAsync("credentials");
 						if (credsStr) {
@@ -124,10 +124,10 @@ export default function StackNavigator() {
 					setAppIsReady(true); // app is ready
 				}
 			}
-	
+
 			await prepare();
 		};
-		stackready().catch(console.error);;
+		stackready().catch(console.error);
 	}, []);
 
 	const onLayoutRootView = useCallback(async () => {

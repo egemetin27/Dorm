@@ -275,7 +275,7 @@ export default function MainPage({ navigation }) {
 				abortController.abort();
 			};
 		};
-		homeStart().catch(console.error);;
+		homeStart().catch(console.error);
 	}, [filters]);
 
 	useEffect(() => {
@@ -308,7 +308,7 @@ export default function MainPage({ navigation }) {
 				abortController.abort();
 			};
 		};
-		eventlike().catch(console.error);;
+		eventlike().catch(console.error);
 	}, [eventLiked]);
 
 	useEffect(() => {
@@ -403,10 +403,12 @@ export default function MainPage({ navigation }) {
 										onPress={handleFilterButton}
 									>
 										<Octicons
-											style={{
-												//transform: [{ rotate: "-90deg" }],
-											}}
-											name='filter'
+											style={
+												{
+													//transform: [{ rotate: "-90deg" }],
+												}
+											}
+											name="filter"
 											size={Math.min(height * 0.032, 30)}
 											color={colors.cool_gray}
 										/>
@@ -440,10 +442,6 @@ export default function MainPage({ navigation }) {
 														idx: idx,
 														//lastIndex: 45,
 														list: peopleList.slice(peopleListIndex, 45),
-														matchMode: matchMode,
-														myID: user.userId,
-														sesToken: user.sesToken,
-														myPP: myPP,
 													});
 												}}
 											/>
