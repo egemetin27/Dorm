@@ -186,46 +186,46 @@ export default function ProfileCards({ navigation, route }) {
 
 		const otherUser = shownList[index];
 
-		// axios
-		// 	.post(url + "/userAction/LikeDislike", likeDislike, {
-		// 		headers: { "access-token": sesToken },
-		// 	})
-		// 	.then((res) => {
-		// 		console.log(res.data);
+		axios
+			.post(url + "/userAction/LikeDislike", likeDislike, {
+				headers: { "access-token": sesToken },
+			})
+			.then((res) => {
+				console.log(res.data);
 
-		// 		if (res.data.message == "Match") {
-		// 			navigation.navigate("MatchModal", {
-		// 				firstImg: otherUser.photos[0]?.PhotoLink,
-		// 				secondImg: myProfilePicture,
-		// 				name: name,
-		// 			});
-		// 		}
-		// 	})
-		// 	.catch((error) => {
-		// 		if (error.response) {
-		// 			console.log(error.response);
-		// 			if (error.response.status == 410) {
-		// 				Alert.alert("Oturumunuzun süresi doldu!");
-		// 				signOut();
-		// 			}
-		// 			if (error.response.status == 408) {
-		// 				// console.log("swipe count ended response");
-		// 				updateProfile({ SwipeRefreshTime: error.response.data });
-		// 				Session.LikeCount = 0;
+				if (res.data.message == "Match") {
+					navigation.navigate("MatchModal", {
+						firstImg: otherUser.photos[0]?.PhotoLink,
+						secondImg: myProfilePicture,
+						name: name,
+					});
+				}
+			})
+			.catch((error) => {
+				if (error.response) {
+					console.log(error.response);
+					if (error.response.status == 410) {
+						Alert.alert("Oturumunuzun süresi doldu!");
+						signOut();
+					}
+					if (error.response.status == 408) {
+						// console.log("swipe count ended response");
+						updateProfile({ SwipeRefreshTime: error.response.data });
+						Session.LikeCount = 0;
 
-		// 				const time = getTimeDiff(error.response.data);
-		// 				showLikeEndedModal(time.hour, time.minute);
+						const time = getTimeDiff(error.response.data);
+						showLikeEndedModal(time.hour, time.minute);
 
-		// 				x.value = withSpring(0);
-		// 				destination.value = 0;
-		// 			}
-		// 			return;
-		// 		} else if (error.request) {
-		// 			console.log("request error: ", error.request);
-		// 		} else {
-		// 			console.log("error: ", error.message);
-		// 		}
-		// 	});
+						x.value = withSpring(0);
+						destination.value = 0;
+					}
+					return;
+				} else if (error.request) {
+					console.log("request error: ", error.request);
+				} else {
+					console.log("error: ", error.message);
+				}
+			});
 	};
 
 	const animatedLike = useAnimatedStyle(() => {
