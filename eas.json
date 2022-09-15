@@ -1,26 +1,28 @@
 {
-  "cli": {
-    "version": ">= 0.47.0",
-    "requireCommit":"false"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "ios":{
-        "cocoapods": "1.11.2"
-      }
-    },
-    "preview": {
-      "distribution": "internal"
-    },
-    "production": {
-      "ios": {
-        "cocoapods": "1.11.2"
-      }
-    }
-  },
-  "submit": {
-    "production": {}
-  }
+	"cli": {
+		"version": ">= 0.47.0",
+		"requireCommit": "false"
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal",
+			"ios": {
+				"cocoapods": "1.11.2"
+			}
+		},
+		"preview": {
+			"distribution": "internal",
+			"channel": "preview"
+		},
+		"production": {
+			"channel": "production",
+			"ios": {
+				"cocoapods": "1.11.2"
+			}
+		}
+	},
+	"submit": {
+		"production": {}
+	}
 }

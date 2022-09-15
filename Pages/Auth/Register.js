@@ -1,5 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useContext } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -12,13 +11,13 @@ import {
 	Alert,
 	Platform,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Gradient, GradientRegistration, colors } from "../../visualComponents/colors";
 import { getAge } from "../../utils/date.utils";
 import { CustomPicker } from "../../visualComponents/customComponents";
-import { Session } from "../../nonVisualComponents/SessionVariables";
 import { ListsContext } from "../../contexts/lists.context";
 
 const { width, height } = Dimensions.get("window");
