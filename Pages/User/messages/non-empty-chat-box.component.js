@@ -133,7 +133,7 @@ const NonEmptyChatBox = ({ match }) => {
 					</View>
 					<View style={{ flex: 1, marginLeft: width * 0.04 }}>
 						<Text style={styles.name}>{Name}</Text>
-						<Text style={styles.text}>{message}</Text>
+						<Text numberOfLines={2} style={styles.text}>{message}</Text>
 					</View>
 					<View>
 						<Text style={styles.date}>{getWhen(date)}</Text>
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: "#B6B6B6",
-		fontSize: Math.min(15, height * 0.02),
+		fontSize: Math.min(14, height * 0.018),
 		letterSpacing: 0.2,
 	},
 	date: {
 		color: "#B6B6B6",
-		fontSize: Math.min(15, height * 0.02),
+		fontSize: Math.min(14, height * 0.019),
 		letterSpacing: 0.2,
 	},
 });

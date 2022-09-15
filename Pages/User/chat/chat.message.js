@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 	},
 	my_message_time: {
 		textAlign: "right",
-		fontSize: width * 0.0185, 
+		fontSize: width * 0.02, 
 		color: "#dddddd",
 		//marginBottom: height * 0.0055, 
 		position: "absolute", 
@@ -76,20 +76,20 @@ const styles = StyleSheet.create({
 	received_message_container: {
 		borderRadius: Math.min(width * 0.05, height * 0.024),
 		borderBottomLeftRadius: 0,
-		paddingVertical: height * 0.0095,
+		paddingVertical: height * 0.01,
 		paddingLeft: width * 0.032,
-		paddingRight: width * 0.067,
+		paddingRight: width * 0.065,
 		alignSelf: "flex-start",
 		backgroundColor: colors.white,
 	},
 	received_message_time: {
 		textAlign: "right",
-		fontSize: width * 0.0185, 
+		fontSize: width * 0.02, 
 		color: "#999999",
 		//marginBottom: height * 0.0055, 
 		position: "absolute", 
-		right: width * 0.024, 
-		bottom: height * 0.002, 
+		right: width * 0.025, 
+		bottom: height * 0.0016, 
 		width: width * 0.065
 	},
 	received_message_name: {

@@ -5,7 +5,7 @@ import {
 	View,
 	Dimensions,
 	FlatList,
-	Animated,
+	//Animated,
 	TouchableOpacity,
 	Image,
 } from "react-native";
@@ -18,13 +18,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // 	FlatList,
 // } from "react-native-gesture-handler";
 import Reanimated, {
-	Extrapolate,
+	//Extrapolate,
 	interpolate,
-	runOnJS,
+	//runOnJS,
 	useAnimatedStyle,
 	useSharedValue,
-	withDelay,
-	withSpring,
+	//withDelay,
+	//withSpring,
 	withTiming,
 } from "react-native-reanimated";
 
@@ -42,7 +42,7 @@ import { getAge } from "../utils/date.utils";
 import { BlurView } from "expo-blur";
 import { checkField } from "../utils/null-check.utils";
 import { getInterests } from "../functions/get-interests";
-import { useNavigation } from "@react-navigation/native";
+//import { useNavigation } from "@react-navigation/native";
 
 const { height, width } = Dimensions.get("window");
 
@@ -55,22 +55,31 @@ const Card = ({
 	handleReportButton,
 }) => {
 	const {
-		lists: { genderList, smokeAndDrinkList, signList, dietList },
+		getDiet, getGender, getSign, getSmokeAndDrinkList
 	} = useContext(ListsContext);
-	const navigation = useNavigation();
+	//const navigation = useNavigation();
 
 	const { photos = [], Name: name, Birth_Date: bDay, School: school, Major: major } = card;
-	//console.log(JSON.stringify(card));
 	const [age, setAge] = useState(getAge(bDay));
 	const [sortedPhotos, setSortedPhotos] = useState(sort(photos, "Photo_Order"));
 
 	const [backFace, setBackFace] = useState(false);
+	// const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
+	// 	Gender: { label: "Cinsiyet", function: (idx) => genderList[idx].choice },
+	// 	Burc: { label: "Burç", function: (idx) => signList[idx].choice },
+	// 	Sigara: { label: "Sigara Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
+	// 	Alkol: { label: "Alkol Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
+	// 	Beslenme: { label: "Beslenme Tercihi", function: (idx) => dietList[idx].choice },
+	// 	interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
+	// 	About: { label: "Hakkında", function: (val) => getInterests(val) },
+	// 	// Din: { label: "Dini İnanç", function: (val) => val },
+	// });
 	const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
-		Gender: { label: "Cinsiyet", function: (idx) => genderList[idx].choice },
-		Burc: { label: "Burç", function: (idx) => signList[idx].choice },
-		Sigara: { label: "Sigara Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
-		Alkol: { label: "Alkol Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
-		Beslenme: { label: "Beslenme Tercihi", function: (idx) => dietList[idx].choice },
+		Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
+		Burc: { label: "Burç", function: (idx) => getSign(idx) },
+		Sigara: { label: "Sigara Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+		Alkol: { label: "Alkol Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+		Beslenme: { label: "Beslenme Tercihi", function: (idx) => getDiet(idx) },
 		interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
 		About: { label: "Hakkında", function: (val) => getInterests(val) },
 		// Din: { label: "Dini İnanç", function: (val) => val },
@@ -98,7 +107,7 @@ const Card = ({
 
 	const handleDoubleTap = () => {
 		setBackFace(true);
-		face.value = withTiming(-face.value);
+		setTimeout(() => { face.value = withTiming(-face.value); }, 60);
 		isBackFace.value = !isBackFace.value;
 	};
 
@@ -186,9 +195,10 @@ const Card = ({
 			<View>
 				{/* Front Face Start */}
 				<Reanimated.View style={[card_style, animatedFrontFace]}>
+					{/* Photo Render */}
 					<FlatList
 						removeClippedSubviews={true}
-						initialNumToRender={2}
+						initialNumToRender={1}
 						maxToRenderPerBatch={2}
 						ref={photoListRef}
 						data={sortedPhotos}
@@ -416,11 +426,9 @@ const Card = ({
 							data={Object.keys(BACK_FACE_FIELDS)}
 							renderItem={({ item: field }) => {
 								const value = card[field];
-
-								if (field == "interest" && typeof value === "string") {
-									console.log({ value });
-								}
-
+								// if (field == "interest" && typeof value === "string") {
+								// 	console.log({ value });
+								// }
 								if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
 									return null;
 								return (

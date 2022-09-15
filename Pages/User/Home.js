@@ -184,25 +184,25 @@ const Category = ({
 	);
 };
 
-const ListEmpty = () => {
-	return (
-		<View>
-			<Text
-				style={{
-					textAlign: "center",
-					fontFamily: "PoppinsSemiBold",
-					fontSize: Math.min(width * 0.042, 20),
-					color: colors.gray,
-				}}
-			>
-				Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
-			</Text>
-		</View>
-	);
-};
+// const ListEmpty = () => {
+// 	return (
+// 		<View>
+// 			<Text
+// 				style={{
+// 					textAlign: "center",
+// 					fontFamily: "PoppinsSemiBold",
+// 					fontSize: Math.min(width * 0.042, 20),
+// 					color: colors.gray,
+// 				}}
+// 			>
+// 				Maalesef burada gösterebileceğimiz bir etkinlik kalmamış...
+// 			</Text>
+// 		</View>
+// 	);
+// };
 
 const PEOPLE_LIST_HEIGHT = height * 0.35;
-const EVENT_HEADER_HEIGHT = height * 0.15;
+//const EVENT_HEADER_HEIGHT = height * 0.15;
 
 export default function MainPage({ navigation }) {
 	const {
@@ -460,6 +460,7 @@ export default function MainPage({ navigation }) {
 						<FlatList
 							ref={peopleFlatListRef}
 							maxToRenderPerBatch={1}
+							initialNumToRender={1}
 							keyExtractor={(item, index) => item?.userId?.toString() ?? index}
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
