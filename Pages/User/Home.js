@@ -202,7 +202,7 @@ const Category = ({
 // };
 
 const PEOPLE_LIST_HEIGHT = height * 0.35;
-//const EVENT_HEADER_HEIGHT = height * 0.15;
+const EVENT_HEADER_HEIGHT = height * 0.15;
 
 export default function MainPage({ navigation }) {
 	const {
@@ -245,9 +245,8 @@ export default function MainPage({ navigation }) {
 
 	useEffect(() => {
 		// User list fetch
+		const abortController = new AbortController();
 		const homeStart = async () => {
-			let abortController = new AbortController();
-
 			async function prepare() {
 				const swipeListData = crypto.encrypt({
 					userId: userId,
@@ -290,18 +289,18 @@ export default function MainPage({ navigation }) {
 			} catch (err) {
 				console.log(err);
 			}
-
-			return () => {
-				abortController.abort();
-			};
 		};
 		homeStart().catch(console.error);
+		return () => {
+			abortController.abort();
+		};
 	}, [filters, matchMode, Invisible]);
 
 	useEffect(() => {
 		// Event list fetch
+		const abortController = new AbortController();
+
 		const eventlike = async () => {
-			let abortController = new AbortController();
 			// const userId = user?.userId;
 			try {
 				const eventListData = crypto.encrypt({ userId: userId, campus: School });
@@ -310,26 +309,28 @@ export default function MainPage({ navigation }) {
 						headers: { "access-token": sesToken },
 					})
 					.then((res) => {
+						// console.log("BBBBBBBBBBBB");
+						// console.log(res.data);
 						const data = crypto.decrypt(res.data);
 						setEventList(data);
 						setShownEvents(data);
 						setEventLike(null);
-						//console.log(eventList);
 					})
 					.catch((err) => {
 						console.log("error on /eventList");
-						console.log(err);
+						console.log(err.response.data);
 					});
 			} catch (err) {
 				console.log(err);
 			} finally {
 				setIsAppReady(true);
 			}
-			return () => {
-				abortController.abort();
-			};
 		};
 		eventlike().catch(console.error);
+
+		return () => {
+			abortController.abort();
+		};
 	}, [eventLiked]);
 
 	useEffect(() => {
@@ -338,7 +339,12 @@ export default function MainPage({ navigation }) {
 
 	useEffect(() => {
 		if (eventsFlatListRef.current && shownEvents.length > 0) {
-			eventsFlatListRef.current.scrollToIndex({ index: 0 });
+			eventsFlatListRef.current.scrollToIndex({
+				animated: false,
+				index: 0,
+				// viewPosition: 0.3,
+				viewOffset: EVENT_HEADER_HEIGHT,
+			});
 		}
 	}, [shownEvents]);
 
@@ -539,7 +545,9 @@ export default function MainPage({ navigation }) {
 				numColumns={2}
 				initialNumToRender={8}
 				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ paddingTop: height * 0.495 }}
+				contentContainerStyle={{
+					paddingTop: height * 0.495,
+				}}
 				keyExtractor={(item, idx) => item?.EventId?.toString()}
 				data={shownEvents}
 				// ListHeaderComponent={() => {

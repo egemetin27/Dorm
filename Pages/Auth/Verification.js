@@ -48,13 +48,14 @@ export default function Verification({ navigation, route }) {
 			.post(url + "/account/CheckVerification", encryptedVerification)
 			.then((res) => {
 				//TODO: check if res.data.id is positive or negative and show error message accordingly
-				const encryptedData = crypto.encrypt({
-					...dataToBeSent,
-					password: encryptedPassword,
-					verification: strCode,
-				});
 
 				if (res.data?.Verification > 0) {
+					const encryptedData = crypto.encrypt({
+						...dataToBeSent,
+						password: encryptedPassword,
+						verification: strCode,
+					});
+
 					axios
 						.post(url + "/account/register", encryptedData)
 						.then((res) => {
@@ -67,7 +68,7 @@ export default function Verification({ navigation, route }) {
 						})
 						.catch((error) => {
 							Alert.alert("Hata");
-							console.log("register error: ", error);
+							console.log("register error: ", error.response);
 						});
 				} else {
 					setWrongInput(true);
@@ -96,7 +97,7 @@ export default function Verification({ navigation, route }) {
 	};
 
 	const resendCode = () => {
-		const verData = crypto.encrypt({ mail: profile.mail, isNewUser: true });
+		const verData = crypto.encrypt({ mail: dataToBeSent.mail, isNewUser: true });
 		axios.post(url + "/account/SendVerification", verData).catch((error) => {
 			console.log({ error });
 		});

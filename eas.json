@@ -15,6 +15,12 @@
 			"distribution": "internal",
 			"channel": "preview"
 		},
+		"apk": {
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk"
+			}
+		},
 		"production": {
 			"channel": "production",
 			"ios": {

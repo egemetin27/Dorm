@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Text, View, Pressable, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -128,4 +128,4 @@ const EventCard = ({ event, openEvents, index }) => {
 	);
 };
 
-export default EventCard;
+export default memo(EventCard);
