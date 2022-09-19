@@ -1,12 +1,12 @@
-import React from "react";
+//import React from "react";
 import {
-	StyleSheet,
+	//StyleSheet,
 	Text,
 	View,
-	TouchableOpacity,
-	TextInput,
-	Animated,
-	ProgressViewIOS,
+	//TouchableOpacity,
+	//TextInput,
+	//Animated,
+	//ProgressViewIOS,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";

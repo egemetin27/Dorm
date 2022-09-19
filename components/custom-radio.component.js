@@ -1,4 +1,4 @@
-import { Pressable, View, Text, StyleSheet, Dimensions } from "react-native";
+import { Pressable, View, Text, Dimensions } from "react-native";
 import { colors, Gradient } from "../visualComponents/colors";
 
 const { width, height } = Dimensions.get("window");

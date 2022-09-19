@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Constants from "expo-constants";
 
@@ -8,9 +8,9 @@ import { ListsContext } from "../contexts/lists.context";
 
 const useKeyGenerator = () => {
 	const { updateLists } = useContext(ListsContext);
-	const [initializationError, setInitializationError] = React.useState(false);
-	// const initializationError = React.useRef(false);
-	React.useEffect(() => {
+	const [initializationError, setInitializationError] = useState(false);
+	// const initializationError = useRef(false);
+	useEffect(() => {
 		let controller = new AbortController();
 
 		(async () => {
@@ -29,10 +29,11 @@ const useKeyGenerator = () => {
 						res.data;
 					updateLists({ genderList, univList, sexualOrientationList, expectationList });
 
-					const localVersion = Constants.manifest.version.slice(
-						0,
-						Constants.manifest.version.lastIndexOf(".")
-					);
+					const localVersion = Constants.manifest != null 
+						?
+						Constants.manifest.version.slice(0, Constants.manifest.version.lastIndexOf("."))
+						:
+						Constants.expoConfig.version.slice(0, Constants.expoConfig.version.lastIndexOf("."));
 
 					const realVersion = appVersion.slice(0, appVersion.lastIndexOf("."));
 

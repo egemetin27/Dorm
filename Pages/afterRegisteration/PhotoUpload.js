@@ -13,7 +13,7 @@ import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
+//import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText, Gradient } from "../../visualComponents/colors";

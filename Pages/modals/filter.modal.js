@@ -1,6 +1,6 @@
 import { useContext, useRef } from "react";
-import { Pressable, StyleSheet, View, Dimensions, Text, ScrollView } from "react-native";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { Pressable, StyleSheet, View, Dimensions, ScrollView } from "react-native";
+//import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 

@@ -1,5 +1,4 @@
-import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Pressable } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
 
 import { Gradient, GradientText } from "../visualComponents/colors";
 

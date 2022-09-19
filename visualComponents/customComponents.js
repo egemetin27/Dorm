@@ -1,6 +1,6 @@
-import React from "react";
+//import React from "react";
 import {
-	TouchableWithoutFeedback,
+	//TouchableWithoutFeedback,
 	StyleSheet,
 	Modal,
 	View,
@@ -9,10 +9,10 @@ import {
 	FlatList,
 	TouchableOpacity,
 	Text,
-	TouchableHighlight,
+	//TouchableHighlight,
 } from "react-native";
 import Animated, {
-	useSharedValue,
+	//useSharedValue,
 	useAnimatedStyle,
 	interpolate,
 	withTiming,
@@ -48,9 +48,9 @@ export const CustomModal = ({
 	);
 };
 
-export const Switch = ({ style, value, onValueChange }) => {
+export const Switch = (prop) => {
 	// const val = useSharedValue(value ? 1 : -1);
-
+	const { style, value, onValueChange } = prop;
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
 			transform: [

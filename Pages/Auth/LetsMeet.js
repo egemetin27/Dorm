@@ -1,10 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Animated, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
+import { Text, View, TouchableOpacity, Image } from "react-native";
+//import { LinearGradient } from "expo-linear-gradient";
+//import { Ionicons } from "@expo/vector-icons";
 import commonStyles from "../../visualComponents/styles";
-import MaskedView from "@react-native-masked-view/masked-view";
+//import MaskedView from "@react-native-masked-view/masked-view";
 import { Gradient, GradientText } from "../../visualComponents/colors";
 
 import { Dimensions } from "react-native";

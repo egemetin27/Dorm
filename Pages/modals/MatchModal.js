@@ -1,14 +1,16 @@
-import React from "react";
-import ReactNative, { View, Text, Dimensions, Pressable } from "react-native";
+import { useContext } from "react";
+import { View, Text, Dimensions, Pressable, TouchableOpacity } from "react-native";
 
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
 import CustomImage from "../../components/custom-image.component";
+import { AuthContext } from "../../contexts/auth.context";
 
 const { width, height } = Dimensions.get("window");
 
 export default function MatchModal({ navigation, route }) {
 	const { firstImg, secondImg, name } = route.params;
 	// console.log(route)
+	const { setPeopleIndex } = useContext(AuthContext);
 	return (
 		<View style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
 			<Pressable
@@ -52,35 +54,35 @@ export default function MatchModal({ navigation, route }) {
 				<CustomImage
 					url={firstImg ?? null}
 					style={{
-						top: height * 0.28,
-						left: width * 0.16,
+						top: height * 0.22,
+						left: width * 0.1,
 						borderRadius: 20,
 						position: "absolute",
 						aspectRatio: 1 / 1.5,
-						width: width * 0.5,
-						maxHeight: height * 0.7,
+						width: width * 0.48,
+						maxHeight: height * 0.6,
 						resizeMode: "cover",
-						transform: [{ rotateZ: "-20deg" }],
+						transform: [{ rotateZ: "-14deg" }],
 						zIndex: 2,
 					}}
 				/>
 				<CustomImage
 					url={secondImg ?? null}
 					style={{
-						top: height * 0.22,
-						left: width * 0.28,
+						top: height * 0.26,
+						left: width * 0.33,
 						borderRadius: 20,
 						position: "absolute",
 						aspectRatio: 1 / 1.5,
-						width: width * 0.5,
+						width: width * 0.48,
 						maxHeight: height * 0.7,
 						resizeMode: "cover",
-						transform: [{ rotateZ: "23deg" }],
+						transform: [{ rotateZ: "14deg" }],
 					}}
 				/>
 				<Text
 					style={{
-						paddingTop: height * 0.52,
+						paddingTop: height * 0.5,
 						fontSize: 16,
 						fontFamily: "Poppins",
 						color: colors.medium_gray,
@@ -91,7 +93,7 @@ export default function MatchModal({ navigation, route }) {
 					“Merhaba!” demek için dışarıda karşılaşmayı bekleme.
 				</Text>
 
-				<ReactNative.TouchableOpacity
+				<TouchableOpacity
 					onPress={() => {
 						setPeopleIndex(-1);
 						navigation.replace("MainScreen", { screen: "Mesajlar" });
@@ -123,8 +125,8 @@ export default function MatchModal({ navigation, route }) {
 							Mesaj Gönder
 						</Text>
 					</Gradient>
-				</ReactNative.TouchableOpacity>
-				<ReactNative.TouchableOpacity
+				</TouchableOpacity>
+				<TouchableOpacity
 					style={{
 						paddingTop: 5,
 					}}
@@ -140,7 +142,7 @@ export default function MatchModal({ navigation, route }) {
 						}}
 						text={"Daha sonra"}
 					/>
-				</ReactNative.TouchableOpacity>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

@@ -1,26 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
 	View,
 	Text,
 	ScrollView,
-	StyleSheet,
 	TouchableOpacity,
 	Dimensions,
-	Image,
-	KeyboardAvoidingView,
-	Platform,
-	TouchableWithoutFeedback,
-	Keyboard,
-	TextInput,
-	FlatList,
 } from "react-native";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import commonStyles from "../../visualComponents/styles";
-import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+//import commonStyles from "../../visualComponents/styles";
+import { colors, GradientText } from "../../visualComponents/colors";
 const { width, height } = Dimensions.get("window");
 
 export default function RToplulukKurallari({ navigation }) {
@@ -199,10 +191,6 @@ const styles = {
 	tcP: {
 		marginTop: 10,
 		marginBottom: 10,
-		fontSize: 14,
-	},
-	tcP: {
-		marginTop: 10,
 		fontSize: 14,
 	},
 	tcL: {

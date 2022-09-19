@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
 	Alert,
 	View,
@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../visualComponents/colors";
-import { CustomModal, Switch, CustomRadio } from "../visualComponents/customComponents";
+import { CustomModal, Switch } from "../visualComponents/customComponents";
 import url from "../connection";
 
 import { AuthContext } from "../contexts/auth.context";
@@ -371,25 +371,25 @@ export default function Settings({ navigation, route }) {
 	const sesToken = user.sesToken;
 
 	// SWITCHES
-	const [invisibility, setInvisibility] = React.useState(invis);
-	const [campusGhost, setCampusGhost] = React.useState(ghost);
-	const [schoolLover, setSchoolLover] = React.useState(onlyCampus);
-	const [email, setEmail] = React.useState(false);
-	const [pushNotifications, setPushNotifications] = React.useState(false);
+	const [invisibility, setInvisibility] = useState(invis);
+	const [campusGhost, setCampusGhost] = useState(ghost);
+	const [schoolLover, setSchoolLover] = useState(onlyCampus);
+	const [email, setEmail] = useState(false);
+	const [pushNotifications, setPushNotifications] = useState(false);
 	////////////
 
 	// MODALS
-	// const [superdormerModal, setSuperdormerModal] = React.useState(false);
-	const [signoutModal, setSignoutModal] = React.useState(false);
-	const [freezeAccountModal, setFreezeAccountModal] = React.useState(false);
-	const [deleteAccountModal, setDeleteAccountModal] = React.useState(false);
+	// const [superdormerModal, setSuperdormerModal] = useState(false);
+	const [signoutModal, setSignoutModal] = useState(false);
+	const [freezeAccountModal, setFreezeAccountModal] = useState(false);
+	const [deleteAccountModal, setDeleteAccountModal] = useState(false);
 	////////////
 
 	// const oneMonthPrice = 29;
 	// const threeMonthPrice = 24.6;
 	// const sixMonthPrice = 17.4;
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const backAction = () => {
 			navigation.goBack();
 			return true;

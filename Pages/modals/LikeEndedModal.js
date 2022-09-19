@@ -1,5 +1,4 @@
-import React from "react";
-import ReactNative, { View, Text, Image, Dimensions, Pressable } from "react-native";
+import { View, Text, Image, Dimensions, Pressable, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { colors, Gradient } from "../../visualComponents/colors";
@@ -79,7 +78,7 @@ export default function LikeEndedModal({ navigation, route }) {
 						{hour != 0 ? hour + " saat" : ""} {minute} dakika
 					</Text>
 				</View>
-				<ReactNative.TouchableOpacity
+				<TouchableOpacity
 					onPress={navigation.goBack}
 					style={[commonStyles.button, { width: "100%", overflow: "hidden", marginTop: 20 }]}
 				>
@@ -102,7 +101,7 @@ export default function LikeEndedModal({ navigation, route }) {
 							Devam Et
 						</Text>
 					</Gradient>
-				</ReactNative.TouchableOpacity>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

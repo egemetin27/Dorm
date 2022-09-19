@@ -1,4 +1,3 @@
-import React from "react";
 import { Text, View, TouchableOpacity, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 

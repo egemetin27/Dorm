@@ -1,6 +1,5 @@
-import React from "react";
-import ReactNative, { View, Text, Image, Dimensions, Pressable } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View, Text, Image, Dimensions, Pressable, TouchableOpacity } from "react-native";
+//import { Feather } from "@expo/vector-icons";
 
 import { colors, Gradient } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -49,7 +48,7 @@ export default function LikeEndedModal({ navigation, route }) {
 					Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa
 					zamanda tekrar uğramayı unutma!
 				</Text>
-				<ReactNative.TouchableOpacity
+				<TouchableOpacity
 					onPress={() => {
 						navigation.replace("MainScreen", {
 							screen: "AnaSayfa",
@@ -77,7 +76,7 @@ export default function LikeEndedModal({ navigation, route }) {
 							Ana Sayfaya Dön
 						</Text>
 					</Gradient>
-				</ReactNative.TouchableOpacity>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

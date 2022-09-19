@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -25,24 +25,24 @@ const { width, height } = Dimensions.get("window");
 export default function Register({ navigation }) {
 	const { lists } = useContext(ListsContext);
 
-	const animRef1 = React.useRef(new Animated.Value(0)).current;
-	const animRef2 = React.useRef(new Animated.Value(0)).current;
-	const animRef3 = React.useRef(new Animated.Value(0)).current;
-	const animRef4 = React.useRef(new Animated.Value(0)).current;
-	const animRefProgress = React.useRef(new Animated.Value(0)).current;
+	const animRef1 = useRef(new Animated.Value(0)).current;
+	const animRef2 = useRef(new Animated.Value(0)).current;
+	const animRef3 = useRef(new Animated.Value(0)).current;
+	const animRef4 = useRef(new Animated.Value(0)).current;
+	const animRefProgress = useRef(new Animated.Value(0)).current;
 	const refList = [animRef1, animRef2, animRef3, animRef4];
 
-	const [name, setName] = React.useState("");
-	const [date, setDate] = React.useState(new Date());
-	const [parsedDate, setParsedDate] = React.useState("gg/aa/yyyy");
-	const [city, setCity] = React.useState("İstanbul");
-	const [university, setUniversity] = React.useState({ key: 0, choice: "" });
-	const [email, setEmail] = React.useState("");
+	const [name, setName] = useState("");
+	const [date, setDate] = useState(new Date());
+	const [parsedDate, setParsedDate] = useState("gg/aa/yyyy");
+	const [city, setCity] = useState("İstanbul");
+	const [university, setUniversity] = useState({ key: 0, choice: "" });
+	const [email, setEmail] = useState("");
 
-	const [univListVisible, setUnivListVisible] = React.useState(false);
-	const [show, setShow] = React.useState(false);
+	const [univListVisible, setUnivListVisible] = useState(false);
+	const [show, setShow] = useState(false);
 
-	const [counter, setCounter] = React.useState(0);
+	const [counter, setCounter] = useState(0);
 
 	const handleRegister = () => {
 		const fullName = name.trim().toLocaleLowerCase();

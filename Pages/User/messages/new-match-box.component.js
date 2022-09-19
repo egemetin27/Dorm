@@ -1,4 +1,4 @@
-import { Pressable, Image, StyleSheet, Dimensions } from "react-native";
+import { Pressable, StyleSheet, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomImage from "../../../components/custom-image.component";
 import { useContext } from "react";

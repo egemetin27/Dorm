@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
 
 const { width, height } = Dimensions.get("screen");

@@ -18,15 +18,15 @@ import {
 } from "react-native-gesture-handler";
 import Animated, {
 	interpolate,
-	log,
+	//log,
 	runOnJS,
-	useAnimatedReaction,
+	//useAnimatedReaction,
 	useAnimatedStyle,
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 
 import commonStyles from "../../visualComponents/styles";
@@ -208,7 +208,7 @@ const Card = ({ event, user, signOut }) => {
 	return (
 		<View
 			name={"cards"}
-			style={{ width: "100%", justifyContent: "flex-start", flex: 1, justifyContent: "center" }}
+			style={{ width: "100%", flex: 1, justifyContent: "center" }}
 			// style={{ width: "100%", backgroundColor: "green" }}
 		>
 			<GestureDetector gesture={tapHandler} waitFor={likeButton}>

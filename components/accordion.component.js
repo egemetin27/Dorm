@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Text, View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { useState } from "react";
+import { Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import Animated, {
 	FlipInXUp,
 	FlipOutXUp,

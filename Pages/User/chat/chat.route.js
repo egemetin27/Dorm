@@ -1,11 +1,10 @@
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
 	View,
 	Text,
 	StyleSheet,
 	Dimensions,
 	FlatList,
-	Keyboard,
 	KeyboardAvoidingView,
 	Platform,
 } from "react-native";

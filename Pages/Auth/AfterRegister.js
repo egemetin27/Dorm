@@ -1,12 +1,12 @@
-import React from "react";
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import commonStyles from "../../visualComponents/styles";
-import { GradientText, colors } from "../../visualComponents/colors";
+import { colors } from "../../visualComponents/colors";
 import url from "../../connection";
 
 import Gender from "../afterRegisteration/Gender";
@@ -16,17 +16,17 @@ import SexOrientation from "../afterRegisteration/SexOrientation";
 import Interested from "../afterRegisteration/Interested";
 import crypto from "../../functions/crypto";
 
-const { height, width } = Dimensions.get("screen");
+//const { height, width } = Dimensions.get("screen");
 
 export default function AfterRegister({ route, navigation }) {
 	const insest = useSafeAreaInsets();
-	const [pageNum, setPageNum] = React.useState(1);
+	const [pageNum, setPageNum] = useState(1);
 
-	const [gender, setGender] = React.useState(1); // 1: Kadın, 2: Erkek, 3: Non-Binary, 4: Belirsiz
-	const [matchMode, setMatchMode] = React.useState(1); // 1: Flört, 2: Arkadaş
-	const [expectation, setExpectation] = React.useState(1); // 1: Takılmak, 2: Kısa Süre, 3: Uzun Süre, 4: Arkadaş, 5: Etkinlik, 6: Belirsiz
-	const [interested, setInterested] = React.useState(1); // 1: Kadın, 2: Erkek, 3: Herkes
-	const [sexualOrientation, setSexualOrientation] = React.useState(1); // 1: Hetero, 2: Bi, 3: Homo, 4: Pan, 5: Aseksüel
+	const [gender, setGender] = useState(1); // 1: Kadın, 2: Erkek, 3: Non-Binary, 4: Belirsiz
+	const [matchMode, setMatchMode] = useState(1); // 1: Flört, 2: Arkadaş
+	const [expectation, setExpectation] = useState(1); // 1: Takılmak, 2: Kısa Süre, 3: Uzun Süre, 4: Arkadaş, 5: Etkinlik, 6: Belirsiz
+	const [interested, setInterested] = useState(1); // 1: Kadın, 2: Erkek, 3: Herkes
+	const [sexualOrientation, setSexualOrientation] = useState(1); // 1: Hetero, 2: Bi, 3: Homo, 4: Pan, 5: Aseksüel
 
 	const genderSwitch = useSharedValue(true);
 	const orientationSwitch = useSharedValue(true);

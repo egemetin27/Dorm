@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -74,7 +74,7 @@ const Card = ({
 	// 	About: { label: "Hakkında", function: (val) => getInterests(val) },
 	// 	// Din: { label: "Dini İnanç", function: (val) => val },
 	// });
-	const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
+	const BACK_FACE_FIELDS = useRef({
 		Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
 		Burc: { label: "Burç", function: (idx) => getSign(idx) },
 		Sigara: { label: "Sigara Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },

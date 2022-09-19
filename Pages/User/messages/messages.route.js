@@ -1,7 +1,7 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { View, Text, Dimensions, StyleSheet, FlatList, Pressable, AppState } from "react-native";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { View, Text, Dimensions, StyleSheet, FlatList } from "react-native";
 
-import { GradientText, Gradient, colors } from "../../../visualComponents/colors";
+import { GradientText, colors } from "../../../visualComponents/colors";
 import Switch from "./switch.component";
 import NewMatchBox from "./new-match-box.component";
 import NonEmptyChatBox from "./non-empty-chat-box.component";
@@ -10,12 +10,12 @@ import { SocketContext } from "../../../contexts/socket.context";
 import { MessageContext } from "../../../contexts/message.context";
 import { AuthContext } from "../../../contexts/auth.context";
 
-import { sort } from "../../../utils/array.utils";
+//import { sort } from "../../../utils/array.utils";
 import { useFocusEffect } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("screen");
 
-const Messages = ({ route, navigation }) => {
+const Messages = ({ route }) => {
 	const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
 	const { matchesList, getLastMessage, getMessagesList, unreadChatIDS } =

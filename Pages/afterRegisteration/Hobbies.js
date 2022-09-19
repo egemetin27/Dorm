@@ -7,7 +7,6 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	ActivityIndicator,
-	Alert,
 } from "react-native";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";

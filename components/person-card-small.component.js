@@ -1,4 +1,3 @@
-import React from "react";
 import { Text, View, Pressable, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -11,7 +10,7 @@ import { colors } from "../visualComponents/colors";
 
 const { width, height } = Dimensions.get("window");
 
-const PersonCard = ({ person, openProfiles, index, length, setIsAppReady }) => {
+const PersonCard = ({ person, openProfiles, index, length }) => {
 	const {
 		Name: name,
 		Birth_Date: bDay,

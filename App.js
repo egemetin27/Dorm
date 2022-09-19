@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 import { loadAsync } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
@@ -14,7 +14,7 @@ import * as Notifications from "expo-notifications";
 
 import AuthProvider from "./contexts/auth.context";
 import NotificationProvider from "./contexts/notification.context";
-import SocketProvider, { SocketContext } from "./contexts/socket.context";
+import SocketProvider from "./contexts/socket.context";
 import MessageProvider from "./contexts/message.context";
 
 // Amplify.configure(awsmobile);
@@ -117,7 +117,7 @@ export default function App() {
 
 					return () => {
 						// Clean up the event listeners
-						Linking.removeEventListener("url", onReceiveURL);
+						Linking.remove("url", onReceiveURL);
 						subscription.remove();
 					};
 				},

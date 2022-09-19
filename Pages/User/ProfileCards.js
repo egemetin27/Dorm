@@ -1,13 +1,13 @@
-import { useContext, useEffect, useRef, useState, useCallback } from "react";
-import ReactNative, {
+import { useContext, useEffect, useRef, useState } from "react";
+import {
 	View,
 	Image,
 	StyleSheet,
 	Dimensions,
 	ActivityIndicator,
 	Text,
-	Pressable,
 	ScrollView,
+	Alert
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
@@ -17,6 +17,7 @@ import Animated, {
 	interpolate,
 	Extrapolate,
 	withTiming,
+	withSpring
 } from "react-native-reanimated";
 import Swiper from "react-native-deck-swiper";
 import axios from "axios";
@@ -30,7 +31,7 @@ import { CustomModal } from "../../visualComponents/customComponents";
 import { colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
 
-import { normalize } from "../../nonVisualComponents/generalFunctions";
+import { getTimeDiff, normalize } from "../../nonVisualComponents/generalFunctions";
 
 import crypto from "../../functions/crypto";
 import url from "../../connection";
@@ -53,11 +54,15 @@ const REPORT_REASONS = {
 
 export default function ProfileCards({ navigation, route }) {
 	const {
-		user: { userId, matchMode, sesToken },
+		user: { userId, matchMode, sesToken, Photo },
 		peopleListIndex,
 		setPeopleIndex,
+		signOut,
+		updateProfile
 	} = useContext(AuthContext);
+
 	const swiperRef = useRef();
+	const destination = useSharedValue(0);
 
 	useBackHandler(() => {
 		navigation.goBack();
@@ -66,7 +71,7 @@ export default function ProfileCards({ navigation, route }) {
 	const { list, idx, fromEvent = false } = route.params;
 	const eventId = route.params.eventID ?? 0;
 	const eventName = route.params.eventName ?? "";
-
+	const myProfilePicture = Photo[0].PhotoLink ?? "";
 	const [isLoading, setIsLoading] = useState(true);
 	const [shownList, setShownList] = useState([]);
 
@@ -150,10 +155,9 @@ export default function ProfileCards({ navigation, route }) {
 
 	const derivedText = useDerivedValue(
 		() =>
-			`${
-				isBackFace.value
-					? "Arka yüze dönmek için kart alanına çift dokun"
-					: "Daha iyi tanımak için kart alanına çift dokun"
+			`${isBackFace.value
+				? "Arka yüze dönmek için kart alanına çift dokun"
+				: "Daha iyi tanımak için kart alanına çift dokun"
 			}`
 	);
 
@@ -197,7 +201,7 @@ export default function ProfileCards({ navigation, route }) {
 					navigation.navigate("MatchModal", {
 						firstImg: otherUser.photos[0]?.PhotoLink,
 						secondImg: myProfilePicture,
-						name: name,
+						name: otherUser.Name,
 					});
 				}
 			})
@@ -214,7 +218,11 @@ export default function ProfileCards({ navigation, route }) {
 						Session.LikeCount = 0;
 
 						const time = getTimeDiff(error.response.data);
-						showLikeEndedModal(time.hour, time.minute);
+
+						navigation.navigate("LikeEndedModal", {
+							hour: time.hour,
+							minute: time.minute,
+						});
 
 						x.value = withSpring(0);
 						destination.value = 0;
@@ -274,7 +282,7 @@ export default function ProfileCards({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
-				onLayout={() => {}}
+				onLayout={() => { }}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",

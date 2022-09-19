@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AppState, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 

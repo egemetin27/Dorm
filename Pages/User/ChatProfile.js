@@ -1,27 +1,26 @@
-import React from "react";
-import ReactNative, { View, Text, Image, Dimensions, Pressable } from "react-native";
+import { useMemo } from "react";
+import { View, Text, Dimensions, Pressable } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
 	Gesture,
 	TouchableOpacity,
-	FlatList,
 } from "react-native-gesture-handler";
 import Animated, {
-	Extrapolate,
+	//Extrapolate,
 	interpolate,
-	runOnJS,
-	useAnimatedReaction,
+	//runOnJS,
+	//useAnimatedReaction,
 	useAnimatedStyle,
 	useSharedValue,
-	withDelay,
-	withSpring,
+	//withDelay,
+	//withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { snapPoint } from "react-native-redash";
+//import { snapPoint } from "react-native-redash";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import FastImage from "react-native-fast-image";
+//import FastImage from "react-native-fast-image";
 
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
@@ -30,9 +29,9 @@ import { getAge } from "../../utils/date.utils";
 import { dietList, signList, smokeAndDrinkList } from "../../nonVisualComponents/Lists";
 
 const { width, height } = Dimensions.get("window");
-const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
-import { API, graphqlOperation } from "aws-amplify";
-import { getMsgUser } from "../../src/graphql/queries";
+//const SNAP_POINTS = [-width * 1.5, 0, width * 1.5];
+//import { API, graphqlOperation } from "aws-amplify";
+//import { getMsgUser } from "../../src/graphql/queries";
 import CustomImage from "../../components/custom-image.component";
 import { BlurView } from "expo-blur";
 
@@ -40,8 +39,8 @@ const ChatProfile = ({ navigation, route }) => {
 	const props = route.params;
 
 	const progress = useSharedValue(0);
-	const x = useSharedValue(0);
-	const destination = useSharedValue(0);
+	//const x = useSharedValue(0);
+	//const destination = useSharedValue(0);
 	const turn = useSharedValue(1);
 	const backFace = useSharedValue(false);
 
@@ -116,7 +115,7 @@ const ChatProfile = ({ navigation, route }) => {
 		navigation.goBack();
 	};
 
-	const panHandler = React.useMemo(() =>
+	const panHandler = useMemo(() =>
 		Gesture.Pan()
 			.onUpdate((event) => {})
 			.onEnd((event) => {})

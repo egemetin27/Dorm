@@ -1,10 +1,7 @@
 import {
 	createContext,
 	useRef,
-	useEffect,
-	useState,
 	useContext,
-	useCallback,
 	useMemo,
 } from "react";
 import axios from "axios";
@@ -12,7 +9,6 @@ import axios from "axios";
 import { AuthContext } from "./auth.context";
 import { MessageContext } from "./message.context";
 import crypto from "../functions/crypto";
-import { Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export const SocketContext = createContext({
@@ -138,7 +134,7 @@ const SocketProvider = ({ children }) => {
 				modalType: "CONNECTION_ERROR",
 			});
 			return false;
-		};
+		}
 
 		const messageToSent = organizeOutput(msg, type);
 

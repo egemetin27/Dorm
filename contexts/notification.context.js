@@ -3,8 +3,7 @@ import { Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import { isDevice } from "expo-device";
 import axios from "axios";
-import * as Linking from "expo-linking";
-import { MessageContext } from "./message.context";
+//import * as Linking from "expo-linking";
 
 import { AuthContext } from "./auth.context";
 
@@ -32,16 +31,16 @@ const handleNotificationResponse = (response) => {
 
 export const NotificationContext = createContext({
 	unReadCheck: Boolean,
-	setUnreadChecker: () => {},
+	setUnreadChecker: () => { },
 	eventLiked: Boolean,
-	setEventLike: () => {}
+	setEventLike: () => { }
 });
 
 const NotificationProvider = ({ children }) => {
 	const { isLoggedIn, user } = useContext(AuthContext);
 	const [unReadCheck, setUnreadCheck] = useState(false);
 	const [eventLiked, setEventLiked] = useState(null);
-	//const { setUnread } = useContext(MessageContext);
+	//const { setUnread } = useContext(MessageContext);
 	//const [notification, setNotification] = useState(false);
 
 	const notificationListener = useRef();
@@ -55,13 +54,13 @@ const NotificationProvider = ({ children }) => {
 				//console.log("The push notification message content: " + notification.request.content.body);
 				setUnreadChecker(true);
 			});
-		
+
 			//responseListener.current = Notifications.addNotificationResponseReceivedListener();
-		
+
 			return () => {
-			  Notifications.removeNotificationSubscription(notificationListener.current);
-			  //Notifications.removeNotificationSubscription(responseListener.current);
-			};		
+				Notifications.removeNotificationSubscription(notificationListener.current);
+				//Notifications.removeNotificationSubscription(responseListener.current);
+			};
 		}
 	}, [isLoggedIn]);
 
@@ -72,7 +71,7 @@ const NotificationProvider = ({ children }) => {
 	const setEventLike = (bool) => {
 		setEventLiked(bool);
 	};
-	
+
 	// const lastNotificationResponse = Notifications.useLastNotificationResponse();
 	// useEffect(() => {
 	// 	if (
@@ -141,7 +140,7 @@ const NotificationProvider = ({ children }) => {
 	};
 
 	const value = {
-		unReadCheck, 
+		unReadCheck,
 		setUnreadChecker,
 		eventLiked,
 		setEventLike

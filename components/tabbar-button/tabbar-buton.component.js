@@ -5,7 +5,6 @@ import { NotificationContext } from "../../contexts/notification.context";
 import { GradientText, colors } from "../../visualComponents/colors";
 
 const { width, height } = Dimensions.get("screen");
-const profileIcon = require("../../assets/TabBarIcons/profile.png");
 const messagesIcon = require("../../assets/TabBarIcons/messages.png");
 
 const TabbarButton = ({ icon, label, focused }) => {

@@ -473,7 +473,7 @@ export default function MainPage({ navigation }) {
 							data={peopleList.slice(peopleListIndex, peopleListIndex + 5) ?? null}
 							renderItem={({ item, index }) => (
 								<People
-									setIsAppReady={setIsAppReady}
+									//setIsAppReady={setIsAppReady}
 									index={index}
 									person={item}
 									length={5}

@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useState } from "react";
-import { Alert, Platform } from "react-native";
+import { createContext, useContext, useState } from "react";
+import { Alert } from "react-native";
 import axios from "axios";
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import * as SecureStore from "expo-secure-store";

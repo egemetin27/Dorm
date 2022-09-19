@@ -16,7 +16,7 @@ import commonStyles from "../../visualComponents/styles";
 
 import { AuthContext } from "../../contexts/auth.context";
 
-const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
+//const emailRegex = /^[\w-\.]+@([\w-]+\.)edu(\.[\w-]{2,4})?/;
 const { width, height } = Dimensions.get("window");
 
 export default function Login({ navigation }) {
