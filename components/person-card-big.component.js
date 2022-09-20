@@ -83,7 +83,7 @@ const Card = ({
 		interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
 		About: { label: "Hakkında", function: (val) => getInterests(val) },
 		// Din: { label: "Dini İnanç", function: (val) => val },
-	});
+	}).current;
 
 	const photoIndex = useSharedValue(0);
 	const face = useSharedValue(1); // 1 => front, -1 => back
@@ -429,8 +429,10 @@ const Card = ({
 								// if (field == "interest" && typeof value === "string") {
 								// 	console.log({ value });
 								// }
+
 								if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
 									return null;
+									
 								return (
 									<Text
 										key={field}
