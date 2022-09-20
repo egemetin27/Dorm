@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, useMemo } from "react";
 import { View, Text, Image, Dimensions, Pressable, StyleSheet } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { useNavigation } from "@react-navigation/native";
@@ -43,8 +43,11 @@ const NonEmptyChatBox = ({ match }) => {
 	const navigation = useNavigation();
 	const [MatchId, setMatchId] = useState(match.MatchId);
 	const { Name } = match.userData;
-	const [imageUrl, setImageUrl] = useState(match.userData.photos[0]?.PhotoLink ?? null);
-	
+	const imageUrl = useMemo(
+		() => match.userData.photos.find(({ Photo_Order }) => Photo_Order === 1)?.PhotoLink ?? null,
+		[match]
+	);
+
 	const { message, date, unread, sourceId } = {
 		message: "",
 		date: 0,
@@ -58,7 +61,7 @@ const NonEmptyChatBox = ({ match }) => {
 		if (sourceId != user.userId) {
 			setunreadChatID(MatchId, unread == 1);
 			setUnreadChecker(unread == 1);
-			setIsUnreadMessage(unread == 1); 
+			setIsUnreadMessage(unread == 1);
 		}
 	}, [unread]);
 
@@ -133,7 +136,9 @@ const NonEmptyChatBox = ({ match }) => {
 					</View>
 					<View style={{ flex: 1, marginLeft: width * 0.04 }}>
 						<Text style={styles.name}>{Name}</Text>
-						<Text numberOfLines={2} style={styles.text}>{message}</Text>
+						<Text numberOfLines={2} style={styles.text}>
+							{message}
+						</Text>
 					</View>
 					<View>
 						<Text style={styles.date}>{getWhen(date)}</Text>

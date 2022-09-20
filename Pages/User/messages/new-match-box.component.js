@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Pressable, StyleSheet, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomImage from "../../../components/custom-image.component";
@@ -11,7 +12,10 @@ const EmptyChatBox = ({ match }) => {
 	const { user } = useContext(AuthContext);
 
 	const { MatchId } = match;
-	const imageUrl = match.userData.photos[0]?.PhotoLink ?? null;
+	const imageUrl = useMemo(
+		() => match.userData.photos.find(({ Photo_Order }) => Photo_Order === 1)?.PhotoLink ?? null,
+		[match]
+	);
 
 	const handlePress = () => {
 		navigation.navigate("Chat", { otherUser: match });

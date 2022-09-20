@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { View, Text, Dimensions, Pressable } from "react-native";
 import {
 	ScrollView,
 	GestureDetector,
 	Gesture,
 	TouchableOpacity,
+	FlatList,
 } from "react-native-gesture-handler";
 import Animated, {
 	//Extrapolate,
@@ -22,6 +23,7 @@ import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 //import FastImage from "react-native-fast-image";
 
+import { sort } from "../../utils/array.utils";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient } from "../../visualComponents/colors";
 import { getGender } from "../../nonVisualComponents/generalFunctions";
@@ -34,9 +36,26 @@ const { width, height } = Dimensions.get("window");
 //import { getMsgUser } from "../../src/graphql/queries";
 import CustomImage from "../../components/custom-image.component";
 import { BlurView } from "expo-blur";
+import { ListsContext } from "../../contexts/lists.context";
+import { checkField } from "../../utils/null-check.utils";
+import { getInterests } from "../../functions/get-interests";
 
 const ChatProfile = ({ navigation, route }) => {
+	const { getDiet, getGender, getSign, getSmokeAndDrinkList } = useContext(ListsContext);
+
 	const props = route.params;
+	const card = route.params.data;
+
+	const BACK_FACE_FIELDS = useRef({
+		Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
+		Burc: { label: "Burç", function: (idx) => getSign(idx) },
+		Sigara: { label: "Sigara Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+		Alkol: { label: "Alkol Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+		Beslenme: { label: "Beslenme Tercihi", function: (idx) => getDiet(idx) },
+		interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
+		About: { label: "Hakkında", function: (val) => val },
+		// Din: { label: "Dini İnanç", function: (val) => val },
+	}).current;
 
 	const progress = useSharedValue(0);
 	//const x = useSharedValue(0);
@@ -46,6 +65,8 @@ const ChatProfile = ({ navigation, route }) => {
 
 	const gender = getGender(props.data.Gender);
 	const age = getAge(props.data.Birth_Date);
+
+	const photoList = useMemo(() => sort(props.data.photos, "Photo_Order"), [props]);
 
 	const checkText = (text) => {
 		// return false if null
@@ -162,14 +183,14 @@ const ChatProfile = ({ navigation, route }) => {
 								animatedFrontFace,
 							]}
 						>
-							{props.data.photos.length > 0 ? (
+							{photoList.length > 0 ? (
 								// <FlatList
 								// 	scrollEventThrottle={16}
 								// 	style={{ width: "100%" }}
 								// 	pagingEnabled={true}
 								// 	showsVerticalScrollIndicator={false}
 								// 	onScroll={handleScroll}
-								// 	data={props.data.photos}
+								// 	data={photoList}
 								// 	keyExtractor={(item) => {
 								// 		return item.Photo_Order;
 								// 	}}
@@ -196,7 +217,7 @@ const ChatProfile = ({ navigation, route }) => {
 									showsVerticalScrollIndicator={false}
 									onScroll={handleScroll}
 								>
-									{props.data.photos.map((item, idx) => {
+									{photoList.map((item, idx) => {
 										return (
 											<CustomImage
 												key={idx}
@@ -394,205 +415,48 @@ const ChatProfile = ({ navigation, route }) => {
 									backgroundColor: "rgba(0,0,0,0.25)",
 								}}
 							/>
-							<ScrollView
+							<FlatList
 								showsVerticalScrollIndicator={false}
 								style={{
+									zIndex: 5,
 									width: "80%",
 									marginVertical: 30,
 								}}
-							>
-								<View
-									style={{
-										width: "100%",
-										alignItems: "center",
-									}}
-								>
-									{checkText(gender) && (
+								keyExtractor={(key) => key}
+								data={Object.keys(BACK_FACE_FIELDS)}
+								renderItem={({ item: field }) => {
+									const value = card[field];
+
+									// if (field == "interest" && typeof value === "string") {
+									// 	console.log({ value });
+									// }
+									if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
+										return null;
+									return (
 										<Text
-											name={"Gender"}
+											key={field}
+											name={field}
 											style={{
 												color: colors.light_gray,
-												fontSize: 18,
+												fontSize: Math.min(height * 0.025, width * 0.04),
 												textAlign: "center",
 												paddingVertical: 5,
 											}}
 										>
-											Cinsiyet {"\n"}
+											{BACK_FACE_FIELDS[field].label}
+											{"\n"}
 											<Text
 												style={{
 													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
+													fontSize: Math.min(height * 0.03, width * 0.048),
 												}}
 											>
-												{gender}
+												{BACK_FACE_FIELDS[field].function(value)}
 											</Text>
 										</Text>
-									)}
-									{/* {checkText(props.data.Din) && (
-										<Text
-											name={"Religion"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Dini İnanç {"\n"}
-											<Text
-												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
-												}}
-											>
-												{props.data.Din}
-											</Text>
-										</Text>
-									)} */}
-									{checkText(props.data.Burc) && (
-										<Text
-											name={"Burc"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Burç {"\n"}
-											<Text
-												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
-												}}
-											>
-												{signList[props.data.Beslenme].choice}
-											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Burc) && (
-										<Text
-											name={"Beslenme"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Beslenme Tercihi {"\n"}
-											<Text
-												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
-												}}
-											>
-												{dietList[props.data.Beslenme].choice}
-											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Alkol) && (
-										<Text
-											name={"Alkol"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Alkol Kullanımı {"\n"}
-											<Text
-												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
-												}}
-											>
-												{smokeAndDrinkList[props.data.Alkol].choice}
-											</Text>
-										</Text>
-									)}
-									{checkText(props.data.Sigara) && (
-										<Text
-											name={"Sigara"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Sigara Kullanımı {"\n"}
-											<Text
-												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
-												}}
-											>
-												{smokeAndDrinkList[props.data.Sigara].choice}
-											</Text>
-										</Text>
-									)}
-									{checkText(props.data.interest) && (
-										<Text
-											name={"interest"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											İlgi Alanları {"\n"}
-											{props.data.interest.map((item, index) => {
-												return (
-													<Text
-														key={index}
-														style={{
-															fontFamily: "PoppinsSemiBold",
-															fontSize: 22,
-														}}
-													>
-														{item.InterestName}
-														{props.data.interest.length > index + 1 ? (
-															<Text
-																style={{
-																	fontFamily: "PoppinsSemiBold",
-																	fontSize: 22,
-																}}
-															>
-																{" "}
-																|{" "}
-															</Text>
-														) : null}
-													</Text>
-												);
-											})}
-										</Text>
-									)}
-									{checkText(props.data.About) && (
-										<Text
-											name={"About"}
-											style={{
-												color: colors.light_gray,
-												fontSize: 18,
-												textAlign: "center",
-												paddingVertical: 5,
-											}}
-										>
-											Hakkında{"\n"}
-											<Text
-												style={{
-													fontFamily: "PoppinsSemiBold",
-													fontSize: 22,
-												}}
-											>
-												{props.data.About}
-											</Text>
-										</Text>
-									)}
-								</View>
-							</ScrollView>
+									);
+								}}
+							/>
 						</Animated.View>
 					</Animated.View>
 				</GestureDetector>

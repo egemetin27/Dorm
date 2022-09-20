@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, useMemo } from "react";
 import {
 	View,
 	Text,
@@ -102,7 +102,15 @@ const Chat = ({ route, navigation }) => {
 	const { otherUser } = route.params;
 	const { otherId, MatchId } = otherUser;
 	const { Name } = otherUser.userData;
-	const imageUrl = otherUser.userData?.photos[0]?.PhotoLink ?? null;
+	const imageUrl = useMemo(
+		() => otherUser.userData.photos.find(({ Photo_Order }) => Photo_Order === 1)?.PhotoLink ?? null,
+		[otherUser]
+	);
+
+	console.log(
+		"SSADEAWD",
+		otherUser.userData.photos.find(({ Photo_Order }) => Photo_Order === 1)
+	);
 
 	useFocusEffect(
 		useCallback(() => {

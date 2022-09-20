@@ -206,7 +206,7 @@ const EVENT_HEADER_HEIGHT = height * 0.15;
 
 export default function MainPage({ navigation }) {
 	const {
-		user: { userId, matchMode, sesToken, School, Invisible },
+		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus },
 		peopleListIndex,
 		signOut,
 		setPeopleIndex,
@@ -294,7 +294,7 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [filters, matchMode, Invisible]);
+	}, [filters, matchMode, Invisible, BlockCampus, OnlyCampus]);
 
 	useEffect(() => {
 		// Event list fetch

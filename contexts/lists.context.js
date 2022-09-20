@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 export const ListsContext = createContext({
 	lists: {},
@@ -6,34 +6,48 @@ export const ListsContext = createContext({
 	getGender: () => {},
 	getSign: () => {},
 	getSmokeAndDrinkList: () => {},
-	getDiet: () => {}
- });
+	getDiet: () => {},
+});
 
 const ListsProvider = ({ children }) => {
 	const [lists, setLists] = useState({});
 
-	const updateLists = (newListItems) => {
+	console.log(lists.genderList);
+
+	const updateLists = useCallback((newListItems) => {
 		setLists((oldLists) => ({
 			...oldLists,
 			...newListItems,
 		}));
-	};
+	}, []);
 
-	const getGender = (idx) => {
-		return lists.genderList[idx].choice;
-	};
+	const getGender = useCallback(
+		(idx) => {
+			return lists.genderList[idx].choice;
+		},
+		[lists]
+	);
 
-	const getSign = (idx) => {
-		return lists.signList[idx].choice;
-	};
+	const getSign = useCallback(
+		(idx) => {
+			return lists.signList[idx].choice;
+		},
+		[lists]
+	);
 
-	const getSmokeAndDrinkList = (idx) => {
-		return lists.smokeAndDrinkList[idx].choice;
-	};
+	const getSmokeAndDrinkList = useCallback(
+		(idx) => {
+			return lists.smokeAndDrinkList[idx].choice;
+		},
+		[lists]
+	);
 
-	const getDiet = (idx) => {
-		return lists.dietList[idx].choice;
-	};
+	const getDiet = useCallback(
+		(idx) => {
+			return lists.dietList[idx].choice;
+		},
+		[lists]
+	);
 
 	const memoedValue = useMemo(
 		() => ({
@@ -44,7 +58,7 @@ const ListsProvider = ({ children }) => {
 			getSign,
 			getSmokeAndDrinkList,
 		}),
-		[lists]
+		[lists, updateLists, getGender, getDiet, getSign, getSmokeAndDrinkList]
 	);
 
 	return <ListsContext.Provider value={memoedValue}>{children}</ListsContext.Provider>;

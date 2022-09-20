@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { View, Text, StyleSheet, Dimensions, Pressable, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -17,7 +18,11 @@ const ChatHeader = ({ userData, matchId }) => {
 	const navigation = useNavigation();
 
 	const { Name } = userData;
-	const imageUrl = userData?.photos[0]?.PhotoLink ?? null;
+
+	const imageUrl = useMemo(
+		() => userData.photos.find(({ Photo_Order }) => Photo_Order === 1)?.PhotoLink ?? null,
+		[userData]
+	);
 
 	const handleBack = () => {
 		navigation.goBack();

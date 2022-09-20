@@ -80,9 +80,11 @@ export default function App() {
 			setCustomText({ style: { fontFamily: "Poppins" } });
 			setCustomTextInput({ style: { fontFamily: "Poppins" } });
 		};
-		appstart().catch(console.error).then(() => {
-			setFontLoaded(true);
-		});
+		appstart()
+			.catch(console.error)
+			.then(() => {
+				setFontLoaded(true);
+			});
 	}, []);
 
 	if (!fontLoaded) return null;
@@ -117,7 +119,9 @@ export default function App() {
 
 					return () => {
 						// Clean up the event listeners
-						Linking.remove("url", onReceiveURL);
+						// if (Linking) {
+						Linking.removeEventListener("url", onReceiveURL);
+						// }
 						subscription.remove();
 					};
 				},

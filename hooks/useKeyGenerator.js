@@ -29,11 +29,13 @@ const useKeyGenerator = () => {
 						res.data;
 					updateLists({ genderList, univList, sexualOrientationList, expectationList });
 
-					const localVersion = Constants.manifest != null 
-						?
-						Constants.manifest.version.slice(0, Constants.manifest.version.lastIndexOf("."))
-						:
-						Constants.expoConfig.version.slice(0, Constants.expoConfig.version.lastIndexOf("."));
+					const localVersion =
+						Constants.manifest != null
+							? Constants.manifest.version.slice(0, Constants.manifest.version.lastIndexOf("."))
+							: Constants.expoConfig.version.slice(
+									0,
+									Constants.expoConfig.version.lastIndexOf(".")
+							  );
 
 					const realVersion = appVersion.slice(0, appVersion.lastIndexOf("."));
 

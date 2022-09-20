@@ -447,18 +447,18 @@ export default function Profile({ navigation }) {
 												translateY:
 													name == ""
 														? nameRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -20],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+														  })
 														: -20,
 											},
 										],
 										fontSize:
 											name == ""
 												? nameRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -523,9 +523,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setGenderVisible(true);
-										}
-										: () => { }
+												setGenderVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{sex.choice}</Text>
@@ -552,9 +552,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSexualOrientationVisible(true);
-										}
-										: () => { }
+												setSexualOrientationVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>
@@ -583,9 +583,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setExpectationVisible(true);
-										}
-										: () => { }
+												setExpectationVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{expectation.choice}</Text>
@@ -776,18 +776,18 @@ export default function Profile({ navigation }) {
 												translateY:
 													major == ""
 														? majorRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -20],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+														  })
 														: -20,
 											},
 										],
 										fontSize:
 											major == ""
 												? majorRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -861,9 +861,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSignVisible(true);
-										}
-										: () => { }
+												setSignVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -875,18 +875,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														sign.choice == ""
 															? signRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												sign.choice == ""
 													? signRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -903,9 +903,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setDietVisible(true);
-										}
-										: () => { }
+												setDietVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -917,18 +917,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														diet.choice == ""
 															? dietRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												diet.choice == ""
 													? dietRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -945,9 +945,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setDrinkVisible(true);
-										}
-										: () => { }
+												setDrinkVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -959,18 +959,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														drink.choice == ""
 															? drinkRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												drink.choice == ""
 													? drinkRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -987,9 +987,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSmokeVisible(true);
-										}
-										: () => { }
+												setSmokeVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -1001,18 +1001,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														smoke.choice == ""
 															? smokeRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												smoke.choice == ""
 													? smokeRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -1044,18 +1044,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														hobbies == ""
 															? hobbiesRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												hobbies == ""
 													? hobbiesRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -1125,9 +1125,9 @@ export default function Profile({ navigation }) {
 												translateY:
 													about == ""
 														? aboutRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -75],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -75],
+														  })
 														: -75,
 											},
 											{
@@ -1140,9 +1140,9 @@ export default function Profile({ navigation }) {
 										fontSize:
 											about == ""
 												? aboutRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -1202,7 +1202,7 @@ export default function Profile({ navigation }) {
 			</KeyboardAvoidingView>
 
 			<CustomPicker
-				data={lists.genderList.slice(0, 4)}
+				data={lists.genderList}
 				visible={genderVisible}
 				setVisible={setGenderVisible}
 				setChoice={setSex}

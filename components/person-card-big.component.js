@@ -54,9 +54,7 @@ const Card = ({
 	indexOfFrontCard,
 	handleReportButton,
 }) => {
-	const {
-		getDiet, getGender, getSign, getSmokeAndDrinkList
-	} = useContext(ListsContext);
+	const { getDiet, getGender, getSign, getSmokeAndDrinkList } = useContext(ListsContext);
 	//const navigation = useNavigation();
 
 	const { photos = [], Name: name, Birth_Date: bDay, School: school, Major: major } = card;
@@ -107,7 +105,9 @@ const Card = ({
 
 	const handleDoubleTap = () => {
 		setBackFace(true);
-		setTimeout(() => { face.value = withTiming(-face.value); }, 60);
+		setTimeout(() => {
+			face.value = withTiming(-face.value);
+		}, 60);
 		isBackFace.value = !isBackFace.value;
 	};
 
@@ -426,6 +426,7 @@ const Card = ({
 							data={Object.keys(BACK_FACE_FIELDS)}
 							renderItem={({ item: field }) => {
 								const value = card[field];
+
 								// if (field == "interest" && typeof value === "string") {
 								// 	console.log({ value });
 								// }
