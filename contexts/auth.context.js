@@ -35,7 +35,7 @@ const AuthProvider = ({ children }) => {
 			.post(url + "/account/Login", dataToBeSent)
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
-				updateLists(data.applists);
+
 				if (data.authentication == "true") {
 					if (navigation != null && data.onBoardingComplete == 0) {
 						navigation.reset({
@@ -55,6 +55,7 @@ const AuthProvider = ({ children }) => {
 						return;
 					}
 
+					updateLists(data.applists);
 					const photoList = data.Photo.map((item) => {
 						return {
 							PhotoLink: item.PhotoLink,

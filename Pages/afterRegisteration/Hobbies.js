@@ -48,15 +48,16 @@ export default function Hobbies({ navigation, route }) {
 					headers: { "access-token": route.params?.sesToken ?? user.sesToken },
 				})
 				.then(async (res) => {
-					console.log(res.data);
 					const newHobbyList = hobbies.map((item) => {
 						return { InterestName: item };
 					});
 
 					updateProfile({ interest: newHobbyList });
 
+					// setIsLoading(false);
 					if (isNewUser) {
 						signIn({ email: route.params.mail, password: route.params.password, isNewUser: true });
+						navigation.replace("MainScreen");
 					} else {
 						navigation.replace("MainScreen", { screen: "Profil" });
 						// navigation.goBack();

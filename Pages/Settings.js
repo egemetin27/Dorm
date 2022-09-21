@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import {
-	Alert,
 	View,
 	Text,
 	ScrollView,
@@ -118,19 +117,24 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 	);
 };
 
-const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => {
+const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken, beInvisible }) => {
 	const handleFreeze = async () => {
 		await dismiss();
 
-		const myJson = crypto.encrypt({ userId: userId });
+		const myJson = crypto.encrypt({ userId });
 		axios
 			.post(url + "/profile/FreezeAccount", myJson, { headers: { "access-token": sesToken } })
 			.then(() => {
 				signOut();
 			})
 			.catch((err) => {
-				console.log("error on freeze account");
+				console.log("error on /freezeAccount:", err.resonse);
 			});
+	};
+
+	const handleInvisible = () => {
+		beInvisible();
+		dismiss();
 	};
 
 	async () => {};
@@ -207,11 +211,7 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken }) => 
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					onPress={() => {
-						Alert.alert("Üzgünüz", "Bu buton henüz implemente edilmedi :(", [
-							{ text: "Tamamdır..." },
-						]);
-					}}
+					onPress={handleInvisible}
 					style={{
 						maxWidth: "90%",
 						height: "15%",
@@ -356,8 +356,6 @@ const DeleteAccountModal = ({
 		</CustomModal>
 	);
 };
-
-const x = {};
 
 export default function Settings({ navigation, route }) {
 	const insets = useSafeAreaInsets();
@@ -734,6 +732,9 @@ export default function Settings({ navigation, route }) {
 				dismiss={() => setFreezeAccountModal(false)}
 				sesToken={sesToken}
 				userId={userId}
+				beInvisible={() => {
+					handleInvisibility(true);
+				}}
 			/>
 			<DeleteAccountModal
 				visible={deleteAccountModal}
