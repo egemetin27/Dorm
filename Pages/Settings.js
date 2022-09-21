@@ -341,7 +341,7 @@ const DeleteAccountModal = ({
 						aspectRatio: 9 / 2,
 						borderRadius: 12,
 						overflow: "hidden",
-						marginTop: 10,
+						marginVertical: 10,
 						alignItems: "center",
 						justifyContent: "center",
 						borderWidth: 2,

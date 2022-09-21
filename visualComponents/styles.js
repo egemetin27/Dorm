@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get("screen");
 
 export default styles = StyleSheet.create({
 	Container: {
-		height: "100%",
+		height: height,
 		width: width,
 		backgroundColor: "#F4F3F3",
 		// backgroundColor: "#f0f0f0",

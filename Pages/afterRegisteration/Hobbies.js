@@ -57,7 +57,7 @@ export default function Hobbies({ navigation, route }) {
 					// setIsLoading(false);
 					if (isNewUser) {
 						signIn({ email: route.params.mail, password: route.params.password, isNewUser: true });
-						navigation.replace("MainScreen");
+						setTimeout(() => {navigation.replace("MainScreen")}, 200);
 					} else {
 						navigation.replace("MainScreen", { screen: "Profil" });
 						// navigation.goBack();
