@@ -35,11 +35,12 @@ export default function Register({ navigation }) {
 	const [name, setName] = useState("");
 	const [date, setDate] = useState(new Date());
 	const [parsedDate, setParsedDate] = useState("gg/aa/yyyy");
-	const [city, setCity] = useState("İstanbul");
+	const [city, setCity] = useState({ key: 0, choice: "" });
 	const [university, setUniversity] = useState({ key: 0, choice: "" });
 	const [email, setEmail] = useState("");
 
 	const [univListVisible, setUnivListVisible] = useState(false);
+	const [cityListVisible, setCityListVisible] = useState(false);
 	const [show, setShow] = useState(false);
 
 	const [counter, setCounter] = useState(0);
@@ -55,7 +56,7 @@ export default function Register({ navigation }) {
 			mail: trimmedMail,
 			name: fName,
 			surName: lName,
-			city: city,
+			city: city.choice,
 			bDay: parsedDate,
 			school: university.choice,
 		};
@@ -371,6 +372,7 @@ export default function Register({ navigation }) {
 					<Gradient
 						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
 					>
+
 						<View
 							style={{
 								height: 90,
@@ -381,14 +383,24 @@ export default function Register({ navigation }) {
 							<Text style={styles.QuestionCardText}>Bulunduğum{"\n"}Şehir</Text>
 						</View>
 
-						<View style={styles.QuestionInput}>
-							<TextInput
-								editable={false}
-								value={city}
-								style={styles.QuestionInput}
-								color={"black"}
-							/>
-						</View>
+						<Pressable
+							style={{ width: "100%" }}
+							onPress={() => {
+								setCityListVisible(true);
+							}}>
+							<View style={[styles.QuestionInput, { justifyContent: "center", alignItems: "center" }]}>
+								<Text
+									style={[
+										{
+											color: city.choice != "" ? colors.black : colors.medium_gray,
+											fontSize: 20,
+										},
+									]}
+								>
+									{city.choice != "" ? city.choice : "Şehrini Seç"}
+								</Text>
+							</View>
+						</Pressable>
 					</Gradient>
 				</Animated.View>
 
@@ -536,6 +548,13 @@ export default function Register({ navigation }) {
 				setVisible={setUnivListVisible}
 				setChoice={setUniversity}
 			/>
+			<CustomPicker
+				style={{ width: width * 0.57, height: height * 0.20, maxWidth: 300, maxHeight: 500 }}
+				data={lists.cityList}
+				visible={cityListVisible}
+				setVisible={setCityListVisible}
+				setChoice={setCity}
+			/>
 		</View>
 	);
 }
@@ -599,26 +618,26 @@ name={"EmailCard"}
 style={[
    styles.QuestionCard,
    {
-      transform: [
-         { translateX: animRef5.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-         {
-            translateY:
-               counter <= 3
-                  ? animRef3.interpolate({ inputRange: [0, 1], outputRange: [-40, -20] })
-                  : animRef4.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }),
-         },
-         {
-            scale:
-               counter <= 3
-                  ? animRef3.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0.9] })
-                  : animRef4.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }),
-         },
-      ],
-      opacity:
-         counter <= 3
-            ? animRef4.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
-            : animRef5.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-      zIndex: animRef5.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  transform: [
+		 { translateX: animRef5.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
+		 {
+			translateY:
+			   counter <= 3
+				  ? animRef3.interpolate({ inputRange: [0, 1], outputRange: [-40, -20] })
+				  : animRef4.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }),
+		 },
+		 {
+			scale:
+			   counter <= 3
+				  ? animRef3.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0.9] })
+				  : animRef4.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }),
+		 },
+	  ],
+	  opacity:
+		 counter <= 3
+			? animRef4.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
+			: animRef5.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  zIndex: animRef5.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
    },
 ]}
 >
@@ -626,7 +645,7 @@ style={[
 						width: "100%",
 						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
-      <Text style={styles.QuestionCardText}>E-Posta{"\n"}Adresim</Text>
+	  <Text style={styles.QuestionCardText}>E-Posta{"\n"}Adresim</Text>
    </View>
    <TextInput placeholder="Üniversite Mail Adresin" style={styles.QuestionInput} />
 </Gradient>
@@ -637,26 +656,26 @@ name={"UnivCard"}
 style={[
    styles.QuestionCard,
    {
-      transform: [
-         { translateX: animRef4.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-         {
-            translateY:
-               counter <= 2
-                  ? animRef2.interpolate({ inputRange: [0, 1], outputRange: [-40, -20] })
-                  : animRef3.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }),
-         },
-         {
-            scale:
-               counter <= 2
-                  ? animRef2.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0.9] })
-                  : animRef3.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }),
-         },
-      ],
-      opacity:
-         counter <= 2
-            ? animRef3.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
-            : animRef4.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-      zIndex: animRef4.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  transform: [
+		 { translateX: animRef4.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
+		 {
+			translateY:
+			   counter <= 2
+				  ? animRef2.interpolate({ inputRange: [0, 1], outputRange: [-40, -20] })
+				  : animRef3.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }),
+		 },
+		 {
+			scale:
+			   counter <= 2
+				  ? animRef2.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0.9] })
+				  : animRef3.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }),
+		 },
+	  ],
+	  opacity:
+		 counter <= 2
+			? animRef3.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
+			: animRef4.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  zIndex: animRef4.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
    },
 ]}
 >
@@ -664,7 +683,7 @@ style={[
 						width: "100%",
 						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
-      <Text style={styles.QuestionCardText}>Üniversitem</Text>
+	  <Text style={styles.QuestionCardText}>Üniversitem</Text>
    </View>
    <TextInput placeholder="Üniversitenin Adı" style={styles.QuestionInput} />
 </Gradient>
@@ -675,26 +694,26 @@ name={"CityCard"}
 style={[
    styles.QuestionCard,
    {
-      transform: [
-         { translateX: animRef3.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-         {
-            translateY:
-               counter <= 1
-                  ? animRef1.interpolate({ inputRange: [0, 1], outputRange: [-40, -20] })
-                  : animRef2.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }),
-         },
-         {
-            scale:
-               counter <= 1
-                  ? animRef1.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0.9] })
-                  : animRef2.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }),
-         },
-      ],
-      opacity:
-         counter <= 1
-            ? animRef2.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
-            : animRef3.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-      zIndex: animRef3.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  transform: [
+		 { translateX: animRef3.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
+		 {
+			translateY:
+			   counter <= 1
+				  ? animRef1.interpolate({ inputRange: [0, 1], outputRange: [-40, -20] })
+				  : animRef2.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }),
+		 },
+		 {
+			scale:
+			   counter <= 1
+				  ? animRef1.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0.9] })
+				  : animRef2.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }),
+		 },
+	  ],
+	  opacity:
+		 counter <= 1
+			? animRef2.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
+			: animRef3.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  zIndex: animRef3.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
    },
 ]}
 >
@@ -702,7 +721,7 @@ style={[
 						width: "100%",
 						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
-      <Text style={styles.QuestionCardText}>Bulunduğum{"\n"}Şehir</Text>
+	  <Text style={styles.QuestionCardText}>Bulunduğum{"\n"}Şehir</Text>
    </View>
    <TextInput placeholder="Okuduğun Şehir" style={styles.QuestionInput} />
 </Gradient>
@@ -713,16 +732,16 @@ name={"BirthdayCard"}
 style={[
    styles.QuestionCard,
    {
-      transform: [
-         { translateX: animRef2.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-         { translateY: animRef1.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }) },
-         { scale: animRef1.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) },
-      ],
-      opacity:
-         counter == 0
-            ? animRef1.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
-            : animRef2.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-      zIndex: animRef2.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  transform: [
+		 { translateX: animRef2.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
+		 { translateY: animRef1.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }) },
+		 { scale: animRef1.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) },
+	  ],
+	  opacity:
+		 counter == 0
+			? animRef1.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] })
+			: animRef2.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  zIndex: animRef2.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
    },
 ]}
 >
@@ -730,7 +749,7 @@ style={[
 						width: "100%",
 						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
-      <Text style={styles.QuestionCardText}>Doğum{"\n"}Tarihim</Text>
+	  <Text style={styles.QuestionCardText}>Doğum{"\n"}Tarihim</Text>
    </View>
    <TextInput placeholder="gg/aa/yy" style={styles.QuestionInput} />
 </Gradient>
@@ -741,11 +760,11 @@ name={"NameCard"}
 style={[
    styles.QuestionCard,
    {
-      transform: [
-         { translateX: animRef1.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-      ],
-      opacity: animRef1.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-      zIndex: animRef1.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  transform: [
+		 { translateX: animRef1.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
+	  ],
+	  opacity: animRef1.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+	  zIndex: animRef1.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
    },
 ]}
 >
@@ -753,7 +772,7 @@ style={[
 						width: "100%",
 						height: "100%" }}>
    <View style={{ height: 90, alignItems: "center", justifyContent: "center" }}>
-      <Text style={styles.QuestionCardText}>Merhaba!{"\n"}Benim adım</Text>
+	  <Text style={styles.QuestionCardText}>Merhaba!{"\n"}Benim adım</Text>
    </View>
    <TextInput placeholder="Adın ve Soyadın" style={styles.QuestionInput} />
 </Gradient>

@@ -12,8 +12,6 @@ export const ListsContext = createContext({
 const ListsProvider = ({ children }) => {
 	const [lists, setLists] = useState({});
 
-	console.log(lists.genderList);
-
 	const updateLists = useCallback((newListItems) => {
 		setLists((oldLists) => ({
 			...oldLists,

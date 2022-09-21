@@ -120,7 +120,7 @@ export default function App() {
 					return () => {
 						// Clean up the event listeners
 						// if (Linking) {
-						Linking.removeEventListener("url", onReceiveURL);
+						Linking.remove("url", onReceiveURL);
 						// }
 						subscription.remove();
 					};
