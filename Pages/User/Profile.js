@@ -110,7 +110,7 @@ export default function Profile({ navigation }) {
 				});
 				setSmoke(
 					user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
-				)
+				);
 				setAbout(user.About == "null" ? "" : user.About);
 				setHobbies(user.interest);
 			} finally {
@@ -290,48 +290,13 @@ export default function Profile({ navigation }) {
 					)}
 				</View>
 			</View>
-			{/* {progressBarVisible && (
-				<View name={"Progress Bar Container"} style={styles.progressBarContainer}>
-					<View style={{ marginLeft: 20 }}>
-						<Text
-							style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 0.8, paddingBottom: 5 }}
-						>
-							Profilinin %{progress}'ı tamam!
-						</Text>
-						<View style={styles.progressBarBackground}>
-							<Animated.View
-								style={[
-									{
-										height: 9,
-										borderRadius: 7,
-										width: animatedProgress.interpolate({
-											inputRange: [0, 4],
-											outputRange: [28, 140],
-										}),
-									},
-								]}
-							>
-								<Gradient style={{ borderRadius: 7, alignItems: "center", width: "100%",height: "100%"}}></Gradient>
-							</Animated.View>
-						</View>
-					</View>
-					<TouchableOpacity
-						style={{ marginRight: 20 }}
-						onPress={() => {
-							setVisibility(false);
-						}}
-					>
-						<Ionicons name="close" size={32} color="#B6B6B6" />
-					</TouchableOpacity>
-				</View>
-			)} */}
 			<KeyboardAvoidingView
 				style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
 				behavior="height"
 			>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
-					contentContainerStyle={{ width: width }}
+					contentContainerStyle={{ width: width, paddingBottom: 20 }}
 					keyboardShouldPersistTaps="handled"
 				>
 					<View name={"Photos"} style={[styles.photosContainer]}>
@@ -411,7 +376,7 @@ export default function Profile({ navigation }) {
 						/>
 					</View>
 
-					<View name={"Info"} style={{ marginBottom: height * 0.2 }}>
+					<View name={"Info"} style={{}}>
 						<View name={"Name"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
@@ -422,18 +387,18 @@ export default function Profile({ navigation }) {
 												translateY:
 													name == ""
 														? nameRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -20],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+														  })
 														: -20,
 											},
 										],
 										fontSize:
 											name == ""
 												? nameRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -498,9 +463,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setGenderVisible(true);
-										}
-										: () => { }
+												setGenderVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{sex.choice}</Text>
@@ -527,9 +492,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSexualOrientationVisible(true);
-										}
-										: () => { }
+												setSexualOrientationVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>
@@ -558,9 +523,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setExpectationVisible(true);
-										}
-										: () => { }
+												setExpectationVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{expectation.choice}</Text>
@@ -614,13 +579,15 @@ export default function Profile({ navigation }) {
 							>
 								Yaşadığım Şehir
 							</Text>
-							<Pressable onPress={
-								isEditable
-									? () => {
-										setCityVisible(true);
-									}
-									: () => { }
-							}>
+							<Pressable
+								onPress={
+									isEditable
+										? () => {
+												setCityVisible(true);
+										  }
+										: () => {}
+								}
+							>
 								<Text style={[styles.input, { color: colors.black }]}>{city.choice}</Text>
 							</Pressable>
 						</View>
@@ -635,18 +602,18 @@ export default function Profile({ navigation }) {
 												translateY:
 													major == ""
 														? majorRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -20],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+														  })
 														: -20,
 											},
 										],
 										fontSize:
 											major == ""
 												? majorRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}
@@ -720,9 +687,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSignVisible(true);
-										}
-										: () => { }
+												setSignVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -734,18 +701,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														sign.choice == ""
 															? signRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												sign.choice == ""
 													? signRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -762,9 +729,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setDietVisible(true);
-										}
-										: () => { }
+												setDietVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -776,18 +743,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														diet.choice == ""
 															? dietRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												diet.choice == ""
 													? dietRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -804,9 +771,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setDrinkVisible(true);
-										}
-										: () => { }
+												setDrinkVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -818,18 +785,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														drink.choice == ""
 															? drinkRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												drink.choice == ""
 													? drinkRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -846,9 +813,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-											setSmokeVisible(true);
-										}
-										: () => { }
+												setSmokeVisible(true);
+										  }
+										: () => {}
 								}
 							>
 								<Animated.Text
@@ -860,18 +827,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														smoke.choice == ""
 															? smokeRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												smoke.choice == ""
 													? smokeRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -903,18 +870,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														hobbies == ""
 															? hobbiesRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-															})
+																	inputRange: [0, 1],
+																	outputRange: [0, -20],
+															  })
 															: -20,
 												},
 											],
 											fontSize:
 												hobbies == ""
 													? hobbiesRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-													})
+															inputRange: [0, 1],
+															outputRange: [20, 15],
+													  })
 													: 15,
 										},
 									]}
@@ -984,9 +951,9 @@ export default function Profile({ navigation }) {
 												translateY:
 													about == ""
 														? aboutRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [0, -75],
-														})
+																inputRange: [0, 1],
+																outputRange: [0, -75],
+														  })
 														: -75,
 											},
 											{
@@ -999,9 +966,9 @@ export default function Profile({ navigation }) {
 										fontSize:
 											about == ""
 												? aboutRef.interpolate({
-													inputRange: [0, 1],
-													outputRange: [20, 15],
-												})
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+												  })
 												: 15,
 									},
 								]}

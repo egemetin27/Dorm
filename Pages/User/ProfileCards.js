@@ -7,7 +7,7 @@ import {
 	ActivityIndicator,
 	Text,
 	ScrollView,
-	Alert
+	Alert,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
@@ -17,7 +17,7 @@ import Animated, {
 	interpolate,
 	Extrapolate,
 	withTiming,
-	withSpring
+	withSpring,
 } from "react-native-reanimated";
 import Swiper from "react-native-deck-swiper";
 import axios from "axios";
@@ -58,7 +58,7 @@ export default function ProfileCards({ navigation, route }) {
 		peopleListIndex,
 		setPeopleIndex,
 		signOut,
-		updateProfile
+		updateProfile,
 	} = useContext(AuthContext);
 
 	const swiperRef = useRef();
@@ -155,9 +155,10 @@ export default function ProfileCards({ navigation, route }) {
 
 	const derivedText = useDerivedValue(
 		() =>
-			`${isBackFace.value
-				? "Arka yüze dönmek için kart alanına çift dokun"
-				: "Daha iyi tanımak için kart alanına çift dokun"
+			`${
+				isBackFace.value
+					? "Arka yüze dönmek için kart alanına çift dokun"
+					: "Daha iyi tanımak için kart alanına çift dokun"
 			}`
 	);
 
@@ -166,7 +167,8 @@ export default function ProfileCards({ navigation, route }) {
 	};
 
 	const handleSwipeEnd = () => {
-		x.value = withTiming(0);
+		x.value = 0;
+		// x.value = withTiming(0);
 	};
 
 	const handleSwipe = ({ value, index }) => {
@@ -282,7 +284,7 @@ export default function ProfileCards({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
-				onLayout={() => { }}
+				onLayout={() => {}}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
@@ -346,8 +348,9 @@ export default function ProfileCards({ navigation, route }) {
 					<Swiper
 						ref={swiperRef}
 						//swipeBackCard
-						onSwiped={handleSwipeEnd}
+						swipeAnimationDuration={80}
 						onSwiping={handleSwipeAnimation}
+						onSwiped={handleSwipeEnd}
 						onSwipedAborted={handleSwipeEnd}
 						onSwipedRight={(index) => {
 							handleSwipe({ value: 0, index });
@@ -364,43 +367,6 @@ export default function ProfileCards({ navigation, route }) {
 						cardVerticalMargin={0}
 						stackSeparation={0}
 						renderCard={(card, idx) => {
-							// return (
-							// 	<View
-							// 		style={[
-							// 			commonStyles.photo,
-							// 			{
-							// 				height: Math.min(width * 1.35, height * 0.7),
-							// 				backgroundColor: "#440080",
-							// 				borderColor: "red",
-							// 				borderWidth: 5,
-							// 			},
-							// 		]}
-							// 	>
-							// 		<FlatList
-							// 			data={card.photos}
-							// 			keyExtractor={(item) => {
-							// 				return item.Photo_Order;
-							// 			}}
-							// 			renderItem={({ item }) => {
-							// 				return (
-							// 					<CustomImage
-							// 						url={item?.PhotoLink}
-							// 						style={{
-							// 							// width: "100%",
-							// 							// flex: 1,
-							// 							aspectRatio: 1 / 1.5,
-							// 							height: Math.min(height * 0.7, width * 1.35),
-							// 							// //resizeMode: "cover",
-							// 							// backgroundColor: colors.cool_gray,
-							// 						}}
-							// 					/>
-							// 				);
-							// 			}}
-							// 			pagingEnabled={true}
-							// 			showsVerticalScrollIndicator={false}
-							// 		/>
-							// 	</View>
-							// );
 							return (
 								<Card
 									handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
