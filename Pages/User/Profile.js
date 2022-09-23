@@ -41,6 +41,7 @@ export default function Profile({ navigation }) {
 	const [genderVisible, setGenderVisible] = useState(false);
 	const [sexualOrientationVisible, setSexualOrientationVisible] = useState(false);
 	const [expectationVisible, setExpectationVisible] = useState(false);
+	const [cityVisible, setCityVisible] = useState(false);
 	const [signVisible, setSignVisible] = useState(false);
 	const [dietVisible, setDietVisible] = useState(false);
 	const [smokeVisible, setSmokeVisible] = useState(false);
@@ -60,8 +61,7 @@ export default function Profile({ navigation }) {
 	const [smoke, setSmoke] = useState("");
 	const [hobbies, setHobbies] = useState("");
 	const [about, setAbout] = useState("");
-
-	const [city, setCity] = useState([0, 1, 0]);
+	const [city, setCity] = useState("");
 
 	const nameRef = useRef(new Animated.Value(0)).current;
 	const majorRef = useRef(new Animated.Value(0)).current;
@@ -101,36 +101,18 @@ export default function Profile({ navigation }) {
 				setDrink(
 					user.Alkol == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Alkol]
 				);
+				//setCity(user.City == "null" ? lists.cityList[0] : lists.cityList[user.City]);
+				lists.cityList.some((item) => {
+					if (item.choice === user.City) {
+						setCity(item);
+						return true;
+					}
+				});
 				setSmoke(
 					user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
-				);
-
-				/*
-				setSign(getChoice(data.Burc, signList));
-				setDiet(getChoice(data.Beslenme, dietList));
-				setDrink(getChoice(data.Alkol, smokeAndDrinkList));
-				setSmoke(getChoice(data.Sigara, smokeAndDrinkList));
-				*/
-
+				)
 				setAbout(user.About == "null" ? "" : user.About);
-				//setPhotoList(user.Photo);
 				setHobbies(user.interest);
-				// setUserData({
-				// 	userId: data.userId,
-				// 	name: data.Name + " " + data.Surname,
-				// 	major: data.Major,
-				// 	age: getAge(data.Birth_date),
-				// 	sex: GENDER_LIST[data.Gender],
-				// 	school: data.School,
-				// 	religion: data.Din,
-				// 	sign: data.Burc,
-				// 	diet: data.Beslenme,
-				// 	alcohol: data.Alkol,
-				// 	smoke: data.Sigara,
-				// 	hobbies: data.interest,
-				// 	about: data.About,
-				// 	PhotoList: data.Photo,
-				// });
 			} finally {
 				setIsReady(true);
 			}
@@ -150,6 +132,7 @@ export default function Profile({ navigation }) {
 			InterestedSex: sexualOrientation.key,
 			Expectation: expectation.key,
 			Major: major,
+			City: city.choice,
 			//Din: religion,
 			Burc: sign.key,
 			Beslenme: diet.key,
@@ -172,14 +155,6 @@ export default function Profile({ navigation }) {
 			});
 
 		// const newData = { Name: name, Gender: sex.key,  }; // TODO: add new data here and both save them to local and send to database
-	};
-
-	const getCityName = () => {
-		if (city[0]) {
-			return "Ankara";
-		} else if (city[1]) {
-			return "İstanbul";
-		} else return "İzmir";
 	};
 
 	const handleFocus = (ref) => {
@@ -436,7 +411,7 @@ export default function Profile({ navigation }) {
 						/>
 					</View>
 
-					<View name={"Info"} style={{ paddingBottom: 40 }}>
+					<View name={"Info"} style={{ marginBottom: height * 0.2 }}>
 						<View name={"Name"} style={[styles.inputContainer, {}]}>
 							<Animated.Text
 								style={[
@@ -447,18 +422,18 @@ export default function Profile({ navigation }) {
 												translateY:
 													name == ""
 														? nameRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
+															inputRange: [0, 1],
+															outputRange: [0, -20],
+														})
 														: -20,
 											},
 										],
 										fontSize:
 											name == ""
 												? nameRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
+													inputRange: [0, 1],
+													outputRange: [20, 15],
+												})
 												: 15,
 									},
 								]}
@@ -523,9 +498,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setGenderVisible(true);
-										  }
-										: () => {}
+											setGenderVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{sex.choice}</Text>
@@ -552,9 +527,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setSexualOrientationVisible(true);
-										  }
-										: () => {}
+											setSexualOrientationVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>
@@ -583,9 +558,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setExpectationVisible(true);
-										  }
-										: () => {}
+											setExpectationVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Text style={[styles.input, { color: colors.black }]}>{expectation.choice}</Text>
@@ -639,131 +614,15 @@ export default function Profile({ navigation }) {
 							>
 								Yaşadığım Şehir
 							</Text>
-							<Text style={[styles.input, { color: colors.black }]}>{getCityName()}</Text>
-							{/* <TextInput
-								style={[styles.input, { color: colors.black }]}
-								editable={false}
-								value={getCityName()}
-							/> */}
-
-							{/* {!isEditable ? (
-								<TextInput
-									style={[styles.input, { color: colors.black }]}
-									editable={false}
-									value={getCityName()}
-								/>
-							) : (
-								<View style={{ flexDirection: "row", marginTop: 60 }}>
-									<Pressable
-										onPress={() => {
-											setCity([1, 0, 0]);
-										}}
-										style={{
-											marginHorizontal: width / 50,
-											width: width / 4,
-											height: width / 8,
-											borderRadius: width / 16,
-											overflow: "hidden",
-										}}
-									>
-										{city[0] == 1 ? (
-											<Gradient
-												style={{
-													justifyContent: "center",
-													alignItems: "center",
-													width: "100%",
-													height: "100%"
-												}}
-											>
-												<Text style={{ color: colors.white }}>Ankara</Text>
-											</Gradient>
-										) : (
-											<View
-												style={{
-													
-													height: "100%",
-													justifyContent: "center",
-													alignItems: "center",
-												}}
-											>
-												<Text style={{ color: colors.black }}>Ankara</Text>
-											</View>
-										)}
-									</Pressable>
-									<Pressable
-										// onPress={() => {
-										// 	setCity([0, 1, 0]);
-										// }}
-										style={{
-											marginHorizontal: width / 50,
-											width: width / 4,
-											height: width / 8,
-											borderRadius: width / 16,
-											overflow: "hidden",
-										}}
-									>
-										{city[1] == 1 ? (
-											<Gradient
-												style={{
-													justifyContent: "center",
-													alignItems: "center", 
-													width: "100%",
-													height: "100%"
-												}}
-											>
-												<Text style={{ color: colors.white }}>İstanbul</Text>
-											</Gradient>
-										) : (
-											<View
-												style={{
-													
-													height: "100%",
-													justifyContent: "center",
-													alignItems: "center",
-												}}
-											>
-												<Text style={{ color: colors.black }}>İstanbul</Text>
-											</View>
-										)}
-									</Pressable>
-									<Pressable
-										onPress={() => {
-											setCity([0, 0, 1]);
-										}}
-										style={{
-											marginHorizontal: width / 50,
-											width: width / 4,
-											height: width / 8,
-											borderRadius: width / 16,
-											overflow: "hidden",
-										}}
-									>
-										{city[2] == 1 ? (
-											<Gradient
-												style={{
-													justifyContent: "center",
-													alignItems: "center", 
-													width: "100%",
-													height: "100%"
-												}}
-											>
-												<Text style={{ color: colors.white }}>İzmir</Text>
-											</Gradient>
-										) : (
-											<View
-												style={{
-													
-													height: "100%",
-													justifyContent: "center",
-													alignItems: "center",
-												}}
-											>
-												<Text style={{ color: colors.black }}>İzmir</Text>
-											</View>
-										)}
-									</Pressable>
-								</View>
-							)} */}
+							<Pressable onPress={
+								isEditable
+									? () => {
+										setCityVisible(true);
+									}
+									: () => { }
+							}>
+								<Text style={[styles.input, { color: colors.black }]}>{city.choice}</Text>
+							</Pressable>
 						</View>
 
 						<View name={"Major"} style={[styles.inputContainer, {}]}>
@@ -776,18 +635,18 @@ export default function Profile({ navigation }) {
 												translateY:
 													major == ""
 														? majorRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -20],
-														  })
+															inputRange: [0, 1],
+															outputRange: [0, -20],
+														})
 														: -20,
 											},
 										],
 										fontSize:
 											major == ""
 												? majorRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
+													inputRange: [0, 1],
+													outputRange: [20, 15],
+												})
 												: 15,
 									},
 								]}
@@ -861,9 +720,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setSignVisible(true);
-										  }
-										: () => {}
+											setSignVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Animated.Text
@@ -875,18 +734,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														sign.choice == ""
 															? signRef.interpolate({
-																	inputRange: [0, 1],
-																	outputRange: [0, -20],
-															  })
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+															})
 															: -20,
 												},
 											],
 											fontSize:
 												sign.choice == ""
 													? signRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [20, 15],
-													  })
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+													})
 													: 15,
 										},
 									]}
@@ -903,9 +762,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setDietVisible(true);
-										  }
-										: () => {}
+											setDietVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Animated.Text
@@ -917,18 +776,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														diet.choice == ""
 															? dietRef.interpolate({
-																	inputRange: [0, 1],
-																	outputRange: [0, -20],
-															  })
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+															})
 															: -20,
 												},
 											],
 											fontSize:
 												diet.choice == ""
 													? dietRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [20, 15],
-													  })
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+													})
 													: 15,
 										},
 									]}
@@ -945,9 +804,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setDrinkVisible(true);
-										  }
-										: () => {}
+											setDrinkVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Animated.Text
@@ -959,18 +818,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														drink.choice == ""
 															? drinkRef.interpolate({
-																	inputRange: [0, 1],
-																	outputRange: [0, -20],
-															  })
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+															})
 															: -20,
 												},
 											],
 											fontSize:
 												drink.choice == ""
 													? drinkRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [20, 15],
-													  })
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+													})
 													: 15,
 										},
 									]}
@@ -987,9 +846,9 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setSmokeVisible(true);
-										  }
-										: () => {}
+											setSmokeVisible(true);
+										}
+										: () => { }
 								}
 							>
 								<Animated.Text
@@ -1001,18 +860,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														smoke.choice == ""
 															? smokeRef.interpolate({
-																	inputRange: [0, 1],
-																	outputRange: [0, -20],
-															  })
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+															})
 															: -20,
 												},
 											],
 											fontSize:
 												smoke.choice == ""
 													? smokeRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [20, 15],
-													  })
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+													})
 													: 15,
 										},
 									]}
@@ -1044,18 +903,18 @@ export default function Profile({ navigation }) {
 													translateY:
 														hobbies == ""
 															? hobbiesRef.interpolate({
-																	inputRange: [0, 1],
-																	outputRange: [0, -20],
-															  })
+																inputRange: [0, 1],
+																outputRange: [0, -20],
+															})
 															: -20,
 												},
 											],
 											fontSize:
 												hobbies == ""
 													? hobbiesRef.interpolate({
-															inputRange: [0, 1],
-															outputRange: [20, 15],
-													  })
+														inputRange: [0, 1],
+														outputRange: [20, 15],
+													})
 													: 15,
 										},
 									]}
@@ -1125,9 +984,9 @@ export default function Profile({ navigation }) {
 												translateY:
 													about == ""
 														? aboutRef.interpolate({
-																inputRange: [0, 1],
-																outputRange: [0, -75],
-														  })
+															inputRange: [0, 1],
+															outputRange: [0, -75],
+														})
 														: -75,
 											},
 											{
@@ -1140,9 +999,9 @@ export default function Profile({ navigation }) {
 										fontSize:
 											about == ""
 												? aboutRef.interpolate({
-														inputRange: [0, 1],
-														outputRange: [20, 15],
-												  })
+													inputRange: [0, 1],
+													outputRange: [20, 15],
+												})
 												: 15,
 									},
 								]}
@@ -1208,7 +1067,6 @@ export default function Profile({ navigation }) {
 				setChoice={setSex}
 				style={{ height: height * 0.26, width: width * 0.624 }}
 			/>
-
 			<CustomPicker
 				data={lists.sexualOrientationList.slice(1)}
 				visible={sexualOrientationVisible}
@@ -1223,7 +1081,13 @@ export default function Profile({ navigation }) {
 				setChoice={setExpectation}
 				style={{ height: height * 0.38, width: width * 0.68 }}
 			/>
-
+			<CustomPicker
+				data={lists.cityList}
+				visible={cityVisible}
+				setVisible={setCityVisible}
+				setChoice={setCity}
+				style={{ height: height * 0.19, width: width * 0.45 }}
+			/>
 			<CustomPicker
 				data={lists.signList.slice(1)}
 				visible={signVisible}
@@ -1257,31 +1121,6 @@ export default function Profile({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-	progressBarContainer: {
-		height: height / 12,
-		width: width / 1.1,
-		borderRadius: height / 60,
-		backgroundColor: colors.white,
-		alignItems: "center",
-		flexDirection: "row",
-		justifyContent: "space-between",
-		position: "absolute",
-		marginTop: 120,
-		zIndex: 2,
-		elevation: 3,
-		shadowColor: "rgba(58, 41, 106, 1)",
-		shadowOffset: { width: 0, height: 10 },
-		shadowRadius: 10,
-	},
-	progressBarBackground: {
-		marginTop: 0,
-		paddingHorizontal: 2,
-		height: 12,
-		width: 190,
-		borderRadius: 12,
-		backgroundColor: "#DDDDDD",
-		justifyContent: "center",
-	},
 	photosContainer: {
 		marginTop: 20,
 		height: height / 2.8,
@@ -1333,20 +1172,45 @@ const styles = StyleSheet.create({
 		paddingTop: "3%",
 		fontSize: Math.min(height * 0.023, width * 0.05),
 	},
-	modalContainer: {
-		borderRadius: 20,
-		backgroundColor: colors.white,
-		height: height / 4,
-		width: width / 2,
-		alignItems: "center",
-		justifyContent: "center",
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.25,
-		shadowRadius: 4,
-		elevation: 5,
-	},
+	// modalContainer: {
+	// 	borderRadius: 20,
+	// 	backgroundColor: colors.white,
+	// 	height: height / 4,
+	// 	width: width / 2,
+	// 	alignItems: "center",
+	// 	justifyContent: "center",
+	// 	shadowColor: "#000",
+	// 	shadowOffset: {
+	// 		width: 0,
+	// 		height: 2,
+	// 	},
+	// 	shadowOpacity: 0.25,
+	// 	shadowRadius: 4,
+	// 	elevation: 5,
+	// },
+	// progressBarContainer: {
+	// 	height: height / 12,
+	// 	width: width / 1.1,
+	// 	borderRadius: height / 60,
+	// 	backgroundColor: colors.white,
+	// 	alignItems: "center",
+	// 	flexDirection: "row",
+	// 	justifyContent: "space-between",
+	// 	position: "absolute",
+	// 	marginTop: 120,
+	// 	zIndex: 2,
+	// 	elevation: 3,
+	// 	shadowColor: "rgba(58, 41, 106, 1)",
+	// 	shadowOffset: { width: 0, height: 10 },
+	// 	shadowRadius: 10,
+	// },
+	// progressBarBackground: {
+	// 	marginTop: 0,
+	// 	paddingHorizontal: 2,
+	// 	height: 12,
+	// 	width: 190,
+	// 	borderRadius: 12,
+	// 	backgroundColor: "#DDDDDD",
+	// 	justifyContent: "center",
+	// },
 });

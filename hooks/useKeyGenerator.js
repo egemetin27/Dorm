@@ -25,7 +25,7 @@ const useKeyGenerator = () => {
 					message: encryptedMessage,
 				})
 				.then((res) => {
-					const { appVersion, genderList, univList, sexualOrientationList, expectationList, cityList= [{"key": 1, "choice": "İstanbul"}, {"key": 0, "choice": "Ankara"}, {"key": 3, "choice": "İzmir"}] } =
+					const { appVersion, genderList, univList, sexualOrientationList, expectationList, cityList } =
 						res.data;
 					updateLists({ genderList, univList, sexualOrientationList, expectationList, cityList });
 

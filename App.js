@@ -104,7 +104,7 @@ export default function App() {
 					const onReceiveURL = ({ url }) => listener(url);
 
 					// Listen to incoming links from deep linking
-					Linking.addEventListener("url", onReceiveURL);
+					const subscriptionLinking = Linking.addEventListener("url", onReceiveURL);
 
 					// Listen to expo push notifications
 					const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
@@ -119,9 +119,7 @@ export default function App() {
 
 					return () => {
 						// Clean up the event listeners
-						// if (Linking) {
-						Linking.remove("url", onReceiveURL);
-						// }
+						subscriptionLinking.remove();
 						subscription.remove();
 					};
 				},
