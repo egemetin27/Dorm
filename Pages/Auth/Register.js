@@ -22,6 +22,8 @@ import { ListsContext } from "../../contexts/lists.context";
 
 const { width, height } = Dimensions.get("window");
 
+const INPUT_FIELDS = [];
+
 export default function Register({ navigation }) {
 	const { lists } = useContext(ListsContext);
 
@@ -372,7 +374,6 @@ export default function Register({ navigation }) {
 					<Gradient
 						style={{ borderRadius: 16, alignItems: "center", width: "100%", height: "100%" }}
 					>
-
 						<View
 							style={{
 								height: 90,
@@ -387,8 +388,11 @@ export default function Register({ navigation }) {
 							style={{ width: "100%" }}
 							onPress={() => {
 								setCityListVisible(true);
-							}}>
-							<View style={[styles.QuestionInput, { justifyContent: "center", alignItems: "center" }]}>
+							}}
+						>
+							<View
+								style={[styles.QuestionInput, { justifyContent: "center", alignItems: "center" }]}
+							>
 								<Text
 									style={[
 										{
@@ -542,14 +546,14 @@ export default function Register({ navigation }) {
 			</View>
 
 			<CustomPicker
-				style={{ width: width * 0.7, height: height * 0.6, maxWidth: 300, maxHeight: 500 }}
-				data={lists.univList.slice(1)}
+				style={{ width: width * 0.7 }}
+				data={lists.univList[city.key]}
 				visible={univListVisible}
 				setVisible={setUnivListVisible}
 				setChoice={setUniversity}
 			/>
 			<CustomPicker
-				style={{ width: width * 0.57, height: height * 0.20, maxWidth: 300, maxHeight: 500 }}
+				style={{ width: width * 0.57 }}
 				data={lists.cityList}
 				visible={cityListVisible}
 				setVisible={setCityListVisible}

@@ -39,7 +39,7 @@ export default function Profile({ navigation }) {
 	const [isReady, setIsReady] = useState(false);
 	const [isEditable, setEditibility] = useState(false);
 	const [genderVisible, setGenderVisible] = useState(false);
-	const [sexualOrientationVisible, setSexualOrientationVisible] = useState(false);
+	const [interestedSexVisible, setInterestedSexVisible] = useState(false);
 	const [expectationVisible, setExpectationVisible] = useState(false);
 	const [cityVisible, setCityVisible] = useState(false);
 	const [signVisible, setSignVisible] = useState(false);
@@ -51,7 +51,7 @@ export default function Profile({ navigation }) {
 	const [major, setMajor] = useState("");
 	const [age, setAge] = useState("");
 	const [sex, setSex] = useState("");
-	const [sexualOrientation, setSexualOrientation] = useState("");
+	const [interestedSex, setInterestedSex] = useState("");
 	const [expectation, setExpectation] = useState("");
 	const [school, setSchool] = useState("");
 	//const [religion, setReligion] = useState("");
@@ -88,19 +88,17 @@ export default function Profile({ navigation }) {
 				setName(user.Name + " " + user.Surname);
 				setAge(getAge(user.Birth_date).toString());
 				setSex(user.Gender == "null" ? "" : lists.genderList[user.Gender]);
-				setSexualOrientation(
-					user.InterestedSex == "null" ? "" : lists.sexualOrientationList[user.InterestedSex]
+				setInterestedSex(
+					user.InterestedSex == "null" ? "" : lists.interestedSexList[user.InterestedSex]
 				);
 				setExpectation(user.Expectation == "null" ? "" : lists.expectationList[user.Expectation]);
 				setSchool(user.School);
 				setMajor(user.Major == "null" ? "" : user.Major);
 				//setReligion(user.Din == "null" ? "" : user.Din);
 
-				setSign(user.Burc == "null" ? lists.signList[0] : lists.signList[user.Burc]);
-				setDiet(user.Beslenme == "null" ? lists.dietList[0] : lists.dietList[user.Beslenme]);
-				setDrink(
-					user.Alkol == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Alkol]
-				);
+				setSign(user.Burc == "null" ? "" : lists.signList[user.Burc]);
+				setDiet(user.Beslenme == "null" ? "" : lists.dietList[user.Beslenme]);
+				setDrink(user.Alkol == "null" ? "" : lists.smokeAndDrinkList[user.Alkol]);
 				//setCity(user.City == "null" ? lists.cityList[0] : lists.cityList[user.City]);
 				lists.cityList.some((item) => {
 					if (item.choice === user.City) {
@@ -108,9 +106,7 @@ export default function Profile({ navigation }) {
 						return true;
 					}
 				});
-				setSmoke(
-					user.Sigara == "null" ? lists.smokeAndDrinkList[0] : lists.smokeAndDrinkList[user.Sigara]
-				);
+				setSmoke(user.Sigara == "null" ? "" : lists.smokeAndDrinkList[user.Sigara]);
 				setAbout(user.About == "null" ? "" : user.About);
 				setHobbies(user.interest);
 			} finally {
@@ -129,11 +125,10 @@ export default function Profile({ navigation }) {
 			Name: fName,
 			Surname: lName,
 			Gender: sex.key,
-			InterestedSex: sexualOrientation.key,
+			InterestedSex: interestedSex.key,
 			Expectation: expectation.key,
 			Major: major,
 			City: city.choice,
-			//Din: religion,
 			Burc: sign.key,
 			Beslenme: diet.key,
 			Alkol: drink.key,
@@ -492,14 +487,12 @@ export default function Profile({ navigation }) {
 								onPress={
 									isEditable
 										? () => {
-												setSexualOrientationVisible(true);
+												setInterestedSexVisible(true);
 										  }
 										: () => {}
 								}
 							>
-								<Text style={[styles.input, { color: colors.black }]}>
-									{sexualOrientation.choice}
-								</Text>
+								<Text style={[styles.input, { color: colors.black }]}>{interestedSex.choice}</Text>
 							</Pressable>
 						</View>
 
@@ -1035,10 +1028,10 @@ export default function Profile({ navigation }) {
 				style={{ height: height * 0.26, width: width * 0.624 }}
 			/>
 			<CustomPicker
-				data={lists.sexualOrientationList.slice(1)}
-				visible={sexualOrientationVisible}
-				setVisible={setSexualOrientationVisible}
-				setChoice={setSexualOrientation}
+				data={lists.interestedSexList}
+				visible={interestedSexVisible}
+				setVisible={setInterestedSexVisible}
+				setChoice={setInterestedSex}
 				style={{ height: height * 0.194, width: width * 0.45 }}
 			/>
 			<CustomPicker
@@ -1053,7 +1046,7 @@ export default function Profile({ navigation }) {
 				visible={cityVisible}
 				setVisible={setCityVisible}
 				setChoice={setCity}
-				style={{ height: height * 0.19, width: width * 0.45 }}
+				style={{ width: width * 0.45 }}
 			/>
 			<CustomPicker
 				data={lists.signList.slice(1)}

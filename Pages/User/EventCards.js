@@ -70,7 +70,10 @@ const Card = ({ event, user, signOut }) => {
 		Organizator: seller,
 		photos: photoList,
 		isLiked,
+		likeMessage,
 	} = event;
+
+	// console.log(JSON.stringify(event, null, "\t"));
 
 	const navigation = useNavigation();
 
@@ -120,23 +123,43 @@ const Card = ({ event, user, signOut }) => {
 
 	const handleLikeButton = async () => {
 		const id = user.userId;
-		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId });
-
 		if (favFlag) {
+			setEventLike(false);
+			setFavFlag(false);
+			const encryptedData = crypto.encrypt({ userId: id, eventId: EventId });
 			await axios
 				.post(url + "/userAction/dislikeEvent", encryptedData, {
 					headers: { "access-token": user.sesToken },
 				})
-				.then((res) => setFavFlag(false))
-				.catch((err) => console.log(err));
-			setEventLike(false);
+				.then((res) => {})
+				.catch((err) => {
+					setEventLike(true);
+					setFavFlag(true);
+				});
 			return;
 		}
-		setLikeEventModal(true);
+		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: 1 });
+		setEventLike(true);
+		setFavFlag(true);
+		await axios
+			.post(url + "/userAction/likeEvent", encryptedData, {
+				headers: { "access-token": user.sesToken },
+			})
+			.then((res) => {
+				if (likeMessage.length > 0) {
+					navigation.navigate("CustomModal", {
+						modalType: "EVENT_LIKED_MESSAGE",
+						body: likeMessage,
+					});
+				}
+			})
+			.catch((err) => {
+				setEventLike(false);
+				setFavFlag(false);
+			});
 	};
 
 	const likeEvent = async (likeMode) => {
-		const id = user.userId;
 		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: likeMode });
 		await axios
 			.post(url + "/userAction/likeEvent", encryptedData, {
@@ -144,7 +167,12 @@ const Card = ({ event, user, signOut }) => {
 			})
 			.then((res) => {
 				setFavFlag(true);
-				// Alert.alert("RES " + res.data);
+				if (likeMessage.length > 0) {
+					navigation.navigate("CustomModal", {
+						modalType: "EVENT_LIKED_MESSAGE",
+						body: likeMessage,
+					});
+				}
 			})
 			.catch((err) => {
 				// Alert.alert(err.response.status);
@@ -231,7 +259,17 @@ const Card = ({ event, user, signOut }) => {
 							showsVerticalScrollIndicator={false}
 							// onScroll={handleScroll}
 						>
-							{photoList?.map((item, index) => {
+							<Image
+								source={{
+									uri: photoList[0] ?? "AAA",
+								}}
+								style={{
+									height: Math.min(height * 0.7, width * 1.35),
+									resizeMode: "cover",
+									backgroundColor: colors.cool_gray,
+								}}
+							/>
+							{/* {photoList?.map((item, index) => {
 								return (
 									<Image
 										key={index}
@@ -245,7 +283,7 @@ const Card = ({ event, user, signOut }) => {
 										}}
 									/>
 								);
-							})}
+							})} */}
 						</ScrollView>
 
 						<View // photo order indicator dots
@@ -257,7 +295,23 @@ const Card = ({ event, user, signOut }) => {
 								minHeight: photoList.length * 10 + 16,
 							}}
 						>
-							{photoList?.map((_, index) => {
+							<Animated.View
+								style={[
+									{
+										// minHeight: 8,
+										height: 24,
+										width: 8,
+										borderRadius: 4,
+										backgroundColor: colors.white,
+									},
+									// useAnimatedStyle(() => {
+									// 	return {
+									// 		height: interpolate(progress.value - index, [-1, 0, 1], [8, 24, 8]),
+									// 	};
+									// }),
+								]}
+							/>
+							{/* {photoList?.map((_, index) => {
 								return (
 									<Animated.View
 										key={index}
@@ -277,7 +331,7 @@ const Card = ({ event, user, signOut }) => {
 										]}
 									/>
 								);
-							})}
+							})} */}
 						</View>
 						{/*Report button for event card }
 						<View style={{ position: "absolute", top: 20, right: 20 }}>
@@ -757,7 +811,7 @@ const Card = ({ event, user, signOut }) => {
 export default function EventCards({ navigation, route }) {
 	const { user, signOut } = useContext(AuthContext);
 
-	const { idx, list, myID, sesToken } = route.params;
+	const { idx, list } = route.params;
 
 	useEffect(() => {
 		const backhandler = async () => {
@@ -771,7 +825,7 @@ export default function EventCards({ navigation, route }) {
 			};
 			const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 			return () => backHandler.remove();
-		}
+		};
 		backhandler();
 	}, []);
 

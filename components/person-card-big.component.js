@@ -53,6 +53,7 @@ const Card = ({
 	isScrollShowed,
 	indexOfFrontCard,
 	handleReportButton,
+	onDoubleTap,
 }) => {
 	const { getDiet, getGender, getSign, getSmokeAndDrinkList } = useContext(ListsContext);
 	//const navigation = useNavigation();
@@ -191,7 +192,17 @@ const Card = ({
 
 	return (
 		// <View>
-		<DoubleTap singleTap={handleSingleTap} doubleTap={handleDoubleTap} delay={220}>
+		<DoubleTap
+			singleTap={handleSingleTap}
+			doubleTap={() => {
+				if (onDoubleTap) {
+					onDoubleTap(face);
+					return;
+				}
+				handleDoubleTap();
+			}}
+			delay={220}
+		>
 			<View>
 				{/* Front Face Start */}
 				<Reanimated.View style={[card_style, animatedFrontFace]}>
@@ -433,7 +444,7 @@ const Card = ({
 
 								if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
 									return null;
-									
+
 								return (
 									<Text
 										key={field}

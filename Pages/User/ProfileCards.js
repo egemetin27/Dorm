@@ -68,7 +68,7 @@ export default function ProfileCards({ navigation, route }) {
 		navigation.goBack();
 	});
 
-	const { list, idx, fromEvent = false } = route.params;
+	const { list, idx, fromEvent = false, isTutorial = false } = route.params;
 	const eventId = route.params.eventID ?? 0;
 	const eventName = route.params.eventName ?? "";
 	const myProfilePicture = Photo[0].PhotoLink ?? "";
@@ -78,6 +78,12 @@ export default function ProfileCards({ navigation, route }) {
 	const indexOfFrontCard = useSharedValue(0);
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
+
+	useEffect(() => {
+		if (isTutorial) {
+			navigation.navigate("TutorialModal", { index: 3 });
+		}
+	}, []);
 
 	useEffect(() => {
 		const prepare = async () => {

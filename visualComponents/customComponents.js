@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
 	pickerContainer: {
 		borderRadius: 20,
 		backgroundColor: colors.white,
-		height: height / 4,
+		maxHeight: height / 2,
 		width: width / 2,
 		alignItems: "center",
 		justifyContent: "center",

@@ -36,6 +36,8 @@ import { FilterContext } from "../../contexts/filter.context";
 import { NotificationContext } from "../../contexts/notification.context";
 
 import crypto from "../../functions/crypto";
+import TutorialModal from "../modals/beginning-tutorial.modal";
+import { CustomModal } from "../../visualComponents/customComponents";
 
 const { height, width } = Dimensions.get("window");
 
@@ -206,7 +208,7 @@ const EVENT_HEADER_HEIGHT = height * 0.15;
 
 export default function MainPage({ navigation }) {
 	const {
-		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus },
+		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus, City },
 		peopleListIndex,
 		signOut,
 		setPeopleIndex,
@@ -226,6 +228,10 @@ export default function MainPage({ navigation }) {
 		return true;
 	});
 
+	// useEffect(() => {
+	// 	navigation.navigate("TutorialModal");
+	// }, []);
+
 	const scrollY = useSharedValue(0);
 
 	const [isAppReady, setIsAppReady] = useState(false);
@@ -238,6 +244,17 @@ export default function MainPage({ navigation }) {
 	);
 	const peopleFlatListRef = useRef();
 	const eventsFlatListRef = useRef();
+
+	const [tutorialVisible, setTutorialVisible] = useState(true);
+
+	// useEffect(() => {
+
+	// 	navigation.navigate("TutorialModal");
+	// }, [navigation]);
+
+	// navigation.navigate("TutorialModal");
+
+	// console.log(JSON.stringify(shownEvents, null, "\t"));
 
 	const handleFilterButton = () => {
 		navigation.navigate("FilterModal");
@@ -301,16 +318,13 @@ export default function MainPage({ navigation }) {
 		const abortController = new AbortController();
 
 		const eventlike = async () => {
-			// const userId = user?.userId;
 			try {
-				const eventListData = crypto.encrypt({ userId: userId, campus: School });
+				const eventListData = crypto.encrypt({ userId: userId, campus: School, city: City });
 				await axios
 					.post(url + "/lists/EventList", eventListData, {
 						headers: { "access-token": sesToken },
 					})
 					.then((res) => {
-						// console.log("BBBBBBBBBBBB");
-						// console.log(res.data);
 						const data = crypto.decrypt(res.data);
 						setEventList(data);
 						setShownEvents(data);
@@ -318,7 +332,8 @@ export default function MainPage({ navigation }) {
 					})
 					.catch((err) => {
 						console.log("error on /eventList");
-						console.log(err.response.data);
+						console.log(err);
+						// console.log(err.response.data);
 					});
 			} catch (err) {
 				console.log(err);
@@ -331,7 +346,7 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [eventLiked]);
+	}, [eventLiked, City]);
 
 	useEffect(() => {
 		setPeopleIndex(-1);
@@ -750,8 +765,12 @@ export default function MainPage({ navigation }) {
 					) : null
 				}
 			/>
-
-			{/* </View> */}
+			{/* <CustomModal
+				visible={tutorialVisible}
+				// style={{ height: height, width: width, position: "absolute", zIndex: 100 }}
+			>
+				<TutorialModal />
+			</CustomModal> */}
 		</View>
 	);
 }

@@ -98,6 +98,12 @@ export default function ModalPage({ navigation, route }) {
 				},
 			],
 		},
+		EVENT_LIKED_MESSAGE: {
+			image: "dorm_text",
+			title: "Bu eventi beğendiğine çok sevindik!",
+			body: route.params?.body ?? "",
+			buttons: [],
+		},
 	};
 
 	const { modalType, buttonParamsList } = {

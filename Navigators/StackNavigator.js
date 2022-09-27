@@ -54,6 +54,9 @@ import UpdateNeededModal from "../Pages/modals/UpdateNeededModal";
 import ModalPage from "../components/modal.component";
 
 import useKeyGenerator from "../hooks/useKeyGenerator";
+import BeginningTutorialModal from "../Pages/modals/beginning-tutorial.modal";
+import EventTutorialModal from "../Pages/modals/event-tutorial.modal";
+import PeopleTutorialModal from "../Pages/modals/people-tutorial.modal";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -186,6 +189,30 @@ export default function StackNavigator() {
 				)}
 
 				<Stack.Group name={"Modals"} screenOptions={{ headerShown: false }}>
+					<Stack.Screen
+						name="BeginningTutorialModal"
+						component={BeginningTutorialModal}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
+					/>
+					<Stack.Screen
+						name="PeopleTutorialModal"
+						component={PeopleTutorialModal}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
+					/>
+					<Stack.Screen
+						name="EventTutorialModal"
+						component={EventTutorialModal}
+						options={{
+							presentation: "transparentModal",
+							animation: "fade",
+						}}
+					/>
 					<Stack.Screen
 						name="LikeEndedModal"
 						component={LikeEndedModal}

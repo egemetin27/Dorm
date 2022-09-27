@@ -12,9 +12,10 @@ import url from "../../connection";
 import Gender from "../afterRegisteration/Gender";
 import MatchMode from "../afterRegisteration/MatchMode";
 import Expectation from "../afterRegisteration/Expectation";
-import SexOrientation from "../afterRegisteration/SexOrientation";
+// import SexOrientation from "../afterRegisteration/SexOrientation";
 import Interested from "../afterRegisteration/Interested";
 import crypto from "../../functions/crypto";
+import SexOrientation from "../afterRegisteration/SexOrientation";
 
 //const { height, width } = Dimensions.get("screen");
 
@@ -48,7 +49,6 @@ export default function AfterRegister({ route, navigation }) {
 			genderVisibility: genderSwitch.value ? "1" : "0",
 		};
 
-		console.log(sesToken);
 		// console.log(choices);
 		const encryptedData = crypto.encrypt(choices);
 		await axios
@@ -88,7 +88,7 @@ export default function AfterRegister({ route, navigation }) {
 					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={() => {
-							pageNum < 5 ? setPageNum(pageNum + 1) : handleSubmit();
+							pageNum < 4 ? setPageNum(pageNum + 1) : handleSubmit();
 						}}
 					>
 						<Text style={{ color: colors.medium_gray, fontSize: 18 }}>İleri</Text>
