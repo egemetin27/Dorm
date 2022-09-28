@@ -40,6 +40,7 @@ export const colors = {
 	white2: "#F7F7F7",
 	white: "#F8F8F8",
 	full_white: "#FFFFFF",
+	purple: "rgba(107,70,210,0.5)",
 };
 
 export const Gradient = (props) => {
