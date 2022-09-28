@@ -42,7 +42,7 @@ export default function AfterRegister({ route, navigation }) {
 			userId: userId,
 			gender: gender - 1,
 			matchMode: matchMode - 1,
-			expectation: expectation - 1,
+			expectation: expectation,
 			interestedSex: interested - 1,
 			sexualOrientation: sexualOrientation - 1,
 			SOVisibility: orientationSwitch.value ? "1" : "0",
