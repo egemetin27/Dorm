@@ -13,85 +13,13 @@ import { Session } from "../../nonVisualComponents/SessionVariables";
 import DoubleTap from "../../components/double-tap.component";
 import Card from "../../components/person-card-big.component";
 import Swiper from "react-native-deck-swiper";
+import TapIndicator from "../../components/tap-indicator.component";
 
 const { height, width } = Dimensions.get("window");
 
 const PEOPLE_LIST_HEIGHT = height * 0.345;
 const EVENT_HEADER_HEIGHT = height * 0.15;
 
-// const POSITIONS = [
-// 	{
-// 		gradientText: "Kişiler",
-// 		Label: (
-// 			<GradientText
-// 				text={"Kişiler"}
-// 				style={{
-// 					fontSize: Math.min(height * 0.035, 35),
-// 					fontFamily: "NowBold",
-// 					letterSpacing: 1.2,
-// 				}}
-// 			/>
-// 		),
-// 		subText: {
-// 			text: "“Kişiler”e dokunarak ortak zevklerin olan insanları bulabilirsin",
-// 			style: { textAlign: "left" },
-// 		},
-// 		position: { top: 5, left: 5 },
-// 	},
-// 	{
-// 		gradientText: "Etkinlikler",
-// 		Label: (
-// 			<GradientText
-// 				text={"Etkinlikler"}
-// 				style={{
-// 					fontSize: Math.min(height * 0.035, 35),
-// 					fontFamily: "NowBold",
-// 					letterSpacing: 1.2,
-// 				}}
-// 			/>
-// 		),
-// 		subText: {
-// 			text: "“Etkinlikler”e dokunarak şehirdeki en iyi etkinlikler arasından sana en çok uyanı seçerek etkinliği beğenenlerle eşleşmeye başlayabilirsin",
-// 			style: { textAlign: "left" },
-// 		},
-// 		position: { top: PEOPLE_LIST_HEIGHT, left: 5 },
-// 	},
-// 	{
-// 		Label: (
-// 			<Octicons
-// 				style={
-// 					{
-// 						transform: [{ rotate: "-90deg" }],
-// 					}
-// 				}
-// 				name="filter"
-// 				size={Math.min(height * 0.032, 30)}
-// 				color={colors.cool_gray}
-// 			/>
-// 		),
-// 		subText: {
-// 			text: "Filtreleri kullanarak ortak zevklerin olan kişileri daha kolay bulabilirsin",
-// 			style: { textAlign: "right" },
-// 		},
-// 		position: { top: 5, right: 14 },
-// 	},
-// 	{
-// 		Label: null,
-// 		subText: {
-// 			text: "Kart alanına çift dokunarak etkinlik hakkında daha fazla bilgi edinebilir, bu etkinliğe giden kişileri görebilir ve onlarla eşleşebilirsin!",
-// 			style: { textAlign: "left", maxWidth: width * 0.7 },
-// 		},
-// 		position: { top: height * 0.3, left: width * 0.15 },
-// 	},
-// 	{
-// 		Label: null,
-// 		subText: {
-// 			text: "Gitmeyi düşündüğün etkinlikleri favorilerine ekleyebilir ve daha sonra “Favorilerim” sayfasından görüntüleyebilirsin.",
-// 			style: { textAlign: "left", maxWidth: width * 0.7 },
-// 		},
-// 		position: { top: height * 0.3, left: width * 0.15 },
-// 	},
-// ];
 
 const peopleList = [
 	{
@@ -140,14 +68,20 @@ const peopleList = [
 		],
 	},
 ];
-const tutorialMessages = ["asdasd", "bv gfbgf"];
+
 export default function PeopleTutorialModal({ navigation, route }) {
 	const [index, setIndex] = useState(0);
+	const [showTapIndicator, setShowTapIndicator] = useState(false);
 	const insets = useSafeAreaInsets();
 
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
 	const face = useSharedValue(1);
+
+	useEffect(() => {
+		setShowTapIndicator(route.params.peopleTextTutorialDone == true);
+		console.log("YES");
+	}, [route.params.peopleTextTutorialDone]);
 
 	const handleEnd = async () => {
 		await AsyncStorage.getItem("Constants").then(async (res) => {
@@ -160,13 +94,9 @@ export default function PeopleTutorialModal({ navigation, route }) {
 	};
 
 	const handleSwipe = ({ value, index }) => {
-		// 0 = like, 1 = super like, 2 =  dislike
-		// setPeopleIndex(index + peopleListIndex);
 		isBackFace.value = false;
 		console.log("\nTUTORIAL USER SWIPED: " + peopleList[index].UserId + " " + peopleList[index].Name + "\n");
 		navigation.goBack();
-		// console.log(value == 0 ? "liked:" : "disliked:");
-		// console.log(shownList[index]);
 	};
 
 	const handleSwipeAnimation = (event) => {
@@ -179,9 +109,10 @@ export default function PeopleTutorialModal({ navigation, route }) {
 	};
 
 	const handleDoubleTap = (face) => {
+		setShowTapIndicator(false);
 		setTimeout(() => {
 			face.value = withTiming(-face.value);
-		}, 60);
+		}, 100);
 		isBackFace.value = !isBackFace.value;
 	};
 
@@ -231,11 +162,12 @@ export default function PeopleTutorialModal({ navigation, route }) {
 							);
 						}}
 					/>
-					{/* <View style={styles.tutorialMessage}>
-						<Text style={styles.tutorialMessageText}>
-							{tutorialMessages[index]}
-						</Text>
-					</View> */}
+					{(showTapIndicator === true) ?
+						<View style={styles.tapIndicator}>
+							<TapIndicator />
+						</View> :
+						<View></View>
+					}
 				</View>
 			</DoubleTap>
 		</View>
@@ -272,6 +204,11 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		opacity: 0.75,
 		backgroundColor: colors.tutorialPurple,
+	},
+	tapIndicator: {
+		alignSelf: "center",
+		top: height * 0.3,
+		color: colors.soft_red,
 	},
 	tutorialMessageText: {
 		marginHorizontal: 15,

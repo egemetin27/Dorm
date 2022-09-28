@@ -320,7 +320,7 @@ export default function BeginningTutorialModal({ navigation, route }) {
 	};
 
 	const handleProceed = () => {
-		if (index == 4 && route.params.fromPeopleTutorial == true) navigation.goBack();
+		if (index == 4 && route.params.fromPeopleTutorial == true) navigation.navigate("PeopleTutorialModal", { index: 3, peopleTextTutorialDone: true });
 
 		if (index === POSITIONS.length - 1) {
 			navigation.replace("MainScreen");
