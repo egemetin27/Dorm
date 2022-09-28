@@ -74,7 +74,47 @@ const POSITIONS = [
 		Label: null,
 		subText: {
 			text: "Kişinin kart alanına çift dokunarak kartın arka yüzünü görebilir ve onu daha yakından tanıyabilirsin",
-			style: { textAlign: "left", maxWidth: width * 0.7 },
+			style: {
+				marginHorizontal: 15,
+				color: colors.white,
+				fontFamily: "PoppinsBold",
+				marginVertical: 10,
+				fontSize: Math.min(height * 0.028, 22),
+			},
+			textContainer: {
+				maxWidth: Math.min(width * 0.65, 263),
+				width: width * 0.65,
+				left: width * -0.06,
+				bottom: height * -0.03,
+				color: colors.soft_red,
+				borderRadius: 10,
+				opacity: 0.75,
+				backgroundColor: colors.tutorialPurple,
+			},
+		},
+		position: { top: height * 0.3, left: width * 0.15 },
+	},
+	{
+		Label: null,
+		subText: {
+			text: "E hadi, sen de dene!",
+			style: {
+				marginHorizontal: 15,
+				color: colors.white,
+				fontFamily: "PoppinsBold",
+				marginVertical: 10,
+				fontSize: Math.min(height * 0.028, 22),
+			},
+			textContainer: {
+				maxWidth: Math.min(width * 0.65, 263),
+				width: width * 0.65,
+				left: width * -0.06,
+				bottom: height * -0.12,
+				color: colors.soft_red,
+				borderRadius: 10,
+				opacity: 0.75,
+				backgroundColor: colors.tutorialPurple,
+			},
 		},
 		position: { top: height * 0.3, left: width * 0.15 },
 	},
@@ -280,6 +320,8 @@ export default function BeginningTutorialModal({ navigation, route }) {
 	};
 
 	const handleProceed = () => {
+		if (index == 4 && route.params.fromPeopleTutorial == true) navigation.goBack();
+
 		if (index === POSITIONS.length - 1) {
 			navigation.replace("MainScreen");
 			return;
@@ -305,7 +347,7 @@ export default function BeginningTutorialModal({ navigation, route }) {
 		// 	navigation.replace("MainScreen");
 		// }
 
-		setIndex((oldValue) => oldValue + 1);
+		setIndex(index + 1);
 	};
 
 	return (
@@ -321,7 +363,7 @@ export default function BeginningTutorialModal({ navigation, route }) {
 				<View
 					style={[{ position: "absolute", marginTop: Math.min(height * 0.035, 35) * 2 }, position]}
 				>
-					<View style={styles.subTextWrapper}>
+					<View style={[styles.subTextWrapper, subText.textContainer]}>
 						<Text style={[styles.subText, subText.style]}>{subText.text}</Text>
 					</View>
 				</View>

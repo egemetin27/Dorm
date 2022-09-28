@@ -8,6 +8,7 @@ import {
 	Text,
 	ScrollView,
 	Alert,
+	BackHandler,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
@@ -64,11 +65,7 @@ export default function ProfileCards({ navigation, route }) {
 	const swiperRef = useRef();
 	const destination = useSharedValue(0);
 
-	useBackHandler(() => {
-		navigation.goBack();
-	});
-
-	const { list, idx, fromEvent = false, isTutorial = false } = route.params;
+	const { list, idx, fromEvent = false, isTutorial = true } = route.params;
 	const eventId = route.params.eventID ?? 0;
 	const eventName = route.params.eventName ?? "";
 	const myProfilePicture = Photo[0].PhotoLink ?? "";
@@ -81,7 +78,7 @@ export default function ProfileCards({ navigation, route }) {
 
 	useEffect(() => {
 		if (isTutorial) {
-			navigation.navigate("TutorialModal", { index: 3 });
+			navigation.navigate("PeopleTutorialModal", { index: 3 });
 		}
 	}, []);
 
@@ -161,10 +158,9 @@ export default function ProfileCards({ navigation, route }) {
 
 	const derivedText = useDerivedValue(
 		() =>
-			`${
-				isBackFace.value
-					? "Arka yüze dönmek için kart alanına çift dokun"
-					: "Daha iyi tanımak için kart alanına çift dokun"
+			`${isBackFace.value
+				? "Arka yüze dönmek için kart alanına çift dokun"
+				: "Daha iyi tanımak için kart alanına çift dokun"
 			}`
 	);
 
@@ -290,7 +286,7 @@ export default function ProfileCards({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
-				onLayout={() => {}}
+				onLayout={() => { }}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",

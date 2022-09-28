@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { View, Dimensions, StyleSheet, Pressable, Text } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { View, Dimensions, StyleSheet, Pressable, Text, BackHandler } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Octicons } from "@expo/vector-icons";
@@ -8,85 +8,90 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
 import CustomButton from "../../components/button.components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSharedValue, withTiming } from "react-native-reanimated";
+import { Session } from "../../nonVisualComponents/SessionVariables";
+import DoubleTap from "../../components/double-tap.component";
+import Card from "../../components/person-card-big.component";
+import Swiper from "react-native-deck-swiper";
 
 const { height, width } = Dimensions.get("window");
 
 const PEOPLE_LIST_HEIGHT = height * 0.345;
 const EVENT_HEADER_HEIGHT = height * 0.15;
 
-const POSITIONS = [
-	{
-		// gradientText: "Kişiler",
-		Label: (
-			<GradientText
-				text={"Kişiler"}
-				style={{
-					fontSize: Math.min(height * 0.035, 35),
-					fontFamily: "NowBold",
-					letterSpacing: 1.2,
-				}}
-			/>
-		),
-		subText: {
-			text: "“Kişiler”e dokunarak ortak zevklerin olan insanları bulabilirsin",
-			style: { textAlign: "left" },
-		},
-		position: { top: 5, left: 5 },
-	},
-	{
-		// gradientText: "Etkinlikler",
-		Label: (
-			<GradientText
-				text={"Etkinlikler"}
-				style={{
-					fontSize: Math.min(height * 0.035, 35),
-					fontFamily: "NowBold",
-					letterSpacing: 1.2,
-				}}
-			/>
-		),
-		subText: {
-			text: "“Etkinlikler”e dokunarak şehirdeki en iyi etkinlikler arasından sana en çok uyanı seçerek etkinliği beğenenlerle eşleşmeye başlayabilirsin",
-			style: { textAlign: "left" },
-		},
-		position: { top: PEOPLE_LIST_HEIGHT, left: 5 },
-	},
-	{
-		Label: (
-			<Octicons
-				style={
-					{
-						//transform: [{ rotate: "-90deg" }],
-					}
-				}
-				name="filter"
-				size={Math.min(height * 0.032, 30)}
-				color={colors.cool_gray}
-			/>
-		),
-		subText: {
-			text: "Filtreleri kullanarak ortak zevklerin olan kişileri daha kolay bulabilirsin",
-			style: { textAlign: "right" },
-		},
-		position: { top: 5, right: 14 },
-	},
-	// {
-	// 	Label: null,
-	// 	subText: {
-	// 		text: "Kart alanına çift dokunarak etkinlik hakkında daha fazla bilgi edinebilir, bu etkinliğe giden kişileri görebilir ve onlarla eşleşebilirsin!",
-	// 		style: { textAlign: "left", maxWidth: width * 0.7 },
-	// 	},
-	// 	position: { top: height * 0.3, left: width * 0.15 },
-	// },
-	// {
-	// 	Label: null,
-	// 	subText: {
-	// 		text: "Gitmeyi düşündüğün etkinlikleri favorilerine ekleyebilir ve daha sonra “Favorilerim” sayfasından görüntüleyebilirsin.",
-	// 		style: { textAlign: "left", maxWidth: width * 0.7 },
-	// 	},
-	// 	position: { top: height * 0.3, left: width * 0.15 },
-	// },
-];
+// const POSITIONS = [
+// 	{
+// 		gradientText: "Kişiler",
+// 		Label: (
+// 			<GradientText
+// 				text={"Kişiler"}
+// 				style={{
+// 					fontSize: Math.min(height * 0.035, 35),
+// 					fontFamily: "NowBold",
+// 					letterSpacing: 1.2,
+// 				}}
+// 			/>
+// 		),
+// 		subText: {
+// 			text: "“Kişiler”e dokunarak ortak zevklerin olan insanları bulabilirsin",
+// 			style: { textAlign: "left" },
+// 		},
+// 		position: { top: 5, left: 5 },
+// 	},
+// 	{
+// 		gradientText: "Etkinlikler",
+// 		Label: (
+// 			<GradientText
+// 				text={"Etkinlikler"}
+// 				style={{
+// 					fontSize: Math.min(height * 0.035, 35),
+// 					fontFamily: "NowBold",
+// 					letterSpacing: 1.2,
+// 				}}
+// 			/>
+// 		),
+// 		subText: {
+// 			text: "“Etkinlikler”e dokunarak şehirdeki en iyi etkinlikler arasından sana en çok uyanı seçerek etkinliği beğenenlerle eşleşmeye başlayabilirsin",
+// 			style: { textAlign: "left" },
+// 		},
+// 		position: { top: PEOPLE_LIST_HEIGHT, left: 5 },
+// 	},
+// 	{
+// 		Label: (
+// 			<Octicons
+// 				style={
+// 					{
+// 						transform: [{ rotate: "-90deg" }],
+// 					}
+// 				}
+// 				name="filter"
+// 				size={Math.min(height * 0.032, 30)}
+// 				color={colors.cool_gray}
+// 			/>
+// 		),
+// 		subText: {
+// 			text: "Filtreleri kullanarak ortak zevklerin olan kişileri daha kolay bulabilirsin",
+// 			style: { textAlign: "right" },
+// 		},
+// 		position: { top: 5, right: 14 },
+// 	},
+// 	{
+// 		Label: null,
+// 		subText: {
+// 			text: "Kart alanına çift dokunarak etkinlik hakkında daha fazla bilgi edinebilir, bu etkinliğe giden kişileri görebilir ve onlarla eşleşebilirsin!",
+// 			style: { textAlign: "left", maxWidth: width * 0.7 },
+// 		},
+// 		position: { top: height * 0.3, left: width * 0.15 },
+// 	},
+// 	{
+// 		Label: null,
+// 		subText: {
+// 			text: "Gitmeyi düşündüğün etkinlikleri favorilerine ekleyebilir ve daha sonra “Favorilerim” sayfasından görüntüleyebilirsin.",
+// 			style: { textAlign: "left", maxWidth: width * 0.7 },
+// 		},
+// 		position: { top: height * 0.3, left: width * 0.15 },
+// 	},
+// ];
 
 const peopleList = [
 	{
@@ -134,58 +139,15 @@ const peopleList = [
 			},
 		],
 	},
-	{
-		Name: "zeynep",
-		City: "İstanbul",
-		Birth_Date: "2000-11-15",
-		UserId: 1443,
-		Gender: 0,
-		Surname: "akyıldız",
-		School: "Sabancı Üniversitesi",
-		Major: "Bilgisayar Mühendisliği",
-		Din: "",
-		Burc: 1,
-		Beslenme: 0,
-		Alkol: 2,
-		Sigara: 2,
-		About: "",
-		photos: [
-			{
-				UserId: 1443,
-				Photo_Order: 1,
-				PhotoLink: "https://d13pzveje1c51z.cloudfront.net/efbd1baefc14c782dcb84e16ddfbdde3",
-			},
-		],
-		interest: [
-			{
-				InterestName: "🎸 Müzik",
-				UserId: 1443,
-			},
-			{
-				InterestName: "💃 Dans",
-				UserId: 1443,
-			},
-			{
-				InterestName: "📝 Yazı",
-				UserId: 1443,
-			},
-			{
-				InterestName: "🚶 Doğa Yürüyüşü",
-				UserId: 1443,
-			},
-			{
-				InterestName: "🧑‍🚀 Bilim Kurgu",
-				UserId: 1443,
-			},
-		],
-	},
 ];
-
+const tutorialMessages = ["asdasd", "bv gfbgf"];
 export default function PeopleTutorialModal({ navigation, route }) {
-	const [index, setIndex] = React.useState(route?.params?.index ?? 0);
+	const [index, setIndex] = useState(0);
 	const insets = useSafeAreaInsets();
 
-	const { Label, subText, position } = useMemo(() => POSITIONS[index], [index]);
+	const isBackFace = useSharedValue(false);
+	const x = useSharedValue(0);
+	const face = useSharedValue(1);
 
 	const handleEnd = async () => {
 		await AsyncStorage.getItem("Constants").then(async (res) => {
@@ -197,81 +159,85 @@ export default function PeopleTutorialModal({ navigation, route }) {
 		navigation.replace("MainScreen");
 	};
 
-	const handleProceed = () => {
-		if (index === POSITIONS.length - 1) {
-			navigation.replace("MainScreen");
-			return;
-		}
-
-		if (index === 2) {
-			navigation.replace("ProfileCards", {
-				idx: 0,
-				list: peopleList,
-				// isTutorial: true,
-				isTutorial: false,
-			});
-		}
-		// if (index === 4) {
-		// 	navigation.replace("EventCards", {
-		// 		idx: 0,
-		// 		list: eventList,
-		// 		isTutorial: false,
-		// 		// isTutorial: true,
-		// 	});
-		// }
-		// if (index === 5) {
-		// 	navigation.replace("MainScreen");
-		// }
-
-		setIndex((oldValue) => oldValue + 1);
+	const handleSwipe = ({ value, index }) => {
+		// 0 = like, 1 = super like, 2 =  dislike
+		// setPeopleIndex(index + peopleListIndex);
+		isBackFace.value = false;
+		console.log("\nTUTORIAL USER SWIPED: " + peopleList[index].UserId + " " + peopleList[index].Name + "\n");
+		navigation.goBack();
+		// console.log(value == 0 ? "liked:" : "disliked:");
+		// console.log(shownList[index]);
 	};
 
-	const handleDoubleTap = (face) => {};
+	const handleSwipeAnimation = (event) => {
+		x.value = event;
+	};
+
+	const handleSwipeEnd = () => {
+		x.value = 0;
+		// x.value = withTiming(0);
+	};
+
+	const handleDoubleTap = (face) => {
+		setTimeout(() => {
+			face.value = withTiming(-face.value);
+		}, 60);
+		isBackFace.value = !isBackFace.value;
+	};
+
+	useEffect(() => {
+		setTimeout(() => {
+			navigation.navigate("BeginningTutorialModal", { index: 3, fromPeopleTutorial: true });
+		}, 200);
+	}, []);
 
 	return (
 		<View style={styles.wrapper}>
 			<StatusBar />
-			<Pressable
-				onPress={handleProceed}
+			<DoubleTap
+				doubleTap={handleDoubleTap}
 				style={[commonStyles.Container, { backgroundColor: "transparent", marginTop: insets.top }]}
 			>
-				<Swiper
-					ref={swiperRef}
-					//swipeBackCard
-					swipeAnimationDuration={80}
-					onSwiping={handleSwipeAnimation}
-					onSwiped={handleSwipeEnd}
-					onSwipedAborted={handleSwipeEnd}
-					onSwipedRight={(index) => {
-						handleSwipe({ value: 0, index });
-					}}
-					onSwipedLeft={(index) => {
-						handleSwipe({ value: 2, index });
-					}}
-					cards={shownList}
-					keyExtractor={(card) => card.UserId}
-					stackSize={2}
-					useViewOverflow={false}
-					verticalSwipe={false}
-					backgroundColor="transparent"
-					cardVerticalMargin={0}
-					stackSeparation={0}
-					renderCard={(card, idx) => {
-						return (
-							<Card
-								handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
-								card={card}
-								index={idx}
-								isBackFace={isBackFace}
-								isScrollShowed={Session.ScrollShown}
-								indexOfFrontCard={indexOfFrontCard}
-								onDoubleTap={handleDoubleTap}
-							/>
-						);
-					}}
-				/>
-				<DoubleTap singleTap={handleSingleTap} doubleTap={handleDoubleTap} delay={220} />
-			</Pressable>
+				<View style={{ marginTop: height * 0.15 }}>
+					<Swiper
+						//swipeBackCard
+						swipeAnimationDuration={80}
+						onSwiping={handleSwipeAnimation}
+						onSwiped={handleSwipeEnd}
+						onSwipedAborted={handleSwipeEnd}
+						onSwipedRight={(index) => {
+							handleSwipe({ value: 0, index });
+						}}
+						onSwipedLeft={(index) => {
+							handleSwipe({ value: 2, index });
+						}}
+						cards={peopleList}
+						keyExtractor={(card) => card.UserId}
+						stackSize={1}
+						useViewOverflow={false}
+						verticalSwipe={false}
+						backgroundColor="transparent"
+						cardVerticalMargin={0}
+						stackSeparation={0}
+						renderCard={(card, idx) => {
+							return (
+								<Card
+									card={card}
+									index={idx}
+									isBackFace={isBackFace}
+									isScrollShowed={Session.ScrollShown}
+									onDoubleTap={handleDoubleTap(face)}
+								/>
+							);
+						}}
+					/>
+					{/* <View style={styles.tutorialMessage}>
+						<Text style={styles.tutorialMessageText}>
+							{tutorialMessages[index]}
+						</Text>
+					</View> */}
+				</View>
+			</DoubleTap>
 		</View>
 	);
 }
@@ -297,4 +263,21 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontFamily: "PoppinsSemiBold",
 	},
+	tutorialMessage: {
+		maxWidth: Math.min(width * 0.65, 263),
+		width: width * 0.65,
+		left: width * 0.09,
+		top: height * 0.28,
+		color: colors.soft_red,
+		borderRadius: 10,
+		opacity: 0.75,
+		backgroundColor: colors.tutorialPurple,
+	},
+	tutorialMessageText: {
+		marginHorizontal: 15,
+		color: colors.white,
+		fontFamily: "PoppinsBold",
+		marginVertical: 10,
+		fontSize: Math.min(height * 0.028, 22),
+	}
 });

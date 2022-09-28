@@ -113,7 +113,7 @@ const Card = ({
 	};
 
 	const checkScrollNeeded = async () => {
-		if (index == indexOfFrontCard.value && !isScrollShowed && photos.length > 1) {
+		if (indexOfFrontCard && index == indexOfFrontCard.value && !isScrollShowed && photos.length > 1) {
 			scroll();
 			if (Session.ScrollNumber + 1 == 10) {
 				AsyncStorage.removeItem("scrollNotShowed");
@@ -193,7 +193,9 @@ const Card = ({
 	return (
 		// <View>
 		<DoubleTap
-			singleTap={handleSingleTap}
+			singleTap={() => {
+				handleSingleTap;
+			}}
 			doubleTap={() => {
 				if (onDoubleTap) {
 					onDoubleTap(face);
