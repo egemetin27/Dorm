@@ -36,8 +36,7 @@ import { FilterContext } from "../../contexts/filter.context";
 import { NotificationContext } from "../../contexts/notification.context";
 
 import crypto from "../../functions/crypto";
-import TutorialModal from "../modals/beginning-tutorial.modal";
-import { CustomModal } from "../../visualComponents/customComponents";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { height, width } = Dimensions.get("window");
 
@@ -209,7 +208,8 @@ const EVENT_HEADER_HEIGHT = height * 0.15;
 export default function MainPage({ navigation }) {
 	const {
 		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus, City },
-		peopleListIndex,
+		peopleListIndex, 
+		eventTutorialDone, peopleTutorialDone, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone,
 		signOut,
 		setPeopleIndex,
 	} = useContext(AuthContext);
@@ -228,10 +228,6 @@ export default function MainPage({ navigation }) {
 		return true;
 	});
 
-	// useEffect(() => {
-	// 	navigation.navigate("TutorialModal");
-	// }, []);
-
 	const scrollY = useSharedValue(0);
 
 	const [isAppReady, setIsAppReady] = useState(false);
@@ -239,21 +235,18 @@ export default function MainPage({ navigation }) {
 	const [eventList, setEventList] = useState([]);
 	const [shownEvents, setShownEvents] = useState([]);
 	const [peopleList, setPeopleList] = useState([]);
+	//const [peopleListAd, setPeopleListAd] = useState([]);
+	const [eventCard, setEventCard] = useState({adCard: true, type: "event", UserId: -1, Name: "EventAd", bigTitle: "Etkinlikler", questionTitle: "Etkinliklere birlikte gidecek kimseyi bulamamaktan sıkıldın mı?", description: "dorm’da gitmek isteyebileceğin etkinlikler keşfederken aynı zamanda seninle aynı etkinliğe gitmek isteyen insanlarla da tanışabilirsin!" });
+	const [campusGhostCard, setCampusGhostCard] = useState({adCard: true, type: "campusGhost", UserId: -2, Name: "CampusGhostAd", bigTitle: "Kampüs Hayaleti", questionTitle: "Üniversitemdeki kimse beni görmesin” mi diyorsun?", description: "Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni, sen de onları göremeyeceksin." });
+	const [mySchoolCard, setMySchoolCard] = useState({adCard: true, type: "mySchool", UserId: -3, Name: "MySchoolAd", bigTitle: "Canım Okulum", questionTitle: "Bizim kampüs bana yeter mi diyorusn? ", description: "Bu ayarı açtığında sadece okuduğun üniversitedeki kullanıcıları göreceksin." });
 	const [listEmptyMessage, setLisetEmptyMessage] = useState(
 		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
 	);
 	const peopleFlatListRef = useRef();
 	const eventsFlatListRef = useRef();
 
-	const [tutorialVisible, setTutorialVisible] = useState(true);
-
-	// useEffect(() => {
-
-	// 	navigation.navigate("TutorialModal");
-	// }, [navigation]);
-
-	// navigation.navigate("TutorialModal");
-
+	const [peopleTutShown, setPeopleTutShown] = useState(null);
+	const [eventTutShown, setEventTutShown] = useState(null);
 	// console.log(JSON.stringify(shownEvents, null, "\t"));
 
 	const handleFilterButton = () => {
@@ -276,8 +269,19 @@ export default function MainPage({ navigation }) {
 					})
 					.then((res) => {
 						const data = crypto.decrypt(res.data);
-
 						setPeopleList(data);
+						if (eventCardTutorialDone != true) {
+							data.splice(6, 0, eventCard);
+							setPeopleList(data);
+						}
+						if (campusGhostCardTutorialDone != true) {
+							data.splice(9, 0, campusGhostCard);
+							setPeopleList(data);
+						}
+						if (mySchoolCardTutorialDone != true) {
+							data.splice(12, 0, mySchoolCard);
+							setPeopleList(data);
+						}
 					})
 					.catch((err) => {
 						if (err.response) {
@@ -311,7 +315,7 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [filters, matchMode, Invisible, BlockCampus, OnlyCampus]);
+	}, [filters, matchMode, Invisible, BlockCampus, OnlyCampus, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone]);
 
 	useEffect(() => {
 		// Event list fetch
@@ -346,9 +350,16 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [eventLiked, City]);
+	}, [eventLiked, City, eventTutorialDone]);
 
 	useEffect(() => {
+		if (!peopleTutorialDone || !eventTutorialDone) {
+			AsyncStorage.getItem("Constants").then(async (res) => {
+				const list = JSON.parse(res);
+				setPeopleTutShown(list.peopleTutorialDone);
+				setEventTutShown(list.eventTutorialDone);
+			});
+		}
 		setPeopleIndex(-1);
 	}, []);
 
@@ -765,12 +776,6 @@ export default function MainPage({ navigation }) {
 					) : null
 				}
 			/>
-			{/* <CustomModal
-				visible={tutorialVisible}
-				// style={{ height: height, width: width, position: "absolute", zIndex: 100 }}
-			>
-				<TutorialModal />
-			</CustomModal> */}
 		</View>
 	);
 }

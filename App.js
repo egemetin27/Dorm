@@ -33,6 +33,7 @@ const fonts = {
 	NowBold: require("./assets/fonts/NowBold.otf"),
 	Poppins: require("./assets/fonts/Poppins.ttf"),
 	PoppinsItalic: require("./assets/fonts/PoppinsItalic.ttf"),
+	PoppinsBoldItalic: require("./assets/fonts/PoppinsBoldItalic.ttf"),
 	PoppinsSemiBold: require("./assets/fonts/PoppinsSemiBold.ttf"),
 	PoppinsBold: require("./assets/fonts/PoppinsBold.ttf"),
 	PoppinsExtraBold: require("./assets/fonts/PoppinsExtraBold.ttf"),

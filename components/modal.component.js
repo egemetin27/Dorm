@@ -11,6 +11,8 @@ import { MessageContext } from "../contexts/message.context";
 import { colors } from "../visualComponents/colors";
 import crypto from "../functions/crypto";
 import url from "../connection";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../contexts/auth.context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -26,9 +28,10 @@ const IMAGE_LIST = {
 	flag: require("../assets/flag.png"),
 };
 
+
 export default function ModalPage({ navigation, route }) {
 	const { getMessagesList } = useContext(MessageContext);
-
+	const { setpeopleTutorialDone } = useContext(AuthContext);
 	const MODAL_TYPES = {
 		UNMATCH_MODAL: {
 			image: "unmatch",
@@ -104,6 +107,104 @@ export default function ModalPage({ navigation, route }) {
 			body: route.params?.body ?? "",
 			buttons: [],
 		},
+		RIGHT_SWIPE_LIKE_MESSAGE: {
+			image: null,
+			containerStyle: {
+				width: width * 0.84,
+				height: height * 0.235,
+				paddingTop: height * 0.02,
+				paddingBottom: 0,
+				paddingLeft: width * 0.065,
+				paddingRight: width * 0.02,
+			},
+			title: "İlgileniyor musun?",
+			titleStyle: {
+				fontFamily: "PoppinsBold",
+				fontSize: width * 0.048,
+				color: "#000000",
+				textAlign: "left",
+				alignSelf: "flex-start",
+			},
+			body: "Bir kişiyi sağa kaydırmak onunla ilgilendiğin anlamına geliyor!",
+			bodyStyle: {
+				fontFamily: "Poppins",
+				fontSize: width * 0.042,
+				color: "#000000",
+				textAlign: "left",
+				alignSelf: "flex-start",
+			},
+			buttons: [{
+				text: "ANLADIM",
+				onPress: () => {
+					navigation.goBack();
+					setTimeout(() => {
+						navigation.navigate("BeginningTutorialModal", { index: 9, fromPeopleTutorial: true });
+					}, 100);
+				},
+				buttonType: "textButton",
+			}],
+			noExitButton: true,
+			dismissFunction: () => {navigation.goBack();} 
+		},
+		LEFT_SWIPE_LIKE_MESSAGE: {
+			image: null,
+			containerStyle: {
+				width: width * 0.83,
+				height: height * 0.235,
+				paddingTop: height * 0.02,
+				paddingBottom: 0,
+				paddingLeft: width * 0.065,
+				paddingRight: width * 0.02,
+			},
+			title: "İlgilenmiyor musun?",
+			titleStyle: {
+				fontFamily: "PoppinsBold",
+				fontSize: width * 0.048,
+				color: "#000000",
+				textAlign: "left",
+				alignSelf: "flex-start",
+			},
+			body: "Bir kişiyi sola kaydırmak onunla ilgilenmediğin anlamına geliyor!",
+			bodyStyle: {
+				fontFamily: "Poppins",
+				fontSize: width * 0.042,
+				color: "#000000",
+				textAlign: "left",
+				alignSelf: "flex-start",
+			},
+			buttons: [{
+				text: "ANLADIM",
+				onPress: () => {
+					const peopletutorialdone = async () => {
+						AsyncStorage.getItem("Constants").then(async (res) => {
+							const list = JSON.parse(res);
+							const toSave = { ...list, peopleTutorialDone: true };
+							await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+						});
+						setpeopleTutorialDone();
+					}
+					peopletutorialdone();
+					navigation.goBack();
+					navigation.goBack();
+				},
+				buttonType: "textButton",
+			}],
+			noExitButton: true,
+			dismissFunction: () => {
+				const peopletutorialdone = async () => {
+					AsyncStorage.getItem("Constants").then(async (res) => {
+						const list = JSON.parse(res);
+						const toSave = { ...list, peopleTutorialDone: true };
+						await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+					});
+					setpeopleTutorialDone();
+				}
+				peopletutorialdone();
+				navigation.goBack();
+				navigation.goBack();
+			} 
+		},
+
 	};
 
 	const { modalType, buttonParamsList } = {
@@ -111,7 +212,7 @@ export default function ModalPage({ navigation, route }) {
 		buttonParamsList: [],
 		...route.params,
 	};
-	const { title, body, buttons, image } = MODAL_TYPES[modalType];
+	const { title, body, buttons, image, titleStyle, noExitButton, bodyStyle, containerStyle, dismissFunction } = MODAL_TYPES[modalType];
 	const imageUrl = image ? IMAGE_LIST[image] : null;
 
 	const handleDismiss = () => {
@@ -124,21 +225,22 @@ export default function ModalPage({ navigation, route }) {
 	};
 
 	return (
-		<Pressable onPress={handleDismiss} style={styles.wrapper}>
+		<Pressable onPress={dismissFunction ?? handleDismiss} style={styles.wrapper}>
 			{/* <BlurView tint={"dark"} intensity={20} style={styles.wrapper}> */}
 			<Pressable onPress={null}>
-				<View style={styles.modal_container}>
-					<Pressable style={styles.modal_exit_button} onPress={handleDismiss}>
-						<Feather
-							style={{ color: "#9D9D9D" }}
-							name="x"
-							size={Math.min(32, width * 0.06)}
-							color="black"
-						/>
-					</Pressable>
+				<View style={[styles.modal_container, containerStyle]}>
+					{noExitButton != true &&
+						<Pressable style={styles.modal_exit_button} onPress={handleDismiss}>
+							<Feather
+								style={{ color: "#9D9D9D" }}
+								name="x"
+								size={Math.min(32, width * 0.06)}
+								color="black"
+							/>
+						</Pressable>}
 					{imageUrl && <Image source={imageUrl} style={styles.icon} />}
-					{title && <Text style={styles.title}>{title}</Text>}
-					{body && <Text style={styles.body}>{body}</Text>}
+					{title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
+					{body && <Text style={[styles.body, bodyStyle]}>{body}</Text>}
 					{buttons.map(({ buttonType, text, onPress }, index) => {
 						return (
 							<CustomButton

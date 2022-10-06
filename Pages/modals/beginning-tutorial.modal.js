@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { View, Dimensions, StyleSheet, Pressable, Text } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +8,7 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
 import CustomButton from "../../components/button.components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AuthContext } from "../../contexts/auth.context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -126,22 +127,104 @@ const POSITIONS = [
 		},
 		position: { top: height * 0.3, left: width * 0.15 },
 	},
-	// {
-	// 	Label: null,
-	// 	subText: {
-	// 		text: "Kart alanına çift dokunarak etkinlik hakkında daha fazla bilgi edinebilir, bu etkinliğe giden kişileri görebilir ve onlarla eşleşebilirsin!",
-	// 		style: { textAlign: "left", maxWidth: width * 0.7 },
-	// 	},
-	// 	position: { top: height * 0.3, left: width * 0.15 },
-	// },
-	// {
-	// 	Label: null,
-	// 	subText: {
-	// 		text: "Gitmeyi düşündüğün etkinlikleri favorilerine ekleyebilir ve daha sonra “Favorilerim” sayfasından görüntüleyebilirsin.",
-	// 		style: { textAlign: "left", maxWidth: width * 0.7 },
-	// 	},
-	// 	position: { top: height * 0.3, left: width * 0.15 },
-	// },
+	{
+		Label: null,
+		subText: {
+			text: "Kart alanına çift dokunarak etkinlik hakkında daha fazla bilgi edinebilir, bu etkinliğe giden kişileri görebilir ve onlarla eşleşebilirsin!",
+			style: {
+				marginHorizontal: 15,
+				color: colors.white,
+				fontFamily: "PoppinsBold",
+				marginVertical: 10,
+				fontSize: Math.min(height * 0.027, 21),
+			},
+			textContainer: {
+				maxWidth: Math.min(width * 0.65, 263),
+				width: width * 0.65,
+				left: width * -0.06,
+				bottom: height * 0.07,
+				color: colors.soft_red,
+				borderRadius: 10,
+				opacity: 0.75,
+				backgroundColor: colors.tutorialPurple,
+			},
+		},
+		position: { top: height * 0.3, left: width * 0.15 },
+	},
+	{
+		Label: null,
+		subText: {
+			text: "Gitmeyi düşündüğün etkinlikleri favorilerine ekleyebilir ve daha sonra Anasayfada “Favorilerim” kısmından görüntüleyebilirsin.",
+			style: {
+				marginHorizontal: 15,
+				color: colors.white,
+				fontFamily: "PoppinsBold",
+				marginVertical: 10,
+				fontSize: Math.min(height * 0.026, 20),
+			},
+			textContainer: {
+				maxWidth: Math.min(width * 0.65, 263),
+				width: width * 0.65,
+				left: width * -0.06,
+				bottom: height * 0.06,
+				color: colors.soft_red,
+				borderRadius: 10,
+				opacity: 0.75,
+				backgroundColor: colors.tutorialPurple,
+			},
+		},
+		position: { top: height * 0.3, left: width * 0.15 },
+	},
+	{
+		Label: null,
+		subText: {
+			text: "Kartın arka kısmını inceledikten sonra sağa kaydır!",
+			style: {
+				marginHorizontal: 15,
+				color: colors.white,
+				fontFamily: "PoppinsBold",
+				marginVertical: 10,
+				fontSize: Math.min(height * 0.028, 22),
+				textAlign: "center",
+			},
+			textContainer: {
+				maxWidth: Math.min(width * 0.65, 263),
+				width: width * 0.54,
+				left: width * 0.145,
+				bottom: height * -0.06,
+				color: colors.soft_red,
+				borderRadius: 10,
+				opacity: 0.75,
+				backgroundColor: colors.tutorialPurple,
+			},
+		},
+		position: { top: height * 0.3, left: width * 0.15 },
+	},
+	{
+		Label: null,
+		subText: {
+			text: "Haydi şimdi de sola kaydır!",
+			style: {
+				marginHorizontal: 15,
+				color: colors.white,
+				fontFamily: "PoppinsBold",
+				marginVertical: 10,
+				fontSize: Math.min(height * 0.028, 22),
+				textAlign: "center",
+			},
+			textContainer: {
+				maxWidth: Math.min(width * 0.65, 263),
+				width: width * 0.65,
+				left: width * -0.06,
+				bottom: height * -0.03,
+				color: colors.soft_red,
+				borderRadius: 10,
+				opacity: 0.75,
+				backgroundColor: colors.tutorialPurple,
+			},
+		},
+		position: { top: height * 0.3, left: width * 0.15 },
+	},
 ];
 
 const peopleList = [
@@ -304,54 +387,57 @@ const eventList = [
 ];
 
 export default function BeginningTutorialModal({ navigation, route }) {
-	const [index, setIndex] = React.useState(route?.params?.index ?? 0);
+	const [index, setIndex] = useState(route?.params?.index ?? 0);
+	const { seteventTutorialDone } = useContext(AuthContext);
 	const insets = useSafeAreaInsets();
 
 	const { Label, subText, position } = useMemo(() => POSITIONS[index], [index]);
 
-	const handleEnd = async () => {
-		await AsyncStorage.getItem("Constants").then(async (res) => {
-			const list = JSON.parse(res);
-			const toSave = { ...list, tutorialShown: true };
-			await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
-		});
-		// await AsyncStorage.setItem("tutorialShown", "yes");
-		navigation.replace("MainScreen");
-	};
+	// const handleEnd = async () => {
+	// 	await AsyncStorage.getItem("Constants").then(async (res) => {
+	// 		const list = JSON.parse(res);
+	// 		const toSave = { ...list, tutorialShown: true };
+	// 		await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+	// 	});
+	// 	// await AsyncStorage.setItem("tutorialShown", "yes");
+	// 	navigation.replace("MainScreen");
+	// };
 
 	const handleProceed = () => {
-		if (index == 4 && route.params.fromPeopleTutorial == true) navigation.navigate("PeopleTutorialModal", { index: 3, peopleTextTutorialDone: true });
-
-		if (index === POSITIONS.length - 1) {
-			navigation.replace("MainScreen");
-			return;
-		}
-
 		if (index === 2) {
 			navigation.replace("ProfileCards", {
 				idx: 0,
 				list: peopleList,
-				// isTutorial: true,
 				isTutorial: false,
 			});
 		}
-		// if (index === 4) {
-		// 	navigation.replace("EventCards", {
-		// 		idx: 0,
-		// 		list: eventList,
-		// 		isTutorial: false,
-		// 		// isTutorial: true,
-		// 	});
-		// }
-		// if (index === 5) {
-		// 	navigation.replace("MainScreen");
-		// }
-
+		if (index == 4 && route.params.fromPeopleTutorial == true) { 
+			navigation.navigate("PeopleTutorialModal", { peopleTextTutorialDone: true }); 
+			return; 
+		}
+		if (index == 7) {
+			const eventtutorialdone = async () => {
+				await AsyncStorage.getItem("Constants").then(async (res) => {
+					const list = JSON.parse(res);
+					const toSave = { ...list, eventTutorialDone: true };
+					await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+				});
+			}
+			eventtutorialdone();
+			seteventTutorialDone();
+			navigation.goBack();
+			return;
+		}
+		if (index == 8 || index == 9) { navigation.goBack(); return; }
+		if (index === POSITIONS.length - 1) {
+			navigation.replace("MainScreen");
+			return;
+		}
 		setIndex(index + 1);
 	};
 
 	return (
-		<View style={styles.wrapper}>
+		<View style={[styles.wrapper, { height: height + insets.top }]}>
 			<StatusBar />
 			<Pressable
 				onPress={handleProceed}

@@ -28,6 +28,7 @@ import { Feather } from "@expo/vector-icons";
 
 import CustomButton from "../../components/button.components";
 import Card from "../../components/person-card-big.component";
+import AdCard from "../../components/ad-card-big.component";
 import { CustomModal } from "../../visualComponents/customComponents";
 import { colors } from "../../visualComponents/colors";
 import commonStyles from "../../visualComponents/styles";
@@ -41,6 +42,7 @@ import { Session } from "../../nonVisualComponents/SessionVariables";
 import { AuthContext } from "../../contexts/auth.context";
 
 import useBackHandler from "../../hooks/useBackHandler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -55,9 +57,10 @@ const REPORT_REASONS = {
 
 export default function ProfileCards({ navigation, route }) {
 	const {
-		user: { userId, matchMode, sesToken, Photo },
+		user: { userId, matchMode, sesToken, Photo, peopleTutorialShown },
 		peopleListIndex,
 		setPeopleIndex,
+		peopleTutorialDone,
 		signOut,
 		updateProfile,
 	} = useContext(AuthContext);
@@ -65,7 +68,7 @@ export default function ProfileCards({ navigation, route }) {
 	const swiperRef = useRef();
 	const destination = useSharedValue(0);
 
-	const { list, idx, fromEvent = false, isTutorial = true } = route.params;
+	const { list, idx, fromEvent = false } = route.params;
 	const eventId = route.params.eventID ?? 0;
 	const eventName = route.params.eventName ?? "";
 	const myProfilePicture = Photo[0].PhotoLink ?? "";
@@ -77,8 +80,27 @@ export default function ProfileCards({ navigation, route }) {
 	const x = useSharedValue(0);
 
 	useEffect(() => {
-		if (isTutorial) {
-			navigation.navigate("PeopleTutorialModal", { index: 3 });
+		const getTutorialShown = async () => {
+			await AsyncStorage.getItem("Constants").then((res) => {
+				if (JSON.parse(res).tutorialShown == true) {
+					setTimeout(() => {
+						navigation.navigate("PeopleTutorialModal", { index: 3 });
+					}, 200);
+				}
+			});
+			// await AsyncStorage.getItem("Constants").then(async (res) => {
+			// 	const list = JSON.parse(res);
+			// 	if (list.people.peopleTutorialShown == true) return;
+			// 	const toSave = { ...list, peopleTutorialShown: true };
+			// 	await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+			// });
+		};
+		
+		//getTutorialShown();
+		if (peopleTutorialDone != true) {
+			setTimeout(() => {
+				navigation.navigate("PeopleTutorialModal", { index: 3 });
+			}, 200);
 		}
 	}, []);
 
@@ -178,9 +200,8 @@ export default function ProfileCards({ navigation, route }) {
 		// setPeopleIndex(index + peopleListIndex);
 		isBackFace.value = false;
 		console.log("\nUSER SWIPED: " + shownList[index].UserId + " " + shownList[index].Name + "\n");
-		setPeopleIndex(idx + peopleListIndex);
-		// console.log(value == 0 ? "liked:" : "disliked:");
-		// console.log(shownList[index]);
+		if (shownList[index].adCard != true) setPeopleIndex(idx + peopleListIndex);
+
 		const likeDislike = crypto.encrypt({
 			isLike: value,
 			userSwiped: userId,
@@ -331,7 +352,7 @@ export default function ProfileCards({ navigation, route }) {
 						marginTop: height * 0.05,
 					}}
 				>
-					<View
+					{/* <View
 						style={[
 							{
 								width: "100%",
@@ -343,10 +364,10 @@ export default function ProfileCards({ navigation, route }) {
 							},
 						]}
 					>
-						{/* <Text style={{ fontSize: normalize(18), color: colors.medium_gray, letterSpacing: 1 }}>
+						<Text style={{ fontSize: normalize(18), color: colors.medium_gray, letterSpacing: 1 }}>
 							Yeni kişiler aranıyor...
-						</Text> */}
-					</View>
+						</Text>
+					</View> */}
 					<Swiper
 						ref={swiperRef}
 						//swipeBackCard
@@ -360,6 +381,7 @@ export default function ProfileCards({ navigation, route }) {
 						onSwipedLeft={(index) => {
 							handleSwipe({ value: 2, index });
 						}}
+						onSwipedAll={() => { navigation.navigate("ListEndedModal"); }}
 						cards={shownList}
 						keyExtractor={(card) => card.UserId}
 						stackSize={2}
@@ -369,6 +391,13 @@ export default function ProfileCards({ navigation, route }) {
 						cardVerticalMargin={0}
 						stackSeparation={0}
 						renderCard={(card, idx) => {
+							if (card.adCard == true) {
+								return (
+									<AdCard
+										card={card}
+									/>
+								);
+							}
 							return (
 								<Card
 									handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
@@ -381,6 +410,7 @@ export default function ProfileCards({ navigation, route }) {
 							);
 						}}
 					/>
+
 					{/* {shownList.map((item, index) => {
 						return (
 							<Card2

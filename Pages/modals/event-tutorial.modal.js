@@ -176,42 +176,21 @@ export default function EventTutorialModal({ navigation, route }) {
 
 	const { Label, subText, position } = useMemo(() => POSITIONS[index], [index]);
 
-	const handleEnd = async () => {
-		await AsyncStorage.getItem("Constants").then(async (res) => {
-			const list = JSON.parse(res);
-			const toSave = { ...list, tutorialShown: true };
-			await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
-		});
-		// await AsyncStorage.setItem("tutorialShown", "yes");
-		navigation.replace("MainScreen");
-	};
+	// const handleEnd = async () => {
+	// 	await AsyncStorage.getItem("Constants").then(async (res) => {
+	// 		const list = JSON.parse(res);
+	// 		const toSave = { ...list, tutorialShown: true };
+	// 		await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+	// 	});
+	// 	// await AsyncStorage.setItem("tutorialShown", "yes");
+	// 	navigation.replace("MainScreen");
+	// };
 
 	const handleProceed = () => {
 		if (index === POSITIONS.length - 1) {
 			navigation.replace("MainScreen");
 			return;
 		}
-
-		if (index === 2) {
-			navigation.replace("ProfileCards", {
-				idx: 0,
-				list: peopleList,
-				// isTutorial: true,
-				isTutorial: false,
-			});
-		}
-		// if (index === 4) {
-		// 	navigation.replace("EventCards", {
-		// 		idx: 0,
-		// 		list: eventList,
-		// 		isTutorial: false,
-		// 		// isTutorial: true,
-		// 	});
-		// }
-		// if (index === 5) {
-		// 	navigation.replace("MainScreen");
-		// }
-
 		setIndex((oldValue) => oldValue + 1);
 	};
 

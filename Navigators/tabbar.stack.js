@@ -114,6 +114,3 @@ function Tabbar({ route, navigation }) {
 
 export default Tabbar;
 
-const styles = StyleSheet.create({
-	container: {},
-});

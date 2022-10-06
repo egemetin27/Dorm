@@ -56,6 +56,7 @@ export default function Register({ navigation }) {
 
 		const profile = {
 			mail: trimmedMail,
+			mailKey: university.mailExt,
 			name: fName,
 			surName: lName,
 			city: city.choice,

@@ -10,12 +10,13 @@ const BUTTON_TYPES = {
 	transparent: "transparent",
 	white: "white",
 	white_selected: "white_selected",
+	textButton: "textButton",
 };
 
 const CustomButton = ({
 	text = "",
 	buttonType = "gradient",
-	onPress = () => {},
+	onPress = () => { },
 	positioning = { marginTop: 10, marginBottom: 0 },
 	style = {},
 	...props
@@ -25,6 +26,23 @@ const CustomButton = ({
 	const pressHandler = () => {
 		onPress();
 	};
+
+	if (type == "textButton") {
+		return (
+			<View style={[positioning, { marginTop: 0}]}>
+				<Pressable {...props} style={[styles.base, style]} onPress={pressHandler}>
+					{type == BUTTON_TYPES.inverted ? (
+						<GradientText style={[{ fontFamily: "PoppinsSemiBold" }, style]} text={text} />
+					) : (
+						<Text style={[styles.base_text, style, { fontFamily: "PoppinsSemiBold", color: "#4136EC", fontSize: width * 0.042,
+						width: "40%", flexDirection:"row",
+						alignSelf: "flex-end", 
+						textAlign: "right", justifyContent: null, }]}>{text}</Text>
+					)}
+				</Pressable>
+			</View>
+		);
+	}
 
 	if (type == BUTTON_TYPES.gradient || type == BUTTON_TYPES.white_selected) {
 		return (

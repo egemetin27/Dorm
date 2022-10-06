@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -8,6 +8,7 @@ import {
 	//Animated,
 	TouchableOpacity,
 	Image,
+	Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import {
@@ -47,7 +48,7 @@ import TapIndicator from "./tap-indicator.component";
 
 const { height, width } = Dimensions.get("window");
 
-const Card = ({
+const CardTutorial = ({
 	card,
 	index,
 	isBackFace,
@@ -55,6 +56,7 @@ const Card = ({
 	indexOfFrontCard,
 	handleReportButton,
 	onDoubleTap,
+	//showTapIndicator
 }) => {
 	const { getDiet, getGender, getSign, getSmokeAndDrinkList } = useContext(ListsContext);
 	//const navigation = useNavigation();
@@ -63,17 +65,9 @@ const Card = ({
 	const [age, setAge] = useState(getAge(bDay));
 	const [sortedPhotos, setSortedPhotos] = useState(sort(photos, "Photo_Order"));
 
+	const [showTapIndicator, setShowTapIndicator] = useState(true);
 	const [backFace, setBackFace] = useState(false);
-	// const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
-	// 	Gender: { label: "Cinsiyet", function: (idx) => genderList[idx].choice },
-	// 	Burc: { label: "Burç", function: (idx) => signList[idx].choice },
-	// 	Sigara: { label: "Sigara Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
-	// 	Alkol: { label: "Alkol Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
-	// 	Beslenme: { label: "Beslenme Tercihi", function: (idx) => dietList[idx].choice },
-	// 	interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
-	// 	About: { label: "Hakkında", function: (val) => getInterests(val) },
-	// 	// Din: { label: "Dini İnanç", function: (val) => val },
-	// });
+	
 	const BACK_FACE_FIELDS = useRef({
 		Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
 		Burc: { label: "Burç", function: (idx) => getSign(idx) },
@@ -89,14 +83,6 @@ const Card = ({
 	const face = useSharedValue(1); // 1 => front, -1 => back
 
 	const photoListRef = useRef();
-
-	// const handleReportButton = () => {
-	// 	// jumpToNext();
-	// 	// navigation.navigate("ReportModal", {
-	// 	// 	name,
-	// 	// 	id: card.UserId,
-	// 	// });
-	// };
 
 	const handleSingleTap = () => {
 		if (face.value === -1 || !photoListRef.current) return;
@@ -198,6 +184,8 @@ const Card = ({
 			doubleTap={() => {
 				if (onDoubleTap) {
 					onDoubleTap(face);
+					setShowTapIndicator(false);
+					//showTapIndicator = false;	
 					return;
 				}
 				handleDoubleTap();
@@ -405,11 +393,16 @@ const Card = ({
 							</View>
 						</Reanimated.View>
 					</LinearGradient>
+					{showTapIndicator && index == 0 &&
+						<View style={styles.tapIndicator}>
+							<TapIndicator />
+						</View> 
+					}
 				</Reanimated.View>
 				{/* Front Face End */}
 
 				{/* Back Face Start */}
-				{backFace && (
+				
 					<Reanimated.View
 						style={[
 							card_style,
@@ -471,20 +464,17 @@ const Card = ({
 							}}
 						/>
 					</Reanimated.View>
-				)}
+				
 				{/* Back Face End */}
+				
 			</View>
-			{/* {showTapIndicator &&
-						<View style={styles.tapIndicator}>
-							<TapIndicator />
-						</View> 
-					} */}
+			
 		</DoubleTap>
 		// {/* </View> */}
 	);
 };
 
-export default Card;
+export default CardTutorial;
 
 const styles = StyleSheet.create({
 	backfaceHidden: {
@@ -494,6 +484,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		top: height * 0.3,
 		color: colors.soft_red,
+		position: "absolute",
 	},
 });
 

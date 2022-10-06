@@ -809,9 +809,17 @@ const Card = ({ event, user, signOut }) => {
 };
 
 export default function EventCards({ navigation, route }) {
-	const { user, signOut } = useContext(AuthContext);
+	const { user, signOut, eventTutorialDone } = useContext(AuthContext);
 
 	const { idx, list } = route.params;
+
+	useEffect(() => {
+		if (!eventTutorialDone) {
+			setTimeout(() => {
+				navigation.navigate("BeginningTutorialModal", { index: 6 });
+			}, 200);
+		}
+	}, []);
 
 	useEffect(() => {
 		const backhandler = async () => {
@@ -922,5 +930,3 @@ export default function EventCards({ navigation, route }) {
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({});

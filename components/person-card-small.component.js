@@ -18,6 +18,7 @@ const PersonCard = ({ person, openProfiles, index, length }) => {
 		Major: major,
 		photos: photoList,
 	} = person;
+	if (name == "EventAd" || name == "CampusGhostAd" || name == "MySchoolAd") return (<View></View>);
 	const firstPhoto = photoList.find(({ Photo_Order }) => {
 		return Photo_Order.toString() === "1";
 	});

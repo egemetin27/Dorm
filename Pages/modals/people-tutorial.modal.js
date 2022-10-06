@@ -14,6 +14,7 @@ import DoubleTap from "../../components/double-tap.component";
 import Card from "../../components/person-card-big.component";
 import Swiper from "react-native-deck-swiper";
 import TapIndicator from "../../components/tap-indicator.component";
+import CardTutorial from "../../components/persontutorial-card-big.component";
 
 const { height, width } = Dimensions.get("window");
 
@@ -67,36 +68,106 @@ const peopleList = [
 			},
 		],
 	},
+	{
+		Name: "Memo",
+		City: "İstanbul",
+		Birth_Date: "2001-09-22",
+		UserId: 11188,
+		Gender: 2,
+		Surname: "güsnel",
+		School: "Boğaziçi Üniversitesi",
+		Major: null,
+		Din: null,
+		Burc: null,
+		Beslenme: null,
+		Alkol: null,
+		Sigara: null,
+		About: null,
+		photos: [
+			{
+				UserId: 11188,
+				Photo_Order: 1,
+				PhotoLink: "https://d13pzveje1c51z.cloudfront.net/736ff14fda7cdf1a076331383ca3a016",
+			},
+		],
+		interest: [
+			{
+				InterestName: "☕ Kahve",
+				UserId: 11188,
+			},
+			{
+				InterestName: "🎸 Müzik",
+				UserId: 11188,
+			},
+			{
+				InterestName: "🎹 Klasik",
+				UserId: 11188,
+			},
+			{
+				InterestName: "🏳️‍🌈 LGBTQ+ destekçi",
+				UserId: 11188,
+			},
+			{
+				InterestName: "🥬 Vejetaryen",
+				UserId: 11188,
+			},
+		],
+	},
 ];
 
 export default function PeopleTutorialModal({ navigation, route }) {
-	const [index, setIndex] = useState(0);
-	const [showTapIndicator, setShowTapIndicator] = useState(false);
+	const [firstSwipeRight, setFirstSwipeRight] = useState(false);
+	const [firstSwipeLeft, setFirstSwipeLeft] = useState(false);
+
+	const [index, setIndex] = useState(-1);
+	//const [showTapIndicator, setShowTapIndicator] = useState(false);
 	const insets = useSafeAreaInsets();
 
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
-	const face = useSharedValue(1);
+	//const face = useSharedValue(1);
 
 	useEffect(() => {
-		setShowTapIndicator(route.params.peopleTextTutorialDone == true);
-		console.log("YES");
-	}, [route.params.peopleTextTutorialDone]);
+		setTimeout(() => {
+			navigation.navigate("BeginningTutorialModal", { index: 3, fromPeopleTutorial: true });
+		}, 50);
+	}, []);
+
+	// useEffect(() => {
+	// 	if (route.params.peopleTextTutorialDone == true) setShowTapIndicator(true);
+	// }, [route]);
+
+	// useEffect(() => {
+	// 	setTimeout(() => {
+	// 		setShowTapIndicator(route.params.peopleTextTutorialDone == true);
+	// 	}, 100);
+
+	// }, [route.params.peopleTextTutorialDone]);
+
+	useEffect(() => {
+		if (firstSwipeLeft) navigation.navigate("CustomModal", { modalType: "LEFT_SWIPE_LIKE_MESSAGE" });
+	}, [firstSwipeLeft]);
+
+	useEffect(() => {
+		if (firstSwipeRight) navigation.navigate("CustomModal", { modalType: "RIGHT_SWIPE_LIKE_MESSAGE" });
+	}, [firstSwipeRight]);
 
 	const handleEnd = async () => {
 		await AsyncStorage.getItem("Constants").then(async (res) => {
 			const list = JSON.parse(res);
+			//console.log(JSON.stringify(list, null, "\t"));
 			const toSave = { ...list, tutorialShown: true };
 			await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
 		});
 		// await AsyncStorage.setItem("tutorialShown", "yes");
-		navigation.replace("MainScreen");
+		//navigation.replace("MainScreen");
 	};
 
-	const handleSwipe = ({ value, index }) => {
+	const handleSwipe = ({ value, index, likeTutorial }) => {
 		isBackFace.value = false;
 		console.log("\nTUTORIAL USER SWIPED: " + peopleList[index].UserId + " " + peopleList[index].Name + "\n");
-		navigation.goBack();
+		if (index == 1) handleEnd();
+		setIndex(index + 1);
 	};
 
 	const handleSwipeAnimation = (event) => {
@@ -105,71 +176,73 @@ export default function PeopleTutorialModal({ navigation, route }) {
 
 	const handleSwipeEnd = () => {
 		x.value = 0;
-		// x.value = withTiming(0);
 	};
 
 	const handleDoubleTap = (face) => {
-		setShowTapIndicator(false);
 		setTimeout(() => {
 			face.value = withTiming(-face.value);
 		}, 100);
 		isBackFace.value = !isBackFace.value;
+		if (index == -1) {
+			setIndex(index+1);
+			setTimeout(() => {
+				navigation.navigate("BeginningTutorialModal", { index: 8, fromPeopleTutorial: true });
+			}, 150);
+		}
+		//setShowTapIndicator(false);
 	};
-
-	useEffect(() => {
-		setTimeout(() => {
-			navigation.navigate("BeginningTutorialModal", { index: 3, fromPeopleTutorial: true });
-		}, 200);
-	}, []);
 
 	return (
 		<View style={styles.wrapper}>
 			<StatusBar />
-			<DoubleTap
-				doubleTap={handleDoubleTap}
-				style={[commonStyles.Container, { backgroundColor: "transparent", marginTop: insets.top }]}
-			>
-				<View style={{ marginTop: height * 0.15 }}>
-					<Swiper
-						//swipeBackCard
-						swipeAnimationDuration={80}
-						onSwiping={handleSwipeAnimation}
-						onSwiped={handleSwipeEnd}
-						onSwipedAborted={handleSwipeEnd}
-						onSwipedRight={(index) => {
-							handleSwipe({ value: 0, index });
-						}}
-						onSwipedLeft={(index) => {
-							handleSwipe({ value: 2, index });
-						}}
-						cards={peopleList}
-						keyExtractor={(card) => card.UserId}
-						stackSize={1}
-						useViewOverflow={false}
-						verticalSwipe={false}
-						backgroundColor="transparent"
-						cardVerticalMargin={0}
-						stackSeparation={0}
-						renderCard={(card, idx) => {
-							return (
-								<Card
-									card={card}
-									index={idx}
-									isBackFace={isBackFace}
-									isScrollShowed={Session.ScrollShown}
-									onDoubleTap={handleDoubleTap(face)}
-								/>
-							);
-						}}
-					/>
-					{(showTapIndicator === true) ?
-						<View style={styles.tapIndicator}>
-							<TapIndicator />
-						</View> :
-						<View></View>
-					}
-				</View>
-			</DoubleTap>
+			<View style={{ marginTop: height * 0.12 + insets.top }}>
+				<Swiper
+					swipeAnimationDuration={80}
+					disableLeftSwipe={index == 0 || index == -1}
+					disableRightSwipe={index == 1 || index == -1}
+					onSwiping={handleSwipeAnimation}
+					onSwiped={handleSwipeEnd}
+					onSwipedAborted={handleSwipeEnd}
+					onSwipedRight={(index) => {
+						handleSwipe({ value: 0, index, setFirstSwipeRight });
+						setFirstSwipeRight(true);						
+					}}
+					onSwipedLeft={(index) => {
+						handleSwipe({ value: 2, index, setFirstSwipeLeft });
+						setFirstSwipeLeft(true);
+					}}
+					cards={peopleList}
+					keyExtractor={(card) => card.UserId}
+					stackSize={2}
+					useViewOverflow={false}
+					verticalSwipe={false}
+					backgroundColor="transparent"
+					cardVerticalMargin={0}
+					stackSeparation={0}
+					renderCard={(card, idx) => {
+						// if (showTapIndicator == true) {
+						// 	return(<CardTutorial
+						// 		card={{...card, Name: "hasan"}}
+						// 		index={idx}
+						// 		isBackFace={isBackFace}
+						// 		isScrollShowed={Session.ScrollShown}
+						// 		onDoubleTap={handleDoubleTap}
+						// 		showTapIndicator={showTapIndicator}
+						// 	/>);
+						// }
+						return (
+							<CardTutorial
+								card={card}
+								index={idx}
+								isBackFace={isBackFace}
+								isScrollShowed={Session.ScrollShown}
+								onDoubleTap={handleDoubleTap}
+								//showTapIndicator={showTapIndicator}
+							/>
+						);
+					}}
+				/>
+			</View>
 		</View>
 	);
 }
@@ -177,7 +250,7 @@ export default function PeopleTutorialModal({ navigation, route }) {
 const styles = StyleSheet.create({
 	wrapper: {
 		width: "100%",
-		height: height,
+		height: "100%",
 		backgroundColor: "rgba(0,0,0,0.5)",
 	},
 	label: {
