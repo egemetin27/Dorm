@@ -322,7 +322,7 @@ export default function MainPage({ navigation }) {
 
 		const eventlike = async () => {
 			try {
-				const eventListData = crypto.encrypt({ userId: userId, campus: School, city: City });
+				const eventListData = crypto.encrypt({ userId: userId, kampus: School, city: City });
 				await axios
 					.post(url + "/lists/EventList", eventListData, {
 						headers: { "access-token": sesToken },
