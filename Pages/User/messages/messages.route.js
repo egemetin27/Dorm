@@ -12,10 +12,11 @@ import { AuthContext } from "../../../contexts/auth.context";
 
 //import { sort } from "../../../utils/array.utils";
 import { useFocusEffect } from "@react-navigation/native";
+import useBackHandler from "../../../hooks/useBackHandler";
 
 const { width, height } = Dimensions.get("screen");
 
-const Messages = ({ route }) => {
+const Messages = ({ navigation, route }) => {
 	const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
 	const { matchesList, getLastMessage, getMessagesList, unreadChatIDS } =
@@ -29,6 +30,8 @@ const Messages = ({ route }) => {
 	const unreadInFriend = matchesList["1"].nonEmptyChats.some(({ MatchId }) => {
 		return unreadChatIDS.includes(MatchId.toString());
 	});
+
+	useBackHandler(() => navigation.goBack());
 
 	useFocusEffect(
 		useCallback(() => {

@@ -388,7 +388,7 @@ const eventList = [
 
 export default function BeginningTutorialModal({ navigation, route }) {
 	const [index, setIndex] = useState(route?.params?.index ?? 0);
-	const { seteventTutorialDone } = useContext(AuthContext);
+	const { seteventTutorialDone, setmainPageTutorialDone } = useContext(AuthContext);
 	const insets = useSafeAreaInsets();
 
 	const { Label, subText, position } = useMemo(() => POSITIONS[index], [index]);
@@ -404,12 +404,22 @@ export default function BeginningTutorialModal({ navigation, route }) {
 	// };
 
 	const handleProceed = () => {
-		if (index === 2) {
-			navigation.replace("ProfileCards", {
-				idx: 0,
-				list: peopleList,
-				isTutorial: false,
+		// if (index === 2) {
+		// 	navigation.replace("ProfileCards", {
+		// 		idx: 0,
+		// 		list: peopleList,
+		// 		isTutorial: false,
+		// 	});
+		// }
+		if (index == 2) {
+			AsyncStorage.getItem("Constants").then(async (res) => {
+				const list = JSON.parse(res);
+				const toSave = { ...list, mainPageTutorialDone: true };
+				await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
 			});
+			setmainPageTutorialDone();
+			navigation.goBack();
+			return;
 		}
 		if (index == 4 && route.params.fromPeopleTutorial == true) { 
 			navigation.navigate("PeopleTutorialModal", { peopleTextTutorialDone: true }); 

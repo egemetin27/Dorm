@@ -79,6 +79,8 @@ export default function ProfileCards({ navigation, route }) {
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
 
+	useBackHandler(() => navigation.goBack());
+
 	useEffect(() => {
 		const getTutorialShown = async () => {
 			await AsyncStorage.getItem("Constants").then((res) => {

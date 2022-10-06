@@ -209,7 +209,7 @@ export default function MainPage({ navigation }) {
 	const {
 		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus, City },
 		peopleListIndex, 
-		eventTutorialDone, peopleTutorialDone, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone,
+		mainPageTutorialDone, eventTutorialDone, peopleTutorialDone, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone,
 		signOut,
 		setPeopleIndex,
 	} = useContext(AuthContext);
@@ -245,8 +245,7 @@ export default function MainPage({ navigation }) {
 	const peopleFlatListRef = useRef();
 	const eventsFlatListRef = useRef();
 
-	const [peopleTutShown, setPeopleTutShown] = useState(null);
-	const [eventTutShown, setEventTutShown] = useState(null);
+	//const [eventTutShown, setEventTutShown] = useState(null);
 	// console.log(JSON.stringify(shownEvents, null, "\t"));
 
 	const handleFilterButton = () => {
@@ -353,12 +352,17 @@ export default function MainPage({ navigation }) {
 	}, [eventLiked, City, eventTutorialDone]);
 
 	useEffect(() => {
-		if (!peopleTutorialDone || !eventTutorialDone) {
-			AsyncStorage.getItem("Constants").then(async (res) => {
-				const list = JSON.parse(res);
-				setPeopleTutShown(list.peopleTutorialDone);
-				setEventTutShown(list.eventTutorialDone);
-			});
+		// if (!peopleTutorialDone || !eventTutorialDone) {
+		// 	AsyncStorage.getItem("Constants").then(async (res) => {
+		// 		const list = JSON.parse(res);
+		// 		setPeopleTutShown(list.peopleTutorialDone);
+		// 		setEventTutShown(list.eventTutorialDone);
+		// 	});
+		// }
+		if (!mainPageTutorialDone) {
+			setTimeout(() => {
+				navigation.navigate("BeginningTutorialModal", { index: 0 });
+			}, 100);
 		}
 		setPeopleIndex(-1);
 	}, []);
