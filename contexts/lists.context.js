@@ -12,6 +12,8 @@ export const ListsContext = createContext({
 const ListsProvider = ({ children }) => {
 	const [lists, setLists] = useState({});
 
+	// console.log(JSON.stringify(lists, null, "\t"));
+
 	const updateLists = useCallback((newListItems) => {
 		setLists((oldLists) => ({
 			...oldLists,

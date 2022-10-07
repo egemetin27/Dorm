@@ -176,7 +176,7 @@ export default function StackNavigator() {
 						<Stack.Screen name="Register" component={Register} />
 						<Stack.Screen name="RMahremiyetPolitikasi" component={RMahremiyetPolitikasi} />
 						<Stack.Screen name="RKullaniciSozlesmesi" component={RKullaniciSozlesmesi} />
-						<Stack.Screen name="RToplulukKurallari" component={RToplulukKurallari} />
+						{/* <Stack.Screen name="RToplulukKurallari" component={RToplulukKurallari} /> */}
 						<Stack.Screen name="Verification" component={Verification} />
 						<Stack.Screen name="Verification2" component={Verification2} />
 						<Stack.Screen name="FirstPassword" component={FirstPassword} />
@@ -187,6 +187,7 @@ export default function StackNavigator() {
 						<Stack.Screen name="Hobbies" component={Hobbies} />
 					</Stack.Group>
 				)}
+				{/* <Stack.Group name="Common-Pages" screenOptions={{ headerShown: false }}></Stack.Group> */}
 
 				<Stack.Group name={"Modals"} screenOptions={{ headerShown: false }}>
 					<Stack.Screen

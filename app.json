@@ -24,7 +24,7 @@
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 96,
+			"versionCode": 97,
 			"permissions": ["android.permission.RECORD_AUDIO"]
 		},
 		"web": {

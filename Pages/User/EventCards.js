@@ -78,7 +78,7 @@ const Card = ({ event, user, signOut }) => {
 	const navigation = useNavigation();
 
 	const [favFlag, setFavFlag] = useState(isLiked == 1 ? true : false);
-	const [likeEventModal, setLikeEventModal] = useState(false);
+	// const [likeEventModal, setLikeEventModal] = useState(false);
 	const [seeWhoLikedModal, setSeeWhoLikedModal] = useState(false);
 	//const [backfaceIndex, setBackfaceIndex] = useState(0);
 	const { setEventLike } = useContext(NotificationContext);
@@ -159,8 +159,8 @@ const Card = ({ event, user, signOut }) => {
 			});
 	};
 
-	const likeEvent = async (likeMode) => {
-		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: likeMode });
+	const likeEvent = async () => {
+		const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, likeMode: 1 });
 		await axios
 			.post(url + "/userAction/likeEvent", encryptedData, {
 				headers: { "access-token": user.sesToken },
@@ -647,7 +647,7 @@ const Card = ({ event, user, signOut }) => {
 					</Animated.View>
 				</Animated.View>
 			</GestureDetector>
-			<CustomModal
+			{/* <CustomModal
 				visible={likeEventModal}
 				dismiss={() => {
 					setLikeEventModal(false);
@@ -739,7 +739,7 @@ const Card = ({ event, user, signOut }) => {
 						</View>
 					</View>
 				</Gradient>
-			</CustomModal>
+			</CustomModal> */}
 			<CustomModal
 				visible={seeWhoLikedModal}
 				dismiss={() => {
@@ -788,8 +788,9 @@ const Card = ({ event, user, signOut }) => {
 					<View style={{ width: "70%", marginTop: 20 }}>
 						<ReactNative.TouchableOpacity
 							onPress={() => {
+								// likeEvent()
+								handleLikeButton();
 								setSeeWhoLikedModal(false);
-								setLikeEventModal(true);
 							}}
 							style={{
 								paddingVertical: 10,
