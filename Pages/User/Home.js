@@ -208,7 +208,7 @@ const EVENT_HEADER_HEIGHT = height * 0.15;
 export default function MainPage({ navigation }) {
 	const {
 		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus, City },
-		peopleListIndex, 
+		peopleListIndex,
 		mainPageTutorialDone, eventTutorialDone, peopleTutorialDone, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone,
 		signOut,
 		setPeopleIndex,
@@ -236,9 +236,9 @@ export default function MainPage({ navigation }) {
 	const [shownEvents, setShownEvents] = useState([]);
 	const [peopleList, setPeopleList] = useState([]);
 	//const [peopleListAd, setPeopleListAd] = useState([]);
-	const [eventCard, setEventCard] = useState({adCard: true, type: "event", UserId: -1, Name: "EventAd", bigTitle: "Etkinlikler", questionTitle: "Etkinliklere birlikte gidecek kimseyi bulamamaktan sıkıldın mı?", description: "dorm’da gitmek isteyebileceğin etkinlikler keşfederken aynı zamanda seninle aynı etkinliğe gitmek isteyen insanlarla da tanışabilirsin!" });
-	const [campusGhostCard, setCampusGhostCard] = useState({adCard: true, type: "campusGhost", UserId: -2, Name: "CampusGhostAd", bigTitle: "Kampüs Hayaleti", questionTitle: "Üniversitemdeki kimse beni görmesin” mi diyorsun?", description: "Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni, sen de onları göremeyeceksin." });
-	const [mySchoolCard, setMySchoolCard] = useState({adCard: true, type: "mySchool", UserId: -3, Name: "MySchoolAd", bigTitle: "Canım Okulum", questionTitle: "Bizim kampüs bana yeter mi diyorusn? ", description: "Bu ayarı açtığında sadece okuduğun üniversitedeki kullanıcıları göreceksin." });
+	const [eventCard, setEventCard] = useState({ adCard: true, type: "event", UserId: -1, Name: "EventAd", bigTitle: "Etkinlikler", questionTitle: "Etkinliklere birlikte gidecek kimseyi bulamamaktan sıkıldın mı?", description: "dorm’da gitmek isteyebileceğin etkinlikler keşfederken aynı zamanda seninle aynı etkinliğe gitmek isteyen insanlarla da tanışabilirsin!" });
+	const [campusGhostCard, setCampusGhostCard] = useState({ adCard: true, type: "campusGhost", UserId: -2, Name: "CampusGhostAd", bigTitle: "Kampüs Hayaleti", questionTitle: "Üniversitemdeki kimse beni görmesin” mi diyorsun?", description: "Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni, sen de onları göremeyeceksin." });
+	const [mySchoolCard, setMySchoolCard] = useState({ adCard: true, type: "mySchool", UserId: -3, Name: "MySchoolAd", bigTitle: "Canım Okulum", questionTitle: "Bizim kampüs bana yeter mi diyorusn? ", description: "Bu ayarı açtığında sadece okuduğun üniversitedeki kullanıcıları göreceksin." });
 	const [listEmptyMessage, setLisetEmptyMessage] = useState(
 		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
 	);
@@ -453,15 +453,22 @@ export default function MainPage({ navigation }) {
 						},
 					]}
 				>
-					<GradientText
-						text={"Kişiler"}
-						style={{
-							fontSize: Math.min(height * 0.035, 35),
-							fontFamily: "NowBold",
-							letterSpacing: 1.2,
-							marginLeft: 20,
-						}}
-					/>
+					<Pressable onPress={() => {
+						navigation.navigate("ProfileCards", {
+							idx: 0,
+							list: peopleList.slice(peopleListIndex, 45),
+						});
+					}}>
+						<GradientText
+							text={"Kişiler"}
+							style={{
+								fontSize: Math.min(height * 0.035, 35),
+								fontFamily: "NowBold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+					</Pressable>
 					<View style={{ marginRight: 14 }}>
 						<TouchableOpacity
 							style={{
@@ -536,15 +543,24 @@ export default function MainPage({ navigation }) {
 					name={"EventHeader"}
 					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
 				>
-					<GradientText
-						text={"Etkinlikler"}
-						style={{
-							fontSize: Math.min(height * 0.035, 32),
-							fontFamily: "NowBold",
-							letterSpacing: 1.2,
-							marginLeft: 20,
-						}}
-					/>
+					<Pressable onPress={() => {
+						navigation.navigate("EventCards", {
+							idx: 0,
+							list: shownEvents,
+							myID: userId,
+							sesToken: sesToken,
+						});
+					}}>
+						<GradientText
+							text={"Etkinlikler"}
+							style={{
+								fontSize: Math.min(height * 0.035, 32),
+								fontFamily: "NowBold",
+								letterSpacing: 1.2,
+								marginLeft: 20,
+							}}
+						/>
+					</Pressable>
 				</View>
 				<View name={"Categories"} style={{ width: "100%", height: height * 0.09 }}>
 					<FlatList

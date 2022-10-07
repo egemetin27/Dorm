@@ -96,20 +96,28 @@ const AuthProvider = ({ children }) => {
 
 					SecureStore.setItemAsync("credentials", credentials);
 
-					if (!eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
-						AsyncStorage.getItem("Constants").then(async (res) => {
-							const list = JSON.parse(res);
-							setMainPageTutorialDone(list.mainPageTutorialDone);
-							setEventTutorialDone(list.eventTutorialDone);
-							setPeopleTutorialDone(list.peopleTutorialDone);
-							setEventCardTutorialDone(list.eventCardTutorialDone);
-							setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
-							setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
-						});
-					}
+					// if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
+					// 	AsyncStorage.getItem("Constants").then(async (res) => {
+					// 		const list = JSON.parse(res);
+							// setMainPageTutorialDone(list.mainPageTutorialDone);
+							// setEventTutorialDone(list.eventTutorialDone);
+							// setPeopleTutorialDone(list.peopleTutorialDone);
+							// setEventCardTutorialDone(list.eventCardTutorialDone);
+							// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
+							// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
+					// 	});
+					// }
 						
 					setUser(userData);
 					setIsLoggedIn(true);
+					if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
+						setPeopleTutorialDone(userData.tutorial1 == 1);
+						setEventTutorialDone(userData.tutorial2 == 1);
+						setMySchoolCardTutorialDone(userData.tutorial3 == 1);
+						setCampusGhostCardTutorialDone(userData.tutorial4 == 1);
+						setEventCardTutorialDone(userData.tutorial5 == 1);
+						setMainPageTutorialDone(userData.tutorial6 == 1);
+					}
 				} else {
 					console.log("else:", data);
 					Alert.alert(data);

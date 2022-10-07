@@ -9,6 +9,9 @@ import { colors, GradientText } from "../../visualComponents/colors";
 import CustomButton from "../../components/button.components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthContext } from "../../contexts/auth.context";
+import axios from "axios";
+import crypto from "../../functions/crypto";
+import url from "../../connection";
 
 const { height, width } = Dimensions.get("window");
 
@@ -388,7 +391,7 @@ const eventList = [
 
 export default function BeginningTutorialModal({ navigation, route }) {
 	const [index, setIndex] = useState(route?.params?.index ?? 0);
-	const { seteventTutorialDone, setmainPageTutorialDone } = useContext(AuthContext);
+	const { user: { userId, sesToken }, seteventTutorialDone, setmainPageTutorialDone } = useContext(AuthContext);
 	const insets = useSafeAreaInsets();
 
 	const { Label, subText, position } = useMemo(() => POSITIONS[index], [index]);
@@ -418,12 +421,21 @@ export default function BeginningTutorialModal({ navigation, route }) {
 				await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
 			});
 			setmainPageTutorialDone();
+
+			const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial6" });
+			axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+				.then((res) => {
+					console.log(res.data);
+				}).catch((err) => {
+					console.log(err);
+				});
+
 			navigation.goBack();
 			return;
 		}
-		if (index == 4 && route.params.fromPeopleTutorial == true) { 
-			navigation.navigate("PeopleTutorialModal", { peopleTextTutorialDone: true }); 
-			return; 
+		if (index == 4 && route.params.fromPeopleTutorial == true) {
+			navigation.navigate("PeopleTutorialModal", { peopleTextTutorialDone: true });
+			return;
 		}
 		if (index == 7) {
 			const eventtutorialdone = async () => {
@@ -435,6 +447,13 @@ export default function BeginningTutorialModal({ navigation, route }) {
 			}
 			eventtutorialdone();
 			seteventTutorialDone();
+			const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial2" });
+			axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken }, })
+				.then((res) => {
+					console.log(res.data);
+				}).catch((err) => {
+					console.log(err);
+				});
 			navigation.goBack();
 			return;
 		}

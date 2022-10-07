@@ -209,8 +209,9 @@ const CardTutorial = ({
 						}}
 						renderItem={({ item }) => {
 							return (
-								<CustomImage
-									url={item?.PhotoLink}
+								<Image
+									//url={item?.PhotoLink}
+									source={item.UserId == 1188 ? require("../assets/Tutorial/tutorialboy.png") : require("../assets/Tutorial/tutorialgirl.png")}
 									style={{
 										// width: "100%",
 										// flex: 1,

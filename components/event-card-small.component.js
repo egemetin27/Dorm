@@ -31,7 +31,7 @@ const EventCard = ({ event, openEvents, index }) => {
 			]}
 		>
 			<CustomImage
-				url={photos?.length > 0 ? photos[0] : "AAAA"}
+				url={photos?.length > 0 ? photos[0] : null}
 				style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 			/>
 			<Gradient

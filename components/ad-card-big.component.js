@@ -93,11 +93,10 @@ const AdCard = ({
                         .catch((err) => {
                             console.log("error on /eventList");
                             console.log(err);
-                            // console.log(err.response.data);
                         });
                 } catch (err) {
                     console.log(err);
-                } 
+                }
             };
             button();
         }
@@ -286,9 +285,16 @@ const AdCard = ({
                                             await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
                                         });
                                         setmySchoolCardTutorialDone();
+                                        const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial3" });
+                                        axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+                                            .then((res) => {
+                                                console.log(res.data);
+                                            }).catch((err) => {
+                                                console.log(err);
+                                            });
                                         navigation.navigate("Settings");
                                         return;
-                                    }  
+                                    }
                                     else if (card.type == "campusGhost") {
                                         AsyncStorage.getItem("Constants").then(async (res) => {
                                             const list = JSON.parse(res);
@@ -296,9 +302,16 @@ const AdCard = ({
                                             await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
                                         });
                                         setcampusGhostCardTutorialDone();
+                                        const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial4" });
+                                        axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+                                            .then((res) => {
+                                                console.log(res.data);
+                                            }).catch((err) => {
+                                                console.log(err);
+                                            });
                                         navigation.navigate("Settings");
                                         return;
-                                    }  
+                                    }
                                     else if (card.type == "event") {
                                         AsyncStorage.getItem("Constants").then(async (res) => {
                                             const list = JSON.parse(res);
@@ -306,6 +319,13 @@ const AdCard = ({
                                             await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
                                         });
                                         seteventCardTutorialDone();
+                                        const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial5" });
+                                        axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+                                            .then((res) => {
+                                                console.log(res.data);
+                                            }).catch((err) => {
+                                                console.log(err);
+                                            });
                                         setTimeout(() => {
                                             navigation.navigate("EventCards", {
                                                 idx: 0,
@@ -313,8 +333,8 @@ const AdCard = ({
                                                 myID: userId,
                                                 sesToken: sesToken,
                                             });
-                                       }, 150);
-                                    }  
+                                        }, 150);
+                                    }
                                 }}>
                                     <Text style={{
                                         color: colors.white,

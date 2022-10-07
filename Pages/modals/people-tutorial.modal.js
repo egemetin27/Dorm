@@ -24,95 +24,91 @@ const EVENT_HEADER_HEIGHT = height * 0.15;
 
 const peopleList = [
 	{
-		Name: "engin",
+		Name: "Deniz",
 		City: "İstanbul",
-		Birth_Date: "2001-09-22",
-		UserId: 1188,
-		Gender: 2,
-		Surname: "günel",
+		Birth_Date: "2000-09-22",
+		UserId: 11188,
+		Gender: 0,
+		Surname: "Günel",
 		School: "Boğaziçi Üniversitesi",
-		Major: null,
+		Major: "Psikoloji",
 		Din: null,
 		Burc: null,
 		Beslenme: null,
 		Alkol: null,
 		Sigara: null,
-		About: null,
+		About: "Arada bi 90'lar pop, arada bi kahve",
 		photos: [
 			{
-				UserId: 1188,
+				UserId: 11188,
 				Photo_Order: 1,
-				PhotoLink: "https://d13pzveje1c51z.cloudfront.net/736ff14fda7cdf1a076331383ca3a016",
+				PhotoLink: "../assets/Tutorial/tutorialboy.png",
 			},
 		],
 		interest: [
 			{
 				InterestName: "☕ Kahve",
-				UserId: 1188,
+				UserId: 11188,
 			},
 			{
 				InterestName: "🎸 Müzik",
-				UserId: 1188,
+				UserId: 11188,
 			},
 			{
 				InterestName: "🎹 Klasik",
-				UserId: 1188,
+				UserId: 11188,
 			},
 			{
 				InterestName: "🏳️‍🌈 LGBTQ+ destekçi",
-				UserId: 1188,
+				UserId: 11188,
 			},
 			{
 				InterestName: "🥬 Vejetaryen",
-				UserId: 1188,
+				UserId: 11188,
 			},
 		],
 	},
 	{
-		Name: "Memo",
+		Name: "Erdem",
 		City: "İstanbul",
 		Birth_Date: "2001-09-22",
-		UserId: 11188,
-		Gender: 2,
-		Surname: "güsnel",
-		School: "Boğaziçi Üniversitesi",
-		Major: null,
+		UserId: 1188,
+		Gender: 1,
+		Surname: "Arı",
+		School: "Mimar Sinan Üniversitesi",
+		Major: "Mimarlık",
 		Din: null,
 		Burc: null,
 		Beslenme: null,
 		Alkol: null,
 		Sigara: null,
-		About: null,
+		About: "Handpoke Tattoo Artist  ;)",
 		photos: [
 			{
-				UserId: 11188,
+				UserId: 1188,
 				Photo_Order: 1,
-				PhotoLink: "https://d13pzveje1c51z.cloudfront.net/736ff14fda7cdf1a076331383ca3a016",
+				PhotoLink: "../assets/Tutorial/tutorialgirl.png",
 			},
 		],
 		interest: [
 			{
-				InterestName: "☕ Kahve",
-				UserId: 11188,
-			},
-			{
 				InterestName: "🎸 Müzik",
-				UserId: 11188,
+				UserId: 1188,
 			},
 			{
 				InterestName: "🎹 Klasik",
-				UserId: 11188,
+				UserId: 1188,
 			},
 			{
-				InterestName: "🏳️‍🌈 LGBTQ+ destekçi",
-				UserId: 11188,
+				InterestName: "🏀 Basketbol",
+				UserId: 1188,
 			},
 			{
-				InterestName: "🥬 Vejetaryen",
-				UserId: 11188,
+				InterestName: "☕ Kahve",
+				UserId: 1188,
 			},
 		],
-	},
+	}
 ];
 
 export default function PeopleTutorialModal({ navigation, route }) {

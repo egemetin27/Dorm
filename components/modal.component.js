@@ -31,7 +31,7 @@ const IMAGE_LIST = {
 
 export default function ModalPage({ navigation, route }) {
 	const { getMessagesList } = useContext(MessageContext);
-	const { setpeopleTutorialDone } = useContext(AuthContext);
+	const { user: { userId ,sesToken }, setpeopleTutorialDone } = useContext(AuthContext);
 	const MODAL_TYPES = {
 		UNMATCH_MODAL: {
 			image: "unmatch",
@@ -144,7 +144,7 @@ export default function ModalPage({ navigation, route }) {
 				buttonType: "textButton",
 			}],
 			noExitButton: true,
-			dismissFunction: () => {navigation.goBack();} 
+			dismissFunction: () => { navigation.goBack(); }
 		},
 		LEFT_SWIPE_LIKE_MESSAGE: {
 			image: null,
@@ -184,6 +184,13 @@ export default function ModalPage({ navigation, route }) {
 						setpeopleTutorialDone();
 					}
 					peopletutorialdone();
+					const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial1" });
+					axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken }, })
+						.then((res) => {
+							console.log(res.data);
+						}).catch((err) => {
+							console.log(err);
+						});
 					navigation.goBack();
 					navigation.goBack();
 				},
@@ -200,9 +207,16 @@ export default function ModalPage({ navigation, route }) {
 					setpeopleTutorialDone();
 				}
 				peopletutorialdone();
+				const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial1" });
+				axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+					.then((res) => {
+						console.log(res.data);
+					}).catch((err) => {
+						console.log(err);
+					});
 				navigation.goBack();
 				navigation.goBack();
-			} 
+			}
 		},
 
 	};
