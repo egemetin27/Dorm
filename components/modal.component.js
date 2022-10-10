@@ -175,15 +175,16 @@ export default function ModalPage({ navigation, route }) {
 			buttons: [{
 				text: "ANLADIM",
 				onPress: () => {
-					const peopletutorialdone = async () => {
-						AsyncStorage.getItem("Constants").then(async (res) => {
-							const list = JSON.parse(res);
-							const toSave = { ...list, peopleTutorialDone: true };
-							await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
-						});
-						setpeopleTutorialDone();
-					}
-					peopletutorialdone();
+					// const peopletutorialdone = async () => {
+					// 	await AsyncStorage.getItem("Constants").then(async (res) => {
+					// 		const list = JSON.parse(res);
+					// 		const toSave = { ...list, peopleTutorialDone: true };
+					// 		await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+					// 	});
+					// 	setpeopleTutorialDone();
+					// }
+					// peopletutorialdone();
+					setpeopleTutorialDone();
 					const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial1" });
 					axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken }, })
 						.then((res) => {

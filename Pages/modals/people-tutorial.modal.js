@@ -1,20 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
-import { View, Dimensions, StyleSheet, Pressable, Text, BackHandler } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Dimensions, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Octicons } from "@expo/vector-icons";
 
-import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
-import CustomButton from "../../components/button.components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 import { Session } from "../../nonVisualComponents/SessionVariables";
-import DoubleTap from "../../components/double-tap.component";
-import Card from "../../components/person-card-big.component";
+
 import Swiper from "react-native-deck-swiper";
-import TapIndicator from "../../components/tap-indicator.component";
 import CardTutorial from "../../components/persontutorial-card-big.component";
+import useBackHandler from "../../hooks/useBackHandler";
 
 const { height, width } = Dimensions.get("window");
 
@@ -115,6 +111,8 @@ export default function PeopleTutorialModal({ navigation, route }) {
 	const [firstSwipeRight, setFirstSwipeRight] = useState(false);
 	const [firstSwipeLeft, setFirstSwipeLeft] = useState(false);
 
+	useBackHandler(() => navigation.goBack())
+	
 	const [index, setIndex] = useState(-1);
 	//const [showTapIndicator, setShowTapIndicator] = useState(false);
 	const insets = useSafeAreaInsets();

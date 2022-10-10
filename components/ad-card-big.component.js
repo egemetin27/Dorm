@@ -91,7 +91,7 @@ const AdCard = ({
                             }, 50);
                         })
                         .catch((err) => {
-                            console.log("error on /eventList");
+                            console.log("error on /eventList from tutorial");
                             console.log(err);
                         });
                 } catch (err) {
@@ -320,7 +320,7 @@ const AdCard = ({
                                         });
                                         seteventCardTutorialDone();
                                         const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial5" });
-                                        axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+                                        await axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
                                             .then((res) => {
                                                 console.log(res.data);
                                             }).catch((err) => {

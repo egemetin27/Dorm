@@ -42,6 +42,7 @@ import { useNavigation } from "@react-navigation/native";
 import crypto from "../../functions/crypto";
 import { NotificationContext } from "../../contexts/notification.context";
 import { checkField } from "../../utils/null-check.utils";
+import TapIndicator from "../../components/tap-indicator.component";
 
 const { width, height } = Dimensions.get("window");
 
@@ -60,7 +61,7 @@ const FIELDS = {
 	// Organizator: { label: "Bilet Platformu" },
 };
 
-const Card = ({ event, user, signOut }) => {
+const Card = ({ event, user, signOut, index }) => {
 	const {
 		EventId,
 		BuyLink: buyLink,
@@ -77,11 +78,13 @@ const Card = ({ event, user, signOut }) => {
 
 	const navigation = useNavigation();
 
+	const [showTapIndicator, setShowTapIndicator] = useState(true);
 	const [favFlag, setFavFlag] = useState(isLiked == 1 ? true : false);
 	// const [likeEventModal, setLikeEventModal] = useState(false);
 	const [seeWhoLikedModal, setSeeWhoLikedModal] = useState(false);
 	//const [backfaceIndex, setBackfaceIndex] = useState(0);
 	const { setEventLike } = useContext(NotificationContext);
+	const { eventTutorialDone } = useContext(AuthContext);
 
 	const turn = useSharedValue(1); // 1 => front, -1 => back
 
@@ -107,6 +110,12 @@ const Card = ({ event, user, signOut }) => {
 		axios.post(url + "/statistics/detailEventClick", encryptedData, {
 			headers: { "access-token": user.sesToken },
 		});
+		if (!eventTutorialDone && showTapIndicator) {
+			setTimeout(() => {
+				navigation.navigate("BeginningTutorialModal", { index: 11, EventId: EventId });
+			}, 400);
+		} 
+		setShowTapIndicator(false);
 	};
 
 	const tapHandler = Gesture.Tap()
@@ -126,12 +135,12 @@ const Card = ({ event, user, signOut }) => {
 		if (favFlag) {
 			setEventLike(false);
 			setFavFlag(false);
-			const encryptedData = crypto.encrypt({ userId: id, eventId: EventId });
+			const encryptedData = crypto.encrypt({ userId: id, eventId: EventId, name: name });
 			await axios
 				.post(url + "/userAction/dislikeEvent", encryptedData, {
 					headers: { "access-token": user.sesToken },
 				})
-				.then((res) => {})
+				.then((res) => { })
 				.catch((err) => {
 					setEventLike(true);
 					setFavFlag(true);
@@ -237,7 +246,7 @@ const Card = ({ event, user, signOut }) => {
 		<View
 			name={"cards"}
 			style={{ width: "100%", flex: 1, justifyContent: "center" }}
-			// style={{ width: "100%", backgroundColor: "green" }}
+		// style={{ width: "100%", backgroundColor: "green" }}
 		>
 			<GestureDetector gesture={tapHandler} waitFor={likeButton}>
 				<Animated.View>
@@ -257,7 +266,7 @@ const Card = ({ event, user, signOut }) => {
 							style={{ width: "100%" }}
 							pagingEnabled={true}
 							showsVerticalScrollIndicator={false}
-							// onScroll={handleScroll}
+						// onScroll={handleScroll}
 						>
 							<Image
 								source={{
@@ -362,8 +371,8 @@ const Card = ({ event, user, signOut }) => {
 								end={{ x: 0.5, y: 1 }}
 								style={{
 									height: "100%",
-									paddingTop: Math.min(width * 0.1, height * 0.05),
-									paddingBottom: 20,
+									paddingTop: height * 0.052,
+									paddingBottom: height * 0.019,
 									width: "100%",
 									justifyContent: "flex-start",
 								}}
@@ -376,7 +385,7 @@ const Card = ({ event, user, signOut }) => {
 										alignItems: "center",
 										justifyContent: "space-between",
 										flexDirection: "row",
-										paddingHorizontal: "5%",
+										paddingHorizontal: height * 0.022,
 									}}
 								>
 									<View
@@ -470,6 +479,16 @@ const Card = ({ event, user, signOut }) => {
 								</View>
 							</Gradient>
 						</View>
+						{showTapIndicator && (!eventTutorialDone) && (index == 0) &&
+								<View style={{
+									alignSelf: "center",
+									top: height * 0.3,
+									color: colors.soft_red,
+									position: "absolute",
+								}}>
+									<TapIndicator />
+								</View>
+							}
 					</Animated.View>
 
 					{/* PART: backface */}
@@ -584,7 +603,7 @@ const Card = ({ event, user, signOut }) => {
 
 											await Linking.openURL(buyLink);
 										}}
-										// style={{ backgroundColor: "pink" }}
+									// style={{ backgroundColor: "pink" }}
 									>
 										<View
 											style={{
@@ -817,7 +836,7 @@ export default function EventCards({ navigation, route }) {
 	useEffect(() => {
 		if (!eventTutorialDone) {
 			setTimeout(() => {
-				navigation.navigate("BeginningTutorialModal", { index: 6 });
+				navigation.navigate("BeginningTutorialModal", { index: 6, EventId: list[idx].EventId });
 			}, 200);
 		}
 	}, []);
@@ -849,6 +868,9 @@ export default function EventCards({ navigation, route }) {
 		});
 		axios.post(url + "/statistics/EventClick", encryptedData, {
 			headers: { "access-token": user.sesToken },
+		})
+		.then().catch((err) => {
+			console.log(err)
 		});
 	};
 
@@ -902,7 +924,7 @@ export default function EventCards({ navigation, route }) {
 						width={width}
 						loop={false}
 						data={list}
-						renderItem={({ item }) => <Card event={item} user={user} signOut={signOut} />}
+						renderItem={({ item, index }) => <Card event={item} user={user} index={index} signOut={signOut} />}
 					/>
 				</View>
 			)}

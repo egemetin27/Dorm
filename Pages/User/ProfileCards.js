@@ -57,7 +57,7 @@ const REPORT_REASONS = {
 
 export default function ProfileCards({ navigation, route }) {
 	const {
-		user: { userId, matchMode, sesToken, Photo, peopleTutorialShown },
+		user: { userId, matchMode, sesToken, Photo },
 		peopleListIndex,
 		setPeopleIndex,
 		peopleTutorialDone,
@@ -82,31 +82,32 @@ export default function ProfileCards({ navigation, route }) {
 	useBackHandler(() => navigation.goBack());
 
 	useEffect(() => {
-		const getTutorialShown = async () => {
-			await AsyncStorage.getItem("Constants").then((res) => {
-				if (JSON.parse(res).tutorialShown == true) {
-					setTimeout(() => {
-						navigation.navigate("PeopleTutorialModal", { index: 3 });
-					}, 200);
-				}
-			});
-			// await AsyncStorage.getItem("Constants").then(async (res) => {
-			// 	const list = JSON.parse(res);
-			// 	if (list.people.peopleTutorialShown == true) return;
-			// 	const toSave = { ...list, peopleTutorialShown: true };
-			// 	await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
-			// });
-		};
+		// const getTutorialShown = async () => {
+		// 	await AsyncStorage.getItem("Constants").then((res) => {
+		// 		if (JSON.parse(res).tutorialShown == true) {
+		// 			setTimeout(() => {
+		// 				navigation.navigate("PeopleTutorialModal", { index: 3 });
+		// 			}, 200);
+		// 		}
+		// 	});
+		// 	// await AsyncStorage.getItem("Constants").then(async (res) => {
+		// 	// 	const list = JSON.parse(res);
+		// 	// 	if (list.people.peopleTutorialShown == true) return;
+		// 	// 	const toSave = { ...list, peopleTutorialShown: true };
+		// 	// 	await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+		// 	// });
+		// };
 		
 		//getTutorialShown();
+		
+	}, []);
+
+	useEffect(() => {
 		if (peopleTutorialDone != true) {
 			setTimeout(() => {
 				navigation.navigate("PeopleTutorialModal", { index: 3 });
 			}, 200);
 		}
-	}, []);
-
-	useEffect(() => {
 		const prepare = async () => {
 			let profile = list.splice(idx, 1);
 			setShownList([profile[0], ...list]);
