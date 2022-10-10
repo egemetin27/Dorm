@@ -12,6 +12,7 @@ import {
 	KeyboardAvoidingView,
 	FlatList,
 	ActivityIndicator,
+	Alert,
 } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
@@ -27,8 +28,8 @@ import crypto from "../../functions/crypto";
 import { AuthContext } from "../../contexts/auth.context";
 import CustomImage from "../../components/custom-image.component";
 import CustomRadio from "../../components/custom-radio.component";
-//import { Session } from "../../nonVisualComponents/SessionVariables";
 import { ListsContext } from "../../contexts/lists.context";
+import useBackHandler from "../../hooks/useBackHandler";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ navigation }) {
@@ -73,14 +74,7 @@ export default function Profile({ navigation }) {
 	const hobbiesRef = useRef(new Animated.Value(0)).current;
 	const aboutRef = useRef(new Animated.Value(0)).current;
 
-	// useEffect(() => {
-	// 	const backAction = () => {
-	// 		navigation.replace("MainScreen", { screen: "AnaSayfa" });
-	// 		return true;
-	// 	};
-	// 	const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-	// 	return () => backHandler.remove();
-	// }, []);
+	useBackHandler(() => navigation.goBack())
 
 	useEffect(() => {
 		const profile = async () => {
@@ -117,9 +111,14 @@ export default function Profile({ navigation }) {
 	}, []);
 
 	const handleSave = async () => {
-		const lName = name.slice(name.lastIndexOf(" ") + 1);
-		const fName = name.slice(0, name.lastIndexOf(" "));
+		const lName = name.trim().lastIndexOf(" ") == -1 ? "" : name.trim().slice(name.trim().lastIndexOf(" ") + 1);
+		const fName = name.trim().slice(0, name.lastIndexOf(" "));
 
+		if (fName == "" || lName == "") {
+			await navigation.navigate("CustomModal", { modalType: "EMPTY_NAME" });
+			return;
+		} 
+		console.log(lName + " " + fName);
 		const dataRaw = {
 			userId: user.userId,
 			Name: fName,
@@ -148,7 +147,8 @@ export default function Profile({ navigation }) {
 			.catch((err) => {
 				console.log(err);
 			});
-
+		
+		setEditibility(false);
 		// const newData = { Name: name, Gender: sex.key,  }; // TODO: add new data here and both save them to local and send to database
 	};
 
@@ -243,7 +243,6 @@ export default function Profile({ navigation }) {
 					{isEditable ? (
 						<TouchableOpacity
 							onPress={() => {
-								setEditibility(false);
 								handleSave();
 							}}
 						>

@@ -219,7 +219,12 @@ export default function ModalPage({ navigation, route }) {
 				navigation.goBack();
 			}
 		},
-
+		EMPTY_NAME: {
+			image: "sad_face",
+			title: "Gerekli yerleri doldurun",
+			body: "Adınızı veya soyadınızı boş bırakamazsınız.",
+			buttons: [],
+		},
 	};
 
 	const { modalType, buttonParamsList } = {

@@ -24,8 +24,8 @@ const TabbarButton = ({ icon, label, focused }) => {
 					source={messagesIcon}
 					style={{
 						tintColor: colors.green,
-						maxHeight: "50%",
-						maxWidth: "16%",
+						maxHeight: height * 0.031,
+						maxWidth: height * 0.031,
 						resizeMode: "contain",
 					}}
 					key={Math.random}
@@ -35,17 +35,17 @@ const TabbarButton = ({ icon, label, focused }) => {
 					source={icon}
 					style={{
 						tintColor: focused ? {} : colors.cool_gray,
-						maxHeight: "50%",
-						maxWidth: "16%",
+						maxHeight: height * 0.031,
+						maxWidth: height * 0.031,
 						resizeMode: "contain",
 					}}
 			/>}
 				
-			{focused ? (
+			{/* {focused ? (
 				<GradientText style={styles.gradient_label} text={label} />
 				) : (
 					<Text style={styles.label}>{label}</Text>
-				)}
+				)} */}
 			</View>
 		);
 	};
@@ -53,9 +53,10 @@ const TabbarButton = ({ icon, label, focused }) => {
 	const styles = StyleSheet.create({
 		container: {
 			flex: 1,
-			width: width * 0.33,
+			width: width * 0.24,
 			alignItems: "center",
 			justifyContent: "flex-end",
+			marginBottom: height * 0.0055,
 		},
 		gradient_label: {
 			fontSize: height * 0.016,

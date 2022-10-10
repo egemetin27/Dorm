@@ -111,7 +111,7 @@ export default function PeopleTutorialModal({ navigation, route }) {
 	const [firstSwipeRight, setFirstSwipeRight] = useState(false);
 	const [firstSwipeLeft, setFirstSwipeLeft] = useState(false);
 
-	useBackHandler(() => navigation.goBack())
+	useBackHandler(() => navigation.goBack());
 	
 	const [index, setIndex] = useState(-1);
 	//const [showTapIndicator, setShowTapIndicator] = useState(false);

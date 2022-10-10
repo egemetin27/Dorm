@@ -12,10 +12,12 @@ import { MessageContext } from "../contexts/message.context";
 import { colors } from "../visualComponents/colors";
 import { useContext } from "react";
 import { NotificationContext } from "../contexts/notification.context";
+import LikeCards from "../Pages/User/LikeCards";
 
 const profileIcon = require("../assets/TabBarIcons/profile.png");
 const homeIcon = require("../assets/TabBarIcons/logoGradient.png");
 const messagesIcon = require("../assets/TabBarIcons/messages.png");
+const pinkLikeIcon = require("../assets/TabBarIcons/like-pink.png");
 
 const { width, height } = Dimensions.get("window");
 const Tab = createBottomTabNavigator();
@@ -35,8 +37,8 @@ function Tabbar({ route, navigation }) {
 				backBehavior="initialRoute"
 				screenOptions={{
 					tabBarStyle: {
-						height: height * 0.08 + insets.bottom,
-						paddingBottom: height * 0.008 + insets.bottom,
+						height: height * 0.07 + insets.bottom,
+						paddingBottom: height * 0.0144 + insets.bottom,
 					},
 					headerShown: false,
 					tabBarShowLabel: false,
@@ -74,27 +76,39 @@ function Tabbar({ route, navigation }) {
 							<Pressable
 								{...props}
 								onPress={() => {
-									if (
-										props?.accessibilityState?.selected &&
-										props?.children?.props?.children[0].props?.route.state
-									) {
-										navigation.navigate("MainScreen", {
-											screen: "AnaSayfa",
-										});
-									} else if (!props?.accessibilityState?.selected) {
-										// const jumpToAction = TabActions.jumpTo("AnaSayfa", {
-										// 	screen: "Home",
-										// });
-										// navigation.dispatch(jumpToAction);
-										navigation.navigate("MainScreen", {
-											screen: "AnaSayfa",
-										});
-									}
+									navigation.navigate("MainScreen", {
+										screen: "AnaSayfa",
+									});
+									// if (
+									// 	props?.accessibilityState?.selected &&
+									// 	props?.children?.props?.children[0].props?.route.state
+									// ) {
+									// 	navigation.navigate("MainScreen", {
+									// 		screen: "AnaSayfa",
+									// 	});
+									// } else if (!props?.accessibilityState?.selected) {
+									// 	// const jumpToAction = TabActions.jumpTo("AnaSayfa", {
+									// 	// 	screen: "Home",
+									// 	// });
+									// 	// navigation.dispatch(jumpToAction);
+									// 	navigation.navigate("MainScreen", {
+									// 		screen: "AnaSayfa",
+									// 	});
+									// }
 								}}
 							/>
 						),
 						tabBarIcon: ({ focused }) => (
 							<TabbarButton focused={focused} label="Ana Sayfa" icon={homeIcon} />
+						),
+					}}
+				/>
+				<Tab.Screen
+					name="Likes"
+					component={LikeCards}
+					options={{
+						tabBarIcon: ({ focused }) => (
+							<TabbarButton focused={focused} label="Likes" icon={pinkLikeIcon} />
 						),
 					}}
 				/>

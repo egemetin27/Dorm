@@ -33,10 +33,11 @@ export default function MatchModal({ navigation, route }) {
 			>
 				<GradientText
 					style={{
-						fontSize: 26,
-						fontWeight: "bold",
+						fontSize: height * 0.03,
+						fontFamily: "PoppinsBold",
 						textAlign: "center",
-						paddingVertical: height * 0.02,
+						paddingTop: height * 0.02,
+						paddingBottom: height * 0.01,
 					}}
 					text={"Hey! \n Eşleştiniz"}
 				/>
@@ -46,7 +47,7 @@ export default function MatchModal({ navigation, route }) {
 						fontFamily: "Poppins",
 						color: colors.medium_gray,
 						textAlign: "center",
-						paddingVertical: height * 0.01,
+						paddingVertical: height * 0.009,
 					}}
 				>
 					{name} {"&"} Sen
@@ -82,8 +83,8 @@ export default function MatchModal({ navigation, route }) {
 				/>
 				<Text
 					style={{
-						paddingTop: height * 0.5,
-						fontSize: 16,
+						paddingTop: height * 0.485,
+						fontSize: height * 0.019,
 						fontFamily: "Poppins",
 						color: colors.medium_gray,
 						textAlign: "center",
@@ -117,9 +118,9 @@ export default function MatchModal({ navigation, route }) {
 						<Text
 							style={{
 								color: colors.white,
-								fontSize: 18,
+								fontSize: height * 0.02,
 								fontFamily: "PoppinsSemiBold",
-								padding: 10,
+								padding: height * 0.01,
 							}}
 						>
 							Mesaj Gönder
