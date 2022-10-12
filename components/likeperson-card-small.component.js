@@ -36,7 +36,6 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 					height: "95%",
 					width: width * 0.425,
 					backgroundColor: colors.white,
-					//marginHorizontal: 0,
 					marginLeft: index % 2 == 0 ? width * 0.05 : width * 0.025,
 					marginRight: index % 2 == 1 ? width * 0.05 : width * 0.025,
 					marginBottom: height * 0.025,
@@ -46,6 +45,7 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 			{photoList?.length > 0 ? (
 				<CustomImage
 					url={firstPhoto.PhotoLink}
+					blur={blur}
 					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 				/>
 			) : (
@@ -58,13 +58,13 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 				start={{ x: 0.5, y: 0 }}
 				end={{ x: 0.5, y: 1 }}
 				style={{
-					height: height * 0.095,
+					height: blur == 1 ? 0 : height * 0.095,
 					width: "100%",
 					position: "absolute",
 					justifyContent: "flex-end",
-					paddingBottom: height * 0.005,
+					//paddingBottom: height * 0.005,
 					bottom: 0,
-					paddingHorizontal: width * 0.02,
+					paddingHorizontal: width * 0.023,
 				}}
 			>
 				<View
@@ -117,7 +117,7 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 					numberOfLines={1}
 					style={{
 						paddingTop: height * 0.002,
-						paddingBottom: height * 0.003,
+						paddingBottom: height * 0.007,
 						color: colors.white,
 						fontFamily: "PoppinsItalic",
 						fontSize: height * 0.011,
@@ -128,10 +128,10 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 				</Text>
 			</Gradient>
 			<Text style={{
-				position: "absolute", top: height * 0.015, left: width * 0.03, fontSize: height * 0.015,
+				position: "absolute", top: height * 0.013, left: width * 0.02, fontSize: height * 0.015,
 				fontFamily: "PoppinsBold", color: colors.white, letterSpacing: 0.7,
 				borderRadius: 15, paddingHorizontal: width * 0.02, paddingVertical: height * 0.0009,
-				backgroundColor: mode == "flört" ? "#FF6978" : "#222222"
+				backgroundColor: mode == "Flört" ? "#FF6978" : "#FACA18",
 			}}>
 				{mode}
 			</Text>

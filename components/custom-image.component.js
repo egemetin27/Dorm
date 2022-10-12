@@ -9,6 +9,7 @@ const CustomImage = ({ style, url, ...props }) => {
 				<Image
 					{...props}
 					style={style}
+					blurRadius={props.blur == 1 ? 36 : 0}
 					source={{
 						uri: url,
 					}}
@@ -17,6 +18,7 @@ const CustomImage = ({ style, url, ...props }) => {
 				<FastImage
 					{...props}
 					key={url}
+					blurRadius={props.blur == 1 ? 36 : 0}
 					style={style}
 					source={{
 						uri: url,

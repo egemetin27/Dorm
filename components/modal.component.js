@@ -225,6 +225,12 @@ export default function ModalPage({ navigation, route }) {
 			body: "Adınızı veya soyadınızı boş bırakamazsınız.",
 			buttons: [],
 		},
+		MAX_BLUR: {
+			image: "sad_face",
+			title: "Hakkınız kalmadı",
+			body: "Her 24 saate sizi beğenen sadece 1 kişiyi görebilirsiniz",
+			buttons: [],
+		},
 	};
 
 	const { modalType, buttonParamsList } = {

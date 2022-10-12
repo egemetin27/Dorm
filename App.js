@@ -49,7 +49,6 @@ const defaultLinkingConfig = {
 				Profil: "profile",
 				AnaSayfa: "home",
 				Mesajlar: "messages",
-				// Mesajlar: "messages/:matchMode",
 			},
 		},
 	},

@@ -12,12 +12,12 @@ import { MessageContext } from "../contexts/message.context";
 import { colors } from "../visualComponents/colors";
 import { useContext } from "react";
 import { NotificationContext } from "../contexts/notification.context";
-import LikeCards from "../Pages/User/LikeCards";
+import LikeStackScreen from "./like-screen.navigator";
 
 const profileIcon = require("../assets/TabBarIcons/profile.png");
 const homeIcon = require("../assets/TabBarIcons/logoGradient.png");
 const messagesIcon = require("../assets/TabBarIcons/messages.png");
-const pinkLikeIcon = require("../assets/TabBarIcons/like-pink.png");
+const pinkLikeIcon = require("../assets/TabBarIcons/favorite.png");
 
 const { width, height } = Dimensions.get("window");
 const Tab = createBottomTabNavigator();
@@ -104,8 +104,8 @@ function Tabbar({ route, navigation }) {
 					}}
 				/>
 				<Tab.Screen
-					name="Likes"
-					component={LikeCards}
+					name="Like"
+					component={LikeStackScreen}
 					options={{
 						tabBarIcon: ({ focused }) => (
 							<TabbarButton focused={focused} label="Likes" icon={pinkLikeIcon} />
