@@ -3,7 +3,7 @@
 		"name": "Dorm",
 		"scheme": "dorm",
 		"slug": "Dorm",
-		"version": "1.5.1",
+		"version": "1.5.3",
 		"orientation": "portrait",
 		"icon": "./assets/DormIcon.png",
 		"owner": "dorm",
@@ -24,7 +24,7 @@
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 98,
+			"versionCode": 100,
 			"permissions": ["android.permission.RECORD_AUDIO"]
 		},
 		"web": {

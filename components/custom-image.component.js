@@ -18,7 +18,6 @@ const CustomImage = ({ style, url, ...props }) => {
 				<FastImage
 					{...props}
 					key={url}
-					blurRadius={props.blur == 1 ? 36 : 0}
 					style={style}
 					source={{
 						uri: url,

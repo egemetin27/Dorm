@@ -1,8 +1,7 @@
-import { Text, View, Pressable, Dimensions } from "react-native";
+import { Text, View, Pressable, Dimensions, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Gradient } from "../visualComponents/colors";
-import CustomImage from "./custom-image.component";
 
 import { getAge } from "../utils/date.utils";
 import commonStyles from "../visualComponents/styles";
@@ -43,9 +42,9 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 			]}
 		>
 			{photoList?.length > 0 ? (
-				<CustomImage
-					url={firstPhoto.PhotoLink}
-					blur={blur}
+				<Image
+					source={{uri: firstPhoto.PhotoLink}}
+					blurRadius={blur == 1 ? 36 : 0}
 					style={{ width: "100%", height: "100%", resizeMode: "cover" }}
 				/>
 			) : (

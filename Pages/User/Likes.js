@@ -402,33 +402,33 @@ export default function Likes({ navigation, route }) {
             <View style={{ height: height * 0.29, width: width, alignContent: "center", alignItems: "center", backgroundColor: "#FF6978" }}>
                 <Text style={{
                     fontFamily: "PoppinsBold", letterSpacing: width * 0.001, fontSize: height * 0.024,
-                    marginTop: height * 0.02, marginHorizontal: width * 0.05, color: colors.white
+                    marginTop: height * 0.022, marginHorizontal: width * 0.05, color: colors.white
                 }}>
                     seni beğenenler
                 </Text>
                 <Image
                     source={require("../../assets/waving_hand.png")}
-                    style={{ backgroundColor: null, marginTop: height * 0.02, height: height * 0.08, resizeMode: "contain" }}
+                    style={{ backgroundColor: null, marginTop: height * 0.02, height: height * 0.09, resizeMode: "contain" }}
                 />
                
                 <Text style={{
-                    fontFamily: "PoppinsBold", marginTop: height * 0.02, marginBottom: height * 0.01, marginHorizontal: width * 0.05,
+                    fontFamily: "PoppinsBold", marginTop: height * 0.035, marginBottom: height * 0.01, marginHorizontal: width * 0.05,
                     borderColor: colors.black, borderWidth: height * 0.002, borderRadius: 20, borderColor: colors.white,
-                    paddingHorizontal: width * 0.04, paddingVertical: height * 0.00, color: colors.white
+                    paddingHorizontal: width * 0.04, paddingVertical: height * 0.01, color: colors.white
                 }}>
                         {likeCount == 0 ? 
-                            `${("0" + Math.floor(timeLeft % (24 * 3600) / 3600)).slice(-2)} : ${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)} : ${("0" + (timeLeft % 60)).slice(-2)}` :
+                            `Sonraki hak için: \t${("0" + Math.floor(timeLeft % (24 * 3600) / 3600)).slice(-2)}:${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:${("0" + (timeLeft % 60)).slice(-2)}` :
                             `${likeCount} kişiyi görme hakkınız var!`
                         }
                 </Text>
                 
-                <Text style={{
+                {/* <Text style={{
                     fontFamily: "PoppinsBold", marginTop: height * 0.008, marginHorizontal: width * 0.05,
                     borderColor: colors.black, borderWidth: height * 0.002, borderRadius: 20, borderColor: colors.white,
                     paddingHorizontal: width * 0.04, paddingVertical: height * 0.005, color: colors.white
                 }}>
                     {peopleList.length} kişi seni sağa kaydırmış!
-                </Text>
+                </Text> */}
             </View>
             <View style={{
                 // height: "100%",
