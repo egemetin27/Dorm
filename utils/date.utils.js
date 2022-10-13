@@ -4,12 +4,22 @@ const normalizeDate = (date) => {
 	return newDate;
 };
 
-export const formatDate = (date) => {
+export const formatDate = (dateStr) => {
+	const date = new Date(dateStr);
+
 	if (typeof date !== "string" || date.indexOf("-") === -1) return "";
 
 	const arr = date.split("-");
 	const newDate = `${arr[2]}/${arr[1]}/${arr[0]}`;
 	return newDate;
+};
+
+export const parseDate = (date) => {
+	const newDate = new Date(date);
+
+	return `${newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate()} / ${
+		newDate.getMonth() + 1 < 10 ? "0" + (newDate.getMonth() + 1) : newDate.getMonth() + 1
+	} / ${newDate.getFullYear()}`;
 };
 
 export const getWhen = (date) => {

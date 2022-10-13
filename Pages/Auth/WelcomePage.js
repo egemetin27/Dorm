@@ -1,12 +1,18 @@
-import { StatusBar } from "expo-status-bar";
+import { setStatusBarBackgroundColor, setStatusBarStyle, StatusBar } from "expo-status-bar";
 import React from "react";
 import { Text, View, TouchableOpacity, Image, Dimensions } from "react-native";
 import commonStyles from "../../visualComponents/styles";
 import { colors, Gradient, GradientText } from "../../visualComponents/colors";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function WelcomePage({ navigation }) {
+	useFocusEffect(() => {
+		setStatusBarBackgroundColor("transparent", true);
+		setStatusBarStyle("light");
+	});
+
 	return (
 		<View style={[commonStyles.Container, { height: height }]}>
 			<StatusBar style={"light"} />
@@ -68,7 +74,8 @@ export default function WelcomePage({ navigation }) {
 						},
 					]}
 					onPress={() => {
-						navigation.navigate("LetsMeet");
+						// navigation.navigate("LetsMeet");
+						navigation.navigate("Register");
 					}}
 				>
 					<Text
