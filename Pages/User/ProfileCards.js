@@ -69,7 +69,7 @@ export default function ProfileCards({ navigation, route }) {
 	const destination = useSharedValue(0);
 
 	const { list, idx, fromEvent = false } = route.params;
-	const eventId = route.params.eventID ?? 0;
+	const eventId = route.params.eventId ?? 0;
 	const eventName = route.params.eventName ?? "";
 	const myProfilePicture = Photo[0].PhotoLink ?? "";
 	const [isLoading, setIsLoading] = useState(true);
@@ -203,7 +203,6 @@ export default function ProfileCards({ navigation, route }) {
 		isBackFace.value = false;
 		console.log("\nUSER SWIPED: " + shownList[index].UserId + " " + shownList[index].Name + "\n");
 		if (shownList[index].adCard != true) setPeopleIndex(idx + peopleListIndex);
-
 		const likeDislike = crypto.encrypt({
 			isLike: value,
 			userSwiped: userId,

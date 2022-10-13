@@ -16,272 +16,6 @@ const { height, width } = Dimensions.get("window");
 
 const yourLikesIcon = require("../../assets/yourlikes.png");
 
-// const peopleList = [
-//     {
-//         Name: "Deniz",
-//         City: "İstanbul",
-//         Birth_Date: "2000-09-22",
-//         UserId: 11188,
-//         Gender: 0,
-//         blur: 0,
-//         Surname: "Günel",
-//         School: "Boğaziçi Üniversitesi",
-//         Major: "Psikoloji",
-//         Din: null,
-//         Burc: null,
-//         Beslenme: null,
-//         Alkol: null,
-//         Sigara: null,
-//         About: "Arada bi 90'lar pop, arada bi kahve",
-//         photos: [
-//             {
-//                 UserId: 11188,
-//                 Photo_Order: 1,
-//                 PhotoLink: "https://d13pzveje1c51z.cloudfront.net/14f6d32a522d336345e649622c659fc4",
-//             },
-//         ],
-//         interest: [
-//             {
-//                 InterestName: "☕ Kahve",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🎸 Müzik",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🎹 Klasik",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🏳️‍🌈 LGBTQ+ destekçi",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🥬 Vejetaryen",
-//                 UserId: 11188,
-//             },
-//         ],
-//     },
-//     {
-//         Name: "Erdem",
-//         City: "İstanbul",
-//         Birth_Date: "2001-09-22",
-//         UserId: 1188,
-//         Gender: 1,
-//         Surname: "Arı",
-//         blur: 1,
-//         School: "Mimar Sinan Üniversitesi",
-//         Major: "Mimarlık",
-//         Din: null,
-//         Burc: null,
-//         Beslenme: null,
-//         Alkol: null,
-//         Sigara: null,
-//         About: "Handpoke Tattoo Artist  ;)",
-//         photos: [
-//             {
-//                 UserId: 1188,
-//                 Photo_Order: 1,
-//                 PhotoLink: "https://d13pzveje1c51z.cloudfront.net/945a239e8b9038adb15116de7705675e",
-//             },
-//         ],
-//         interest: [
-//             {
-//                 InterestName: "🎸 Müzik",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "🎹 Klasik",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "🏀 Basketbol",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "☕ Kahve",
-//                 UserId: 1188,
-//             },
-//         ],
-//     },
-//     {
-//         Name: "Deniz",
-//         City: "İstanbul",
-//         Birth_Date: "2000-09-22",
-//         UserId: 11189,
-//         Gender: 0,
-//         blur: 1,
-//         Surname: "Günel",
-//         School: "Boğaziçi Üniversitesi",
-//         Major: "Psikoloji",
-//         Din: null,
-//         Burc: null,
-//         Beslenme: null,
-//         Alkol: null,
-//         Sigara: null,
-//         About: "Arada bi 90'lar pop, arada bi kahve",
-//         photos: [
-//             {
-//                 UserId: 11188,
-//                 Photo_Order: 1,
-//                 PhotoLink: "https://d13pzveje1c51z.cloudfront.net/816469bda21b9f4f7c87b8562417def6",
-//             },
-//         ],
-//         interest: [
-//             {
-//                 InterestName: "☕ Kahve",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🎸 Müzik",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🎹 Klasik",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🏳️‍🌈 LGBTQ+ destekçi",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🥬 Vejetaryen",
-//                 UserId: 11188,
-//             },
-//         ],
-//     },
-//     {
-//         Name: "Erdem",
-//         City: "İstanbul",
-//         Birth_Date: "2001-09-22",
-//         UserId: 1190,
-//         Gender: 1,
-//         Surname: "Arı",
-//         School: "Mimar Sinan Üniversitesi",
-//         Major: "Mimarlık",
-//         Din: null,
-//         blur: 0,
-//         Burc: null,
-//         Beslenme: null,
-//         Alkol: null,
-//         Sigara: null,
-//         About: "Handpoke Tattoo Artist  ;)",
-//         photos: [
-//             {
-//                 UserId: 1188,
-//                 Photo_Order: 1,
-//                 PhotoLink: "https://d13pzveje1c51z.cloudfront.net/816469bda21b9f4f7c87b8562417def6",
-//             },
-//         ],
-//         interest: [
-//             {
-//                 InterestName: "🎸 Müzik",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "🎹 Klasik",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "🏀 Basketbol",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "☕ Kahve",
-//                 UserId: 1188,
-//             },
-//         ],
-//     },
-//     {
-//         Name: "Deniz",
-//         City: "İstanbul",
-//         Birth_Date: "2000-09-22",
-//         UserId: 111911,
-//         Gender: 0,
-//         Surname: "Günel",
-//         School: "Boğaziçi Üniversitesi",
-//         Major: "Psikoloji",
-//         blur: 1,
-//         Din: null,
-//         Burc: null,
-//         Beslenme: null,
-//         Alkol: null,
-//         Sigara: null,
-//         About: "Arada bi 90'lar pop, arada bi kahve",
-//         photos: [
-//             {
-//                 UserId: 111911,
-//                 Photo_Order: 1,
-//                 PhotoLink: "https://d13pzveje1c51z.cloudfront.net/14f6d32a522d336345e649622c659fc4",
-//             },
-//         ],
-//         interest: [
-//             {
-//                 InterestName: "☕ Kahve",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🎸 Müzik",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🎹 Klasik",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🏳️‍🌈 LGBTQ+ destekçi",
-//                 UserId: 11188,
-//             },
-//             {
-//                 InterestName: "🥬 Vejetaryen",
-//                 UserId: 11188,
-//             },
-//         ],
-//     },
-//     {
-//         Name: "Erdem",
-//         City: "İstanbul",
-//         Birth_Date: "2001-09-22",
-//         UserId: 119222,
-//         Gender: 1,
-//         Surname: "Arı",
-//         School: "Mimar Sinan Üniversitesi",
-//         Major: "Mimarlık",
-//         Din: null,
-//         blur: 1,
-//         Burc: null,
-//         Beslenme: null,
-//         Alkol: null,
-//         Sigara: null,
-//         About: "Handpoke Tattoo Artist  ;)",
-//         photos: [
-//             {
-//                 UserId: 119222,
-//                 Photo_Order: 1,
-//                 PhotoLink: "https://d13pzveje1c51z.cloudfront.net/ecc1f4aeeeb9c47a6e924478344f73fc",
-//             },
-//         ],
-//         interest: [
-//             {
-//                 InterestName: "🎸 Müzik",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "🎹 Klasik",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "🏀 Basketbol",
-//                 UserId: 1188,
-//             },
-//             {
-//                 InterestName: "☕ Kahve",
-//                 UserId: 1188,
-//             },
-//         ],
-//     },
-// ];
 
 export default function Likes({ navigation, route }) {
 	useBackHandler(() => navigation.goBack());
@@ -310,10 +44,9 @@ export default function Likes({ navigation, route }) {
 	});
 
 	useEffect(() => {
-		//var now = 38 * 60000;
 		const getLikes = async () => {
 			const dataToSend = crypto.encrypt({
-				userId,
+				userId: userId,
 			});
 			await axios
 				.post(url + "/lists/usersLikedYou", dataToSend, { headers: { "access-token": sesToken } })
@@ -355,6 +88,9 @@ export default function Likes({ navigation, route }) {
 		return () => clearInterval(interval);
 	}, []);
 
+	useBackHandler(() => navigation.goBack());
+
+
 	const handleOpen = (index, blur, otherUser) => {
 		if (blur != 1) {
 			let idx = 0;
@@ -370,17 +106,17 @@ export default function Likes({ navigation, route }) {
 			});
 		} else if (likeCount > 0) {
 			const sendBlurChanged = async () => {
-				// console.log({ otherUser });
 				const dataToSend = crypto.encrypt({ userId: userId, otherUser: otherUser });
 				await axios
 					.post(url + "/profile/changeBlur", dataToSend, { headers: { "access-token": sesToken } })
 					.then((res) => {
-						// console.log(res.data);
+						//console.log(res.data);
 						const newBlurList = blurList.map((blur, idx) => {
 							if (idx == index) return 0;
 							return blur;
 						});
 						//console.log(newBlurList);
+						res.data.blurCount == 0 && setTimeLeft(24 * 3600 - 1);
 						setBlurList(newBlurList);
 						setPeopleListWoBLur((oldList) => {
 							const person = peopleList.find(({ UserId }) => {
@@ -388,7 +124,7 @@ export default function Likes({ navigation, route }) {
 							});
 							return [person, ...oldList];
 						});
-						setLikeCount(likeCount - 1);
+						setLikeCount(res.data.blurCount ?? likeCount - 1);
 					})
 					.catch((err) => {
 						console.log(err);
@@ -470,12 +206,9 @@ export default function Likes({ navigation, route }) {
 					}}
 				>
 					{likeCount == 0
-						? `Sonraki hak için: \t${("0" + Math.floor((timeLeft % (24 * 3600)) / 3600)).slice(
-								-2
-						  )}:${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:${(
-								"0" +
-								(timeLeft % 60)
-						  ).slice(-2)}`
+						? `Sonraki hak için: \t${("0" + Math.floor((timeLeft % (24 * 3600)) / 3600)).slice(-2)}:
+						${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:
+						${("0" + (timeLeft % 60)).slice(-2)}`
 						: `${likeCount} kişiyi görme hakkınız var!`}
 				</Text>
 

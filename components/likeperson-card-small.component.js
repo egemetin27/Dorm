@@ -130,7 +130,7 @@ const LikePerson = ({ person, openProfiles, index, blur, mode = "flört" }) => {
 				position: "absolute", top: height * 0.013, left: width * 0.02, fontSize: height * 0.015,
 				fontFamily: "PoppinsBold", color: colors.white, letterSpacing: 0.7,
 				borderRadius: 15, paddingHorizontal: width * 0.02, paddingVertical: height * 0.0009,
-				backgroundColor: mode == "Flört" ? "#FF6978" : "#FACA18",
+				backgroundColor: mode == "Flört" ? "#FF6978" : ( mode == "Arkadaşlık" ? "#FACA18" : "#4136EC"),
 			}}>
 				{mode}
 			</Text>
