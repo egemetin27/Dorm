@@ -5,14 +5,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TabbarButton from "../components/tabbar-button/tabbar-buton.component";
 
 import Profile from "../Pages/User/Profile";
-import Messages from "../Pages/User/messages/messages.route";
 import HomeStackScreen from "./home-screen.stack";
+import LikeStackScreen from "./like-screen.navigator";
+import Messages from "../Pages/User/messages/messages.route";
+
 import { MessageContext } from "../contexts/message.context";
 
 import { colors } from "../visualComponents/colors";
 import { useContext } from "react";
 import { NotificationContext } from "../contexts/notification.context";
-import LikeStackScreen from "./like-screen.navigator";
 
 const profileIcon = require("../assets/TabBarIcons/profile.png");
 const homeIcon = require("../assets/TabBarIcons/logoGradient.png");
@@ -24,7 +25,7 @@ const Tab = createBottomTabNavigator();
 
 function Tabbar({ route, navigation }) {
 	const insets = useSafeAreaInsets();
-	const {unReadCheck, setUnreadChecker} = useContext(NotificationContext);
+	const { unReadCheck, setUnreadChecker } = useContext(NotificationContext);
 	return (
 		<View
 			style={{
@@ -127,4 +128,3 @@ function Tabbar({ route, navigation }) {
 }
 
 export default Tabbar;
-

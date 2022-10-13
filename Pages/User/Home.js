@@ -19,7 +19,7 @@ import Animated, {
 	interpolate,
 } from "react-native-reanimated";
 import { Octicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
+import { setStatusBarBackgroundColor, StatusBar } from "expo-status-bar";
 import axios from "axios";
 
 import People from "../../components/person-card-small.component";
@@ -209,7 +209,12 @@ export default function MainPage({ navigation }) {
 	const {
 		user: { userId, matchMode, sesToken, School, Invisible, BlockCampus, OnlyCampus, City },
 		peopleListIndex,
-		mainPageTutorialDone, eventTutorialDone, peopleTutorialDone, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone,
+		mainPageTutorialDone,
+		eventTutorialDone,
+		peopleTutorialDone,
+		eventCardTutorialDone,
+		mySchoolCardTutorialDone,
+		campusGhostCardTutorialDone,
 		signOut,
 		setPeopleIndex,
 	} = useContext(AuthContext);
@@ -236,9 +241,35 @@ export default function MainPage({ navigation }) {
 	const [shownEvents, setShownEvents] = useState([]);
 	const [peopleList, setPeopleList] = useState([]);
 	//const [peopleListAd, setPeopleListAd] = useState([]);
-	const [eventCard, setEventCard] = useState({ adCard: true, type: "event", UserId: -1, Name: "EventAd", bigTitle: "Etkinlikler", questionTitle: "Etkinliklere birlikte gidecek kimseyi bulamamaktan sıkıldın mı?", description: "dorm’da gitmek isteyebileceğin etkinlikler keşfederken aynı zamanda seninle aynı etkinliğe gitmek isteyen insanlarla da tanışabilirsin!" });
-	const [campusGhostCard, setCampusGhostCard] = useState({ adCard: true, type: "campusGhost", UserId: -2, Name: "CampusGhostAd", bigTitle: "Kampüs Hayaleti", questionTitle: "Üniversitemdeki kimse beni görmesin” mi diyorsun?", description: "Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni, sen de onları göremeyeceksin." });
-	const [mySchoolCard, setMySchoolCard] = useState({ adCard: true, type: "mySchool", UserId: -3, Name: "MySchoolAd", bigTitle: "Canım Okulum", questionTitle: "Bizim kampüs bana yeter mi diyorusn? ", description: "Bu ayarı açtığında sadece okuduğun üniversitedeki kullanıcıları göreceksin." });
+	const [eventCard, setEventCard] = useState({
+		adCard: true,
+		type: "event",
+		UserId: -1,
+		Name: "EventAd",
+		bigTitle: "Etkinlikler",
+		questionTitle: "Etkinliklere birlikte gidecek kimseyi bulamamaktan sıkıldın mı?",
+		description:
+			"dorm’da gitmek isteyebileceğin etkinlikler keşfederken aynı zamanda seninle aynı etkinliğe gitmek isteyen insanlarla da tanışabilirsin!",
+	});
+	const [campusGhostCard, setCampusGhostCard] = useState({
+		adCard: true,
+		type: "campusGhost",
+		UserId: -2,
+		Name: "CampusGhostAd",
+		bigTitle: "Kampüs Hayaleti",
+		questionTitle: "Üniversitemdeki kimse beni görmesin” mi diyorsun?",
+		description:
+			"Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni, sen de onları göremeyeceksin.",
+	});
+	const [mySchoolCard, setMySchoolCard] = useState({
+		adCard: true,
+		type: "mySchool",
+		UserId: -3,
+		Name: "MySchoolAd",
+		bigTitle: "Canım Okulum",
+		questionTitle: "Bizim kampüs bana yeter mi diyorusn? ",
+		description: "Bu ayarı açtığında sadece okuduğun üniversitedeki kullanıcıları göreceksin.",
+	});
 	const [listEmptyMessage, setLisetEmptyMessage] = useState(
 		"Şu an için etrafta kimse kalmadı gibi duruyor. Ama sakın umutsuzluğa kapılma. En kısa zamanda tekrar uğramayı unutma!"
 	);
@@ -314,7 +345,20 @@ export default function MainPage({ navigation }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [filters, matchMode, Invisible, BlockCampus, OnlyCampus, eventCardTutorialDone, mySchoolCardTutorialDone, campusGhostCardTutorialDone]);
+	}, [
+		filters,
+		matchMode,
+		Invisible,
+		BlockCampus,
+		OnlyCampus,
+		eventCardTutorialDone,
+		mySchoolCardTutorialDone,
+		campusGhostCardTutorialDone,
+	]);
+
+	// useEffect(() => {
+	// 	setStatusBarBackgroundColor("#F4F3F3", true);
+	// }, []);
 
 	useEffect(() => {
 		// Event list fetch
@@ -417,7 +461,7 @@ export default function MainPage({ navigation }) {
 
 	return (
 		<View style={[commonStyles.Container, { justifyContent: "space-between" }]}>
-			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
+			{/* <StatusBar style="dark" backgroundColor={"#F4F3F3"} /> */}
 
 			{/* The items above events are all part of header of Events View to scroll in events in the page */}
 
@@ -453,12 +497,14 @@ export default function MainPage({ navigation }) {
 						},
 					]}
 				>
-					<Pressable onPress={() => {
-						navigation.navigate("ProfileCards", {
-							idx: 0,
-							list: peopleList.slice(peopleListIndex, 45),
-						});
-					}}>
+					<Pressable
+						onPress={() => {
+							navigation.navigate("ProfileCards", {
+								idx: 0,
+								list: peopleList.slice(peopleListIndex, 45),
+							});
+						}}
+					>
 						<GradientText
 							text={"Kişiler"}
 							style={{
@@ -543,14 +589,16 @@ export default function MainPage({ navigation }) {
 					name={"EventHeader"}
 					style={[commonStyles.Header, { height: height * 0.05, marginTop: height * 0.01 }]}
 				>
-					<Pressable onPress={() => {
-						navigation.navigate("EventCards", {
-							idx: 0,
-							list: shownEvents,
-							myID: userId,
-							sesToken: sesToken,
-						});
-					}}>
+					<Pressable
+						onPress={() => {
+							navigation.navigate("EventCards", {
+								idx: 0,
+								list: shownEvents,
+								myID: userId,
+								sesToken: sesToken,
+							});
+						}}
+					>
 						<GradientText
 							text={"Etkinlikler"}
 							style={{

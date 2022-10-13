@@ -28,7 +28,6 @@ export default function UpdateNeededModal() {
 			<View
 				style={{
 					width: width * 0.8,
-					// height: height * 0.6,
 					backgroundColor: "white",
 					borderRadius: 10,
 					alignItems: "center",
@@ -40,7 +39,7 @@ export default function UpdateNeededModal() {
 				<Image
 					source={require("../../assets/dorm_text.png")}
 					style={{ width: "60%", height: "15%" }}
-					resizeMode={"cover"}
+					resizeMode={"contain"}
 				/>
 				<Text
 					style={{

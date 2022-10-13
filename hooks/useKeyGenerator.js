@@ -25,8 +25,14 @@ const useKeyGenerator = () => {
 					message: encryptedMessage,
 				})
 				.then((res) => {
-					const { appVersion, genderList, univList, sexualOrientationList, expectationList, cityList } =
-						res.data;
+					const {
+						appVersion,
+						genderList,
+						univList,
+						sexualOrientationList,
+						expectationList,
+						cityList,
+					} = res.data;
 					updateLists({ genderList, univList, sexualOrientationList, expectationList, cityList });
 
 					const localVersion =
@@ -39,6 +45,7 @@ const useKeyGenerator = () => {
 
 					const realVersion = appVersion.slice(0, appVersion.lastIndexOf("."));
 
+					console.log({ realVersion, localVersion, compared: realVersion > localVersion });
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}

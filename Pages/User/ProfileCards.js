@@ -47,12 +47,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height, fontScale } = Dimensions.get("window");
 
 const REPORT_REASONS = {
-	spam: { label: "Sahte profil / Spam" },
-	message: { label: "Uygunsuz mesaj" },
-	photo: { label: "Uygunsuz fotoğraf" },
-	bio: { label: "Uygunsuz biyografi" },
-	age: { label: "Reşit olmayan kullanıcı" },
-	other: { label: "Diğer" },
+	spam: { choice: "Sahte profil / Spam", key: 1 },
+	message: { choice: "Uygunsuz mesaj", key: 2 },
+	photo: { choice: "Uygunsuz fotoğraf", key: 3 },
+	bio: { choice: "Uygunsuz biyografi", key: 4 },
+	age: { choice: "Reşit olmayan kullanıcı", key: 5 },
+	other: { choice: "Diğer", key: 6 },
 };
 
 export default function ProfileCards({ navigation, route }) {
@@ -97,9 +97,7 @@ export default function ProfileCards({ navigation, route }) {
 		// 	// 	await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
 		// 	// });
 		// };
-		
 		//getTutorialShown();
-		
 	}, []);
 
 	useEffect(() => {
@@ -148,9 +146,9 @@ export default function ProfileCards({ navigation, route }) {
 		});
 	};
 
-	const handleReportChange = (idx) => {
+	const handleReportChange = (key) => {
 		setReportPage((oldValue) => {
-			const newValue = { ...oldValue, chosenReport: idx };
+			const newValue = { ...oldValue, chosenReport: key };
 			return newValue;
 		});
 	};
@@ -160,7 +158,7 @@ export default function ProfileCards({ navigation, route }) {
 		const encryptedData = crypto.encrypt({
 			userId: userId,
 			sikayetEdilen: id,
-			sikayetKodu: chosenReport + 1,
+			sikayetKodu: chosenReport,
 			aciklama: "",
 		});
 		await axios
@@ -183,9 +181,10 @@ export default function ProfileCards({ navigation, route }) {
 
 	const derivedText = useDerivedValue(
 		() =>
-			`${isBackFace.value
-				? "Arka yüze dönmek için kart alanına çift dokun"
-				: "Daha iyi tanımak için kart alanına çift dokun"
+			`${
+				isBackFace.value
+					? "Arka yüze dönmek için kart alanına çift dokun"
+					: "Daha iyi tanımak için kart alanına çift dokun"
 			}`
 	);
 
@@ -310,7 +309,7 @@ export default function ProfileCards({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
-				onLayout={() => { }}
+				onLayout={() => {}}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
@@ -384,7 +383,9 @@ export default function ProfileCards({ navigation, route }) {
 						onSwipedLeft={(index) => {
 							handleSwipe({ value: 2, index });
 						}}
-						onSwipedAll={() => { navigation.navigate("ListEndedModal"); }}
+						onSwipedAll={() => {
+							navigation.navigate("ListEndedModal");
+						}}
 						cards={shownList}
 						keyExtractor={(card) => card.UserId}
 						stackSize={2}
@@ -395,11 +396,7 @@ export default function ProfileCards({ navigation, route }) {
 						stackSeparation={0}
 						renderCard={(card, idx) => {
 							if (card.adCard == true) {
-								return (
-									<AdCard
-										card={card}
-									/>
-								);
+								return <AdCard card={card} />;
 							}
 							return (
 								<Card
@@ -564,15 +561,15 @@ export default function ProfileCards({ navigation, route }) {
 						style={{ width: "100%" }}
 						contentContainerStyle={{ paddingBottom: 10 }}
 					>
-						{Object.values(REPORT_REASONS).map(({ label }, index) => {
+						{Object.values(REPORT_REASONS).map(({ choice, key }) => {
 							return (
 								<CustomButton
-									key={index}
+									key={key}
 									onPress={() => {
-										handleReportChange(index);
+										handleReportChange(key);
 									}}
-									text={label}
-									buttonType={reportPage.chosenReport === index ? "white_selected" : "white"}
+									text={choice}
+									buttonType={reportPage.chosenReport === key ? "white_selected" : "white"}
 									style={{ fontSize: Math.min(16, width * 0.036) }}
 								/>
 							);

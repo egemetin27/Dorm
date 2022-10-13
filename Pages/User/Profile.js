@@ -18,7 +18,7 @@ import commonStyles from "../../visualComponents/styles";
 import { colors, GradientText } from "../../visualComponents/colors";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
-import { StatusBar } from "expo-status-bar";
+import { setStatusBarBackgroundColor, setStatusBarStyle, StatusBar } from "expo-status-bar";
 
 import { CustomPicker } from "../../visualComponents/customComponents";
 import axios from "axios";
@@ -30,6 +30,7 @@ import CustomImage from "../../components/custom-image.component";
 import CustomRadio from "../../components/custom-radio.component";
 import { ListsContext } from "../../contexts/lists.context";
 import useBackHandler from "../../hooks/useBackHandler";
+import { useFocusEffect } from "@react-navigation/native";
 const { height, width } = Dimensions.get("screen");
 
 export default function Profile({ navigation }) {
@@ -74,7 +75,12 @@ export default function Profile({ navigation }) {
 	const hobbiesRef = useRef(new Animated.Value(0)).current;
 	const aboutRef = useRef(new Animated.Value(0)).current;
 
-	useBackHandler(() => navigation.goBack())
+	useBackHandler(() => navigation.goBack());
+
+	useFocusEffect(() => {
+		setStatusBarBackgroundColor("#F4F3F3", true);
+		setStatusBarStyle("dark");
+	});
 
 	useEffect(() => {
 		const profile = async () => {
@@ -111,13 +117,14 @@ export default function Profile({ navigation }) {
 	}, []);
 
 	const handleSave = async () => {
-		const lName = name.trim().lastIndexOf(" ") == -1 ? "" : name.trim().slice(name.trim().lastIndexOf(" ") + 1);
+		const lName =
+			name.trim().lastIndexOf(" ") == -1 ? "" : name.trim().slice(name.trim().lastIndexOf(" ") + 1);
 		const fName = name.trim().slice(0, name.lastIndexOf(" "));
 
 		if (fName == "" || lName == "") {
 			await navigation.navigate("CustomModal", { modalType: "EMPTY_NAME" });
 			return;
-		} 
+		}
 		console.log(lName + " " + fName);
 		const dataRaw = {
 			userId: user.userId,
@@ -147,7 +154,7 @@ export default function Profile({ navigation }) {
 			.catch((err) => {
 				console.log(err);
 			});
-		
+
 		setEditibility(false);
 		// const newData = { Name: name, Gender: sex.key,  }; // TODO: add new data here and both save them to local and send to database
 	};
@@ -202,7 +209,7 @@ export default function Profile({ navigation }) {
 
 	return (
 		<View style={[commonStyles.Container, { alignItems: "center" }]}>
-			<StatusBar style="dark" backgroundColor={"#F4F3F3"} />
+			{/* <StatusBar style="dark" backgroundColor={"#F4F3F3"} /> */}
 			<View
 				style={{
 					height: height * 0.08,

@@ -87,18 +87,18 @@ export default function LikeCards({ navigation, route }) {
 		// const prepare = () => {
 		// 	let profile = list.splice(idx, 1);
 		// 	setShownList([profile[0], ...list]);
-        //     //setShownList(list);
+		//     //setShownList(list);
 		// };
-        
+
 		// prepare()
 		// 	.fina(() => {
 		// 		setIsLoading(false);
 		// 	})
-        //     .catch(console.error);
-        const profile = list.splice(idx, 1);
-        
+		//     .catch(console.error);
+		const profile = list.splice(idx, 1);
+
 		setShownList([profile[0], ...list]);
-        setIsLoading(false);
+		setIsLoading(false);
 	}, []);
 
 	const [reportPage, setReportPage] = useState({
@@ -165,9 +165,10 @@ export default function LikeCards({ navigation, route }) {
 
 	const derivedText = useDerivedValue(
 		() =>
-			`${isBackFace.value
-				? "Arka yüze dönmek için kart alanına çift dokun"
-				: "Daha iyi tanımak için kart alanına çift dokun"
+			`${
+				isBackFace.value
+					? "Arka yüze dönmek için kart alanına çift dokun"
+					: "Daha iyi tanımak için kart alanına çift dokun"
 			}`
 	);
 
@@ -291,7 +292,7 @@ export default function LikeCards({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
-				onLayout={() => { }}
+				onLayout={() => {}}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
@@ -348,7 +349,9 @@ export default function LikeCards({ navigation, route }) {
 						onSwipedLeft={(index) => {
 							handleSwipe({ value: 2, index });
 						}}
-						onSwipedAll={() => { navigation.navigate("ListEndedModal"); }}
+						onSwipedAll={() => {
+							navigation.navigate("ListEndedModal");
+						}}
 						cards={shownList}
 						keyExtractor={(card) => card.UserId}
 						stackSize={2}
@@ -359,11 +362,7 @@ export default function LikeCards({ navigation, route }) {
 						stackSeparation={0}
 						renderCard={(card, idx) => {
 							if (card.adCard == true) {
-								return (
-									<AdCard
-										card={card}
-									/>
-								);
+								return <AdCard card={card} />;
 							}
 							return (
 								<Card

@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StatusBar } from "expo-status-bar";
 import LikeCards from "../Pages/User/LikeCards";
 import Likes from "../Pages/User/Likes";
-
 
 function LikeStackScreen() {
 	const LikeStack = createNativeStackNavigator();

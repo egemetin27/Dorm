@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { loadAsync, useFonts } from "expo-font";
+// import { View } from "react-native";
+import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
 import { NavigationContainer } from "@react-navigation/native";
+import NetInfo from "@react-native-community/netinfo";
 import * as Linking from "expo-linking";
 
 import * as Notifications from "expo-notifications";
@@ -21,12 +22,13 @@ import MessageProvider from "./contexts/message.context";
 
 import Stack from "./Navigators/StackNavigator";
 //PAGES end
-// import Temp from "./Pages/Temp";
 import AppStateManager from "./components/app-state-manager";
 import FilterProvider from "./contexts/filter.context";
 import ListsProvider from "./contexts/lists.context";
+import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.modal";
 
 //import ImageManipulatorTest from "./ImageManipulatorTest";
+// import Temp from "./Pages/Temp";
 
 const fonts = {
 	Now: require("./assets/fonts/Now.otf"),
@@ -55,9 +57,16 @@ const defaultLinkingConfig = {
 };
 
 export default function App() {
-	// const [fontLoaded, setFontLoaded] = useState(false);
-
+	const [internetConnection, setInternetConnection] = useState(true);
 	const [fontsLoaded] = useFonts(fonts);
+
+	useEffect(() => {
+		const unsubscribe = NetInfo.addEventListener((state) => {
+			setInternetConnection(state.isConnected);
+		});
+
+		return () => unsubscribe();
+	}, []);
 
 	const linking = {
 		prefixes: [prefix, "dorm://"],
@@ -74,8 +83,12 @@ export default function App() {
 		}
 	}, [fontsLoaded]);
 
-	if (!fontsLoaded) return <View></View>;
-	// if (!fontLoaded) return null;
+	// if (!fontsLoaded) return <View></View>;
+	if (!fontsLoaded) return null;
+
+	// return <Temp></Temp>
+
+	if (!internetConnection) return <NoInternetConnectionModal />;
 
 	return (
 		<NavigationContainer
@@ -134,6 +147,6 @@ export default function App() {
 	);
 }
 
-const styles = StyleSheet.create({
-	container: { flex: 1 },
-});
+// const styles = StyleSheet.create({
+// 	container: { flex: 1 },
+// });

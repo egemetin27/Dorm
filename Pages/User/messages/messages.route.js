@@ -13,6 +13,7 @@ import { AuthContext } from "../../../contexts/auth.context";
 //import { sort } from "../../../utils/array.utils";
 import { useFocusEffect } from "@react-navigation/native";
 import useBackHandler from "../../../hooks/useBackHandler";
+import { setStatusBarBackgroundColor, setStatusBarStyle } from "expo-status-bar";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -32,6 +33,11 @@ const Messages = ({ navigation, route }) => {
 	});
 
 	useBackHandler(() => navigation.goBack());
+
+	useFocusEffect(() => {
+		setStatusBarBackgroundColor("#F4F3F3", true);
+		setStatusBarStyle("dark");
+	});
 
 	useFocusEffect(
 		useCallback(() => {

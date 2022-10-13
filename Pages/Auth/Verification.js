@@ -68,7 +68,7 @@ export default function Verification({ navigation, route }) {
 						})
 						.catch((error) => {
 							Alert.alert("Hata");
-							console.log("register error: ", error.response);
+							console.log("register error: ", JSON.stringify(error.response, null, "\t"));
 						});
 				} else {
 					setWrongInput(true);
@@ -115,7 +115,12 @@ export default function Verification({ navigation, route }) {
 		<View style={commonStyles.Container}>
 			<StatusBar style={"dark"} />
 			<View style={commonStyles.Header}>
-				<TouchableOpacity style={{ left: 35 }} onPress={() => { navigation.goBack(); }}>
+				<TouchableOpacity
+					style={{ left: 35 }}
+					onPress={() => {
+						navigation.goBack();
+					}}
+				>
 					<Ionicons name="arrow-back-outline" size={32} color="#B6B6B6" />
 				</TouchableOpacity>
 				{/* <TouchableOpacity style={{ right: 35, top: 2 }}>
@@ -243,11 +248,11 @@ export default function Verification({ navigation, route }) {
 								if (text == "") input2.current.focus();
 								else input3.current.blur();
 							}}
-						// onChangeText={(text) => {
-						// 	verification.current[3] = text;
-						// 	checkIfDone();
-						// 	if (text == "") input2.current.focus();
-						// }}
+							// onChangeText={(text) => {
+							// 	verification.current[3] = text;
+							// 	checkIfDone();
+							// 	if (text == "") input2.current.focus();
+							// }}
 						/>
 					</View>
 				</View>

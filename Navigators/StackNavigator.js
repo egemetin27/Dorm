@@ -18,7 +18,7 @@ import LetsMeet from "../Pages/Auth/LetsMeet";
 import Register from "../Pages/Auth/Register";
 import RMahremiyetPolitikasi from "../Pages/Auth/RMahremiyetPolitikasi";
 import RKullaniciSozlesmesi from "../Pages/Auth/RKullaniciSozlesmesi";
-import RToplulukKurallari from "../Pages/Auth/RToplulukKurallari";
+// import RToplulukKurallari from "../Pages/Auth/RToplulukKurallari";
 import FirstPassword from "../Pages/Auth/FirstPassword";
 import NewPassword from "../Pages/Auth/NewPassword";
 import AfterRegister from "../Pages/Auth/AfterRegister";

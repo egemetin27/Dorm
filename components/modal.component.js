@@ -28,10 +28,12 @@ const IMAGE_LIST = {
 	flag: require("../assets/flag.png"),
 };
 
-
 export default function ModalPage({ navigation, route }) {
 	const { getMessagesList } = useContext(MessageContext);
-	const { user: { userId ,sesToken }, setpeopleTutorialDone } = useContext(AuthContext);
+	const {
+		user: { userId, sesToken },
+		setpeopleTutorialDone,
+	} = useContext(AuthContext);
 	const MODAL_TYPES = {
 		UNMATCH_MODAL: {
 			image: "unmatch",
@@ -133,18 +135,22 @@ export default function ModalPage({ navigation, route }) {
 				textAlign: "left",
 				alignSelf: "flex-start",
 			},
-			buttons: [{
-				text: "ANLADIM",
-				onPress: () => {
-					navigation.goBack();
-					setTimeout(() => {
-						navigation.navigate("BeginningTutorialModal", { index: 9, fromPeopleTutorial: true });
-					}, 100);
+			buttons: [
+				{
+					text: "ANLADIM",
+					onPress: () => {
+						navigation.goBack();
+						setTimeout(() => {
+							navigation.navigate("BeginningTutorialModal", { index: 9, fromPeopleTutorial: true });
+						}, 100);
+					},
+					buttonType: "textButton",
 				},
-				buttonType: "textButton",
-			}],
+			],
 			noExitButton: true,
-			dismissFunction: () => { navigation.goBack(); }
+			dismissFunction: () => {
+				navigation.goBack();
+			},
 		},
 		LEFT_SWIPE_LIKE_MESSAGE: {
 			image: null,
@@ -172,31 +178,37 @@ export default function ModalPage({ navigation, route }) {
 				textAlign: "left",
 				alignSelf: "flex-start",
 			},
-			buttons: [{
-				text: "ANLADIM",
-				onPress: () => {
-					// const peopletutorialdone = async () => {
-					// 	await AsyncStorage.getItem("Constants").then(async (res) => {
-					// 		const list = JSON.parse(res);
-					// 		const toSave = { ...list, peopleTutorialDone: true };
-					// 		await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
-					// 	});
-					// 	setpeopleTutorialDone();
-					// }
-					// peopletutorialdone();
-					setpeopleTutorialDone();
-					const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial1" });
-					axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken }, })
-						.then((res) => {
-							console.log(res.data);
-						}).catch((err) => {
-							console.log(err);
-						});
-					navigation.goBack();
-					navigation.goBack();
+			buttons: [
+				{
+					text: "ANLADIM",
+					onPress: () => {
+						// const peopletutorialdone = async () => {
+						// 	await AsyncStorage.getItem("Constants").then(async (res) => {
+						// 		const list = JSON.parse(res);
+						// 		const toSave = { ...list, peopleTutorialDone: true };
+						// 		await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
+						// 	});
+						// 	setpeopleTutorialDone();
+						// }
+						// peopletutorialdone();
+						setpeopleTutorialDone();
+						const dataToSent = crypto.encrypt({ userId: userId, tutorialName: "tutorial1" });
+						axios
+							.post(url + "/profile/updateTutorial", dataToSent, {
+								headers: { "access-token": sesToken },
+							})
+							.then((res) => {
+								console.log(res.data);
+							})
+							.catch((err) => {
+								console.log(err);
+							});
+						navigation.goBack();
+						navigation.goBack();
+					},
+					buttonType: "textButton",
 				},
-				buttonType: "textButton",
-			}],
+			],
 			noExitButton: true,
 			dismissFunction: () => {
 				const peopletutorialdone = async () => {
@@ -206,18 +218,22 @@ export default function ModalPage({ navigation, route }) {
 						await AsyncStorage.setItem("Constants", JSON.stringify(toSave));
 					});
 					setpeopleTutorialDone();
-				}
+				};
 				peopletutorialdone();
-				const dataToSent = crypto.encrypt({ userId: userId, "tutorialName": "tutorial1" });
-				axios.post(url + "/profile/updateTutorial", dataToSent, { headers: { "access-token": sesToken } })
+				const dataToSent = crypto.encrypt({ userId: userId, tutorialName: "tutorial1" });
+				axios
+					.post(url + "/profile/updateTutorial", dataToSent, {
+						headers: { "access-token": sesToken },
+					})
 					.then((res) => {
 						console.log(res.data);
-					}).catch((err) => {
+					})
+					.catch((err) => {
 						console.log(err);
 					});
 				navigation.goBack();
 				navigation.goBack();
-			}
+			},
 		},
 		EMPTY_NAME: {
 			image: "sad_face",
@@ -238,7 +254,17 @@ export default function ModalPage({ navigation, route }) {
 		buttonParamsList: [],
 		...route.params,
 	};
-	const { title, body, buttons, image, titleStyle, noExitButton, bodyStyle, containerStyle, dismissFunction } = MODAL_TYPES[modalType];
+	const {
+		title,
+		body,
+		buttons,
+		image,
+		titleStyle,
+		noExitButton,
+		bodyStyle,
+		containerStyle,
+		dismissFunction,
+	} = MODAL_TYPES[modalType];
 	const imageUrl = image ? IMAGE_LIST[image] : null;
 
 	const handleDismiss = () => {
@@ -255,7 +281,7 @@ export default function ModalPage({ navigation, route }) {
 			{/* <BlurView tint={"dark"} intensity={20} style={styles.wrapper}> */}
 			<Pressable onPress={null}>
 				<View style={[styles.modal_container, containerStyle]}>
-					{noExitButton != true &&
+					{noExitButton != true && (
 						<Pressable style={styles.modal_exit_button} onPress={handleDismiss}>
 							<Feather
 								style={{ color: "#9D9D9D" }}
@@ -263,7 +289,8 @@ export default function ModalPage({ navigation, route }) {
 								size={Math.min(32, width * 0.06)}
 								color="black"
 							/>
-						</Pressable>}
+						</Pressable>
+					)}
 					{imageUrl && <Image source={imageUrl} style={styles.icon} />}
 					{title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
 					{body && <Text style={[styles.body, bodyStyle]}>{body}</Text>}
