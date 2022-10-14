@@ -20,7 +20,7 @@ const yourLikesIcon = require("../../assets/yourlikes.png");
 export default function Likes({ navigation, route }) {
 	useBackHandler(() => navigation.goBack());
 
-	const [likeCount, setLikeCount] = useState(0);
+	const [likeCount, setLikeCount] = useState(-1);
 	const [blurList, setBlurList] = useState([]);
 	const [peopleList, setPeopleList] = useState([]);
 	const [peopleListWoBlur, setPeopleListWoBLur] = useState([]);
@@ -64,29 +64,34 @@ export default function Likes({ navigation, route }) {
 							listWoBlur.push(person);
 						}
 					});
-
 					setBlurList(blurlist);
 					setPeopleListWoBLur(listWoBlur);
-					setIsLoading(false);
+					setTimeout(() => {
+						setIsLoading(false);
+					}, 100);
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log(err.response);
 				});
 		};
 		getLikes();
-
-		let interval = setInterval(() => {
-			setTimeLeft((lastTimerCount) => {
-				if (lastTimerCount <= 1) {
-					setLikeCount(likeCount + 1);
-					clearInterval(interval);
-				}
-				return lastTimerCount - 1;
-			});
-		}, 1000);
-
-		return () => clearInterval(interval);
 	}, []);
+
+	useEffect(() => {
+		if (likeCount == 0) {
+			let interval = setInterval(() => {
+				setTimeLeft((lastTimerCount) => {
+					if (lastTimerCount <= 1) {
+						setLikeCount(likeCount + 1);
+						clearInterval(interval);
+					}
+					return lastTimerCount - 1;
+				});
+			}, 1000);
+
+			return () => clearInterval(interval);
+		}
+	}, [likeCount]);
 
 	useBackHandler(() => navigation.goBack());
 
@@ -139,7 +144,7 @@ export default function Likes({ navigation, route }) {
 	if (isLoading) {
 		return (
 			// <View style={[styles.Container, { justifyContent: "center" }]}>
-			<View style={{ backgroundColor: colors.backgroundColor }}>
+			<View style={[styles.Container, { justifyContent: "center", backgroundColor: colors.backgroundColor }]}>
 				<StatusBar style="dark" />
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
@@ -205,10 +210,13 @@ export default function Likes({ navigation, route }) {
 						color: colors.white,
 					}}
 				>
-					{likeCount == 0
-						? `Sonraki hak için: \t${("0" + Math.floor((timeLeft % (24 * 3600)) / 3600)).slice(-2)}:
-						${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:
-						${("0" + (timeLeft % 60)).slice(-2)}`
+					{likeCount <= 0
+						? `Sonraki hak için: \t${("0" + Math.floor((timeLeft % (24 * 3600)) / 3600)).slice(
+							-2
+						)}:${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:${(
+							"0" +
+							(timeLeft % 60)
+						).slice(-2)}`
 						: `${likeCount} kişiyi görme hakkınız var!`}
 				</Text>
 

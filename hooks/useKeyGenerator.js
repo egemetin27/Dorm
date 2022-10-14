@@ -45,7 +45,7 @@ const useKeyGenerator = () => {
 
 					const realVersion = appVersion.slice(0, appVersion.lastIndexOf("."));
 
-					console.log({ realVersion, localVersion, compared: realVersion > localVersion });
+					//console.log({ realVersion, localVersion, compared: realVersion > localVersion });
 					if (realVersion > localVersion) {
 						setInitializationError(true);
 					}
