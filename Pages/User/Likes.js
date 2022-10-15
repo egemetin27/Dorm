@@ -16,7 +16,6 @@ const { height, width } = Dimensions.get("window");
 
 const yourLikesIcon = require("../../assets/yourlikes.png");
 
-
 export default function Likes({ navigation, route }) {
 	useBackHandler(() => navigation.goBack());
 
@@ -95,7 +94,6 @@ export default function Likes({ navigation, route }) {
 
 	useBackHandler(() => navigation.goBack());
 
-
 	const handleOpen = (index, blur, otherUser) => {
 		if (blur != 1) {
 			let idx = 0;
@@ -144,7 +142,12 @@ export default function Likes({ navigation, route }) {
 	if (isLoading) {
 		return (
 			// <View style={[styles.Container, { justifyContent: "center" }]}>
-			<View style={[styles.Container, { justifyContent: "center", backgroundColor: colors.backgroundColor }]}>
+			<View
+				style={[
+					styles.Container,
+					{ justifyContent: "center", backgroundColor: colors.backgroundColor },
+				]}
+			>
 				<StatusBar style="dark" />
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
@@ -210,14 +213,20 @@ export default function Likes({ navigation, route }) {
 						color: colors.white,
 					}}
 				>
-					{likeCount <= 0
+					{likeCount === 0
 						? `Sonraki hak için: \t${("0" + Math.floor((timeLeft % (24 * 3600)) / 3600)).slice(
-							-2
-						)}:${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:${(
-							"0" +
-							(timeLeft % 60)
-						).slice(-2)}`
-						: `${likeCount} kişiyi görme hakkınız var!`}
+								-2
+						  )}:${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:${(
+								"0" +
+								(timeLeft % 60)
+						  ).slice(-2)}`
+						: `${likeCount} kişiyi görme hakkınız var!`}
+
+					{/* {likeCount == 0
+						? `Sonraki hak için: \t${("0" + Math.floor((timeLeft % (24 * 3600)) / 3600)).slice(-2)}:
+						${("0" + Math.floor((timeLeft % 3600) / 60)).slice(-2)}:
+						${("0" + (timeLeft % 60)).slice(-2)}`
+						: `${likeCount} kişiyi görme hakkınız var!`} */}
 				</Text>
 
 				{/* <Text style={{

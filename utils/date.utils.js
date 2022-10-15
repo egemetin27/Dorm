@@ -4,8 +4,8 @@ const normalizeDate = (date) => {
 	return newDate;
 };
 
-export const formatDate = (dateStr) => {
-	const date = new Date(dateStr);
+export const formatDate = (date) => {
+	// const date = new Date(dateStr);
 
 	if (typeof date !== "string" || date.indexOf("-") === -1) return "";
 

@@ -74,8 +74,7 @@ export default function WelcomePage({ navigation }) {
 						},
 					]}
 					onPress={() => {
-						// navigation.navigate("LetsMeet");
-						navigation.navigate("Register");
+						navigation.navigate("LetsMeet");
 					}}
 				>
 					<Text

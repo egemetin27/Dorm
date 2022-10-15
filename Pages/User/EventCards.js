@@ -75,6 +75,7 @@ const Card = ({ event, user, signOut, index }) => {
 	} = event;
 
 	// console.log(JSON.stringify(event, null, "\t"));
+	// console.log(name, date);
 
 	const navigation = useNavigation();
 
@@ -114,7 +115,7 @@ const Card = ({ event, user, signOut, index }) => {
 			setTimeout(() => {
 				navigation.navigate("BeginningTutorialModal", { index: 11, EventId: EventId });
 			}, 400);
-		} 
+		}
 		setShowTapIndicator(false);
 	};
 
@@ -140,7 +141,7 @@ const Card = ({ event, user, signOut, index }) => {
 				.post(url + "/userAction/dislikeEvent", encryptedData, {
 					headers: { "access-token": user.sesToken },
 				})
-				.then((res) => { })
+				.then((res) => {})
 				.catch((err) => {
 					setEventLike(true);
 					setFavFlag(true);
@@ -246,7 +247,7 @@ const Card = ({ event, user, signOut, index }) => {
 		<View
 			name={"cards"}
 			style={{ width: "100%", flex: 1, justifyContent: "center" }}
-		// style={{ width: "100%", backgroundColor: "green" }}
+			// style={{ width: "100%", backgroundColor: "green" }}
 		>
 			<GestureDetector gesture={tapHandler} waitFor={likeButton}>
 				<Animated.View>
@@ -266,7 +267,7 @@ const Card = ({ event, user, signOut, index }) => {
 							style={{ width: "100%" }}
 							pagingEnabled={true}
 							showsVerticalScrollIndicator={false}
-						// onScroll={handleScroll}
+							// onScroll={handleScroll}
 						>
 							<Image
 								source={{
@@ -479,16 +480,18 @@ const Card = ({ event, user, signOut, index }) => {
 								</View>
 							</Gradient>
 						</View>
-						{showTapIndicator && (!eventTutorialDone) && (index == 0) &&
-								<View style={{
+						{showTapIndicator && !eventTutorialDone && index == 0 && (
+							<View
+								style={{
 									alignSelf: "center",
 									top: height * 0.3,
 									color: colors.soft_red,
 									position: "absolute",
-								}}>
-									<TapIndicator />
-								</View>
-							}
+								}}
+							>
+								<TapIndicator />
+							</View>
+						)}
 					</Animated.View>
 
 					{/* PART: backface */}
@@ -603,7 +606,7 @@ const Card = ({ event, user, signOut, index }) => {
 
 											await Linking.openURL(buyLink);
 										}}
-									// style={{ backgroundColor: "pink" }}
+										// style={{ backgroundColor: "pink" }}
 									>
 										<View
 											style={{
@@ -866,12 +869,14 @@ export default function EventCards({ navigation, route }) {
 			userId: user.userId,
 			eventId: list[index].EventId,
 		});
-		axios.post(url + "/statistics/EventClick", encryptedData, {
-			headers: { "access-token": user.sesToken },
-		})
-		.then().catch((err) => {
-			console.log(err)
-		});
+		axios
+			.post(url + "/statistics/EventClick", encryptedData, {
+				headers: { "access-token": user.sesToken },
+			})
+			.then()
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	return (
@@ -924,7 +929,9 @@ export default function EventCards({ navigation, route }) {
 						width={width}
 						loop={false}
 						data={list}
-						renderItem={({ item, index }) => <Card event={item} user={user} index={index} signOut={signOut} />}
+						renderItem={({ item, index }) => (
+							<Card event={item} user={user} index={index} signOut={signOut} />
+						)}
 					/>
 				</View>
 			)}
