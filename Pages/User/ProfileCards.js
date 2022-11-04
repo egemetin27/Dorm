@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import {
 	View,
 	Image,
@@ -8,23 +8,18 @@ import {
 	Text,
 	ScrollView,
 	Alert,
-	BackHandler,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
 	useSharedValue,
 	useDerivedValue,
 	useAnimatedStyle,
 	interpolate,
 	Extrapolate,
-	withTiming,
 	withSpring,
 } from "react-native-reanimated";
 import Swiper from "react-native-deck-swiper";
 import axios from "axios";
-import { StatusBar } from "expo-status-bar";
 import { ReText } from "react-native-redash";
-import { Feather } from "@expo/vector-icons";
 
 import CustomButton from "../../components/button.components";
 import Card from "../../components/person-card-big.component";
@@ -42,7 +37,8 @@ import { Session } from "../../nonVisualComponents/SessionVariables";
 import { AuthContext } from "../../contexts/auth.context";
 
 import useBackHandler from "../../hooks/useBackHandler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import HomeHeader from "../../components/headers/header-home.component";
+import { PeopleContext } from "../../contexts/people.context";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -55,6 +51,11 @@ const REPORT_REASONS = {
 	other: { choice: "Diğer", key: 6 },
 };
 
+const MODE_INDICES = {
+	flirt: 0,
+	friend: 1,
+};
+
 export default function ProfileCards({ navigation, route }) {
 	const {
 		user: { userId, matchMode, sesToken, Photo },
@@ -64,22 +65,51 @@ export default function ProfileCards({ navigation, route }) {
 		signOut,
 		updateProfile,
 	} = useContext(AuthContext);
+	const { peopleList, changeMode } = useContext(PeopleContext);
+
+	const {
+		mode = "event",
+		list = [],
+		idx = 0,
+		eventId = 0,
+		eventName = "",
+	} = route?.params ?? { list: [], idx: 0, fromEvent: false };
+
+	const [isLoading, setIsLoading] = useState(true);
+
+	const shownList = useMemo(() => {
+		if (mode === "event") {
+			setIsLoading(false);
+			return list;
+		}
+		return peopleList;
+	}, [mode, list, peopleList]);
+
+	const myProfilePicture = Photo[0].PhotoLink ?? "";
 
 	const swiperRef = useRef();
-	const destination = useSharedValue(0);
 
-	const { list, idx, fromEvent = false } = route.params;
-	const eventId = route.params.eventId ?? 0;
-	const eventName = route.params.eventName ?? "";
-	const myProfilePicture = Photo[0].PhotoLink ?? "";
-	const [isLoading, setIsLoading] = useState(true);
-	const [shownList, setShownList] = useState([]);
-
+	const [reportPage, setReportPage] = useState({
+		visible: false,
+		chosenReport: -1,
+		name: "",
+		id: 0,
+		index: 0,
+	});
 	const indexOfFrontCard = useSharedValue(0);
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
 
-	useBackHandler(() => navigation.goBack());
+	const capitalizedName = useMemo(
+		() => reportPage?.name.charAt(0).toUpperCase() + reportPage?.name.slice(1),
+		[reportPage]
+	);
+
+	useEffect(() => {
+		if (mode !== "event") {
+			changeMode(MODE_INDICES[mode]).then(setIsLoading(false));
+		}
+	}, [mode]);
 
 	useEffect(() => {
 		// const getTutorialShown = async () => {
@@ -106,28 +136,7 @@ export default function ProfileCards({ navigation, route }) {
 				navigation.navigate("PeopleTutorialModal", { index: 3 });
 			}, 200);
 		}
-		const prepare = async () => {
-			let profile = list.splice(idx, 1);
-			setShownList([profile[0], ...list]);
-		};
-		prepare()
-			.catch(console.error)
-			.then(() => {
-				setIsLoading(false);
-			});
 	}, []);
-
-	const [reportPage, setReportPage] = useState({
-		visible: false,
-		chosenReport: -1,
-		name: "",
-		id: 0,
-		index: 0,
-	});
-
-	const capitalizedName = reportPage?.name.charAt(0).toUpperCase() + reportPage?.name.slice(1);
-
-	// const [chosenReport, setChosenReport] = useState(-1);
 
 	const handleModalOpen = (name, id, index) => {
 		setReportPage((oldValue) => {
@@ -207,7 +216,7 @@ export default function ProfileCards({ navigation, route }) {
 			isLike: value,
 			userSwiped: userId,
 			otherUser: shownList[index].UserId,
-			matchMode,
+			matchMode: eventId === 0 ? 0 : matchMode,
 			eventId,
 			eventName,
 		});
@@ -251,7 +260,6 @@ export default function ProfileCards({ navigation, route }) {
 						});
 
 						x.value = withSpring(0);
-						destination.value = 0;
 					}
 					return;
 				} else if (error.request) {
@@ -299,52 +307,13 @@ export default function ProfileCards({ navigation, route }) {
 	if (isLoading) {
 		return (
 			<View style={[commonStyles.Container, { justifyContent: "center" }]}>
-				<StatusBar style="dark" />
 				<ActivityIndicator animating={true} color={"rgba(100, 60, 248, 1)"} size={"large"} />
 			</View>
 		);
 	}
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" backgroundColor="#F4F3F3" />
-			<View
-				onLayout={() => {}}
-				name={"header"}
-				style={{
-					backgroundColor: "#F4F3F3",
-					paddingVertical: height * 0.015,
-					width: width,
-					flexDirection: "row",
-					justifyContent: "space-between",
-					paddingHorizontal: 20,
-					alignItems: "center",
-					elevation: 10,
-					shadowOffset: {
-						width: 0,
-						height: 5,
-					},
-					shadowOpacity: 0.34,
-					shadowRadius: 6.27,
-				}}
-			>
-				<TouchableOpacity
-					onPress={() => {
-						if (fromEvent) {
-							navigation.goBack();
-							return;
-						}
-						navigation.goBack();
-					}}
-				>
-					<Feather name="chevron-left" size={30} color={colors.cool_gray} />
-				</TouchableOpacity>
-				<Image
-					source={require("../../assets/dorm_text.png")}
-					resizeMode="contain"
-					style={{ height: height * 0.04, flex: 1 }}
-				/>
-				<Feather name="chevron-left" size={30} color={"transparent"} />
-			</View>
+			<HomeHeader page={mode} />
 			<View style={{ width: "100%", height: "100%" }}>
 				<View
 					style={{
@@ -369,107 +338,48 @@ export default function ProfileCards({ navigation, route }) {
 							Yeni kişiler aranıyor...
 						</Text>
 					</View> */}
-					<Swiper
-						ref={swiperRef}
-						//swipeBackCard
-						swipeAnimationDuration={80}
-						onSwiping={handleSwipeAnimation}
-						onSwiped={handleSwipeEnd}
-						onSwipedAborted={handleSwipeEnd}
-						onSwipedRight={(index) => {
-							handleSwipe({ value: 0, index });
-						}}
-						onSwipedLeft={(index) => {
-							handleSwipe({ value: 2, index });
-						}}
-						onSwipedAll={() => {
-							navigation.navigate("ListEndedModal");
-						}}
-						cards={shownList}
-						keyExtractor={(card) => card.UserId}
-						stackSize={2}
-						useViewOverflow={false}
-						verticalSwipe={false}
-						backgroundColor="transparent"
-						cardVerticalMargin={0}
-						stackSeparation={0}
-						renderCard={(card, idx) => {
-							if (card.adCard == true) {
-								return <AdCard card={card} />;
-							}
-							return (
-								<Card
-									handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
-									card={card}
-									index={idx}
-									isBackFace={isBackFace}
-									isScrollShowed={Session.ScrollShown}
-									indexOfFrontCard={indexOfFrontCard}
-								/>
-							);
-						}}
-					/>
-
-					{/* {shownList.map((item, index) => {
-						return (
-							<Card2
-								key={index}
-								// index={9 - index}
-								// index={peopleList.length - index - 1}
-								index={index}
-								eventId={route.params?.eventId ?? 0}
-								eventName={route.params?.eventName ?? ""}
-								idxForMainPage={idx + peopleListIndex - 1}
-								card={item}
-								backFace={backFace}
-								myID={user.userId}
-								sesToken={user.sesToken}
-								indexOfFrontCard={indexOfFrontCard}
-								myProfilePicture={route.params.myPP}
-								isScrollShowed={Session.ScrollShown}
-								matchMode={route.params.matchMode}
-								incrementIndex={() => {
-									indexOfFrontCard.value = indexOfFrontCard.value + 1;
-								}}
-								showMatchScreen={(otherName, otherPicture, myPicture) => {
-									navigation.navigate("MatchModal", {
-										firstImg: otherPicture,
-										secondImg: myPicture,
-										name: otherName,
-									});
-								}}
-								showReportPage={(otherUserID, name) => {
-									showReportPage(otherUserID, name);
-								}}
-								showLikeEndedModal={(hour, minute) => {
-									navigation.navigate("LikeEndedModal", {
-										hour: hour,
-										minute: minute,
-									});
-								}}
-								showListEndedModal={() => {
-									navigation.navigate("ListEndedModal");
-								}}
-								length={shownList.length}
-								refreshList={async () => {
-									try {
-										setIsLoading(true);
-										// setShownList(peopleList.slice(0, 5));
-										// setPeopleList(peopleList.slice(5));
-										setShownList([shownList[4], ...peopleList.slice(0, 4)]);
-										setPeopleList(peopleList.slice(4));
-										indexOfFrontCard.value = 0;
-										if (peopleList.length == 0) {
-											navigation.navigate("ListEndedModal");
-											return;
-										}
-									} finally {
-										setIsLoading(false);
-									}
-								}}
-							/>
-						);
-					})} */}
+					{shownList.length > 0 && (
+						<Swiper
+							ref={swiperRef}
+							//swipeBackCard
+							swipeAnimationDuration={80}
+							onSwiping={handleSwipeAnimation}
+							onSwiped={handleSwipeEnd}
+							onSwipedAborted={handleSwipeEnd}
+							onSwipedRight={(index) => {
+								handleSwipe({ value: 0, index });
+							}}
+							onSwipedLeft={(index) => {
+								handleSwipe({ value: 2, index });
+							}}
+							onSwipedAll={() => {
+								navigation.navigate("ListEndedModal");
+							}}
+							cards={shownList}
+							keyExtractor={(card) => card.UserId}
+							stackSize={2}
+							useViewOverflow={false}
+							verticalSwipe={false}
+							backgroundColor="transparent"
+							cardVerticalMargin={0}
+							stackSeparation={0}
+							renderCard={(card, idx) => {
+								if (card?.adCard) {
+									return <AdCard card={card} />;
+								}
+								return (
+									<Card
+										handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
+										card={card}
+										index={idx}
+										isBackFace={isBackFace}
+										isScrollShowed={Session.ScrollShown}
+										indexOfFrontCard={indexOfFrontCard}
+									/>
+								);
+							}}
+						/>
+					)}
 				</View>
 
 				<View

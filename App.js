@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { View } from "react-native";
 import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
@@ -8,27 +7,17 @@ import NetInfo from "@react-native-community/netinfo";
 import * as Linking from "expo-linking";
 
 import * as Notifications from "expo-notifications";
-// import { enableFreeze } from "react-native-screens";
-
-// import Amplify from "aws-amplify";
-// import awsmobile from "./src/aws-exports";
 
 import AuthProvider from "./contexts/auth.context";
 import NotificationProvider from "./contexts/notification.context";
-import SocketProvider from "./contexts/socket.context";
-import MessageProvider from "./contexts/message.context";
+import ListsProvider from "./contexts/lists.context";
 
-// Amplify.configure(awsmobile);
+import AppStateManager from "./components/app-state-manager";
 
 import Stack from "./Navigators/StackNavigator";
-//PAGES end
-import AppStateManager from "./components/app-state-manager";
-import FilterProvider from "./contexts/filter.context";
-import ListsProvider from "./contexts/lists.context";
-import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.modal";
-
-//import ImageManipulatorTest from "./ImageManipulatorTest";
 // import Temp from "./Pages/Temp";
+
+import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.modal";
 
 const fonts = {
 	Now: require("./assets/fonts/Now.otf"),
@@ -128,19 +117,13 @@ export default function App() {
 		>
 			<ListsProvider>
 				<AuthProvider>
-					<FilterProvider>
-						<NotificationProvider>
-							<MessageProvider>
-								<SocketProvider>
-									<AppStateManager>
-										<SafeAreaProvider style={{ flex: 1 }}>
-											<Stack />
-										</SafeAreaProvider>
-									</AppStateManager>
-								</SocketProvider>
-							</MessageProvider>
-						</NotificationProvider>
-					</FilterProvider>
+					<NotificationProvider>
+						<AppStateManager>
+							<SafeAreaProvider style={{ flex: 1 }}>
+								<Stack />
+							</SafeAreaProvider>
+						</AppStateManager>
+					</NotificationProvider>
 				</AuthProvider>
 			</ListsProvider>
 		</NavigationContainer>

@@ -56,6 +56,8 @@ const AuthProvider = ({ children }) => {
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
 
+				axios.defaults.headers.common["access-token"] = data.sesToken;
+
 				if (data.authentication == "true") {
 					if (navigation != null && data.onBoardingComplete == 0) {
 						navigation.reset({
@@ -99,18 +101,25 @@ const AuthProvider = ({ children }) => {
 					// if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
 					// 	AsyncStorage.getItem("Constants").then(async (res) => {
 					// 		const list = JSON.parse(res);
-							// setMainPageTutorialDone(list.mainPageTutorialDone);
-							// setEventTutorialDone(list.eventTutorialDone);
-							// setPeopleTutorialDone(list.peopleTutorialDone);
-							// setEventCardTutorialDone(list.eventCardTutorialDone);
-							// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
-							// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
+					// setMainPageTutorialDone(list.mainPageTutorialDone);
+					// setEventTutorialDone(list.eventTutorialDone);
+					// setPeopleTutorialDone(list.peopleTutorialDone);
+					// setEventCardTutorialDone(list.eventCardTutorialDone);
+					// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
+					// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
 					// 	});
 					// }
-						
+
 					setUser(userData);
 					setIsLoggedIn(true);
-					if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
+					if (
+						!mainPageTutorialDone ||
+						!eventTutorialDone ||
+						!peopleTutorialDone ||
+						!eventCardTutorialDone ||
+						!mySchoolCardTutorialDone ||
+						!campusGhostCardTutorialDone
+					) {
 						setPeopleTutorialDone(userData.tutorial1 == 1);
 						setEventTutorialDone(userData.tutorial2 == 1);
 						setMySchoolCardTutorialDone(userData.tutorial3 == 1);

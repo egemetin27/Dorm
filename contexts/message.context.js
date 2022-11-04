@@ -1,9 +1,4 @@
-import {
-	createContext,
-	useContext,
-	useState,
-	useEffect,
-} from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 import { AuthContext } from "./auth.context";
@@ -15,7 +10,7 @@ import { sort } from "../utils/array.utils";
 export const MessageContext = createContext({
 	matchesList: {},
 	chatsList: {},
-	unreadChatIDS : [],
+	unreadChatIDS: [],
 	setunreadChatID: () => {},
 	handleNewMessage: () => {},
 	getLastMessage: () => {},
@@ -23,19 +18,21 @@ export const MessageContext = createContext({
 });
 
 const defaultMatchesList = {
-	0: {
-		emptyChats: [],
-		nonEmptyChats: [],
-	},
-	1: {
-		emptyChats: [],
-		nonEmptyChats: [],
-	},
+	emptyChats: [],
+	nonEmptyChats: [],
+	// 0: {
+	// 	emptyChats: [],
+	// 	nonEmptyChats: [],
+	// },
+	// 1: {
+	// 	emptyChats: [],
+	// 	nonEmptyChats: [],
+	// },
 };
 // filter matchesList with respect to match modes and if chatted before
 const filterMatchesList = (matchesList, chatsList = {}) => {
-	const flirts = matchesList.filter((match) => match.matchMode == 0);
-	const friends = matchesList.filter((match) => match.matchMode == 1);
+	// const flirts = matchesList.filter((match) => match.matchMode == 0);
+	// const friends = matchesList.filter((match) => match.matchMode == 1);
 
 	const chatIDs = Object.keys(chatsList);
 
@@ -47,19 +44,25 @@ const filterMatchesList = (matchesList, chatsList = {}) => {
 	});
 
 	const categorizedList = {
-		0: {
-			emptyChats: flirts.filter(
-				(item) => nonEmptyChatIDs.includes(item.MatchId.toString()) == false
-			),
-			nonEmptyChats: flirts.filter((item) => nonEmptyChatIDs.includes(item.MatchId.toString())),
-		},
-		1: {
-			emptyChats: friends.filter(
-				(item) => nonEmptyChatIDs.includes(item.MatchId.toString()) == false
-			),
-			nonEmptyChats: friends.filter((item) => nonEmptyChatIDs.includes(item.MatchId.toString())),
-		},
+		emptyChats: matchesList.filter(
+			(item) => nonEmptyChatIDs.includes(item.MatchId.toString()) == false
+		),
+		nonEmptyChats: matchesList.filter((item) => nonEmptyChatIDs.includes(item.MatchId.toString())),
 	};
+	// const categorizedList = {
+	// 	0: {
+	// 		emptyChats: flirts.filter(
+	// 			(item) => nonEmptyChatIDs.includes(item.MatchId.toString()) == false
+	// 		),
+	// 		nonEmptyChats: flirts.filter((item) => nonEmptyChatIDs.includes(item.MatchId.toString())),
+	// 	},
+	// 	1: {
+	// 		emptyChats: friends.filter(
+	// 			(item) => nonEmptyChatIDs.includes(item.MatchId.toString()) == false
+	// 		),
+	// 		nonEmptyChats: friends.filter((item) => nonEmptyChatIDs.includes(item.MatchId.toString())),
+	// 	},
+	// };
 
 	return categorizedList;
 };
@@ -112,8 +115,10 @@ const getChatsList = async (userId, sesToken) => {
 };
 
 const MessageProvider = ({ children }) => {
-	const { user, isLoggedIn } = useContext(AuthContext);
-	const { userId, sesToken } = user ?? { userId: -1, sesToken: "" };
+	const {
+		user: { userId, sesToken },
+		isLoggedIn,
+	} = useContext(AuthContext);
 
 	const [rawMatchesList, setRawMatchesList] = useState([]);
 	const [matchesList, setMatchesList] = useState(defaultMatchesList);
@@ -133,13 +138,15 @@ const MessageProvider = ({ children }) => {
 	useEffect(() => {
 		const newMatchesList = filterMatchesList(rawMatchesList, chatsList);
 		setMatchesList(newMatchesList);
-		
+
 		// Set the unread message IDs so message icon can light on
-		if (chatsList != {}) Object.keys(chatsList).forEach(matchid => {
-			const lastMessage = sort(chatsList[matchid], "date", false)[0];
-			const lastmsg = {...lastMessage};
-			if (lastmsg.unread == 1 && lastmsg.sourceId != userId) setUnreadChatIDs((oldlist) => [...oldlist, matchid]);
-		});
+		if (chatsList != {})
+			Object.keys(chatsList).forEach((matchid) => {
+				const lastMessage = sort(chatsList[matchid], "date", false)[0];
+				const lastmsg = { ...lastMessage };
+				if (lastmsg.unread == 1 && lastmsg.sourceId != userId)
+					setUnreadChatIDs((oldlist) => [...oldlist, matchid]);
+			});
 	}, [chatsList, rawMatchesList]);
 
 	const handleNewMessage = (msg) => {
@@ -206,9 +213,11 @@ const MessageProvider = ({ children }) => {
 
 	const setunreadChatID = (ID, addBool) => {
 		// remove ID from list
-		if (addBool == false && unreadChatIDS.includes(ID)) setUnreadChatIDs((oldlist) => oldlist.filter((id) => id != ID));
+		if (addBool == false && unreadChatIDS.includes(ID))
+			setUnreadChatIDs((oldlist) => oldlist.filter((id) => id != ID));
 		// add ID to list
-		else if (addBool == true && !unreadChatIDS.includes(ID)) setUnreadChatIDs((oldlist) => [...oldlist, ID]);
+		else if (addBool == true && !unreadChatIDS.includes(ID))
+			setUnreadChatIDs((oldlist) => [...oldlist, ID]);
 	};
 
 	const resetMessages = () => {

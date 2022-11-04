@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
+import LoggedInStack from "./logged-in-stack/logged-in.stack";
 // AUTH PAGES
 import Onboarding from "../Pages/Auth/Onboarding";
 import WelcomePage from "../Pages/Auth/WelcomePage";
@@ -25,38 +26,22 @@ import AfterRegister from "../Pages/Auth/AfterRegister";
 import PhotoUpload from "../Pages/afterRegisteration/PhotoUpload";
 import Hobbies from "../Pages/afterRegisteration/Hobbies";
 /////
-// USER PAGES
-import ProfilePhotos from "../Pages/User/ProfilePhotos";
-/////
-// OTHER SCREENS
-import Settings from "../Pages/Settings";
-import Chat from "../Pages/User/chat/chat.route";
-import Tutorial from "../Pages/Tutorial";
-import MahremiyetPolitikasi from "../Pages/MahremiyetPolitikasi";
-import KullaniciSozlesmesi from "../Pages/KullaniciSozlesmesi";
-import ToplulukKurallari from "../Pages/ToplulukKurallari";
-/////
 // COMPONENTS
 import { AuthContext } from "../contexts/auth.context";
 import { Session } from "../nonVisualComponents/SessionVariables";
-import ChatProfile from "../Pages/User/ChatProfile";
 /////
-
-// STACKS
-import Tabbar from "./tabbar.stack";
-/////
-
-import FilterModal from "../Pages/modals/filter.modal";
+// MODALS
 import LikeEndedModal from "../Pages/modals/LikeEndedModal";
 import MatchModal from "../Pages/modals/MatchModal";
 import ListEndedModal from "../Pages/modals/ListEndedModal";
 import UpdateNeededModal from "../Pages/modals/UpdateNeededModal";
-import ModalPage from "../components/modal.component";
-
-import useKeyGenerator from "../hooks/useKeyGenerator";
 import BeginningTutorialModal from "../Pages/modals/beginning-tutorial.modal";
 import EventTutorialModal from "../Pages/modals/event-tutorial.modal";
 import PeopleTutorialModal from "../Pages/modals/people-tutorial.modal";
+import ChatProfile from "../Pages/User/ChatProfile";
+/////
+
+import useKeyGenerator from "../hooks/useKeyGenerator";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -154,18 +139,11 @@ export default function StackNavigator() {
 						/>
 					</Stack.Group>
 				) : user ? (
-					// Screens for logged in users
-					<Stack.Group screenOptions={{ headerShown: false }}>
-						{!tutorialShown && <Stack.Screen name="Tutorial" component={Tutorial} />}
-						<Stack.Screen name="MainScreen" component={Tabbar} />
-						<Stack.Screen name="Settings" component={Settings} />
-						<Stack.Screen name="MahremiyetPolitikasi" component={MahremiyetPolitikasi} />
-						<Stack.Screen name="KullaniciSozlesmesi" component={KullaniciSozlesmesi} />
-						<Stack.Screen name="ToplulukKurallari" component={ToplulukKurallari} />
-						<Stack.Screen name="Chat" component={Chat} />
-						<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
-						<Stack.Screen name="Hobbies" component={Hobbies} />
-					</Stack.Group>
+					<Stack.Screen
+						name="LoggedInStack"
+						component={LoggedInStack}
+						options={{ headerShown: false }}
+					/>
 				) : (
 					// Screens for non-logged in users
 					<Stack.Group screenOptions={{ headerShown: false }}>
@@ -241,22 +219,6 @@ export default function StackNavigator() {
 					<Stack.Screen
 						name="ProfileCardModal"
 						component={ChatProfile}
-						options={{
-							presentation: "transparentModal",
-							animation: "fade",
-						}}
-					/>
-					<Stack.Screen
-						name="CustomModal"
-						component={ModalPage}
-						options={{
-							presentation: "transparentModal",
-							animation: "fade",
-						}}
-					/>
-					<Stack.Screen
-						name="FilterModal"
-						component={FilterModal}
 						options={{
 							presentation: "transparentModal",
 							animation: "fade",

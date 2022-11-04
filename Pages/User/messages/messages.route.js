@@ -18,19 +18,19 @@ import { setStatusBarBackgroundColor, setStatusBarStyle } from "expo-status-bar"
 const { width, height } = Dimensions.get("screen");
 
 const Messages = ({ navigation, route }) => {
-	const { user } = useContext(AuthContext);
+	// const { user } = useContext(AuthContext);
 	const { connect, disconnect } = useContext(SocketContext);
 	const { matchesList, getLastMessage, getMessagesList, unreadChatIDS } =
 		useContext(MessageContext);
-	const [chatMode, setChatMode] = useState(route.params?.matchMode ?? (user.matchMode || 0));
+	// const [chatMode, setChatMode] = useState(route.params?.matchMode ?? (user.matchMode || 0));
 	const [sortedNonEmptyChats, setSortedNonEmptyChats] = useState([]);
 
-	const unreadInFlirt = matchesList["0"].nonEmptyChats.some(({ MatchId }) => {
-		return unreadChatIDS.includes(MatchId.toString());
-	});
-	const unreadInFriend = matchesList["1"].nonEmptyChats.some(({ MatchId }) => {
-		return unreadChatIDS.includes(MatchId.toString());
-	});
+	// const unreadInFlirt = matchesList["0"].nonEmptyChats.some(({ MatchId }) => {
+	// 	return unreadChatIDS.includes(MatchId.toString());
+	// });
+	// const unreadInFriend = matchesList["1"].nonEmptyChats.some(({ MatchId }) => {
+	// 	return unreadChatIDS.includes(MatchId.toString());
+	// });
 
 	useBackHandler(() => navigation.goBack());
 
@@ -56,39 +56,34 @@ const Messages = ({ navigation, route }) => {
 
 	useEffect(() => {
 		// sort increasingly chat boxes with respect to last message date
-		const sortedList = matchesList[chatMode].nonEmptyChats;
+		const sortedList = matchesList.nonEmptyChats;
 		sortedList.sort((a, b) => {
 			return getLastMessage(a.MatchId).date < getLastMessage(b.MatchId).date ? 1 : -1;
 		});
 
 		setSortedNonEmptyChats(sortedList);
-	}, [matchesList[chatMode].nonEmptyChats]);
+	}, [matchesList.nonEmptyChats]);
 
-	const handleModeChange = (idx) => {
-		if (chatMode == idx) return;
-		setChatMode(idx);
-	};
+	// const handleScroll = ({ nativeEvent }) => {
+	// 	console.log({ nativeEvent });
+	// 	// console.log(nativeEvent.velocity.y > 0);
+	// };
 
-	const handleScroll = ({ nativeEvent }) => {
-		console.log({ nativeEvent });
-		// console.log(nativeEvent.velocity.y > 0);
-	};
-
-	const handleSearch = () => {
-		// fetch("https://exp.host/--/api/v2/push/send", {
-		// 	method: "POST",
-		// 	headers: {
-		// 		Accept: "application/json",
-		// 		"Content-Type": "application/json",
-		// 	},
-		// 	body: JSON.stringify({
-		// 		to: token,
-		// 		sound: "default",
-		// 		title: "Dorm",
-		// 		body: "Yeni bir eşleşmeniz var!",
-		// 	}),
-		// });
-	};
+	// const handleSearch = () => {
+	// 	// fetch("https://exp.host/--/api/v2/push/send", {
+	// 	// 	method: "POST",
+	// 	// 	headers: {
+	// 	// 		Accept: "application/json",
+	// 	// 		"Content-Type": "application/json",
+	// 	// 	},
+	// 	// 	body: JSON.stringify({
+	// 	// 		to: token,
+	// 	// 		sound: "default",
+	// 	// 		title: "Dorm",
+	// 	// 		body: "Yeni bir eşleşmeniz var!",
+	// 	// 	}),
+	// 	// });
+	// };
 
 	return (
 		<View style={styles.container}>
@@ -96,34 +91,34 @@ const Messages = ({ navigation, route }) => {
 				<View
 					style={{
 						flexDirection: "row",
-						justifyContent: "space-between",
-						paddingHorizontal: width * 0.05,
+						justifyContent: "center",
+						// paddingRight: width * 0.05,
+						// paddingHorizontal: width * 0.05,
 					}}
 				>
-					<GradientText text={"Sohbetlerim"} style={styles.header_text} />
+					<GradientText text={"sohbetlerim"} style={styles.header_text} />
 					{/* <Pressable style={styles.search_button} onPress={handleSearch}>
 						<Ionicons name="search" size={height * 0.04} color="#9D9D9D" />
 					</Pressable> */}
 				</View>
-				<Switch
-					choiceList={[
-						`Flört Modu ${chatMode === 1 && unreadInFlirt ? "*" : ""}`,
-						`Arkadaş Modu  ${chatMode === 0 && unreadInFriend ? "*" : ""}`,
-					]}
-					choice={chatMode}
-					setChoice={handleModeChange}
-				/>
+				<View>
+					<View style={styles.empty_chat_title_wrapper}>
+						<GradientText text={`Eşleştiğin kişiler`} style={styles.empty_chat_title} />
+					</View>
+					<FlatList
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+						keyExtractor={(item) => item.MatchId}
+						data={matchesList.emptyChats}
+						contentContainerStyle={styles.empty_chat_list}
+						ItemSeparatorComponent={() => <View style={{ width: width * 0.02 }} />}
+						renderItem={({ item, index }) => <NewMatchBox match={item} />}
+					/>
+				</View>
+				<View style={styles.header_line} />
 			</View>
-			<View>
-				<FlatList
-					horizontal={true}
-					showsHorizontalScrollIndicator={false}
-					keyExtractor={(item) => item.MatchId}
-					data={matchesList[chatMode].emptyChats}
-					contentContainerStyle={styles.empty_chat_list}
-					ItemSeparatorComponent={() => <View style={{ width: width * 0.02 }} />}
-					renderItem={({ item, index }) => <NewMatchBox match={item} />}
-				/>
+			<View style={styles.non_empty_chat_title_wrapper}>
+				<GradientText text={"Sohbetlerim"} style={styles.non_empty_chat_title}></GradientText>
 			</View>
 			<FlatList
 				// onScroll={handleScroll}
@@ -156,33 +151,30 @@ export default Messages;
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: colors.light_gray2,
+		backgroundColor: colors.backgroundNew,
 		flex: 1,
 	},
-
 	header: {
-		backgroundColor: "#F8F8F8",
+		// backgroundColor: "#F8F8F8",
 		paddingTop: height * 0.025,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.25,
-		shadowRadius: 3.84,
-		elevation: 5,
+		paddingBottom: height * 0.012,
+	},
+	header_line: {
+		width: "100%",
+		height: 2,
+		backgroundColor: colors.purpleGray,
+		marginTop: 6,
+		marginLeft: width * 0.03,
 	},
 
 	header_text: {
-		fontFamily: "PoppinsExtraBold",
+		fontFamily: "PoppinsBold",
 		fontSize: height * 0.035,
-		letterSpacing: 1.2,
+		letterSpacing: 1.1,
 	},
-
 	search_button: {
 		padding: 2,
 	},
-
 	empty_chat_list: {
 		maxHeight: height * 0.16,
 		flexGrow: 1,
@@ -191,6 +183,22 @@ const styles = StyleSheet.create({
 	},
 	non_empty_chat_list: {
 		paddingVertical: height * 0.02,
-		paddingHorizontal: width * 0.02,
+	},
+	empty_chat_title_wrapper: {
+		paddingHorizontal: width * 0.03,
+	},
+	empty_chat_title: {
+		fontFamily: "PoppinsSemiBold",
+		fontSize: height * 0.027,
+		letterSpacing: 1.1,
+	},
+	non_empty_chat_title_wrapper: {
+		paddingTop: height * 0.012,
+		paddingHorizontal: width * 0.03,
+	},
+	non_empty_chat_title: {
+		fontFamily: "PoppinsSemiBold",
+		fontSize: height * 0.027,
+		letterSpacing: 1.1,
 	},
 });

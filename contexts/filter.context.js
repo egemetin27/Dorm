@@ -35,6 +35,7 @@ export const OPTIONS = {
 };
 
 export const FilterContext = createContext({
+	savedFilters: {},
 	filters: {},
 	saveFilters: () => {},
 	changeFilters: () => {},
@@ -50,6 +51,7 @@ const FilterProvider = ({ children }) => {
 		sigara: [0, 0, 0],
 		yemek: [0, 0, 0, 0, 0],
 	});
+
 	const [filters, setFilters] = useState(savedFilters);
 
 	useEffect(() => {
@@ -104,7 +106,7 @@ const FilterProvider = ({ children }) => {
 		setFilters(savedFilters);
 	};
 
-	const value = { filters, changeFilters, saveFilters, discardUnsaved };
+	const value = { savedFilters, filters, changeFilters, saveFilters, discardUnsaved };
 	return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;
 };
 

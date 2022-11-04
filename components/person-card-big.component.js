@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useMemo } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -48,7 +48,7 @@ import TapIndicator from "./tap-indicator.component";
 const { height, width } = Dimensions.get("window");
 
 const Card = ({
-	card,
+	card = {},
 	index,
 	isBackFace,
 	isScrollShowed,
@@ -60,30 +60,36 @@ const Card = ({
 	//const navigation = useNavigation();
 
 	const { photos = [], Name: name, Birth_Date: bDay, School: school, Major: major } = card;
-	const [age, setAge] = useState(getAge(bDay));
-	const [sortedPhotos, setSortedPhotos] = useState(sort(photos, "Photo_Order"));
+	// const [age, setAge] = useState(getAge(bDay));
+
+	const age = useMemo(() => getAge(bDay), [getAge, bDay]);
+	const sortedPhotos = useMemo(() => sort(photos, "Photo_Order"), [sort, photos]);
 
 	const [backFace, setBackFace] = useState(false);
-	// const [BACK_FACE_FIELDS, set_BACK_FACE_FIELDS] = useState({
-	// 	Gender: { label: "Cinsiyet", function: (idx) => genderList[idx].choice },
-	// 	Burc: { label: "Burç", function: (idx) => signList[idx].choice },
-	// 	Sigara: { label: "Sigara Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
-	// 	Alkol: { label: "Alkol Kullanımı", function: (idx) => smokeAndDrinkList[idx].choice },
-	// 	Beslenme: { label: "Beslenme Tercihi", function: (idx) => dietList[idx].choice },
+	// const BACK_FACE_FIELDS = useRef({
+	// 	Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
+	// 	Burc: { label: "Burç", function: (idx) => getSign(idx) },
+	// 	Sigara: { label: "Sigara Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+	// 	Alkol: { label: "Alkol Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+	// 	Beslenme: { label: "Beslenme Tercihi", function: (idx) => getDiet(idx) },
 	// 	interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
 	// 	About: { label: "Hakkında", function: (val) => getInterests(val) },
 	// 	// Din: { label: "Dini İnanç", function: (val) => val },
-	// });
-	const BACK_FACE_FIELDS = useRef({
-		Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
-		Burc: { label: "Burç", function: (idx) => getSign(idx) },
-		Sigara: { label: "Sigara Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
-		Alkol: { label: "Alkol Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
-		Beslenme: { label: "Beslenme Tercihi", function: (idx) => getDiet(idx) },
-		interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
-		About: { label: "Hakkında", function: (val) => getInterests(val) },
-		// Din: { label: "Dini İnanç", function: (val) => val },
-	}).current;
+	// }).current;
+
+	const BACK_FACE_FIELDS = useMemo(
+		() => ({
+			Gender: { label: "Cinsiyet", function: (idx) => getGender(idx) },
+			Burc: { label: "Burç", function: (idx) => getSign(idx) },
+			Sigara: { label: "Sigara Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+			Alkol: { label: "Alkol Kullanımı", function: (idx) => getSmokeAndDrinkList(idx) },
+			Beslenme: { label: "Beslenme Tercihi", function: (idx) => getDiet(idx) },
+			interest: { label: "İlgi Alanları", function: (list) => getInterests(list) },
+			About: { label: "Hakkında", function: (val) => val },
+			// Din: { label: "Dini İnanç", function: (val) => val },
+		}),
+		[getGender, getSign, getSmokeAndDrinkList, getDiet, getInterests]
+	);
 
 	const photoIndex = useSharedValue(0);
 	const face = useSharedValue(1); // 1 => front, -1 => back
@@ -114,7 +120,12 @@ const Card = ({
 	};
 
 	const checkScrollNeeded = async () => {
-		if (indexOfFrontCard && index == indexOfFrontCard.value && !isScrollShowed && photos.length > 1) {
+		if (
+			indexOfFrontCard &&
+			index == indexOfFrontCard.value &&
+			!isScrollShowed &&
+			photos.length > 1
+		) {
 			scroll();
 			if (Session.ScrollNumber + 1 == 10) {
 				AsyncStorage.removeItem("scrollNotShowed");
@@ -212,6 +223,12 @@ const Card = ({
 						initialNumToRender={1}
 						maxToRenderPerBatch={2}
 						ref={photoListRef}
+						onScrollToIndexFailed={(info) => {
+							const wait = new Promise((resolve) => setTimeout(resolve, 500));
+							wait.then(() => {
+								photoListRef.current?.scrollToIndex({ index: info.index, animated: true });
+							});
+						}}
 						data={sortedPhotos}
 						onLayout={async () => {
 							await checkScrollNeeded();

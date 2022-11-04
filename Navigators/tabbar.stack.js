@@ -25,7 +25,7 @@ const Tab = createBottomTabNavigator();
 
 function Tabbar({ route, navigation }) {
 	const insets = useSafeAreaInsets();
-	const { unReadCheck, setUnreadChecker } = useContext(NotificationContext);
+	// const { unReadCheck, setUnreadChecker } = useContext(NotificationContext);
 	return (
 		<View
 			style={{
@@ -40,6 +40,7 @@ function Tabbar({ route, navigation }) {
 					tabBarStyle: {
 						height: height * 0.07 + insets.bottom,
 						paddingBottom: height * 0.0144 + insets.bottom,
+						zIndex: 0,
 					},
 					headerShown: false,
 					tabBarShowLabel: false,
