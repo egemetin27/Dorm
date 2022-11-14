@@ -35,7 +35,7 @@ const Messages = ({ navigation, route }) => {
 	useBackHandler(() => navigation.goBack());
 
 	useFocusEffect(() => {
-		setStatusBarBackgroundColor("#F4F3F3", true);
+		Platform.OS != "ios" && setStatusBarBackgroundColor("#F4F3F3", true);
 		setStatusBarStyle("dark");
 	});
 

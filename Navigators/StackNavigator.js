@@ -42,6 +42,7 @@ import ChatProfile from "../Pages/User/ChatProfile";
 /////
 
 import useKeyGenerator from "../hooks/useKeyGenerator";
+import ProfileEditPage from "../Pages/User/ProfileEditPage";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -85,7 +86,10 @@ export default function StackNavigator() {
 					await AsyncStorage.getItem("Constants").then(async (res) => {
 						var constants = JSON.parse(res);
 						if (res == null) {
-							constants = { introShown: false, tutorialShown: false };
+							constants = {
+								introShown: false,
+								tutorialShown: false,
+							};
 							AsyncStorage.setItem("scrollNotShowed", "0"); //scroll not shown
 						}
 						AsyncStorage.getItem("scrollNotShowed").then((res) => {

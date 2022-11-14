@@ -22,9 +22,12 @@ import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.mod
 const fonts = {
 	Now: require("./assets/fonts/Now.otf"),
 	NowBold: require("./assets/fonts/NowBold.otf"),
+	PoppinsLight: require("./assets/fonts/Poppins-ExtraLight.ttf"),
+	PoppinsSemiLight: require("./assets/fonts/Poppins-Light.ttf"),
 	Poppins: require("./assets/fonts/Poppins.ttf"),
 	PoppinsItalic: require("./assets/fonts/PoppinsItalic.ttf"),
 	PoppinsBoldItalic: require("./assets/fonts/PoppinsBoldItalic.ttf"),
+	PoppinsMedium: require("./assets/fonts/Poppins-Medium.ttf"),
 	PoppinsSemiBold: require("./assets/fonts/PoppinsSemiBold.ttf"),
 	PoppinsBold: require("./assets/fonts/PoppinsBold.ttf"),
 	PoppinsExtraBold: require("./assets/fonts/PoppinsExtraBold.ttf"),
