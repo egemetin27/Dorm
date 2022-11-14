@@ -12,6 +12,7 @@ import FilterModal from "../../Pages/modals/filter.modal";
 import Settings from "../../Pages/Settings";
 import ToplulukKurallari from "../../Pages/ToplulukKurallari";
 import Chat from "../../Pages/User/chat/chat.route";
+import ProfileEditPage from "../../Pages/User/ProfileEditPage";
 import ProfilePhotos from "../../Pages/User/ProfilePhotos";
 import Tabbar from "../tabbar.stack";
 
@@ -32,6 +33,7 @@ export default function LoggedInStack() {
 								<Stack.Screen name="Chat" component={Chat} />
 								<Stack.Screen name="ProfilePhotos" component={ProfilePhotos} />
 								<Stack.Screen name="Hobbies" component={Hobbies} />
+								<Stack.Screen name="ProfileEditPage" component={ProfileEditPage} />
 								<Stack.Screen
 									name="CustomModal"
 									component={ModalPage}

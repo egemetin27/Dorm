@@ -155,24 +155,25 @@ export default function EventList({ navigation }) {
 	}, []);
 
 	const handleScroll = ({ nativeEvent }) => {
-		const {
-			velocity: { y: velocityY },
-			contentOffset: { y: offsetY },
-		} = nativeEvent;
+		console.log({ nativeEvent });
+		// const {
+		// 	velocity: { y: velocityY },
+		// 	contentOffset: { y: offsetY },
+		// } = nativeEvent;
 
-		if (!shouldScrollTopOnBackButton && offsetY > CARD_HEIGHT) setShouldScrollTopOnBackButton(true);
-		if (shouldScrollTopOnBackButton && offsetY < CARD_HEIGHT) setShouldScrollTopOnBackButton(false);
+		// if (!shouldScrollTopOnBackButton && offsetY > CARD_HEIGHT) setShouldScrollTopOnBackButton(true);
+		// if (shouldScrollTopOnBackButton && offsetY < CARD_HEIGHT) setShouldScrollTopOnBackButton(false);
 
-		if (offsetY < height / 5) {
-			categoryRow.value = 1;
-			return;
-		}
+		// if (offsetY < height / 5) {
+		// 	categoryRow.value = 1;
+		// 	return;
+		// }
 
-		// velocityY = -1 -> down, +1 -> up
-		if (-1 < velocityY && velocityY < 0.5) return;
+		// // velocityY = -1 -> down, +1 -> up
+		// if (-1 < velocityY && velocityY < 0.5) return;
 
-		if (velocityY < 0) categoryRow.value = 1;
-		else if (velocityY > 0) categoryRow.value = -1;
+		// if (velocityY < 0) categoryRow.value = 1;
+		// else if (velocityY > 0) categoryRow.value = -1;
 	};
 
 	if (!isAppReady) {
