@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { View, Text, Image, Dimensions, Pressable, StyleSheet } from "react-native";
-import { BlurView } from "expo-blur";
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
 

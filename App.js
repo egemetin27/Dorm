@@ -83,53 +83,55 @@ export default function App() {
 	if (!internetConnection) return <NoInternetConnectionModal />;
 
 	return (
-		<NavigationContainer
-			// linking={linking}
-			linking={{
-				...linking,
-				async getInitialURL() {
-					const response = await Notifications.getLastNotificationResponseAsync();
-					const url = response?.notification.request.content.data.url;
+		<SafeAreaProvider style={{ flex: 1 }}>
+			<NavigationContainer
+				// linking={linking}
+				linking={{
+					...linking,
+					async getInitialURL() {
+						const response = await Notifications.getLastNotificationResponseAsync();
+						const url = response?.notification.request.content.data.url;
 
-					return url;
-				},
-				subscribe(listener) {
-					const onReceiveURL = ({ url }) => listener(url);
+						return url;
+					},
+					subscribe(listener) {
+						const onReceiveURL = ({ url }) => listener(url);
 
-					// Listen to incoming links from deep linking
-					const subscriptionLinking = Linking.addEventListener("url", onReceiveURL);
+						// Listen to incoming links from deep linking
+						const subscriptionLinking = Linking.addEventListener("url", onReceiveURL);
 
-					// Listen to expo push notifications
-					const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-						const url = response.notification.request.content.data.url;
+						// Listen to expo push notifications
+						const subscription = Notifications.addNotificationResponseReceivedListener(
+							(response) => {
+								const url = response.notification.request.content.data.url;
 
-						// Any custom logic to see whether the URL needs to be handled
-						//...
+								// Any custom logic to see whether the URL needs to be handled
+								//...
 
-						// Let React Navigation handle the URL
-						listener(url);
-					});
+								// Let React Navigation handle the URL
+								listener(url);
+							}
+						);
 
-					return () => {
-						// Clean up the event listeners
-						subscriptionLinking.remove();
-						subscription.remove();
-					};
-				},
-			}}
-		>
-			<ListsProvider>
-				<AuthProvider>
-					<NotificationProvider>
-						<AppStateManager>
-							<SafeAreaProvider style={{ flex: 1 }}>
+						return () => {
+							// Clean up the event listeners
+							subscriptionLinking.remove();
+							subscription.remove();
+						};
+					},
+				}}
+			>
+				<ListsProvider>
+					<AuthProvider>
+						<NotificationProvider>
+							<AppStateManager>
 								<Stack />
-							</SafeAreaProvider>
-						</AppStateManager>
-					</NotificationProvider>
-				</AuthProvider>
-			</ListsProvider>
-		</NavigationContainer>
+							</AppStateManager>
+						</NotificationProvider>
+					</AuthProvider>
+				</ListsProvider>
+			</NavigationContainer>
+		</SafeAreaProvider>
 	);
 }
 

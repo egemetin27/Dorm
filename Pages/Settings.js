@@ -477,9 +477,9 @@ export default function Settings({ navigation, route }) {
 	};
 
 	return (
-		<View style={[commonStyles.Container, { marginTop: insets.top, marginBottom: insets.bottom }]}>
+		<View style={[commonStyles.Container, { paddingBottom: insets.bottom }]}>
 			<StatusBar style="dark" backgroundColor={colors.white} />
-			<View name={"Header"} style={styles.header}>
+			<View name={"Header"} style={[styles.header, { height: height * 0.08 + insets.top }]}>
 				<TouchableOpacity
 					name={"backButton"}
 					onPress={() => {
@@ -490,10 +490,7 @@ export default function Settings({ navigation, route }) {
 				</TouchableOpacity>
 				<GradientText text={"Ayarlar"} style={{ fontSize: 32, fontFamily: "NowBold" }} />
 			</View>
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ width: width, paddingBottom: 50 }}
-			>
+			<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ width: width }}>
 				{/* <TouchableOpacity
 					style={styles.buttonContainer}
 					onPress={() => {
@@ -1020,7 +1017,6 @@ const styles = StyleSheet.create({
 	header: {
 		backgroundColor: colors.white,
 		width: "100%",
-		height: height * 0.08,
 		elevation: 20,
 		flexDirection: "row",
 		alignItems: "flex-end",

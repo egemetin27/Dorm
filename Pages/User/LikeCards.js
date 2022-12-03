@@ -42,6 +42,7 @@ import { Session } from "../../nonVisualComponents/SessionVariables";
 import { AuthContext } from "../../contexts/auth.context";
 
 import useBackHandler from "../../hooks/useBackHandler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -75,6 +76,8 @@ export default function LikeCards({ navigation, route }) {
 	const indexOfFrontCard = useSharedValue(0);
 	const isBackFace = useSharedValue(false);
 	const x = useSharedValue(0);
+
+	const { top } = useSafeAreaInsets();
 
 	useBackHandler(() => navigation.goBack());
 
@@ -289,14 +292,15 @@ export default function LikeCards({ navigation, route }) {
 		);
 	}
 	return (
-		<View style={commonStyles.Container}>
-			<StatusBar style="dark" backgroundColor="#F4F3F3" />
+		<View style={[commonStyles.Container]}>
+			<StatusBar style="dark" />
 			<View
 				onLayout={() => {}}
 				name={"header"}
 				style={{
 					backgroundColor: "#F4F3F3",
-					paddingVertical: height * 0.015,
+					paddingTop: height * 0.015 + top,
+					paddingBottom: height * 0.015,
 					width: width,
 					flexDirection: "row",
 					justifyContent: "space-between",

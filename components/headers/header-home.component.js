@@ -34,13 +34,13 @@ const HomeHeader = ({ page }) => {
 	return (
 		<View name={"EventHeader"} style={styles.header}>
 			<Pressable style={styles.leftHeaderButton} onPress={handleDrawerButton}>
-				<Ionicons name="menu" size={Math.min(width * 0.06, 27)} color={colors.purpleGray} />
+				<Ionicons name="menu" size={Math.min(width * 0.08, 36)} color={colors.purpleGray} />
 			</Pressable>
 			<GradientText
 				text={label}
 				colors={gradientColors}
 				style={{
-					fontSize: Math.min(height * 0.035, 32),
+					fontSize: Math.min(height * 0.03, 30),
 					fontFamily: "PoppinsSemiBold",
 					letterSpacing: 0.5,
 				}}
@@ -49,7 +49,7 @@ const HomeHeader = ({ page }) => {
 				<Pressable style={styles.rightHeaderButton} onPress={handleFilterButton}>
 					<Ionicons
 						name="filter-sharp"
-						size={Math.min(width * 0.06, 27)}
+						size={Math.min(width * 0.08, 36)}
 						color={colors.purpleGray}
 					/>
 				</Pressable>

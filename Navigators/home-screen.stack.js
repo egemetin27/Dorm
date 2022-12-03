@@ -13,6 +13,7 @@ import EventStack from "./home-stack/event-stack/event-screen.stack";
 import { colors, GradientText } from "../visualComponents/colors";
 import PersonStack from "./home-stack/person-stack/person-screen.stack";
 import { AuthContext } from "../contexts/auth.context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -80,16 +81,18 @@ function HomeStackScreen() {
 		user: { matchMode },
 	} = useContext(AuthContext);
 
+	const { top } = useSafeAreaInsets();
+
 	const initialRoute = useMemo(() => {
 		if (matchMode === 0) return "Flirt";
 		if (matchMode === 1) return "Friend";
 		if (matchMode === 2) return "Event";
 	}, [matchMode]);
 
-	useFocusEffect(() => {
-		setStatusBarBackgroundColor(colors.backgroundNew, true);
-		setStatusBarStyle("dark");
-	});
+	// useFocusEffect(() => {
+	// 	// setStatusBarBackgroundColor(colors.backgroundNew, true);
+	// 	// setStatusBarStyle("dark");
+	// });
 
 	const Drawer = createDrawerNavigator();
 

@@ -13,7 +13,8 @@ import { AuthContext } from "../../../contexts/auth.context";
 //import { sort } from "../../../utils/array.utils";
 import { useFocusEffect } from "@react-navigation/native";
 import useBackHandler from "../../../hooks/useBackHandler";
-import { setStatusBarBackgroundColor, setStatusBarStyle } from "expo-status-bar";
+import { setStatusBarBackgroundColor, setStatusBarStyle, StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -32,12 +33,14 @@ const Messages = ({ navigation, route }) => {
 	// 	return unreadChatIDS.includes(MatchId.toString());
 	// });
 
+	const { top } = useSafeAreaInsets();
+
 	useBackHandler(() => navigation.goBack());
 
-	useFocusEffect(() => {
-		Platform.OS != "ios" && setStatusBarBackgroundColor("#F4F3F3", true);
-		setStatusBarStyle("dark");
-	});
+	// useFocusEffect(() => {
+	// 	Platform.OS != "ios" && setStatusBarBackgroundColor("#F4F3F3", true);
+	// 	setStatusBarStyle("dark");
+	// });
 
 	useFocusEffect(
 		useCallback(() => {
@@ -86,7 +89,8 @@ const Messages = ({ navigation, route }) => {
 	// };
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { paddingTop: top }]}>
+			<StatusBar style="dark" />
 			<View style={styles.header}>
 				<View
 					style={{

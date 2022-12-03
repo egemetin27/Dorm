@@ -52,7 +52,7 @@ export default function StackNavigator() {
 	const [introShown, setIntroShown] = useState(false); // is this the firs time the app is opened
 	const [tutorialShown, setTutorialShown] = useState(false); // is the tutorial screen shown before
 
-	const { user, isLoggedIn, signIn, signOut } = useContext(AuthContext);
+	const { user, isLoggedIn, signIn } = useContext(AuthContext);
 
 	const updateNeeded = useKeyGenerator();
 

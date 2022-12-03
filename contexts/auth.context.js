@@ -48,9 +48,10 @@ const AuthProvider = ({ children }) => {
 	const [campusGhostCardTutorialDone, setCampusGhostCardTutorialDone] = useState(false); // the bool which checks if the Campus Ghost ad is needed when user is swiping other users' cards
 	const [mainPageTutorialDone, setMainPageTutorialDone] = useState(false);
 
-	const signIn = async ({ email, password, notLoading = () => {} }) => {
+	const signIn = async ({ email, password, notLoading = () => {}, counter = 0 }) => {
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 		const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
+		var myTimeout;
 		await axios
 			.post(url + "/account/Login", dataToBeSent)
 			.then(async (res) => {
@@ -135,13 +136,22 @@ const AuthProvider = ({ children }) => {
 			})
 			.catch(async (error) => {
 				console.log("error on /login: ");
-				console.log(error);
-				Alert.alert("Hata", error?.response?.data, [{ text: "Kontrol Edeyim" }]);
-				await SecureStore.deleteItemAsync("credentials");
-				setUser(null);
-				setIsLoggedIn(false);
-				notLoading();
+				console.log(error.response.status, error.response.data);
+
+				if (counter < 10 && error?.response?.status !== 400) {
+					myTimeout = setTimeout(
+						() => signIn({ email, password, notLoading, counter: counter + 1 }),
+						2000
+					);
+				} else {
+					Alert.alert("Hata", error?.responsre?.data, [{ text: "Kontrol Edeyim" }]);
+					await SecureStore.deleteItemAsync("credentials");
+					setUser(null);
+					setIsLoggedIn(false);
+					notLoading();
+				}
 			});
+		// clearTimeout(myTimeout);
 	};
 
 	const signOut = async () => {
