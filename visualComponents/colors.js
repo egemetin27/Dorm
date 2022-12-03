@@ -42,6 +42,18 @@ export const colors = {
 	full_white: "#FFFFFF",
 	tutorialPurple: "#6B46D2",
 	purple: "rgba(107,70,210,0.5)",
+
+	//new colors:
+	backgroundNew: "#F1F1F1",
+	purpleGray: "#C8BFE1",
+	grayNew: "#8E8E93",
+	purpleNew: "#4136F1",
+	softPurple: "#E0D4FF",
+	indigo: "#4136EC",
+
+	event: "#8743FF",
+	flirt: "#FF6B79",
+	friend: "#20A1FF",
 };
 
 export const Gradient = (props) => {
@@ -74,7 +86,7 @@ export const GradientRegistration = (props) => {
 	);
 };
 
-export const GradientText = (props) => {
+export const GradientText = ({ colors, ...props }) => {
 	// text, style.fontSize
 	return (
 		<MaskedView
@@ -90,7 +102,7 @@ export const GradientText = (props) => {
 				</View>
 			}
 		>
-			<Gradient>
+			<Gradient colors={colors}>
 				<Text
 					style={[
 						{

@@ -167,6 +167,7 @@ const Chat = ({ route, navigation }) => {
 				<View style={styles.chat_container}>
 					{chatMessages.length > 0 && (
 						<FlatList
+							removeClippedSubviews={false}
 							onEndReachedThreshold={0}
 							onEndReached={handleOnEndReached}
 							showsVerticalScrollIndicator={false}

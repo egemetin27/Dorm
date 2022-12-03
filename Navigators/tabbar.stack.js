@@ -1,6 +1,6 @@
 import { View, Dimensions, Pressable, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import TabbarButton from "../components/tabbar-button/tabbar-buton.component";
 
@@ -9,11 +9,7 @@ import HomeStackScreen from "./home-screen.stack";
 import LikeStackScreen from "./like-screen.navigator";
 import Messages from "../Pages/User/messages/messages.route";
 
-import { MessageContext } from "../contexts/message.context";
-
 import { colors } from "../visualComponents/colors";
-import { useContext } from "react";
-import { NotificationContext } from "../contexts/notification.context";
 
 const profileIcon = require("../assets/TabBarIcons/profile.png");
 const homeIcon = require("../assets/TabBarIcons/logoGradient.png");
@@ -25,21 +21,26 @@ const Tab = createBottomTabNavigator();
 
 function Tabbar({ route, navigation }) {
 	const insets = useSafeAreaInsets();
-	const { unReadCheck, setUnreadChecker } = useContext(NotificationContext);
+
+	// const { unReadCheck, setUnreadChecker } = useContext(NotificationContext);
 	return (
 		<View
 			style={{
 				flex: 1,
-				paddingTop: insets.top,
-				backgroundColor: colors.white,
+				// paddingTop: insets.top,
+				backgroundColor: colors.backgroundColor,
 			}}
 		>
 			<Tab.Navigator
 				backBehavior="initialRoute"
 				screenOptions={{
 					tabBarStyle: {
+						// backgroundColor: colors.backgroundColor,
+						// height: height * 0.07,
+						// paddingBottom: height * 0.0144,
 						height: height * 0.07 + insets.bottom,
 						paddingBottom: height * 0.0144 + insets.bottom,
+						zIndex: 0,
 					},
 					headerShown: false,
 					tabBarShowLabel: false,

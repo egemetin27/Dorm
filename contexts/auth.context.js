@@ -48,13 +48,16 @@ const AuthProvider = ({ children }) => {
 	const [campusGhostCardTutorialDone, setCampusGhostCardTutorialDone] = useState(false); // the bool which checks if the Campus Ghost ad is needed when user is swiping other users' cards
 	const [mainPageTutorialDone, setMainPageTutorialDone] = useState(false);
 
-	const signIn = async ({ email, password, notLoading = () => {} }) => {
+	const signIn = async ({ email, password, notLoading = () => {}, counter = 0 }) => {
 		const encryptedPassword = await digestStringAsync(CryptoDigestAlgorithm.SHA256, password);
 		const dataToBeSent = crypto.encrypt({ mail: email, password: encryptedPassword });
+		var myTimeout;
 		await axios
 			.post(url + "/account/Login", dataToBeSent)
 			.then(async (res) => {
 				const data = crypto.decrypt(res.data);
+
+				axios.defaults.headers.common["access-token"] = data.sesToken;
 
 				if (data.authentication == "true") {
 					if (navigation != null && data.onBoardingComplete == 0) {
@@ -99,18 +102,25 @@ const AuthProvider = ({ children }) => {
 					// if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
 					// 	AsyncStorage.getItem("Constants").then(async (res) => {
 					// 		const list = JSON.parse(res);
-							// setMainPageTutorialDone(list.mainPageTutorialDone);
-							// setEventTutorialDone(list.eventTutorialDone);
-							// setPeopleTutorialDone(list.peopleTutorialDone);
-							// setEventCardTutorialDone(list.eventCardTutorialDone);
-							// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
-							// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
+					// setMainPageTutorialDone(list.mainPageTutorialDone);
+					// setEventTutorialDone(list.eventTutorialDone);
+					// setPeopleTutorialDone(list.peopleTutorialDone);
+					// setEventCardTutorialDone(list.eventCardTutorialDone);
+					// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
+					// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
 					// 	});
 					// }
-						
+
 					setUser(userData);
 					setIsLoggedIn(true);
-					if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
+					if (
+						!mainPageTutorialDone ||
+						!eventTutorialDone ||
+						!peopleTutorialDone ||
+						!eventCardTutorialDone ||
+						!mySchoolCardTutorialDone ||
+						!campusGhostCardTutorialDone
+					) {
 						setPeopleTutorialDone(userData.tutorial1 == 1);
 						setEventTutorialDone(userData.tutorial2 == 1);
 						setMySchoolCardTutorialDone(userData.tutorial3 == 1);
@@ -126,13 +136,22 @@ const AuthProvider = ({ children }) => {
 			})
 			.catch(async (error) => {
 				console.log("error on /login: ");
-				console.log(error);
-				Alert.alert("Hata", error?.response?.data, [{ text: "Kontrol Edeyim" }]);
-				await SecureStore.deleteItemAsync("credentials");
-				setUser(null);
-				setIsLoggedIn(false);
-				notLoading();
+				console.log(error.response.status, error.response.data);
+
+				if (counter < 10 && error?.response?.status !== 400) {
+					myTimeout = setTimeout(
+						() => signIn({ email, password, notLoading, counter: counter + 1 }),
+						2000
+					);
+				} else {
+					Alert.alert("Hata", error?.responsre?.data, [{ text: "Kontrol Edeyim" }]);
+					await SecureStore.deleteItemAsync("credentials");
+					setUser(null);
+					setIsLoggedIn(false);
+					notLoading();
+				}
 			});
+		// clearTimeout(myTimeout);
 	};
 
 	const signOut = async () => {

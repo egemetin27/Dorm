@@ -219,8 +219,6 @@ const Card = ({ event, user, signOut, index }) => {
 					navigation.push("ProfileCards", {
 						idx: 0,
 						list: data,
-						myID: user.userId,
-						sesToken: user.sesToken,
 						fromEvent: true,
 						eventId: EventId,
 						eventName: name,
@@ -313,6 +311,7 @@ const Card = ({ event, user, signOut, index }) => {
 										width: 8,
 										borderRadius: 4,
 										backgroundColor: colors.white,
+										elevation: 12,
 									},
 									// useAnimatedStyle(() => {
 									// 	return {
@@ -860,10 +859,6 @@ export default function EventCards({ navigation, route }) {
 		backhandler();
 	}, []);
 
-	useEffect(() => {
-		sendEventSeen(idx);
-	}, []);
-
 	const sendEventSeen = (index) => {
 		const encryptedData = crypto.encrypt({
 			userId: user.userId,
@@ -879,9 +874,12 @@ export default function EventCards({ navigation, route }) {
 			});
 	};
 
+	useEffect(() => {
+		sendEventSeen(idx);
+	}, []);
+
 	return (
 		<View style={commonStyles.Container}>
-			<StatusBar style="dark" backgroundColor="#F4F3F3" />
 			<View
 				style={{
 					backgroundColor: "#F4F3F3",
