@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useMemo } from "react";
 import { Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import { isDevice } from "expo-device";
@@ -30,30 +30,34 @@ const handleNotificationResponse = (response) => {
 };
 
 export const NotificationContext = createContext({
-	unReadCheck: Boolean,
-	setUnreadChecker: () => { },
-	eventLiked: Boolean,
-	setEventLike: () => { }
+	unReadCheck: false,
+	eventLiked: false,
+	setUnreadChecker: () => {},
+	setEventLike: () => {},
 });
 
 const NotificationProvider = ({ children }) => {
-	const { isLoggedIn, user } = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
 	const [unReadCheck, setUnreadCheck] = useState(false);
 	const [eventLiked, setEventLiked] = useState(null);
 	//const { setUnread } = useContext(MessageContext);
 	//const [notification, setNotification] = useState(false);
 
+	const { userId, sesToken } = useMemo(() => user ?? { userId: 0, sesToken: "" }, [user]);
+
 	const notificationListener = useRef();
 	//const responseListener = useRef();
 
 	useEffect(() => {
-		if (isLoggedIn) {
+		if (user) {
 			registerForPushNotificationsAsync();
 
-			notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-				//console.log("The push notification message content: " + notification.request.content.body);
-				setUnreadChecker(true);
-			});
+			notificationListener.current = Notifications.addNotificationReceivedListener(
+				(notification) => {
+					//console.log("The push notification message content: " + notification.request.content.body);
+					setUnreadChecker(true);
+				}
+			);
 
 			//responseListener.current = Notifications.addNotificationResponseReceivedListener();
 
@@ -62,7 +66,7 @@ const NotificationProvider = ({ children }) => {
 				//Notifications.removeNotificationSubscription(responseListener.current);
 			};
 		}
-	}, [isLoggedIn]);
+	}, [user]);
 
 	const setUnreadChecker = (bool) => {
 		setUnreadCheck(bool);
@@ -113,13 +117,13 @@ const NotificationProvider = ({ children }) => {
 			const token = (await Notifications.getExpoPushTokenAsync()).data;
 
 			const encryptedToken = crypto.encrypt({
-				userId: user.userId,
+				userId: userId,
 				token,
 			});
 
 			axios
 				.post("https://devmessage.meetdorm.com/registerToken", encryptedToken, {
-					headers: { "access-token": user.sesToken },
+					headers: { "access-token": sesToken },
 				})
 				.then()
 				.catch((err) => console.log("error on /registerToken", err));
@@ -141,9 +145,9 @@ const NotificationProvider = ({ children }) => {
 
 	const value = {
 		unReadCheck,
-		setUnreadChecker,
 		eventLiked,
-		setEventLike
+		setUnreadChecker,
+		setEventLike,
 	};
 
 	return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;

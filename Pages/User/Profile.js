@@ -45,6 +45,7 @@ import { ListsContext } from "../../contexts/lists.context";
 import useBackHandler from "../../hooks/useBackHandler";
 import { useFocusEffect } from "@react-navigation/native";
 import IconTextBox from "../../components/icon-text-box.component";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -57,6 +58,8 @@ export default function Profile({ navigation }) {
     const { lists } = useContext(ListsContext);
     const { user, updateProfile } = useContext(AuthContext);
     const { matchMode, School: university } = user;
+
+    const { top } = useSafeAreaInsets();
 
     const [isReady, setIsReady] = useState(false);
     const [isEditable, setEditibility] = useState(false);
@@ -97,12 +100,13 @@ export default function Profile({ navigation }) {
 
     useBackHandler(() => navigation.goBack());
 
-    useFocusEffect(() => {
-        Platform.OS != "ios" && setStatusBarBackgroundColor("#F4F3F3", true);
-        setStatusBarStyle("dark");
-    });
+    // useFocusEffect(() => {
+    // 	Platform.OS != "ios" && setStatusBarBackgroundColor("#F4F3F3", true);
+    // 	setStatusBarStyle("dark");
+    // });
 
     useEffect(() => {
+        // console.log(JSON.stringify(user, null, 2));
         const profile = async () => {
             try {
                 setName(user.Name + " " + user.Surname);
@@ -161,6 +165,7 @@ export default function Profile({ navigation }) {
                 label: "",
                 IconTextList: [
                     {
+                        topic: "Major",
                         text: major,
                         icon: require("../../assets/workspace_premium.png"),
                         visible: () => handleEdit("", null),
@@ -172,6 +177,7 @@ export default function Profile({ navigation }) {
                 label: "Temel Bilgilerim",
                 IconTextList: [
                     {
+                        topic: "Cinsiyet",
                         text: sex.choice,
                         icon:
                             sex.choice == "Kadın"
@@ -180,21 +186,25 @@ export default function Profile({ navigation }) {
                         visible: setGenderVisible,
                     },
                     {
+                        topic: "Burç",
                         text: sign.choice,
                         icon: require("../../assets/sign.png"),
                         visible: setSignVisible,
                     },
                     {
+                        topic: "Diyet",
                         text: diet.choice,
                         icon: require("../../assets/forkknife.png"),
                         visible: setDietVisible,
                     },
                     {
+                        topic: "Alkol",
                         text: drink.choice,
                         icon: require("../../assets/drink.png"),
                         visible: setDrinkVisible,
                     },
                     {
+                        topic: "Sigara",
                         text: smoke.choice,
                         icon: require("../../assets/smoke.png"),
                         visible: setSmokeVisible,
@@ -206,6 +216,7 @@ export default function Profile({ navigation }) {
                 label: "dorm'dan Beklentim",
                 IconTextList: [
                     {
+                        topic: "Hobim",
                         text: expectation.choice ?? "",
                         icon: require("../../assets/search.png"),
                         visible: setExpectationVisible,
@@ -217,6 +228,7 @@ export default function Profile({ navigation }) {
                 label: "İlgi Duyduğum",
                 IconTextList: [
                     {
+                        topic: "Cinsel Yönelimim",
                         text: interestedSex.choice ?? "",
                         icon: require("../../assets/favorite.png"),
                         visible: setInterestedSexVisible,
@@ -240,6 +252,7 @@ export default function Profile({ navigation }) {
                 label: "Konumum",
                 IconTextList: [
                     {
+                        topic: "Konumum",
                         text: city.choice,
                         icon: require("../../assets/favorite.png"),
                         visible: setCityVisible,
@@ -263,7 +276,7 @@ export default function Profile({ navigation }) {
     );
 
     const handleEdit = (label, visible) => {
-        console.log(label);
+        // console.log(label);
         if (label == "İlgi Alanlarım") {
             navigation.push("Hobbies", {
                 isNewUser: false,
@@ -349,10 +362,10 @@ export default function Profile({ navigation }) {
                 { alignItems: "center", alignSelf: "center" },
             ]}
         >
-            {/* <StatusBar style="dark" backgroundColor={"#F4F3F3"} /> */}
+            <StatusBar style="dark" />
             <View
                 style={{
-                    height: height * 0.045,
+                    height: height * 0.05 + top,
                     width: "100%",
                     backgroundColor: "#F4F3F3",
                     elevation: 10,
@@ -361,8 +374,12 @@ export default function Profile({ navigation }) {
                     //paddingBottom: height * 0.02,
                     //justifyContent: "flex-end",
                     justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: top,
                 }}
             >
+                {/* Empty view for the alignment of elements */}
+                {!isEditable && <View style={{ width: width * 0.1 }}></View>}
                 <View style={{ marginLeft: 20 }}>
                     {isEditable ? (
                         <TouchableOpacity
@@ -384,8 +401,8 @@ export default function Profile({ navigation }) {
                         <View
                             style={{
                                 width: "100%",
-                                paddingRight: width * 0.28,
-                                marginLeft: width * 0.34,
+                                // paddingRight: width * 0.28,
+                                // marginLeft: width * 0.34,
                             }}
                         >
                             <GradientText
@@ -427,10 +444,11 @@ export default function Profile({ navigation }) {
                         >
                             <MaterialCommunityIcons
                                 name="cog"
-                                size={27}
+                                size={26}
                                 color={colors.gray}
                                 style={{
                                     paddingRight: 15,
+                                    width: width * 0.1,
                                 }}
                             />
                         </TouchableOpacity>
@@ -660,6 +678,7 @@ export default function Profile({ navigation }) {
                                                                     text,
                                                                     icon,
                                                                     visible,
+                                                                    topic,
                                                                 },
                                                                 index
                                                             ) => {
@@ -669,6 +688,9 @@ export default function Profile({ navigation }) {
                                                                             isEditable
                                                                                 ? visible
                                                                                 : null
+                                                                        }
+                                                                        topic={
+                                                                            topic
                                                                         }
                                                                         text={
                                                                             text

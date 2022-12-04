@@ -25,14 +25,18 @@ const ChatMessage = ({ message }) => {
 			{myMessage ? (
 				<View style={styles.my_message_container}>
 					<Gradient style={styles.my_message_gradient}>
-						<Text style={styles.my_message}>{message.message}</Text>
-						<Text style={styles.my_message_time}>{getHourMinute(message.date) }</Text>
+						<Text selectable style={styles.my_message}>
+							{message.message}
+						</Text>
+						<Text style={styles.my_message_time}>{getHourMinute(message.date)}</Text>
 					</Gradient>
 				</View>
 			) : (
 				<View style={styles.received_message_container}>
-					<Text style={styles.received_message_text}>{message.message}</Text>
-					<Text style={styles.received_message_time}>{getHourMinute(message.date) }</Text>
+					<Text selectable style={styles.received_message_text}>
+						{message.message}
+					</Text>
+					<Text style={styles.received_message_time}>{getHourMinute(message.date)}</Text>
 				</View>
 			)}
 		</View>
@@ -65,13 +69,13 @@ const styles = StyleSheet.create({
 	},
 	my_message_time: {
 		textAlign: "right",
-		fontSize: width * 0.02, 
+		fontSize: width * 0.02,
 		color: "#dddddd",
-		//marginBottom: height * 0.0055, 
-		position: "absolute", 
-		right: width * 0.012, 
-		bottom: height * 0, 
-		width: width * 0.065
+		//marginBottom: height * 0.0055,
+		position: "absolute",
+		right: width * 0.012,
+		bottom: height * 0,
+		width: width * 0.065,
 	},
 	received_message_container: {
 		borderRadius: Math.min(width * 0.05, height * 0.024),
@@ -84,13 +88,13 @@ const styles = StyleSheet.create({
 	},
 	received_message_time: {
 		textAlign: "right",
-		fontSize: width * 0.02, 
+		fontSize: width * 0.02,
 		color: "#999999",
-		//marginBottom: height * 0.0055, 
-		position: "absolute", 
-		right: width * 0.025, 
-		bottom: height * 0.0016, 
-		width: width * 0.065
+		//marginBottom: height * 0.0055,
+		position: "absolute",
+		right: width * 0.025,
+		bottom: height * 0.0016,
+		width: width * 0.065,
 	},
 	received_message_name: {
 		fontSize: height * 0.02,

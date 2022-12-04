@@ -15,6 +15,7 @@ import {
 import url from "../../connection";
 import crypto from "../../functions/crypto";
 import { useFocusEffect } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -30,16 +31,18 @@ export default function Likes({ navigation, route }) {
     const [isLoading, setIsLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState(24 * 3600);
 
+    const { top } = useSafeAreaInsets();
+
     const {
         user: { userId, sesToken, blurCount },
     } = useContext(AuthContext);
 
     const likeFlatListRef = useRef();
 
-    useFocusEffect(() => {
-        Platform.OS != "ios" && setStatusBarBackgroundColor("#FF6978", true);
-        setStatusBarStyle("dark");
-    });
+    // useFocusEffect(() => {
+    // 	Platform.OS != "ios" && setStatusBarBackgroundColor("#FF6978", true);
+    // 	setStatusBarStyle("dark");
+    // });
 
     useEffect(() => {
         const getLikes = async () => {
@@ -171,7 +174,7 @@ export default function Likes({ navigation, route }) {
 
     return (
         <View styles={[styles.Container]}>
-            {/* <StatusBar style="dark" backgroundColor={"#FF6978"} /> */}
+            <StatusBar style="light" />
             <View
                 style={{
                     position: "absolute",
@@ -184,11 +187,13 @@ export default function Likes({ navigation, route }) {
             />
             <View
                 style={{
-                    height: height * 0.29,
+                    height: height * 0.29 + top,
+                    // height: height * 0.29,
                     width: width,
                     alignContent: "center",
                     alignItems: "center",
                     backgroundColor: "#FF6978",
+                    paddingTop: top,
                 }}
             >
                 <Text
@@ -221,6 +226,8 @@ export default function Likes({ navigation, route }) {
                         marginHorizontal: width * 0.05,
                         borderColor: colors.black,
                         borderWidth: height * 0.002,
+                        minWidth: width * 0.58,
+                        textAlign: "center",
                         borderRadius: 20,
                         borderColor: colors.white,
                         paddingHorizontal: width * 0.04,

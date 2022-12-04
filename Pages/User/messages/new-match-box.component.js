@@ -1,13 +1,21 @@
 import { useMemo } from "react";
-import { Pressable, StyleSheet, Dimensions } from "react-native";
+import { Pressable, StyleSheet, Dimensions, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomImage from "../../../components/custom-image.component";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/auth.context";
+import { colors } from "../../../visualComponents/colors";
 
 const { width, height } = Dimensions.get("screen");
 
 const EmptyChatBox = ({ match }) => {
+	const colorName = useMemo(() => {
+		if (match?.eventId !== 0) return "event";
+		if (match?.matchMode === 0) return "flirt";
+		return "friend";
+	}, [match]);
+
+	const borderColor = useMemo(() => colors[colorName], [colorName]);
 	const navigation = useNavigation();
 	const { user } = useContext(AuthContext);
 
@@ -29,36 +37,37 @@ const EmptyChatBox = ({ match }) => {
 	};
 
 	return (
-		<Pressable style={styles.container} onPress={handlePress} onLongPress={handleLongPress}>
-			{imageUrl && (
-				<CustomImage
-					url={imageUrl}
-					style={{
-						minHeight: "100%",
-						minWidth: "100%",
-						resizeMode: "cover",
-					}}
-				/>
-			)}
+		<Pressable onPress={handlePress} onLongPress={handleLongPress}>
+			<View style={[styles.imageBorder, { borderColor }]}>
+				<View style={styles.imageWrapper}>
+					{imageUrl && (
+						<CustomImage
+							url={imageUrl}
+							style={{
+								minHeight: "100%",
+								minWidth: "100%",
+								resizeMode: "cover",
+							}}
+						/>
+					)}
+				</View>
+			</View>
 		</Pressable>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
+	imageBorder: {
+		height: height * 0.1,
+		aspectRatio: 1,
+		padding: height * 0.008,
+		borderRadius: height * 0.06,
+		borderWidth: height * 0.008,
+	},
+	imageWrapper: {
 		backgroundColor: "#653cf8",
-		height: "100%",
-		aspectRatio: 2 / 3,
-		borderRadius: height * 0.01,
 		overflow: "hidden",
-		elevation: 5,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 1,
-		},
-		shadowOpacity: 0.22,
-		shadowRadius: 2.22,
+		borderRadius: height * 0.06,
 	},
 });
 

@@ -41,10 +41,7 @@ const FilterModal = () => {
 	const handleSave = () => {
 		saveFilters();
 		setPeopleIndex(-1);
-		navigation.replace("MainScreen", {
-			screen: "AnaSayfa",
-			params: { screen: "Home" },
-		});
+		navigation.goBack();
 		//navigation.goBack();
 	};
 

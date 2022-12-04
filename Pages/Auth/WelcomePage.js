@@ -8,10 +8,11 @@ import { useFocusEffect } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
 
 export default function WelcomePage({ navigation }) {
-	useFocusEffect(() => {
-		Platform.OS != "ios" && setStatusBarBackgroundColor("transparent", true);
-		setStatusBarStyle("light");
-	});
+	// useFocusEffect(() => {
+	//     Platform.OS != "ios" &&
+	//         setStatusBarBackgroundColor("transparent", true);
+	//     setStatusBarStyle("light");
+	// });
 
 	return (
 		<View style={[commonStyles.Container, { height: height }]}>

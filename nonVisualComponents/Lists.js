@@ -87,11 +87,3 @@ export const smokeAndDrinkList = [
 	{ key: 4, choice: "Asla" },
 	{ key: 5, choice: "Belirtmek İstemiyorum" },
 ];
-
-export const eventCategories = [
-	{ key: 0, category: "Kaçmaz" },
-	{ key: 1, category: "Kültür" },
-	{ key: 2, category: "Konser" },
-	{ key: 3, category: "Filmer" },
-	{ key: 4, category: "Festival" },
-];

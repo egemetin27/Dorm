@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Platform } from "react-native";
 import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { setCustomText, setCustomTextInput } from "react-native-global-props";
@@ -8,27 +7,17 @@ import NetInfo from "@react-native-community/netinfo";
 import * as Linking from "expo-linking";
 
 import * as Notifications from "expo-notifications";
-// import { enableFreeze } from "react-native-screens";
-
-// import Amplify from "aws-amplify";
-// import awsmobile from "./src/aws-exports";
 
 import AuthProvider from "./contexts/auth.context";
 import NotificationProvider from "./contexts/notification.context";
-import SocketProvider from "./contexts/socket.context";
-import MessageProvider from "./contexts/message.context";
+import ListsProvider from "./contexts/lists.context";
 
-// Amplify.configure(awsmobile);
+import AppStateManager from "./components/app-state-manager";
 
 import Stack from "./Navigators/StackNavigator";
-//PAGES end
-import AppStateManager from "./components/app-state-manager";
-import FilterProvider from "./contexts/filter.context";
-import ListsProvider from "./contexts/lists.context";
-import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.modal";
-
-//import ImageManipulatorTest from "./ImageManipulatorTest";
 // import Temp from "./Pages/Temp";
+
+import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.modal";
 
 const fonts = {
 	Now: require("./assets/fonts/Now.otf"),
@@ -133,59 +122,55 @@ export default function App() {
 	if (!internetConnection) return <NoInternetConnectionModal />;
 
 	return (
-		<NavigationContainer
-			// linking={linking}
-			linking={{
-				...linking,
-				async getInitialURL() {
-					const response = await Notifications.getLastNotificationResponseAsync();
-					const url = response?.notification.request.content.data.url;
+		<SafeAreaProvider style={{ flex: 1 }}>
+			<NavigationContainer
+				// linking={linking}
+				linking={{
+					...linking,
+					async getInitialURL() {
+						const response = await Notifications.getLastNotificationResponseAsync();
+						const url = response?.notification.request.content.data.url;
 
-					return url;
-				},
-				subscribe(listener) {
-					const onReceiveURL = ({ url }) => listener(url);
+						return url;
+					},
+					subscribe(listener) {
+						const onReceiveURL = ({ url }) => listener(url);
 
-					// Listen to incoming links from deep linking
-					const subscriptionLinking = Linking.addEventListener("url", onReceiveURL);
+						// Listen to incoming links from deep linking
+						const subscriptionLinking = Linking.addEventListener("url", onReceiveURL);
 
-					// Listen to expo push notifications
-					const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-						const url = response.notification.request.content.data.url;
+						// Listen to expo push notifications
+						const subscription = Notifications.addNotificationResponseReceivedListener(
+							(response) => {
+								const url = response.notification.request.content.data.url;
 
-						// Any custom logic to see whether the URL needs to be handled
-						//...
+								// Any custom logic to see whether the URL needs to be handled
+								//...
 
-						// Let React Navigation handle the URL
-						listener(url);
-					});
+								// Let React Navigation handle the URL
+								listener(url);
+							}
+						);
 
-					return () => {
-						// Clean up the event listeners
-						subscriptionLinking.remove();
-						subscription.remove();
-					};
-				},
-			}}
-		>
-			<ListsProvider>
-				<AuthProvider>
-					<FilterProvider>
+						return () => {
+							// Clean up the event listeners
+							subscriptionLinking.remove();
+							subscription.remove();
+						};
+					},
+				}}
+			>
+				<ListsProvider>
+					<AuthProvider>
 						<NotificationProvider>
-							<MessageProvider>
-								<SocketProvider>
-									<AppStateManager>
-										<SafeAreaProvider style={{ flex: 1 }}>
-											<Stack />
-										</SafeAreaProvider>
-									</AppStateManager>
-								</SocketProvider>
-							</MessageProvider>
+							<AppStateManager>
+								<Stack />
+							</AppStateManager>
 						</NotificationProvider>
-					</FilterProvider>
-				</AuthProvider>
-			</ListsProvider>
-		</NavigationContainer>
+					</AuthProvider>
+				</ListsProvider>
+			</NavigationContainer>
+		</SafeAreaProvider>
 	);
 }
 

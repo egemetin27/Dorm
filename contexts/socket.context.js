@@ -1,9 +1,4 @@
-import {
-	createContext,
-	useRef,
-	useContext,
-	useMemo,
-} from "react";
+import { createContext, useRef, useContext, useMemo } from "react";
 import axios from "axios";
 
 import { AuthContext } from "./auth.context";
@@ -19,15 +14,12 @@ export const SocketContext = createContext({
 });
 
 const SocketProvider = ({ children }) => {
-	const { user } = useContext(AuthContext);
+	const {
+		user: { userId, sesToken },
+	} = useContext(AuthContext);
 	const { handleNewMessage } = useContext(MessageContext);
 
 	const navigation = useNavigation();
-
-	const { userId, sesToken } = useMemo(
-		() => user ?? { userId: 0, sesToken: "Empty Token" },
-		[user]
-	);
 
 	const ws = useRef();
 	const interval = useRef();
@@ -85,7 +77,7 @@ const SocketProvider = ({ children }) => {
 	};
 
 	const connect = async () => {
-		if (!user) {
+		if (!userId) {
 			console.log("ERROR ON CONNECTING TO SOCKET");
 			return;
 		}

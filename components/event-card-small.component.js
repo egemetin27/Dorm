@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { Text, View, Pressable, Dimensions } from "react-native";
+import { memo, useMemo } from "react";
+import { Text, View, Pressable, Dimensions, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Gradient } from "../visualComponents/colors";
@@ -12,7 +12,7 @@ import { colors } from "../visualComponents/colors";
 const { width, height } = Dimensions.get("window");
 
 const EventCard = ({ event, openEvents, index }) => {
-	const { Description, Date, StartTime, Location, photos } = event;
+	const { Description, Date, StartTime, Location, photos } = useMemo(() => event, [event]);
 
 	return (
 		<Pressable
@@ -21,10 +21,8 @@ const EventCard = ({ event, openEvents, index }) => {
 			}}
 			style={[
 				commonStyles.photo,
+				styles.eventCardContainer,
 				{
-					width: width * 0.44,
-					backgroundColor: colors.cool_gray,
-					marginVertical: 8,
 					marginLeft: index % 2 == 0 ? width * 0.04 : width * 0.02,
 					marginRight: index % 2 == 1 ? width * 0.04 : width * 0.02,
 				},
@@ -127,5 +125,13 @@ const EventCard = ({ event, openEvents, index }) => {
 		</Pressable>
 	);
 };
+
+const styles = StyleSheet.create({
+	eventCardContainer: {
+		height: width * 0.66,
+		backgroundColor: colors.cool_gray,
+		marginBottom: 16,
+	},
+});
 
 export default memo(EventCard);
