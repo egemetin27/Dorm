@@ -31,6 +31,7 @@
 			"favicon": "./assets/DormIcon.png"
 		},
 		"plugins": [
+			"./plugins/withAndroidMainActivityAttributes",
 			[
 				"expo-image-picker",
 				{
@@ -43,7 +44,8 @@
 					"icon": "./assets/logoGradient-notification.png",
 					"color": "#653cf8"
 				}
-			]
+			],
+			["react-native-appsflyer", {}]
 		],
 		"extra": {
 			"eas": {

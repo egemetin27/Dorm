@@ -18,6 +18,7 @@ import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import commonStyles from "../../visualComponents/styles";
 import url from "../../connection";
 import crypto from "../../functions/crypto";
+import appsFlyer from "react-native-appsflyer";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -69,6 +70,18 @@ export default function Verification({ navigation, route }) {
 						.catch((error) => {
 							Alert.alert("Hata");
 							console.log("register error: ", JSON.stringify(error.response, null, "\t"));
+						})
+						.finally(() => {
+							appsFlyer.logEvent(
+								"register",
+								{},
+								(res) => {
+									console.log({ res });
+								},
+								(err) => {
+									console.error({ err });
+								}
+							);
 						});
 				} else {
 					setWrongInput(true);

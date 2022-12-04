@@ -9,7 +9,7 @@ import url from "../connection";
 import crypto from "../functions/crypto";
 import { ListsContext } from "./lists.context";
 import { sort } from "../utils/array.utils";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import appsFlyer from "react-native-appsflyer";
 
 export const AuthContext = createContext({
 	user: null,
@@ -99,18 +99,25 @@ const AuthProvider = ({ children }) => {
 					// if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
 					// 	AsyncStorage.getItem("Constants").then(async (res) => {
 					// 		const list = JSON.parse(res);
-							// setMainPageTutorialDone(list.mainPageTutorialDone);
-							// setEventTutorialDone(list.eventTutorialDone);
-							// setPeopleTutorialDone(list.peopleTutorialDone);
-							// setEventCardTutorialDone(list.eventCardTutorialDone);
-							// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
-							// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
+					// setMainPageTutorialDone(list.mainPageTutorialDone);
+					// setEventTutorialDone(list.eventTutorialDone);
+					// setPeopleTutorialDone(list.peopleTutorialDone);
+					// setEventCardTutorialDone(list.eventCardTutorialDone);
+					// setMySchoolCardTutorialDone(list.mySchoolCardTutorialDone);
+					// setCampusGhostCardTutorialDone(list.campusGhostCardTutorialDone);
 					// 	});
 					// }
-						
+
 					setUser(userData);
 					setIsLoggedIn(true);
-					if (!mainPageTutorialDone || !eventTutorialDone || !peopleTutorialDone || !eventCardTutorialDone || !mySchoolCardTutorialDone || !campusGhostCardTutorialDone) {
+					if (
+						!mainPageTutorialDone ||
+						!eventTutorialDone ||
+						!peopleTutorialDone ||
+						!eventCardTutorialDone ||
+						!mySchoolCardTutorialDone ||
+						!campusGhostCardTutorialDone
+					) {
 						setPeopleTutorialDone(userData.tutorial1 == 1);
 						setEventTutorialDone(userData.tutorial2 == 1);
 						setMySchoolCardTutorialDone(userData.tutorial3 == 1);
@@ -132,6 +139,18 @@ const AuthProvider = ({ children }) => {
 				setUser(null);
 				setIsLoggedIn(false);
 				notLoading();
+			})
+			.finally(() => {
+				appsFlyer.logEvent(
+					"login",
+					{},
+					(res) => {
+						console.log({ res });
+					},
+					(err) => {
+						console.error({ err });
+					}
+				);
 			});
 	};
 
