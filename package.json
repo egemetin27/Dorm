@@ -47,6 +47,7 @@
 		"react": "18.0.0",
 		"react-dom": "18.0.0",
 		"react-native": "0.69.6",
+		"react-native-appsflyer": "^6.9.2",
 		"react-native-date-picker": "^4.2.0",
 		"react-native-deck-swiper": "^2.0.8",
 		"react-native-fast-image": "^8.5.11",
