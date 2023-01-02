@@ -15,9 +15,9 @@ import ListsProvider from "./contexts/lists.context";
 import AppStateManager from "./components/app-state-manager";
 
 import Stack from "./Navigators/StackNavigator";
-// import Temp from "./Pages/Temp";
 
 import NoInternetConnectionModal from "./Pages/modals/no-internet-connection.modal";
+import appsFlyer from "react-native-appsflyer";
 
 const fonts = {
 	Now: require("./assets/fonts/Now.otf"),
@@ -48,7 +48,7 @@ const prefix = Linking.createURL("/");
 // 	},
 // };
 
-var onInstallConversionDataCanceller = appsFlyer.onInstallConversionData((res) => {
+appsFlyer.onInstallConversionData((res) => {
 	if (JSON.parse(res.data.is_first_launch) == true) {
 		if (res.data.af_status === "Non-organic") {
 			var media_source = res.data.media_source;
@@ -67,7 +67,7 @@ var onInstallConversionDataCanceller = appsFlyer.onInstallConversionData((res) =
 	}
 });
 
-var onAppOpenAttributionCanceller = appsFlyer.onAppOpenAttribution((res) => {
+appsFlyer.onAppOpenAttribution((res) => {
 	console.log(res);
 });
 

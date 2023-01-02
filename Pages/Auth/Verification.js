@@ -62,16 +62,6 @@ export default function Verification({ navigation, route }) {
 						.then((res) => {
 							console.log(res.data);
 							const data = crypto.decrypt(res.data);
-							navigation.replace("PhotoUpload", {
-								...dataToBeSent,
-								...data,
-							});
-						})
-						.catch((error) => {
-							Alert.alert("Hata");
-							console.log("register error: ", JSON.stringify(error.response, null, "\t"));
-						})
-						.finally(() => {
 							appsFlyer.logEvent(
 								"register",
 								{},
@@ -82,6 +72,15 @@ export default function Verification({ navigation, route }) {
 									console.error({ err });
 								}
 							);
+							appsFlyer.setCustomerUserId(data.userId);
+							navigation.replace("PhotoUpload", {
+								...dataToBeSent,
+								...data,
+							});
+						})
+						.catch((error) => {
+							Alert.alert("Hata");
+							console.log("register error: ", JSON.stringify(error.response, null, "\t"));
 						});
 				} else {
 					setWrongInput(true);
@@ -145,7 +144,9 @@ export default function Verification({ navigation, route }) {
 				<MaskedView
 					style={styles.maskedViewStyle}
 					maskElement={
-						<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 30 }}>Doğrulama Kodun</Text>
+						<Text style={{ fontFamily: "PoppinsSemiBold", fontSize: 30 }}>
+							Doğrulama Kodun
+						</Text>
 					}
 				>
 					<LinearGradient
@@ -167,7 +168,9 @@ export default function Verification({ navigation, route }) {
 				</MaskedView>
 
 				<View style={{ marginTop: 10 }}>
-					<Text style={[styles.text, { fontFamily: "PoppinsSemiBold" }]}>{dataToBeSent.mail}</Text>
+					<Text style={[styles.text, { fontFamily: "PoppinsSemiBold" }]}>
+						{dataToBeSent.mail}
+					</Text>
 					<Text style={styles.text}>
 						mail adresine gönderdiğimiz doğrulama kodunu bizimle paylaş
 					</Text>

@@ -49,7 +49,7 @@ const NotificationProvider = ({ children }) => {
 	//const responseListener = useRef();
 
 	useEffect(() => {
-		if (user) {
+		if (isDevice && user) {
 			registerForPushNotificationsAsync();
 
 			notificationListener.current = Notifications.addNotificationReceivedListener(

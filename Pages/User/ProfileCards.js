@@ -267,6 +267,18 @@ export default function ProfileCards({ navigation, route }) {
 				} else {
 					console.log("error: ", error.message);
 				}
+			})
+			.finally(() => {
+				appsFlyer.logEvent(
+					"swipe",
+					{ isLike: index === 0 },
+					(res) => {
+						console.log({ res });
+					},
+					(err) => {
+						console.error({ err });
+					}
+				);
 			});
 	};
 
@@ -280,7 +292,8 @@ export default function ProfileCards({ navigation, route }) {
 							: 0,
 				},
 				{
-					scale: x.value > 0 ? interpolate(x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
+					scale:
+						x.value > 0 ? interpolate(x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
 				},
 			],
 			opacity: interpolate(x.value, [width * 0.95, width], [1, 0]),
@@ -297,7 +310,10 @@ export default function ProfileCards({ navigation, route }) {
 							: 0,
 				},
 				{
-					scale: x.value < 0 ? interpolate(-x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP) : 0,
+					scale:
+						x.value < 0
+							? interpolate(-x.value, [0, width / 2], [0, 2], Extrapolate.CLAMP)
+							: 0,
 				},
 			],
 			opacity: interpolate(x.value, [-width * 0.95, -width], [1, 0]),
@@ -369,7 +385,9 @@ export default function ProfileCards({ navigation, route }) {
 								}
 								return (
 									<Card
-										handleReportButton={() => handleModalOpen(card.Name, card.UserId, idx)}
+										handleReportButton={() =>
+											handleModalOpen(card.Name, card.UserId, idx)
+										}
 										card={card}
 										index={idx}
 										isBackFace={isBackFace}
@@ -453,7 +471,11 @@ export default function ProfileCards({ navigation, route }) {
 				/>
 			</Animated.View>
 
-			<CustomModal visible={reportPage.visible} dismiss={handleModalDismiss} animationType="fade">
+			<CustomModal
+				visible={reportPage.visible}
+				dismiss={handleModalDismiss}
+				animationType="fade"
+			>
 				<View style={styles.modal_container}>
 					<View style={styles.header}>
 						<Image
@@ -462,7 +484,9 @@ export default function ProfileCards({ navigation, route }) {
 							style={{ height: height * 0.05, aspectRatio: 1, marginBottom: 10 }}
 						/>
 						<Text style={styles.header_text}>Bildirmek istiyor musun?</Text>
-						<Text style={styles.header_subtext}>{capitalizedName} adlı kişiyi bildiriyorsun.</Text>
+						<Text style={styles.header_subtext}>
+							{capitalizedName} adlı kişiyi bildiriyorsun.
+						</Text>
 						<Text style={styles.header_subtext}>Bunu ona söylemeyeceğiz.</Text>
 					</View>
 					<ScrollView

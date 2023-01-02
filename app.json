@@ -3,7 +3,7 @@
 		"name": "Dorm",
 		"scheme": "dorm",
 		"slug": "Dorm",
-		"version": "1.5.6",
+		"version": "1.5.8",
 		"orientation": "portrait",
 		"icon": "./assets/DormIcon.png",
 		"owner": "dorm",
@@ -19,19 +19,41 @@
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": false,
-			"bundleIdentifier": "com.meetdorm.dorm"
+			"bundleIdentifier": "com.meetdorm.dorm",
+			"associatedDomains": ["applinks:dorm.onelink.me"]
 		},
 		"android": {
 			"googleServicesFile": "./google-services.json",
 			"package": "com.meetdorm.dorm",
-			"versionCode": 103,
-			"permissions": ["android.permission.RECORD_AUDIO"]
+			"versionCode": 105,
+			"permissions": ["android.permission.RECORD_AUDIO"],
+			"intentFilters": [
+				{
+					"action": "VIEW",
+					"data": [
+						{
+							"scheme": "https",
+							"host": "dorm.onelink.me",
+							"pathPrefix": "/Djzp"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				},
+				{
+					"action": "VIEW",
+					"data": [
+						{
+							"scheme": "dorm"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				}
+			]
 		},
 		"web": {
 			"favicon": "./assets/DormIcon.png"
 		},
 		"plugins": [
-			"./plugins/withAndroidMainActivityAttributes",
 			[
 				"expo-image-picker",
 				{
