@@ -62,7 +62,8 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 						textAlign: "center",
 					}}
 				>
-					Oturumu kapatmak istediğine emin misin? Profilin kullanıcılara gözükmeye devam edecek.
+					Oturumu kapatmak istediğine emin misin? Profilin kullanıcılara gözükmeye devam
+					edecek.
 				</Text>
 
 				<TouchableOpacity
@@ -85,7 +86,9 @@ const SignOutModal = ({ visible, dismiss, signOut }) => {
 							height: "100%",
 						}}
 					>
-						<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+						<Text
+							style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}
+						>
 							Vazgeçtim
 						</Text>
 					</Gradient>
@@ -180,8 +183,9 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken, beInv
 						textAlign: "center",
 					}}
 				>
-					Profil bilgilerin silinmeden hesabın dondurulacak. Bu sürede profilin diğer kullanıcılara
-					gözükmeyecek. Geri gelmek istediğinde uygulamaya tekrar giriş yapman yeterli.
+					Profil bilgilerin silinmeden hesabın dondurulacak. Bu sürede profilin diğer
+					kullanıcılara gözükmeyecek. Geri gelmek istediğinde uygulamaya tekrar giriş yapman
+					yeterli.
 				</Text>
 
 				<TouchableOpacity
@@ -204,7 +208,9 @@ const FreezeAccountModal = ({ visible, dismiss, signOut, userId, sesToken, beInv
 							height: "100%",
 						}}
 					>
-						<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+						<Text
+							style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}
+						>
 							Hesabımı Dondur
 						</Text>
 					</Gradient>
@@ -326,7 +332,9 @@ const DeleteAccountModal = ({
 							height: "100%",
 						}}
 					>
-						<Text style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}>
+						<Text
+							style={{ color: colors.white, fontSize: 20, fontFamily: "PoppinsSemiBold" }}
+						>
 							Hesabımı Dondur
 						</Text>
 					</Gradient>
@@ -404,7 +412,9 @@ export default function Settings({ navigation, route }) {
 		const invisSent = crypto.encrypt({ invisible: value ? "1" : "0", userId: userId });
 
 		axios
-			.post(url + "/profile/ChangeVisibility", invisSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
+			.post(url + "/profile/ChangeVisibility", invisSent, {
+				headers: { "access-token": sesToken },
+			}) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				// let userStr = await SecureStore.getItemAsync("userData");
 				// const user = JSON.parse(userStr);
@@ -453,7 +463,9 @@ export default function Settings({ navigation, route }) {
 		const onlyCampusSent = crypto.encrypt({ OnlyCampus: value ? "1" : "0", userId: userId });
 
 		axios
-			.post(url + "/profile/OnlyCampus", onlyCampusSent, { headers: { "access-token": sesToken } }) // There is a typo (not Change but Chage) TODO: make userId variable
+			.post(url + "/profile/OnlyCampus", onlyCampusSent, {
+				headers: { "access-token": sesToken },
+			}) // There is a typo (not Change but Chage) TODO: make userId variable
 			.then(async (res) => {
 				// let userStr = await SecureStore.getItemAsync("userData");
 				// const user = JSON.parse(userStr);
@@ -479,7 +491,10 @@ export default function Settings({ navigation, route }) {
 	return (
 		<View style={[commonStyles.Container, { paddingBottom: insets.bottom }]}>
 			<StatusBar style="dark" backgroundColor={colors.white} />
-			<View name={"Header"} style={[styles.header, { height: height * 0.08 + insets.top }]}>
+			<View
+				name={"Header"}
+				style={[styles.header, { height: height * 0.08 + insets.top, marginTop: insets.top }]}
+			>
 				<TouchableOpacity
 					name={"backButton"}
 					onPress={() => {
@@ -511,16 +526,10 @@ export default function Settings({ navigation, route }) {
 					<Text style={styles.buttonText}>Eşleşme Modu</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
 				</TouchableOpacity> */}
-
-				<TouchableOpacity style={styles.buttonContainer}>
-					<Text style={styles.buttonText}>Filtreleme</Text>
-					<Feather name="chevron-right" size={20} color="#4A4A4A" />
-				</TouchableOpacity>
-
-				<TouchableOpacity style={styles.buttonContainer}>
+				{/* <TouchableOpacity style={styles.buttonContainer}>
 					<Text style={styles.buttonText}>Konum</Text>
 					<Feather name="chevron-right" size={20} color="#4A4A4A" />
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 
 				<View style={{ paddingBottom: 16 }}>
 					<View style={[styles.buttonContainer, {}]}>
@@ -533,8 +542,8 @@ export default function Settings({ navigation, route }) {
 						/>
 					</View>
 					<Text style={{ paddingHorizontal: 20, color: colors.medium_gray }}>
-						Görünmezken, eşleşme ekranında görünmeyeceksin. Eşleşmelerinle dorm'dan konuşmaya ve
-						etkinlik incelemeye devam edebilirsin.
+						Görünmezken, eşleşme ekranında görünmeyeceksin. Eşleşmelerinle dorm'dan konuşmaya
+						ve etkinlik incelemeye devam edebilirsin.
 					</Text>
 				</View>
 
@@ -549,8 +558,8 @@ export default function Settings({ navigation, route }) {
 						/>
 					</View>
 					<Text style={{ paddingHorizontal: 20, color: colors.medium_gray }}>
-						Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni göremeyecek, sen de onları
-						göremeyeceksin.
+						Bu ayarı açtığında üniversitendeki diğer kullanıcılar seni göremeyecek, sen de
+						onları göremeyeceksin.
 					</Text>
 				</View>
 
@@ -624,8 +633,8 @@ export default function Settings({ navigation, route }) {
 						<Feather name="chevron-down" size={20} color="#4A4A4A" />
 					</View>
 					<Text style={{ paddingHorizontal: 20, color: colors.medium_gray }}>
-						İlişki tavsiyesi, yanlış giden bir şeyler ya da sadece selam vermek… İstediğin her şey
-						için bize ulaşabilirsin! {"\n"}{" "}
+						İlişki tavsiyesi, yanlış giden bir şeyler ya da sadece selam vermek… İstediğin her
+						şey için bize ulaşabilirsin! {"\n"}{" "}
 						<Text style={{ color: "blue" }}>support@meetdorm.com</Text>
 					</Text>
 				</TouchableOpacity>

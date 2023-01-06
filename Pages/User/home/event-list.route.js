@@ -61,6 +61,9 @@ export default function EventList({ navigation }) {
 		updateProfile,
 	} = useContext(AuthContext);
 	const { shownEvents, fetchEvents } = useContext(EventContext);
+	const {
+		user: { City },
+	} = useContext(AuthContext);
 
 	const eventsFlatListRef = useRef();
 
@@ -113,7 +116,7 @@ export default function EventList({ navigation }) {
 
 	useEffect(() => {
 		fetchEvents().then(setIsAppReady(true));
-	}, []);
+	}, [City]);
 
 	useEffect(() => {
 		if (eventsFlatListRef.current && shownEvents.length > 0) {

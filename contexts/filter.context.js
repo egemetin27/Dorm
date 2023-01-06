@@ -9,6 +9,7 @@ export const TYPES = {
 export const FILTERS = {
 	age: { name: "Yaş", type: TYPES.range, databaseKey: "age" },
 	sex: { name: "Cinsiyet", type: TYPES.radio, databaseKey: "cinsiyet" },
+	city: { name: "Şehir", type: TYPES.radio, databaseKey: "City" },
 	university: { name: "Üniversite", type: TYPES.radio, disabled: true },
 	sign: { name: "Burç", type: TYPES.radio, disabled: true },
 	diet: { name: "Beslenme Biçimi", type: TYPES.radio, disabled: true },
@@ -24,6 +25,11 @@ export const OPTIONS = {
 		{ name: "Kadın", databaseKey: "" },
 		{ name: "Erkek", databaseKey: "" },
 		{ name: "Non-Binary", databaseKey: "" },
+	],
+	city: [
+		{ name: "Ankara", databaseKey: "" },
+		{ name: "İstanbul", databaseKey: "" },
+		{ name: "İzmir", databaseKey: "" },
 	],
 	university: [{}],
 	sign: [{}],
@@ -46,6 +52,7 @@ const FilterProvider = ({ children }) => {
 	const [savedFilters, setSavedFilters] = useState({
 		age: [18, 35],
 		cinsiyet: [0, 0, 0],
+		City: [0, 0, 0],
 		egsersiz: [0, 0, 0],
 		alkol: [0, 0, 0],
 		sigara: [0, 0, 0],
@@ -55,8 +62,8 @@ const FilterProvider = ({ children }) => {
 	const [filters, setFilters] = useState(savedFilters);
 
 	useEffect(() => {
-		const prepare = () => {
-			AsyncStorage.getItem("filters").then((filtersStr) => {
+		const prepare = async () => {
+			await AsyncStorage.getItem("filters").then((filtersStr) => {
 				if (filtersStr === null) return;
 				const filters = JSON.parse(filtersStr);
 				setSavedFilters(filters);

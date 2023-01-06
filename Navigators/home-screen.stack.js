@@ -124,8 +124,6 @@ function CustomDrawerContent(props) {
 		return props.navigation;
 	}, [props]);
 	// console.log(JSON.stringify(props, null, "\t"));
-	const [eventModeIndex, setEventModeIndex] = useState(-1);
-
 	const changeMode = async (_matchMode) => {
 		console.log({ _matchMode });
 		const dataToBeSent = crypto.encrypt({
@@ -157,7 +155,11 @@ function CustomDrawerContent(props) {
 			}}
 		>
 			<View
-				style={{ marginTop: height * 0.05, marginLeft: width * 0.05, marginBottom: height * 0.02 }}
+				style={{
+					marginTop: height * 0.05,
+					marginLeft: width * 0.05,
+					marginBottom: height * 0.02,
+				}}
 			>
 				<GradientText
 					colors={[colors.purpleNew, colors[LABELS[index]]]}
@@ -188,7 +190,7 @@ function CustomDrawerContent(props) {
 							Seninle aynı etkinlikleri beğenen insanlarla tanış
 						</Text>
 						{focused && (
-							<View style={{ height: height * 0.2, marginTop: 12 }}>
+							<View style={{ minHeight: height * 0.2, marginTop: 12 }}>
 								<View
 									style={{
 										width: "100%",
@@ -206,34 +208,43 @@ function CustomDrawerContent(props) {
 										}}
 									>
 										<Text style={{ fontFamily: "PoppinsSemiBold" }}>Etkinlik Buddy</Text>
-										’e özel olarak profilini diğer bir modda’da göstererek insanlarla tanışmaya
-										devam edebilirsin!
+										’e özel olarak profilini diğer bir modda’da göstererek insanlarla
+										tanışmaya devam edebilirsin!
 									</Text>
 								</View>
 								<View
 									style={{
-										height: height * 0.12 - 24,
-										justifyContent: "space-between",
 										marginTop: 12,
 										// backgroundColor: "blue",
 									}}
 								>
 									<SubCategoryButton
-										isSelected={eventModeIndex === 0}
+										isSelected={matchMode === 3}
+										// isSelected={eventModeIndex === 0}
 										label="Flört"
 										onPress={async () => {
+											if (matchMode === 3) {
+												changeMode(2);
+												navigation.dispatch(DrawerActions.closeDrawer());
+												return;
+											}
 											await changeMode(3);
-											setEventModeIndex(0);
 											navigation.dispatch(DrawerActions.closeDrawer());
 										}}
 										style={{ marginBottom: "auto" }}
 									/>
+									<View style={{ height: 8 }} />
 									<SubCategoryButton
-										isSelected={eventModeIndex === 1}
+										isSelected={matchMode === 4}
+										// isSelected={eventModeIndex === 1}
 										label="Arkadaşlık"
 										onPress={async () => {
+											if (matchMode === 4) {
+												changeMode(2);
+												navigation.dispatch(DrawerActions.closeDrawer());
+												return;
+											}
 											await changeMode(4);
-											setEventModeIndex(1);
 											navigation.dispatch(DrawerActions.closeDrawer());
 										}}
 									/>
@@ -346,10 +357,12 @@ function HomeStackScreen() {
 
 	const { top } = useSafeAreaInsets();
 
+	console.log({ matchMode });
+
 	const initialRoute = useMemo(() => {
 		if (matchMode === 0) return "Flirt";
 		if (matchMode === 1) return "Friend";
-		if (matchMode === 2) return "Event";
+		if (matchMode >= 2) return "Event";
 	}, [matchMode]);
 
 	// useFocusEffect(() => {
@@ -379,91 +392,9 @@ function HomeStackScreen() {
 				// drawerHideStatusBarOnOpen: true,
 			}}
 		>
-			<Drawer.Screen
-				name="Event"
-				component={EventStack}
-				// options={{
-				// 	drawerLabel: ({ focused }) => (
-				// 		<>
-				// 			<Text
-				// 				style={{
-				// 					color: colors.event,
-				// 					fontFamily: "PoppinsSemiBold",
-				// 					fontSize: width * 0.05,
-				// 					// fontSize: height * 0.024,
-				// 				}}
-				// 			>
-				// 				Etkinlik Buddy
-				// 			</Text>
-				// 			<Text numberOfLines={3} style={{ fontSize: width * 0.032 }}>
-				// 				Seninle aynı etkinlikleri beğenen insanlarla tanış
-				// 			</Text>
-				// 			{focused && (
-				// 				<>
-				// 					<View style={{ width: "100%", height: 2, backgroundColor: colors.event }}></View>
-				// 				</>
-				// 			)}
-				// 		</>
-				// 	),
-				// 	drawerIcon: ({ focused, size }) => {
-				// 		return <DrawerButtonIcon isSelected={focused} color={colors.event} />;
-				// 	},
-				// }}
-			/>
-			<Drawer.Screen
-				name="Flirt"
-				component={PersonStack}
-				// options={{
-				// 	drawerLabel: () => (
-				// 		<>
-				// 			<Text
-				// 				style={{
-				// 					color: colors.flirt,
-				// 					fontFamily: "PoppinsSemiBold",
-				// 					fontSize: width * 0.05,
-				// 					// fontSize: height * 0.024,
-				// 				}}
-				// 			>
-				// 				Flört
-				// 			</Text>
-				// 			<Text numberOfLines={3} style={{ fontSize: width * 0.03 }}>
-				// 				O kıvılcımı bulmak için harekete geç
-				// 			</Text>
-				// 		</>
-				// 	),
-				// 	drawerIcon: ({ focused, size }) => (
-				// 		<DrawerButtonIcon isSelected={focused} color={colors.flirt} />
-				// 	),
-				// }}
-				initialParams={{ mode: "flirt" }}
-			/>
-			<Drawer.Screen
-				name="Friend"
-				component={PersonStack}
-				// options={{
-				// 	drawerLabel: () => (
-				// 		<>
-				// 			<Text
-				// 				style={{
-				// 					color: colors.friend,
-				// 					fontFamily: "PoppinsSemiBold",
-				// 					fontSize: width * 0.05,
-				// 					// fontSize: height * 0.024,
-				// 				}}
-				// 			>
-				// 				Arkadaşlık
-				// 			</Text>
-				// 			<Text numberOfLines={3} style={{ fontSize: width * 0.03 }}>
-				// 				Beraber etkinliklere gideceğin yeni arkadaşlar edin
-				// 			</Text>
-				// 		</>
-				// 	),
-				// 	drawerIcon: ({ focused, size }) => (
-				// 		<DrawerButtonIcon isSelected={focused} color={colors.friend} />
-				// 	),
-				// }}
-				initialParams={{ mode: "friend" }}
-			/>
+			<Drawer.Screen name="Event" component={EventStack} />
+			<Drawer.Screen name="Flirt" component={PersonStack} initialParams={{ mode: "flirt" }} />
+			<Drawer.Screen name="Friend" component={PersonStack} initialParams={{ mode: "friend" }} />
 		</Drawer.Navigator>
 	);
 }

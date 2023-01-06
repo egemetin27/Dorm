@@ -12,10 +12,12 @@ import { MessageContext } from "../../../contexts/message.context";
 
 const { width, height } = Dimensions.get("screen");
 
-const ChatHeader = ({ userData, matchId }) => {
+const ChatHeader = ({ userData, matchId, eventName }) => {
 	const { user } = useContext(AuthContext);
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation();
+
+	// console.log({ eventName });
 
 	const { Name } = userData;
 
@@ -55,7 +57,14 @@ const ChatHeader = ({ userData, matchId }) => {
 					<View style={styles.image_container}>
 						{imageUrl && <CustomImage style={styles.image} url={imageUrl} />}
 					</View>
-					<GradientText text={Name} style={styles.name} />
+					<View>
+						<GradientText text={Name} style={styles.name} />
+						{eventName.length > 0 && (
+							<Text style={{ color: "#6635f8" }}>
+								etkinlik: <Text style={styles.event_name}>{eventName}</Text>
+							</Text>
+						)}
+					</View>
 				</Pressable>
 			</View>
 			<View style={styles.right_side}>
@@ -127,6 +136,10 @@ const styles = StyleSheet.create({
 		fontFamily: "NowBold",
 		fontSize: height * 0.027,
 		letterSpacing: 0.5,
+	},
+	event_name: {
+		fontFamily: "Now",
+		fontSize: height * 0.016,
 	},
 	right_side: {
 		flexDirection: "row",

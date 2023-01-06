@@ -107,7 +107,9 @@ const Card = ({
 	const handleSingleTap = () => {
 		if (face.value === -1 || !photoListRef.current) return;
 		const newIndex =
-			sortedPhotos.length > Math.round(photoIndex.value + 1) ? Math.round(photoIndex.value) + 1 : 0;
+			sortedPhotos.length > Math.round(photoIndex.value + 1)
+				? Math.round(photoIndex.value) + 1
+				: 0;
 		photoListRef.current.scrollToIndex({ animated: true, index: newIndex });
 	};
 
@@ -220,6 +222,7 @@ const Card = ({
 				<Reanimated.View style={[card_style, animatedFrontFace]}>
 					{/* Photo Render */}
 					<FlatList
+						style={{ zIndex: 0 }}
 						initialNumToRender={1}
 						maxToRenderPerBatch={2}
 						ref={photoListRef}
@@ -446,10 +449,10 @@ const Card = ({
 						<FlatList
 							showsVerticalScrollIndicator={false}
 							style={{
-								zIndex: 5,
 								width: "80%",
 								marginVertical: 30,
 							}}
+							contentContainerStyle={{}}
 							keyExtractor={(key) => key}
 							data={Object.keys(BACK_FACE_FIELDS)}
 							renderItem={({ item: field }) => {
@@ -459,31 +462,56 @@ const Card = ({
 								// 	console.log({ value });
 								// }
 
-								if (checkField(value) === true || BACK_FACE_FIELDS[field].function(value) === "")
+								if (
+									checkField(value) === true ||
+									BACK_FACE_FIELDS[field].function(value) === ""
+								)
 									return null;
 
 								return (
-									<Text
-										key={field}
-										name={field}
-										style={{
-											color: colors.light_gray,
-											fontSize: Math.min(height * 0.025, width * 0.04),
-											textAlign: "center",
-											paddingVertical: 5,
-										}}
-									>
-										{BACK_FACE_FIELDS[field].label}
-										{"\n"}
+									<>
 										<Text
+											// key={field}
+											name={field}
 											style={{
-												fontFamily: "PoppinsSemiBold",
-												fontSize: Math.min(height * 0.03, width * 0.048),
+												color: colors.light_gray,
+												fontSize: Math.min(height * 0.025, width * 0.04),
+												textAlign: "center",
+												paddingVertical: 5,
 											}}
 										>
-											{BACK_FACE_FIELDS[field].function(value)}
+											{BACK_FACE_FIELDS[field].label}
+											{"\n"}
+											<Text
+												style={{
+													fontFamily: "PoppinsSemiBold",
+													fontSize: Math.min(height * 0.03, width * 0.048),
+												}}
+											>
+												{BACK_FACE_FIELDS[field].function(value)}
+											</Text>
 										</Text>
-									</Text>
+										<Text
+											name={field}
+											style={{
+												color: colors.light_gray,
+												fontSize: Math.min(height * 0.025, width * 0.04),
+												textAlign: "center",
+												paddingVertical: 5,
+											}}
+										>
+											{BACK_FACE_FIELDS[field].label}
+											{"\n"}
+											<Text
+												style={{
+													fontFamily: "PoppinsSemiBold",
+													fontSize: Math.min(height * 0.03, width * 0.048),
+												}}
+											>
+												{BACK_FACE_FIELDS[field].function(value)}
+											</Text>
+										</Text>
+									</>
 								);
 							}}
 						/>
@@ -492,12 +520,12 @@ const Card = ({
 				{/* Back Face End */}
 			</View>
 			{/* {showTapIndicator &&
-						<View style={styles.tapIndicator}>
-							<TapIndicator />
-						</View> 
-					} */}
+		// 				<View style={styles.tapIndicator}>
+		// 					<TapIndicator />
+		// 				</View>
+		// 			} */}
 		</DoubleTap>
-		// {/* </View> */}
+		// </View>
 	);
 };
 

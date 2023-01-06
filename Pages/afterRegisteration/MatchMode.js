@@ -9,7 +9,12 @@ export default MatchMode = ({ value, setValue }) => {
 	return (
 		<View style={commonStyles.Container}>
 			<View
-				style={{ width: "100%", alignItems: "flex-start", paddingHorizontal: 30, marginTop: 20 }}
+				style={{
+					width: "100%",
+					alignItems: "flex-start",
+					paddingHorizontal: 30,
+					marginTop: 20,
+				}}
 			>
 				<GradientText
 					text={"Başlamak İçin Modunu Seç!"}
@@ -32,10 +37,10 @@ export default MatchMode = ({ value, setValue }) => {
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
 				onPress={() => {
-					setValue(1);
+					setValue(0);
 				}}
 			>
-				{value == 1 ? (
+				{value == 0 ? (
 					<Gradient
 						style={{
 							borderRadius: 8,
@@ -46,7 +51,10 @@ export default MatchMode = ({ value, setValue }) => {
 						}}
 					>
 						<Text
-							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+							style={[
+								commonStyles.buttonText,
+								{ fontFamily: "PoppinsSemiBold", fontSize: 18 },
+							]}
 						>
 							Flört
 						</Text>
@@ -61,10 +69,10 @@ export default MatchMode = ({ value, setValue }) => {
 			<TouchableOpacity
 				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
 				onPress={() => {
-					setValue(2);
+					setValue(1);
 				}}
 			>
-				{value == 2 ? (
+				{value == 1 ? (
 					<Gradient
 						style={{
 							borderRadius: 8,
@@ -75,14 +83,81 @@ export default MatchMode = ({ value, setValue }) => {
 						}}
 					>
 						<Text
-							style={[commonStyles.buttonText, { fontFamily: "PoppinsSemiBold", fontSize: 18 }]}
+							style={[
+								commonStyles.buttonText,
+								{ fontFamily: "PoppinsSemiBold", fontSize: 18 },
+							]}
 						>
-							Arkadaş
+							Arkadaşlık
 						</Text>
 					</Gradient>
 				) : (
 					<GradientText
-						text={"Arkadaş"}
+						text={"Arkadaşlık"}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
+					/>
+				)}
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
+				onPress={() => {
+					setValue(3);
+				}}
+			>
+				{value == 3 ? (
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[
+								commonStyles.buttonText,
+								{ fontFamily: "PoppinsSemiBold", fontSize: 18 },
+							]}
+						>
+							Etkinlik Üstünden Flört
+						</Text>
+					</Gradient>
+				) : (
+					<GradientText
+						text={"Etkinlik Üstünden Flört"}
+						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
+					/>
+				)}
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={[commonStyles.button, { backgroundColor: colors.white, marginTop: 16 }]}
+				onPress={() => {
+					setValue(4);
+				}}
+			>
+				{value == 4 ? (
+					<Gradient
+						style={{
+							borderRadius: 8,
+							justifyContent: "center",
+							alignItems: "center",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						<Text
+							style={[
+								commonStyles.buttonText,
+								{ fontFamily: "PoppinsSemiBold", fontSize: 18 },
+							]}
+						>
+							Etkinlik Üstünden Arkadaşlık
+						</Text>
+					</Gradient>
+				) : (
+					<GradientText
+						text={"Etkinlik Üstünden Arkadaşlık"}
 						style={{ fontSize: 18, fontFamily: "PoppinsSemiBold", letterSpacing: 1.2 }}
 					/>
 				)}

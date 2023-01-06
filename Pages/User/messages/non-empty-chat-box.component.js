@@ -112,7 +112,10 @@ const NonEmptyChatBox = ({ match }) => {
 	}, []);
 
 	const handlePress = () => {
-		navigation.navigate("Chat", { otherUser: match });
+		navigation.navigate("Chat", {
+			otherUser: match,
+			eventName: match.Description !== "bos event" ? match.Description : "",
+		});
 	};
 
 	return (
@@ -133,7 +136,11 @@ const NonEmptyChatBox = ({ match }) => {
 					</View>
 
 					<View
-						style={{ flex: 1, paddingHorizontal: width * 0.04, justifyContent: "space-between" }}
+						style={{
+							flex: 1,
+							paddingHorizontal: width * 0.04,
+							justifyContent: "space-between",
+						}}
 					>
 						<View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
 							<Text style={styles.name}>{Name}</Text>

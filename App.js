@@ -5,6 +5,7 @@ import { setCustomText, setCustomTextInput } from "react-native-global-props";
 import { NavigationContainer } from "@react-navigation/native";
 import NetInfo from "@react-native-community/netinfo";
 import * as Linking from "expo-linking";
+import "expo-dev-client";
 
 import * as Notifications from "expo-notifications";
 

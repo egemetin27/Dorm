@@ -157,7 +157,6 @@ export default function StackNavigator() {
 						<Stack.Screen name="Register" component={Register} />
 						<Stack.Screen name="RMahremiyetPolitikasi" component={RMahremiyetPolitikasi} />
 						<Stack.Screen name="RKullaniciSozlesmesi" component={RKullaniciSozlesmesi} />
-						{/* <Stack.Screen name="RToplulukKurallari" component={RToplulukKurallari} /> */}
 						<Stack.Screen name="Verification" component={Verification} />
 						<Stack.Screen name="Verification2" component={Verification2} />
 						<Stack.Screen name="FirstPassword" component={FirstPassword} />

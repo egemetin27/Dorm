@@ -99,11 +99,12 @@ const Chat = ({ route, navigation }) => {
 	const [chatMessages, setChatMessages] = useState([]);
 	const [lastReadMessageIndex, setLastReadMessageIndex] = useState(null);
 
-	const { otherUser } = route.params;
+	const { otherUser, eventName } = route.params;
 	const { otherId, MatchId } = otherUser;
 	const { Name } = otherUser.userData;
 	const imageUrl = useMemo(
-		() => otherUser.userData.photos.find(({ Photo_Order }) => Photo_Order === 1)?.PhotoLink ?? null,
+		() =>
+			otherUser.userData.photos.find(({ Photo_Order }) => Photo_Order === 1)?.PhotoLink ?? null,
 		[otherUser]
 	);
 
@@ -151,7 +152,7 @@ const Chat = ({ route, navigation }) => {
 
 	return (
 		<View style={[styles.container]}>
-			<ChatHeader userData={otherUser.userData} matchId={MatchId} />
+			<ChatHeader userData={otherUser.userData} matchId={MatchId} eventName={eventName} />
 			{chatMessages.length == 0 ? (
 				<View style={styles.no_message_container}>
 					{imageUrl && (
@@ -159,8 +160,8 @@ const Chat = ({ route, navigation }) => {
 					)}
 					<View style={styles.background_image} />
 					<Text style={styles.no_message_placeholder}>
-						Çekinme! O da senden mesaj bekliyor. Sohbeti başlatmak için bir şaka patlatabilir ya da
-						klasiklerden giderek selam yazabilirsin.
+						Çekinme! O da senden mesaj bekliyor. Sohbeti başlatmak için bir şaka patlatabilir
+						ya da klasiklerden giderek selam yazabilirsin.
 					</Text>
 				</View>
 			) : (

@@ -24,7 +24,7 @@ export default function AfterRegister({ route, navigation }) {
 	const [pageNum, setPageNum] = useState(1);
 
 	const [gender, setGender] = useState(1); // 1: Kadın, 2: Erkek, 3: Non-Binary, 4: Belirsiz
-	const [matchMode, setMatchMode] = useState(1); // 1: Flört, 2: Arkadaş
+	const [matchMode, setMatchMode] = useState(0); // 0: Flört, 1: Arkadaş
 	const [expectation, setExpectation] = useState(1); // 1: Takılmak, 2: Kısa Süre, 3: Uzun Süre, 4: Arkadaş, 5: Etkinlik, 6: Belirsiz
 	const [interested, setInterested] = useState(1); // 1: Kadın, 2: Erkek, 3: Herkes
 	const [sexualOrientation, setSexualOrientation] = useState(1); // 1: Hetero, 2: Bi, 3: Homo, 4: Pan, 5: Aseksüel
@@ -41,7 +41,7 @@ export default function AfterRegister({ route, navigation }) {
 		const choices = {
 			userId: userId,
 			gender: gender - 1,
-			matchMode: matchMode - 1,
+			matchMode: matchMode,
 			expectation: expectation,
 			interestedSex: interested - 1,
 			sexualOrientation: sexualOrientation - 1,
@@ -95,7 +95,9 @@ export default function AfterRegister({ route, navigation }) {
 					</TouchableOpacity>
 				</View>
 				{pageNum == 1 && <MatchMode value={matchMode} setValue={setMatchMode} />}
-				{pageNum == 2 && <Gender value={gender} setValue={setGender} isEnabled={genderSwitch} />}
+				{pageNum == 2 && (
+					<Gender value={gender} setValue={setGender} isEnabled={genderSwitch} />
+				)}
 				{pageNum == 3 && <Expectation value={expectation} setValue={setExpectation} />}
 				{pageNum == 4 && <Interested value={interested} setValue={setInterested} />}
 				{pageNum == 5 && (
